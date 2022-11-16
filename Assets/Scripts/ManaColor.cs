@@ -1,9 +1,9 @@
 public enum ManaColor
 {
-    NONE,
-    BLUE,
-    RED,
-    GREEN,
-    YELLOW,
-    PURPLE
+    None,
+    Blue,
+    Red,
+    Green,
+    Yellow,
+    Purple
 }

@@ -2,13 +2,16 @@ using UnityEngine;
 
 public class Piece
 {
+    // Tile prefab, containing an object with the Tile behaviour
+    [SerializeField] public static Tile tilePrefab;
+
     // Think of each piece as an L on your left hand. Top is pointer finger and right is thumb.
     // Tile in center
-    public readonly int center; 
+    private Tile center; 
     // Tile on top (unrotated)
-    public readonly int top; 
+    private Tile top;
     // Tile on right (unrotated)
-    public readonly int right;
+    private Tile right;
     // This piece's rotation, direction that the top tile is facing
     public readonly Orientation orientation;
     
@@ -18,19 +21,21 @@ public class Piece
     private int y { get; set; }
 
 
-    /// <summary> Create a new piece, facing UP, with randomized colors. </summary>
-    public Piece()
+    /// <summary> Create a new piece, facing UP. Passed in Tiles with randomized colors. </summary>
+    public Piece(Tile center, Tile top, Tile right)
     {
-        // Randomize all colors of this piece.
-        // Skip first ManaColor of NONE
-        center = Random.Range(1,6);
-        top = Random.Range(1,6);
-        right = Random.Range(1,6);
-        orientation = Orientation.UP;
+        // Initialize tile gameobjects created by the GameBoard behaviour
+        this.center = center;
+        this.top = top;
+        this.right = right;
 
         // Begin with this tile at the top of the grid.
         x = 3;
         y = 0;
+
+        // Randomize all colors of this piece.
+        // Skip first ManaColor of NONE
+        orientation = Orientation.UP;
     }
 
     // Orientation is the way that the "top" tile is facing
