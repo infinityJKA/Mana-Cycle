@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class GameBoard : MonoBehaviour
 {
+    // Tile prefab, containing an object with the Tile behaviour
+    [SerializeField] public Tile tilePrefab;
+    // All ManaColor colors to tint the Tile images
+    [SerializeField] public List<Color> manaColors;
+
     public static readonly int height = 8;
     public static readonly int width = 14;
-    public static readonly int tilePixelSize = 25;
 
     // Board containing all tiles that have been placed and their colors. NONE is an empty space (from ManaColor enum).
     private ManaColor[,] board;
@@ -28,8 +32,17 @@ public class GameBoard : MonoBehaviour
     // Create a new piece and spawn it at the top of the board
     public void NewPiece()
     {
-        // Creates a new piece at the spawn location with randomized colors (check Piece constructor)
-        piece = new Piece();
+        // Creates a new piece at the spawn location
+        piece = new Piece(NewTile(), NewTile(), NewTile());
+    }
+
+    // Create a new tile gameobject with a randomized color. To be used for Piece's constructor.
+    public Tile NewTile()
+    {
+        Tile newTile = Instantiate(tilePrefab, Vector2.zero, Quaternion.identity);
+        // Select a random color, excluding the first (NONE).
+        newTile.Randomize();
+        return newTile;
     }
 
     // Move the current piece by this amount. 
@@ -67,12 +80,11 @@ public class GameBoard : MonoBehaviour
     {
         // Check for color lines, and add them to a list of Vector3Ints.
         // Coordinates represent (row, column, length).
-        List<Vector3Int> horizontalLines = new List<Vector3Int>(); // (facing right)
-        List<Vector3Int> verticalLines = new List<Vector3Int>(); // (facing down)
-
         // Length of the current line is stored here.
         int currentLength = 0;
+
         // ---- Horizontal lines ----
+        List<Vector3Int> horizontalLines = new List<Vector3Int>(); // (facing right)
         // Loop over rows (top to bottom)
         for (int r = 0; r < height; r++)
         {
@@ -94,6 +106,7 @@ public class GameBoard : MonoBehaviour
         }
 
         // |||| Vertical lines ||||
+        List<Vector3Int> verticalLines = new List<Vector3Int>(); // (facing down)
         // Loop over columns (left to right)
         for (int c = 0; c < width; c++)
         {
@@ -134,7 +147,7 @@ public class GameBoard : MonoBehaviour
             // Z is the length of the line
             for (int c = 0; c < line.z; c++)
             {
-                board[line.y, line.x + c] = ManaColor.NONE;
+                board[line.y, line.x + c] = ManaColor.None;
             }
         }
 
@@ -144,7 +157,7 @@ public class GameBoard : MonoBehaviour
             // Z is the length of the line
             for (int r = 0; r < line.z; r++)
             {
-                board[line.y + r, line.x] = ManaColor.NONE;
+                board[line.y + r, line.x] = ManaColor.None;
             }
         }
 
@@ -174,13 +187,14 @@ public class GameBoard : MonoBehaviour
                 for (int rFall = r+1; r < height; r++)
                 {
                     // Once a non-empty is found, move the tile to right above it
-                    if (board[rFall,c] != ManaColor.NONE)
+                    if (board[rFall,c] != ManaColor.None)
                     {
                         // (Can be skipped if the tile did not fall at all)
                         if (rFall-1 > r)
                         {
                             board[rFall-1, c] = board[r, c];
                         }
+                        break;
                     }
                 }
             }
