@@ -4,45 +4,82 @@ using UnityEngine;
 
 public class GameBoard : MonoBehaviour
 {
-    // Tile prefab, containing an object with the Tile behaviour
-    [SerializeField] public Tile tilePrefab;
+    // Piece prefab, containing an object with Tile gameobject children
+    [SerializeField] private Piece piecePrefab;
     // All ManaColor colors to tint the Tile images
-    [SerializeField] public List<Color> manaColors;
+    [SerializeField] private List<Color> manaColors;
 
     public static readonly int height = 8;
     public static readonly int width = 14;
 
+    private float previousTime;
+    [SerializeField] private float fallTime = 0.8f;
+
     // Board containing all tiles that have been placed and their colors. NONE is an empty space (from ManaColor enum).
-    private ManaColor[,] board;
+    private Tile[,] board;
     // Piece that is currently being dropped.
     private Piece piece;
 
     // Start is called before the first frame update
     void Start()
     {
-        board = new ManaColor[width, height];
+        board = new Tile[width, height];
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        // Z - rotate left
+        if(Input.GetKeyDown(KeyCode.Z)){
+            piece.RotateLeft();
+            if(!ValidPlacement()){
+                piece.RotateRight();
+            }
+        }
+
+        // X - rotate right
+        else if(Input.GetKeyDown(KeyCode.X)){
+            piece.RotateRight();
+            if(!ValidPlacement()){
+                piece.RotateLeft();
+            }
+        }
+
+        // Left Arrow - move piece left
+        else if(Input.GetKeyDown(KeyCode.LeftArrow)){
+            MovePiece(-1, 0);
+        }
+
+        // Right Arrow - move piece right
+        else if(Input.GetKeyDown(KeyCode.RightArrow)){
+            MovePiece(1, 0);
+        }
+
+        // if(Time.time - previousTime > (Input.GetKey(KeyCode.DownArrow) ? fallTime/10 : fallTime)){
+        //     transform.position += new Vector3(0,-1,0);
+        //     if(!ValidMove()){
+        //         transform.position -= new Vector3(0,-1,0);
+        //         AddToGrid();
+        //         this.enabled = false;
+        //         CheckForLines();
+        //         FindObjectOfType<Spawn>().NewTetromino();
+        //     }
+        //     previousTime = Time.time;
+        // }
     }
 
-    // Create a new piece and spawn it at the top of the board
+    // Create a new piece and spawn it at the top of the board. Replaces the current piece field.
     public void NewPiece()
     {
-        // Creates a new piece at the spawn location
-        piece = new Piece(NewTile(), NewTile(), NewTile());
-    }
+        // Creates a new piece at the spawn location.
+        // The new tiles' position Vector2 will determine how it is rendered.
+        piece = Instantiate(piecePrefab, Vector3.zero, Quaternion.identity);
 
-    // Create a new tile gameobject with a randomized color. To be used for Piece's constructor.
-    public Tile NewTile()
-    {
-        Tile newTile = Instantiate(tilePrefab, Vector2.zero, Quaternion.identity);
-        // Select a random color, excluding the first (NONE).
-        newTile.Randomize();
-        return newTile;
+        // Randomize the piece's tiles' colors
+        piece.Randomize();
+
+        // Move the tile in place (this fixes the displayed position)
+        piece.Move(0,0);
     }
 
     // Move the current piece by this amount. 
@@ -67,15 +104,17 @@ public class GameBoard : MonoBehaviour
     {
         foreach (Vector2Int tile in piece)
         {
-            // Return false here if the ManaColor enum value if the iterated tile of the piece is above 0,
-            // or in other words, the grid position's value is not NONE, so another tile is there
-            if (board[tile.x, tile.y] > 0) return false;
+            // Return false here if the grid position's value is not null, so another tile is there
+            if (board[tile.x, tile.y] != null) return false;
+
+            // Return false if the tile is in an invalid position
+            if (tile.x < 0 || tile.x >= width || tile.y < 0 || tile.y >= height) return false;
         }
         // No tiles overlapped, return true
         return true;
     }
 
-    // Check the board for lines of the given color.
+    // Check the board for lines of the given color and clear them from the board, earning points/dealing damage.
     public void checkLines(ManaColor color)
     {
         // Check for color lines, and add them to a list of Vector3Ints.
@@ -92,7 +131,7 @@ public class GameBoard : MonoBehaviour
             for (int c = 0; c < width; c++)
             {
                 // Check if indexed tile is correct color
-                if (board[r, c] == color)
+                if (board[r, c].GetManaColor() == color)
                 {
                     // If so, increase line length
                     currentLength++;
@@ -114,7 +153,7 @@ public class GameBoard : MonoBehaviour
             for (int r = 0; r < height; r++)
             {
                 // Check if indexed tile is correct color
-                if (board[r, c] == color)
+                if (CheckColor(r, c, color))
                 {
                     // If so, increase line length
                     currentLength++;
@@ -147,7 +186,7 @@ public class GameBoard : MonoBehaviour
             // Z is the length of the line
             for (int c = 0; c < line.z; c++)
             {
-                board[line.y, line.x + c] = ManaColor.None;
+                board[line.y, line.x + c] = null;
             }
         }
 
@@ -157,7 +196,7 @@ public class GameBoard : MonoBehaviour
             // Z is the length of the line
             for (int r = 0; r < line.z; r++)
             {
-                board[line.y + r, line.x] = ManaColor.None;
+                board[line.y + r, line.x] = null;
             }
         }
 
@@ -187,7 +226,7 @@ public class GameBoard : MonoBehaviour
                 for (int rFall = r+1; r < height; r++)
                 {
                     // Once a non-empty is found, move the tile to right above it
-                    if (board[rFall,c] != ManaColor.None)
+                    if (board[rFall,c] == null)
                     {
                         // (Can be skipped if the tile did not fall at all)
                         if (rFall-1 > r)
@@ -199,5 +238,14 @@ public class GameBoard : MonoBehaviour
                 }
             }
         }
+    }
+
+    // Check if the tile at the index is the given color, if there is one there.
+    public bool CheckColor(int r, int c, ManaColor color)
+    {
+        // return false if there is no tile at the index
+        if (board[r,c] == null) return false;
+        // if there is a tile, return true if it is the given color.
+        return board[r,c].GetManaColor() == color;
     }
 }

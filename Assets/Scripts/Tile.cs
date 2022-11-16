@@ -5,7 +5,7 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     // Color of this title. (Public read but no public write)
-    public ManaColor color;
+    private ManaColor color;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +23,11 @@ public class Tile : MonoBehaviour
     // Intended to be called after the prefab with this script is cloned.
     public void Randomize()
     {
-        color = (ManaColor) Random.Range(1,6);
+        color = (ManaColor) Random.Range(0,5);
+    }
+
+    public ManaColor GetManaColor()
+    {
+        return color;
     }
 }

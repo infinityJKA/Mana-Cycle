@@ -1,59 +1,79 @@
 using UnityEngine;
 
-public class Piece
+public class Piece : MonoBehaviour
 {
-    // Tile prefab, containing an object with the Tile behaviour
-    [SerializeField] public static Tile tilePrefab;
-
     // Think of each piece as an L on your left hand. Top is pointer finger and right is thumb.
     // Tile in center
-    private Tile center; 
+    [SerializeField] private Tile center; 
     // Tile on top (unrotated)
-    private Tile top;
+    [SerializeField] private Tile top;
     // Tile on right (unrotated)
-    private Tile right;
-    // This piece's rotation, direction that the top tile is facing
-    public readonly Orientation orientation;
+    [SerializeField] private Tile right;
     
-    // X position of this piece on the grid
-    private int x { get; set; }
-    // Y position of this piece on the grid
-    private int y { get; set; }
+    // Rotation center - holds all the tile objects. Centered on tile for correct visual rotation.
+    [SerializeField] private Transform rotationCenter;
 
+    // This piece's rotation, direction that the top tile is facing. Start out facing up.
+    public Orientation orientation = Orientation.up;
 
-    /// <summary> Create a new piece, facing UP. Passed in Tiles with randomized colors. </summary>
-    public Piece(Tile center, Tile top, Tile right)
-    {
-        // Initialize tile gameobjects created by the GameBoard behaviour
-        this.center = center;
-        this.top = top;
-        this.right = right;
-
-        // Begin with this tile at the top of the grid.
-        x = 3;
-        y = 0;
-
-        // Randomize all colors of this piece.
-        // Skip first ManaColor of NONE
-        orientation = Orientation.UP;
-    }
+    // Theoretically, these should stay the same as this piece's gameobject position, but I don't trust floats.
+    // X position of this piece on the grid. Start out at x=3.
+    private int x = 3;
+    // Y position of this piece on the grid. Start out at y=0;
+    private int y = 0;
 
     // Orientation is the way that the "top" tile is facing
     public enum Orientation
     {
-        UP,
-        RIGHT,
-        DOWN,
-        LEFT
+        up,
+        left,
+        down,
+        right
+    }
+
+    // Randomize this piece's tiles' colors.
+    public void Randomize()
+    {
+        center.Randomize();
+        top.Randomize();
+        right.Randomize();
     }
 
     // Translate this piece by the given X and Y.
     public void Move(int x, int y) {
         this.x += x;
         this.y += y;
+        transform.position = new Vector3(x,y,0); // update visually
     }
     public void Move(Vector2Int offset) {
         Move(offset.x, offset.y);
+    }
+
+    // quirky enum addition and subtraction (ordinal values)
+    // Rotate this piece to the right about the center.
+    public void RotateRight()
+    {
+        if (orientation == Orientation.up) {
+            orientation = Orientation.left;
+        } else {
+            orientation -= 1;
+        }
+    }
+
+    // Rotate this piece to the left about the center.
+    public void RotateLeft()
+    {
+        if (orientation == Orientation.left) {
+            orientation = Orientation.up;
+        } else {
+            orientation += 1;
+        }
+    }
+
+    // Update the actual displayed rotation.
+    public void UpdateDisplayedRotation()
+    {
+        transform.eulerAngles = new Vector3(0, 0, ((int)orientation) * 90);
     }
 
     // Iteration of all coordinates this piece currently occupies.
@@ -64,19 +84,19 @@ public class Piece
 
         // Only return positions off the center if they are taken up by the current orientation
         // Tile on top
-        if (orientation == Orientation.UP || orientation == Orientation.LEFT) 
+        if (orientation == Orientation.up || orientation == Orientation.left) 
             yield return new Vector2Int(x, y+1);
 
         // Tile to right
-        if (orientation == Orientation.RIGHT || orientation == Orientation.UP) 
+        if (orientation == Orientation.right || orientation == Orientation.up) 
             yield return new Vector2Int(x+1, y);
 
         // Tile on bottom
-        if (orientation == Orientation.DOWN || orientation == Orientation.RIGHT) 
+        if (orientation == Orientation.down || orientation == Orientation.right) 
             yield return new Vector2Int(x, y-1);
 
         // Tile to left
-        if (orientation == Orientation.LEFT || orientation == Orientation.DOWN) 
+        if (orientation == Orientation.left || orientation == Orientation.down) 
             yield return new Vector2Int(x-1, y);
     }
 }

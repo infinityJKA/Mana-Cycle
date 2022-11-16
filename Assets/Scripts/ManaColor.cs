@@ -1,6 +1,5 @@
 public enum ManaColor
 {
-    None,
     Blue,
     Red,
     Green,
