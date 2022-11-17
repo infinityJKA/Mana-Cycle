@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Tile : MonoBehaviour
 {
@@ -19,15 +20,19 @@ public class Tile : MonoBehaviour
         
     }
 
-    // Randomizes this tile's own color.
-    // Intended to be called after the prefab with this script is cloned.
-    public void Randomize()
-    {
-        color = (ManaColor) Random.Range(0,5);
-    }
-
     public ManaColor GetManaColor()
     {
         return color;
+    }
+
+    public void Randomize()
+    {
+        // Randomly choose color from color enum length
+        color = (ManaColor) Random.Range(0,5);
+        // go up three parents (rotationCenter -> piece -> gameboard),
+        GetComponent<Image>()
+        .color = transform.parent.transform.parent.transform.parent
+        // and access the mana colors list on the gameboard to get the Color to tint this object
+            .GetComponent<GameBoard>().GetManaColors()[((int)color)];
     }
 }

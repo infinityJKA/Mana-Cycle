@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class GameBoard : MonoBehaviour
 {
+    // True if the player controls this board.
+    [SerializeField] private bool playerControlled;
     // Piece prefab, containing an object with Tile gameobject children
     [SerializeField] private Piece piecePrefab;
     // All ManaColor colors to tint the Tile images
     [SerializeField] private List<Color> manaColors;
 
-    public static readonly int height = 8;
-    public static readonly int width = 14;
+    public static readonly int width = 8;
+    public static readonly int height = 14;
 
-    private float previousTime;
+    // The last time that the current piece fell down a tile.
+    private float previousFallTime;
     [SerializeField] private float fallTime = 0.8f;
 
     // Board containing all tiles that have been placed and their colors. NONE is an empty space (from ManaColor enum).
@@ -23,80 +26,87 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        board = new Tile[width, height];
+        board = new Tile[height, width];
+        if (playerControlled) 
+        {
+            SpawnPiece();
+        }   
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Z - rotate left
+       if (playerControlled)
+       {
+        // Z - rotate right
         if(Input.GetKeyDown(KeyCode.Z)){
-            piece.RotateLeft();
-            if(!ValidPlacement()){
-                piece.RotateRight();
-            }
-        }
-
-        // X - rotate right
-        else if(Input.GetKeyDown(KeyCode.X)){
             piece.RotateRight();
             if(!ValidPlacement()){
                 piece.RotateLeft();
             }
         }
 
+        // X - rotate left
+        if(Input.GetKeyDown(KeyCode.X)){
+            piece.RotateLeft();
+            if(!ValidPlacement()){
+                piece.RotateRight();
+            }
+        }
+
         // Left Arrow - move piece left
-        else if(Input.GetKeyDown(KeyCode.LeftArrow)){
+        if(Input.GetKeyDown(KeyCode.LeftArrow)){
             MovePiece(-1, 0);
         }
 
         // Right Arrow - move piece right
-        else if(Input.GetKeyDown(KeyCode.RightArrow)){
+        if(Input.GetKeyDown(KeyCode.RightArrow)){
             MovePiece(1, 0);
         }
 
-        // if(Time.time - previousTime > (Input.GetKey(KeyCode.DownArrow) ? fallTime/10 : fallTime)){
-        //     transform.position += new Vector3(0,-1,0);
-        //     if(!ValidMove()){
-        //         transform.position -= new Vector3(0,-1,0);
-        //         AddToGrid();
-        //         this.enabled = false;
-        //         CheckForLines();
-        //         FindObjectOfType<Spawn>().NewTetromino();
-        //     }
-        //     previousTime = Time.time;
-        // }
+        // Get the time that has passed since the previous piece fall.
+        // If it is greater than fall time (or fallTime/10 if holding down),
+        // move the piece one down.
+        if(Time.time - previousFallTime > (Input.GetKey(KeyCode.DownArrow) ? fallTime/10 : fallTime)){
+            // Try to move the piece down. If it can't be moved down,
+            if (!MovePiece(0, 1))
+            {
+                // Place the piece
+                PlacePiece();
+                // Spawn a new piece
+                SpawnPiece();
+            }         
+            // reset fall time
+            previousFallTime = Time.time;   
+        }
+       }
     }
 
     // Create a new piece and spawn it at the top of the board. Replaces the current piece field.
-    public void NewPiece()
+    public void SpawnPiece()
     {
         // Creates a new piece at the spawn location.
         // The new tiles' position Vector2 will determine how it is rendered.
-        piece = Instantiate(piecePrefab, Vector3.zero, Quaternion.identity);
+        piece = Instantiate(piecePrefab, Vector3.zero, Quaternion.identity, transform);
 
         // Randomize the piece's tiles' colors
         piece.Randomize();
 
-        // Move the tile in place (this fixes the displayed position)
-        piece.Move(0,0);
+        // Move the tile to the spawn location
+        piece.MoveTo(3,1);
     }
 
     // Move the current piece by this amount. 
     // Return true if the piece is not blocked from moving to the new location.
-    public bool MovePiece(int x, int y)
+    public bool MovePiece(int col, int row)
     {
-        piece.Move(x, y);
+        piece.Move(col, row);
         // Check if the piece now overlaps any grid tiles, if so, move the tile back and return false
         if (!ValidPlacement()) {
-            piece.Move(-x, -y);
+            piece.Move(-col, -row);
             return false;
         }
         return true;
-    }
-    public bool MovePiece(Vector2Int offset)
-    {
-        return MovePiece(offset.x, offset.y);
     }
 
     // Return true if the current piece is in a valid position on the grid (not overlapping any tiles), false if not.
@@ -104,18 +114,52 @@ public class GameBoard : MonoBehaviour
     {
         foreach (Vector2Int tile in piece)
         {
-            // Return false here if the grid position's value is not null, so another tile is there
-            if (board[tile.x, tile.y] != null) return false;
-
             // Return false if the tile is in an invalid position
-            if (tile.x < 0 || tile.x >= width || tile.y < 0 || tile.y >= height) return false;
+            // || tile.y < 0 - tiles can be above the ceiling, but if placed there, player dies.
+            if (tile.x < 0 || tile.x >= width || tile.y >= height) return false;
+
+            // Return false here if the grid position's value is not null, so another tile is there
+            if (board[tile.y, tile.x] != null) return false;
         }
         // No tiles overlapped, return true
         return true;
     }
 
+    // Place a piece on the grid, moving its Tiles into the board array and removing the Piece.
+    public void PlacePiece()
+    {
+        piece.PlaceTilesOnBoard(ref board);
+
+        // Move the displayed tiles into the board parent
+        piece.GetCenter().transform.SetParent(transform, true);
+        piece.GetTop().transform.SetParent(transform, true);
+        piece.GetRight().transform.SetParent(transform, true);
+
+        bool tileFell = true;
+        // Keep looping until none of the piece's tiles fall
+        while (tileFell) {
+            tileFell = false;
+            
+            // Affect all placed tiles with gravity.
+            foreach (Vector2Int tile in piece)
+            {
+                // Only do gravity if this tile is still here and hasn't fallen to gravity yet
+                if (board[tile.y, tile.x] != null)
+                {
+                    // If a tile fell, set tileFell to true and the loop will go again after this
+                    if (TileGravity(tile.x, tile.y))
+                    {
+                        tileFell = true;
+                    }
+                }
+            }
+        }
+
+        Debug.Log("Placed piece at " + piece.GetCol() + ", " + piece.GetRow());
+    }
+
     // Check the board for lines of the given color and clear them from the board, earning points/dealing damage.
-    public void checkLines(ManaColor color)
+    public void CheckForLines(ManaColor color)
     {
         // Check for color lines, and add them to a list of Vector3Ints.
         // Coordinates represent (row, column, length).
@@ -201,19 +245,44 @@ public class GameBoard : MonoBehaviour
         }
 
         // Now finally, shift all tiles down.
-        TileGravity();
+        AllTileGravity();
 
         // If any lines were cleared, some tiles may have fallen to create a new line,
         // so repeat recursively until there are no more row/line clears.
         if (horizontalLines.Count > 0 || verticalLines.Count > 0)
         {
-            checkLines(color);
+            CheckForLines(color);
         }
     }
 
-    // Affect all tiles with gravity, pulling them down to the next available empty
-    // tile below.
-    public void TileGravity()
+    // Check the tile at the given index for gravity,
+    // pulling it down to the next available empty tile.
+    // Returns true if the fell at all.
+    public bool TileGravity(int c, int r)
+    {
+        // For each tile, check down until there is no longer an empty tile
+        for (int rFall = r+1; rFall <= height; rFall++)
+        {
+            // Once a non-empty is found, or reached the bottom move the tile to right above it
+            if (rFall == height || board[rFall, c] != null)
+            {
+                // skip if tile is in same location
+                if (rFall-1 != r) {
+                    board[rFall-1, c] = board[r, c];
+                    // I am subtracting half of width and height again here, because it only works tht way,
+                    // i don't know enough about transforms to know why. bandaid solution moment.
+                    board[rFall-1, c].transform.localPosition = new Vector3(c - 3.5f, -rFall + 1 + 6.5f, 0);
+                    board[r, c] = null;
+                    return true;
+                }
+                break;
+            }
+        }
+        return false;
+    }
+
+    // Affect all tiles with gravity.
+    public void AllTileGravity()
     {
         // Loop over columns (left to right)
         for (int c = 0; c < width; c++)
@@ -222,20 +291,7 @@ public class GameBoard : MonoBehaviour
             // Skip bottom tiles, as those cannot fall
             for (int r = height-2; r >= 0; r--)
             {
-                // For each tile, check down until there is no longer an empty tile
-                for (int rFall = r+1; r < height; r++)
-                {
-                    // Once a non-empty is found, move the tile to right above it
-                    if (board[rFall,c] == null)
-                    {
-                        // (Can be skipped if the tile did not fall at all)
-                        if (rFall-1 > r)
-                        {
-                            board[rFall-1, c] = board[r, c];
-                        }
-                        break;
-                    }
-                }
+                TileGravity(c, r);
             }
         }
     }
@@ -247,5 +303,10 @@ public class GameBoard : MonoBehaviour
         if (board[r,c] == null) return false;
         // if there is a tile, return true if it is the given color.
         return board[r,c].GetManaColor() == color;
+    }
+
+    public List<Color> GetManaColors()
+    {
+        return manaColors;
     }
 }
