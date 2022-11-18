@@ -8,8 +8,6 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private bool playerControlled;
     // Piece prefab, containing an object with Tile gameobject children
     [SerializeField] private Piece piecePrefab;
-    // All ManaColor colors to tint the Tile images
-    [SerializeField] private List<Color> manaColors;
 
     public static readonly int width = 8;
     public static readonly int height = 14;
@@ -303,10 +301,5 @@ public class GameBoard : MonoBehaviour
         if (board[r,c] == null) return false;
         // if there is a tile, return true if it is the given color.
         return board[r,c].GetManaColor() == color;
-    }
-
-    public List<Color> GetManaColors()
-    {
-        return manaColors;
     }
 }
