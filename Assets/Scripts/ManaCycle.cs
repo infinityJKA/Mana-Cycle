@@ -53,6 +53,11 @@ public class ManaCycle : MonoBehaviour
         }
     }
 
+    public List<ManaColor> GetCycle()
+    {
+        return cycle;
+    }
+
     public List<Color> GetManaColors()
     {
         return manaColors;

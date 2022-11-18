@@ -51,64 +51,80 @@ public class GameBoard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       if (playerControlled)
-       {
-        // Z - rotate left
-        if(Input.GetKeyDown(KeyCode.Z)){
-            piece.RotateLeft();
-            if(!ValidPlacement()){
-                piece.RotateRight();
-            }
-        }
-
-        // X - rotate right
-        if(Input.GetKeyDown(KeyCode.X)){
-            piece.RotateRight();
-            if(!ValidPlacement()){
-                piece.RotateLeft();
-            }
-        }
-
-        // Left Arrow - move piece left
-        if(Input.GetKeyDown(KeyCode.LeftArrow)){
-            MovePiece(-1, 0);
-        }
-
-        // Right Arrow - move piece right
-        if(Input.GetKeyDown(KeyCode.RightArrow)){
-            MovePiece(1, 0);
-        }
-
-        // Get the time that has passed since the previous piece fall.
-        // If it is greater than fall time (or fallTime/10 if holding down),
-        // move the piece one down.
-        if(Time.time - previousFallTime > (Input.GetKey(KeyCode.DownArrow) ? fallTime/10 : fallTime)){
-            // Try to move the piece down. If it can't be moved down,
-            if (!MovePiece(0, 1))
+        if (playerControlled)
+        {
+            // Z - rotate left
+            if (Input.GetKeyDown(KeyCode.Z))
             {
-                // Place the piece
-                PlacePiece();
-                // Spawn a new piece
-                SpawnPiece();
-            }         
-            // reset fall time
-            previousFallTime = Time.time;   
+                piece.RotateLeft();
+                if(!ValidPlacement()){
+                    piece.RotateRight();
+                }
+            }
+
+            // X - rotate right
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                piece.RotateRight();
+                if(!ValidPlacement()){
+                    piece.RotateLeft();
+                }
+            }
+
+            // Left Arrow - move piece left
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                MovePiece(-1, 0);
+            }
+
+            // Right Arrow - move piece right
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                MovePiece(1, 0);
+            }
+
+            // Space - Spellcast
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                // get current mana color from cycle, and clear that color
+                ManaColor clearColor = cycle.GetCycle()[cyclePosition];
+                ClearLines(clearColor);
+                // move to next in cycle position
+                cyclePosition += 1;
+                if (cyclePosition >= 7) cyclePosition = 0;
+                PointerReposition();
+            }
+
+            // Get the time that has passed since the previous piece fall.
+            // If it is greater than fall time (or fallTime/10 if holding down),
+            // move the piece one down.
+            if(Time.time - previousFallTime > (Input.GetKey(KeyCode.DownArrow) ? fallTime/10 : fallTime)){
+                // Try to move the piece down. If it can't be moved down,
+                if (!MovePiece(0, 1))
+                {
+                    // Place the piece
+                    PlacePiece();
+                    // Spawn a new piece
+                    SpawnPiece();
+                }         
+                // reset fall time
+                previousFallTime = Time.time;   
+            }
         }
-       }
     }
 
     // Update the pointer's cycle position.
     private void PointerReposition()
     {
         // Get the position of the ManColor the pointer is supposed to be on
-        pointer.transform.position = cycle.transform.GetChild(cyclePosition).transform.position;
+        Transform manaColor = cycle.transform.GetChild(cyclePosition);
+        Debug.Log(manaColor);
+        pointer.transform.SetParent(manaColor, false);
         // Move left or right based on if this is the player or not
         if (playerControlled) {
-            pointer.transform.position += new Vector3(-100, 0, 0);
+            pointer.transform.localPosition = new Vector3(-100, 0, 0);
         } else {
-            if (playerControlled) {
-            pointer.transform.position += new Vector3(100, 0, 0);
-        }
+            pointer.transform.localPosition = new Vector3(100, 0, 0);
         }
 
     }
@@ -189,8 +205,15 @@ public class GameBoard : MonoBehaviour
         Debug.Log("Placed piece at " + piece.GetCol() + ", " + piece.GetRow());
     }
 
+    // Clear the tile at the given index, destroying the Tile gameObject.
+    public void ClearTile(int col, int row)
+    {
+        Destroy(board[row, col].gameObject);
+        board[row, col] = null;
+    }
+
     // Check the board for lines of the given color and clear them from the board, earning points/dealing damage.
-    public void CheckForLines(ManaColor color)
+    public void ClearLines(ManaColor color)
     {
         // Check for color lines, and add them to a list of Vector3Ints.
         // Coordinates represent (row, column, length).
@@ -199,14 +222,15 @@ public class GameBoard : MonoBehaviour
 
         // ---- Horizontal lines ----
         List<Vector3Int> horizontalLines = new List<Vector3Int>(); // (facing right)
+
         // Loop over rows (top to bottom)
         for (int r = 0; r < height; r++)
         {
             // Loop over columns (left to right)
             for (int c = 0; c < width; c++)
             {
-                // Check if indexed tile is correct color
-                if (board[r, c].GetManaColor() == color)
+                // Check if indexed tile exists and is correct color
+                if (board[r, c] != null && board[r, c].GetManaColor() == color)
                 {
                     // If so, increase line length
                     currentLength++;
@@ -261,7 +285,7 @@ public class GameBoard : MonoBehaviour
             // Z is the length of the line
             for (int c = 0; c < line.z; c++)
             {
-                board[line.y, line.x + c] = null;
+                ClearTile(line.y + c, line.x);
             }
         }
 
@@ -271,7 +295,7 @@ public class GameBoard : MonoBehaviour
             // Z is the length of the line
             for (int r = 0; r < line.z; r++)
             {
-                board[line.y + r, line.x] = null;
+                ClearTile(line.y, line.x + r);
             }
         }
 
@@ -282,7 +306,7 @@ public class GameBoard : MonoBehaviour
         // so repeat recursively until there are no more row/line clears.
         if (horizontalLines.Count > 0 || verticalLines.Count > 0)
         {
-            CheckForLines(color);
+            ClearLines(color);
         }
     }
 
@@ -291,6 +315,9 @@ public class GameBoard : MonoBehaviour
     // Returns true if the fell at all.
     public bool TileGravity(int c, int r)
     {
+        // If there isn't a tile here, it can't fall, because it isnt a tile...
+        if (board[r, c] == null) return false;
+
         // For each tile, check down until there is no longer an empty tile
         for (int rFall = r+1; rFall <= height; rFall++)
         {
