@@ -6,6 +6,7 @@ public class ManaCycle : MonoBehaviour
 {
     // Prefab for cycle colors to display
     [SerializeField] private Image cycleColorPrefab;
+
     // All ManaColor colors to tint the Tile images
     [SerializeField] private List<Color> manaColors;
 
@@ -26,6 +27,7 @@ public class ManaCycle : MonoBehaviour
         foreach (Transform child in transform) {
             GameObject.Destroy(child.gameObject);
         }
+        cycleObjects = new List<Image>();
 
         // Initialize a new list (will override old ones)
         cycle = new List<ManaColor>();
@@ -47,7 +49,7 @@ public class ManaCycle : MonoBehaviour
             Image cycleObject = Instantiate(cycleColorPrefab, Vector3.zero, Quaternion.identity);
             cycleObject.color = manaColors[color];
             cycleObjects.Add(cycleObject);
-            cycleObject.transform.SetParent(transform);
+            cycleObject.transform.SetParent(transform, false);
         }
     }
 
