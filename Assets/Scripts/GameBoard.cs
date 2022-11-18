@@ -6,9 +6,21 @@ public class GameBoard : MonoBehaviour
 {
     // True if the player controls this board.
     [SerializeField] private bool playerControlled;
+
     // Piece prefab, containing an object with Tile gameobject children
     [SerializeField] private Piece piecePrefab;
+    // Prefab for cycle pointers
+    [SerializeField] private GameObject pointerPrefab;
+    
+    // Cache the ManaCycle in this scene. (on start)
+    private ManaCycle cycle;
 
+    // Cycle pointer game object that belongs to this board
+    private GameObject pointer;
+    // This board's current position in the cycle. starts at 0
+    private int cyclePosition;
+
+    // Dimensions of the board
     public static readonly int width = 8;
     public static readonly int height = 14;
 
@@ -24,6 +36,11 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        cycle = GameObject.Find("Cycle").GetComponent<ManaCycle>();
+
+        pointer = Instantiate(pointerPrefab, Vector3.zero, Quaternion.identity);
+        PointerReposition();
+
         board = new Tile[height, width];
         if (playerControlled) 
         {
@@ -36,19 +53,19 @@ public class GameBoard : MonoBehaviour
     {
        if (playerControlled)
        {
-        // Z - rotate right
+        // Z - rotate left
         if(Input.GetKeyDown(KeyCode.Z)){
-            piece.RotateRight();
-            if(!ValidPlacement()){
-                piece.RotateLeft();
-            }
-        }
-
-        // X - rotate left
-        if(Input.GetKeyDown(KeyCode.X)){
             piece.RotateLeft();
             if(!ValidPlacement()){
                 piece.RotateRight();
+            }
+        }
+
+        // X - rotate right
+        if(Input.GetKeyDown(KeyCode.X)){
+            piece.RotateRight();
+            if(!ValidPlacement()){
+                piece.RotateLeft();
             }
         }
 
@@ -78,6 +95,22 @@ public class GameBoard : MonoBehaviour
             previousFallTime = Time.time;   
         }
        }
+    }
+
+    // Update the pointer's cycle position.
+    private void PointerReposition()
+    {
+        // Get the position of the ManColor the pointer is supposed to be on
+        pointer.transform.position = cycle.transform.GetChild(cyclePosition).transform.position;
+        // Move left or right based on if this is the player or not
+        if (playerControlled) {
+            pointer.transform.position += new Vector3(-100, 0, 0);
+        } else {
+            if (playerControlled) {
+            pointer.transform.position += new Vector3(100, 0, 0);
+        }
+        }
+
     }
 
     // Create a new piece and spawn it at the top of the board. Replaces the current piece field.
