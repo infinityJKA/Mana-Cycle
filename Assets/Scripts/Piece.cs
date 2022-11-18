@@ -66,7 +66,6 @@ public class Piece : MonoBehaviour
         this.row += row;
         // Set local position, Addhalf width and height cause it isnt working without that idk why.
         transform.localPosition = new Vector3(this.col - 4, -this.row + 7, 0);
-        Debug.Log(this.col + ", " + this.row);
     }
     public void MoveTo(int col, int row)
     {
