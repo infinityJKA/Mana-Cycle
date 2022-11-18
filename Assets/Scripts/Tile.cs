@@ -29,10 +29,9 @@ public class Tile : MonoBehaviour
     {
         // Randomly choose color from color enum length
         color = (ManaColor) Random.Range(0,5);
-        // go up three parents (rotationCenter -> piece -> gameboard),
-        GetComponent<Image>()
-        .color = transform.parent.transform.parent.transform.parent
-        // and access the mana colors list on the gameboard to get the Color to tint this object
-            .GetComponent<GameBoard>().GetManaColors()[((int)color)];
+        
+        // Get image and set color from the list in this scene's cycle
+        GetComponent<Image>().color =
+        GameObject.Find("Cycle").GetComponent<ManaCycle>().GetManaColors()[((int)color)];
     }
 }
