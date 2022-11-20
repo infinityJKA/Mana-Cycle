@@ -149,7 +149,7 @@ public class GameBoard : MonoBehaviour
         piece.MoveTo(3,1);
     }
 
-    // Move the current piece by this amount. 
+    // Move the current piece by this amount.
     // Return true if the piece is not blocked from moving to the new location.
     public bool MovePiece(int col, int row)
     {
