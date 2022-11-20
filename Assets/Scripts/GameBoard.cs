@@ -36,6 +36,7 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         cycle = GameObject.Find("Cycle").GetComponent<ManaCycle>();
 
         pointer = Instantiate(pointerPrefab, Vector3.zero, Quaternion.identity);
@@ -45,7 +46,7 @@ public class GameBoard : MonoBehaviour
         if (playerControlled) 
         {
             SpawnPiece();
-        }   
+        } 
     }
 
     // Update is called once per frame
