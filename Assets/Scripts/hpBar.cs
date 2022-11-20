@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class hpBar : MonoBehaviour
+public class HpBar : MonoBehaviour
 {
-    [SerializeField] private GameObject hpDisp;
+    [SerializeField] private GameObject HpDisp;
     [SerializeField] private GameObject IncomingDmgDisp;
     private Image hpBarImage;
     private Image incomingDmgBarImage;
@@ -25,11 +25,11 @@ public class hpBar : MonoBehaviour
         incomingDmg = 0;
 
         // get image components to edit attributes 
-        hpBarImage = hpDisp.GetComponent<Image>();
+        hpBarImage = HpDisp.GetComponent<Image>();
         incomingDmgBarImage = IncomingDmgDisp.GetComponent<Image>();
 
         // get rect transform to change positions later
-        hpBarRectTransform = hpDisp.GetComponent<RectTransform>();
+        hpBarRectTransform = HpDisp.GetComponent<RectTransform>();
         incomingDmgBarRectTransform = IncomingDmgDisp.GetComponent<RectTransform>();
 
     }
