@@ -10,6 +10,9 @@ public class ManaCycle : MonoBehaviour
     // All ManaColor colors to tint the Tile images
     [SerializeField] private List<Color> manaColors;
 
+    // All GameBoards in the scene that use this cycle
+    [SerializeField] private List<GameBoard> boards;
+
     // List of all colors in the cycle
     private List<ManaColor> cycle;
     // List of all cycleColor objects that represent the colors
@@ -18,7 +21,14 @@ public class ManaCycle : MonoBehaviour
     private int cycleLength = 7;
     void Start()
     {
+        // Generate cycle that boards will use
         GenerateCycle();
+
+        // Initialize game boards
+        foreach (GameBoard board in boards)
+        {
+            board.InitializeCycle(this);
+        }
     }
 
     public void GenerateCycle()

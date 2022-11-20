@@ -36,8 +36,13 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+    }
 
-        cycle = GameObject.Find("Cycle").GetComponent<ManaCycle>();
+    // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
+    public void InitializeCycle(ManaCycle cycle)
+    {
+        this.cycle = cycle;
 
         pointer = Instantiate(pointerPrefab, Vector3.zero, Quaternion.identity);
         PointerReposition();
