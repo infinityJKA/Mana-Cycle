@@ -11,7 +11,10 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private Piece piecePrefab;
     // Prefab for cycle pointers
     [SerializeField] private GameObject pointerPrefab;
-    
+    // Input prefab containing a script component
+    [SerializeField] private GameObject inputGetterPrefab;
+    private InputScript inputScript; 
+
     // Cache the ManaCycle in this scene. (on start)
     private ManaCycle cycle;
 
@@ -36,7 +39,8 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        // script containing keycodes for controls
+        inputScript = inputGetterPrefab.GetComponent<InputScript>();
     }
 
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
@@ -59,8 +63,8 @@ public class GameBoard : MonoBehaviour
     {
         if (playerControlled)
         {
-            // Z - rotate left
-            if (Input.GetKeyDown(KeyCode.Z))
+            // rotate left
+            if (Input.GetKeyDown(inputScript.RotateLeft))
             {
                 piece.RotateLeft();
                 if(!ValidPlacement()){
@@ -68,8 +72,8 @@ public class GameBoard : MonoBehaviour
                 }
             }
 
-            // X - rotate right
-            if (Input.GetKeyDown(KeyCode.X))
+            // rotate right
+            if (Input.GetKeyDown(inputScript.RotateRight))
             {
                 piece.RotateRight();
                 if(!ValidPlacement()){
@@ -77,20 +81,20 @@ public class GameBoard : MonoBehaviour
                 }
             }
 
-            // Left Arrow - move piece left
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            // move piece left
+            if (Input.GetKeyDown(inputScript.Left))
             {
                 MovePiece(-1, 0);
             }
 
-            // Right Arrow - move piece right
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            // move piece right
+            if (Input.GetKeyDown(inputScript.Right))
             {
                 MovePiece(1, 0);
             }
 
-            // Space - Spellcast
-            if (Input.GetKeyDown(KeyCode.Space))
+            // Spellcast
+            if (Input.GetKeyDown(inputScript.Cast))
             {
                 // get current mana color from cycle, and clear that color
                 ManaColor clearColor = cycle.GetCycle()[cyclePosition];
@@ -104,7 +108,7 @@ public class GameBoard : MonoBehaviour
             // Get the time that has passed since the previous piece fall.
             // If it is greater than fall time (or fallTime/10 if holding down),
             // move the piece one down.
-            if(Time.time - previousFallTime > (Input.GetKey(KeyCode.DownArrow) ? fallTime/10 : fallTime)){
+            if(Time.time - previousFallTime > (Input.GetKey(inputScript.Down) ? fallTime/10 : fallTime)){
                 // Try to move the piece down. If it can't be moved down,
                 if (!MovePiece(0, 1))
                 {
