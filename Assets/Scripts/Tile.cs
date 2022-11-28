@@ -27,6 +27,7 @@ public class Tile : MonoBehaviour
 
     public void Randomize()
     {
+        bool OkayRNG = false;
         // Randomly choose color from color enum length
         color = (ManaColor) Random.Range(0,5);
         
