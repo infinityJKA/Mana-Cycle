@@ -12,10 +12,10 @@ public class HpBar : MonoBehaviour
     private RectTransform hpBarRectTransform;
     private RectTransform incomingDmgBarRectTransform;
     // using floats instead of ints to get percentage 
-    public float currentHp;
+    private float currentHp;
     // just guessing max hp based on dmg formula, also might be different per character later on
     public float maxHp = 1000f;
-    public float incomingDmg;
+    private float incomingDmg;
     private float hpBarTopY;
 
     // Start is called before the first frame update

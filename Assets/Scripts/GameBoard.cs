@@ -12,7 +12,7 @@ public class GameBoard : MonoBehaviour
     // Prefab for cycle pointers
     [SerializeField] private GameObject pointerPrefab;
     // Input prefab containing a script component
-    [SerializeField] private GameObject inputGetterPrefab;
+    [SerializeField] private GameObject inputObject;
     private InputScript inputScript; 
 
     // Cache the ManaCycle in this scene. (on start)
@@ -40,7 +40,7 @@ public class GameBoard : MonoBehaviour
     void Start()
     {
         // script containing keycodes for controls
-        inputScript = inputGetterPrefab.GetComponent<InputScript>();
+        inputScript = inputObject.GetComponent<InputScript>();
     }
 
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
