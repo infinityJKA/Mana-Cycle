@@ -31,6 +31,19 @@ public class ManaCycle : MonoBehaviour
         }
     }
 
+    private int checkCountInArray(int[] ar, int c){
+        if(ar.Length < 1){
+            return 0;
+        }
+        int no = 0;
+        for(int i = 0; i < ar.Length-1; i++){
+            if(ar[i] == c){
+                no++;
+            }
+        }
+        return no;
+    }
+
     public void GenerateCycle()
     {
         // Destroy all children (violently, and without remorse)
@@ -43,12 +56,16 @@ public class ManaCycle : MonoBehaviour
         cycle = new List<ManaColor>();
         // Start color at -1, or no color, so color first can be any color
         int color = -1;
+        int[] colors = new int[cycleLength];
         for (int i=0; i<cycleLength; i++) {
             int newColor = color;
             // Set color to random until it is different than the last color
             while (newColor == color)
             {
                 newColor = Random.Range(0,5);
+                if (checkCountInArray(colors,newColor) >= 2){
+                    newColor = color;
+                }
             }
 
             Debug.Log(color);
