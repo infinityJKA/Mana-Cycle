@@ -36,6 +36,9 @@ public class GameBoard : MonoBehaviour
     // Piece that is currently being dropped.
     private Piece piece;
 
+    // Amount of times the player has cleared the cycle.
+    private int currentCycle = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -55,7 +58,7 @@ public class GameBoard : MonoBehaviour
         if (playerControlled) 
         {
             SpawnPiece();
-        } 
+        }
     }
 
     // Update is called once per frame
@@ -98,11 +101,7 @@ public class GameBoard : MonoBehaviour
             {
                 // get current mana color from cycle, and clear that color
                 ManaColor clearColor = cycle.GetCycle()[cyclePosition];
-                ClearLines(clearColor);
-                // move to next in cycle position
-                cyclePosition += 1;
-                if (cyclePosition >= 7) cyclePosition = 0;
-                PointerReposition();
+                ClearColor(clearColor, 1, 1);
             }
 
             // Get the time that has passed since the previous piece fall.
@@ -128,7 +127,6 @@ public class GameBoard : MonoBehaviour
     {
         // Get the position of the ManColor the pointer is supposed to be on
         Transform manaColor = cycle.transform.GetChild(cyclePosition);
-        Debug.Log(manaColor);
         pointer.transform.SetParent(manaColor, false);
         // Move left or right based on if this is the player or not
         if (playerControlled) {
@@ -211,8 +209,6 @@ public class GameBoard : MonoBehaviour
                 }
             }
         }
-
-        Debug.Log("Placed piece at " + piece.GetCol() + ", " + piece.GetRow());
     }
 
     // Clear the tile at the given index, destroying the Tile gameObject.
@@ -222,16 +218,30 @@ public class GameBoard : MonoBehaviour
         board[row, col] = null;
     }
 
-    // Check the board for lines of the given color and clear them from the board, earning points/dealing damage.
-    public void ClearLines(ManaColor color)
+    public struct Blob
     {
-        // Check for color lines, and add them to a list of Vector3Ints.
-        // Coordinates represent (row, column, length).
-        // Length of the current line is stored here.
-        int currentLength = 0;
+        public ManaColor color;
+        public List<Vector2Int> tiles;
+    }
 
-        // ---- Horizontal lines ----
-        List<Vector3Int> horizontalLines = new List<Vector3Int>(); // (facing right)
+    // Deal damage to the other player(s)
+    public void DealDamage(float damage)
+    {
+        // TODO: implement damage dealing
+    }
+
+    //
+    private static bool[,] tilesInBlobs;
+
+    // Check the board for blobs of 4 or more of the given color, and clear them from the board, earning points/dealing damage.
+    public void ClearColor(ManaColor color, int chain, int cascade)
+    {
+        // Save matrix of all tiles currently in one of the blobs
+        tilesInBlobs = new bool[height, width];
+
+        // List of all blobs
+        List<Blob> blobs = new List<Blob>();
+        int minBlobSize = 3;
 
         // Loop over rows (top to bottom)
         for (int r = 0; r < height; r++)
@@ -239,85 +249,92 @@ public class GameBoard : MonoBehaviour
             // Loop over columns (left to right)
             for (int c = 0; c < width; c++)
             {
-                // Check if indexed tile exists and is correct color
-                if (board[r, c] != null && board[r, c].GetManaColor() == color)
+                // Check if indexed tile exists and is correct color, and is not in a blob
+                if (board[r, c] != null && board[r, c].GetManaColor() == color && !tilesInBlobs[r, c])
                 {
-                    // If so, increase line length
-                    currentLength++;
-                } else {
-                    // if not, line has ended
-                    _AddLine(r, c-currentLength, ref horizontalLines);
+                    Blob blob = CheckBlob(c, r, color);
+                    if (blob.tiles.Count >= minBlobSize) blobs.Add(blob);
                 }
             }
-            // End current line tracking here at the end of the board if one is still going
-            _AddLine(r, width-currentLength, ref horizontalLines);
         }
 
-        // |||| Vertical lines ||||
-        List<Vector3Int> verticalLines = new List<Vector3Int>(); // (facing down)
-        // Loop over columns (left to right)
-        for (int c = 0; c < width; c++)
-        {
-            // Loop over rows (top to bottom)
-            for (int r = 0; r < height; r++)
-            {
-                // Check if indexed tile is correct color
-                if (CheckColor(r, c, color))
-                {
-                    // If so, increase line length
-                    currentLength++;
-                } else {
-                    // if not, line has ended
-                    _AddLine(r-currentLength, c, ref verticalLines);
+        int manaCleared = TotalMana(blobs);
+        if (manaCleared > 0) {
+            // Deal damage for the amount of mana cleared.
+            float damage = (manaCleared * 10) * chain * cascade * (1 + 0.3f*currentCycle);
+            DealDamage(damage);
+
+            // Clear all blob-contained tiles from the board.
+            foreach (Blob blob in blobs) {
+                foreach (Vector2Int pos in blob.tiles) {
+                    Destroy(board[pos.y, pos.x]);
+                    board[pos.y, pos.x] = null;
                 }
             }
-            // End current line tracking here at the end of the board if one is still going
-            _AddLine(height-currentLength, c, ref verticalLines);
-        }
 
-        // (Local to checkLines) Checks if line is 4 or greater, if so, add the line. 
-        // Resets currentLength.
-        void _AddLine(int r, int c, ref List<Vector3Int> linesList)
+            // Do gravity everywhere
+            AllTileGravity();
+
+            // Clear cascaded blobs (add one to cascade)
+            ClearColor(color, chain, cascade+1);
+        }
+        
+        // move to next in cycle position
+        cyclePosition += 1;
+        if (cyclePosition >= ManaCycle.cycleLength) cyclePosition = 0;
+        PointerReposition();
+    }
+
+    // Returns the total amount of mana in this set of blobs.
+    public int TotalMana(List<Blob> blobs)
+    {
+        int mana = 0;
+        foreach (Blob blob in blobs)
         {
-            // Check if line is 4 or greater, if so, add the line
-            if (currentLength >= 4)
-            {
-                linesList.Add(new Vector3Int(r, c, currentLength));
-            }
-            currentLength = 0;
+            mana += blob.tiles.Count;
         }
+        return mana;
+    }
 
-        // Okay now that we finally have all the lines' positions and lengths, clear them all from the board.
-        // TODO: implement scoring based on the length of the lines.
-        // ---- horizontal lines ----
-        foreach (Vector3Int line in horizontalLines)
-        {
-            // Z is the length of the line
-            for (int c = 0; c < line.z; c++)
-            {
-                ClearTile(line.y + c, line.x);
-            }
-        }
+    public Blob CheckBlob(int c, int r, ManaColor color)
+    {
+        Blob blob = new Blob();
+        blob.color = color;
+        blob.tiles = new List<Vector2Int>();
 
-        // ---- vertical lines ----
-        foreach (Vector3Int line in verticalLines)
-        {
-            // Z is the length of the line
-            for (int r = 0; r < line.z; r++)
-            {
-                ClearTile(line.y, line.x + r);
-            }
-        }
+        ExpandBlob(ref blob, c, r, color, 0);
 
-        // Now finally, shift all tiles down.
-        AllTileGravity();
+        return blob;
+    }
 
-        // If any lines were cleared, some tiles may have fallen to create a new line,
-        // so repeat recursively until there are no more row/line clears.
-        if (horizontalLines.Count > 0 || verticalLines.Count > 0)
-        {
-            ClearLines(color);
-        }
+    public void ExpandBlob(ref Blob blob, int c, int r, ManaColor color, int recurseAmount)
+    {
+        if (recurseAmount > 100) {
+            Debug.LogError("MAX RECURSION REACHED!");
+        };
+
+        // Don't add to blob if the tile is in an invalid position
+        if (c < 0 || c >= width || r < 0 || r >= height) return;
+
+        // Don't add to blob if already in this blob or another blob
+        if (tilesInBlobs[r, c]) return;
+
+        // Don't add if there is not a tile here
+        if (board[r, c] == null) return;
+
+        // Don't add if the tile is the incorrect color
+        if (board[r, c].GetManaColor() != color) return;
+
+        // Add the tile to the blob and fill in its spot on the tilesInBlobs matrix
+        Debug.Log(c + ", " + r + ", " + blob.tiles.Count + ", " + recurseAmount);
+        blob.tiles.Add(new Vector2Int(c, r));
+        tilesInBlobs[r, c] = true;
+
+        // Expand out the current blob on all sides, checking for the same colored tile to add to this blob
+        ExpandBlob(ref blob, c-1, r, color, recurseAmount+1);
+        ExpandBlob(ref blob, c+1, r, color, recurseAmount+1);
+        ExpandBlob(ref blob, c, r-1, color, recurseAmount+1);
+        ExpandBlob(ref blob, c, r+1, color, recurseAmount+1);
     }
 
     // Check the tile at the given index for gravity,
