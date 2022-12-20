@@ -101,7 +101,7 @@ public class GameBoard : MonoBehaviour
             {
                 // get current mana color from cycle, and clear that color
                 ManaColor clearColor = cycle.GetCycle()[cyclePosition];
-                ClearColor(clearColor, 1, 1);
+                Spellcast(clearColor, 1, 1);
             }
 
             // Get the time that has passed since the previous piece fall.
@@ -190,6 +190,8 @@ public class GameBoard : MonoBehaviour
         piece.GetTop().transform.SetParent(transform, true);
         piece.GetRight().transform.SetParent(transform, true);
 
+        Destroy(piece);
+
         bool tileFell = true;
         // Keep looping until none of the piece's tiles fall
         while (tileFell) {
@@ -234,7 +236,7 @@ public class GameBoard : MonoBehaviour
     private static bool[,] tilesInBlobs;
 
     // Check the board for blobs of 4 or more of the given color, and clear them from the board, earning points/dealing damage.
-    public void ClearColor(ManaColor color, int chain, int cascade)
+    public void Spellcast(ManaColor color, int chain, int cascade)
     {
         // Save matrix of all tiles currently in one of the blobs
         tilesInBlobs = new bool[height, width];
@@ -258,6 +260,9 @@ public class GameBoard : MonoBehaviour
             }
         }
 
+        // If there were no blobs, do not deal damage, and do not move forward in cycle
+        if (blobs.Count == 0) return;
+
         int manaCleared = TotalMana(blobs);
         if (manaCleared > 0) {
             // Deal damage for the amount of mana cleared.
@@ -267,8 +272,7 @@ public class GameBoard : MonoBehaviour
             // Clear all blob-contained tiles from the board.
             foreach (Blob blob in blobs) {
                 foreach (Vector2Int pos in blob.tiles) {
-                    Destroy(board[pos.y, pos.x]);
-                    board[pos.y, pos.x] = null;
+                    ClearTile(pos.x, pos.y);
                 }
             }
 
@@ -276,7 +280,7 @@ public class GameBoard : MonoBehaviour
             AllTileGravity();
 
             // Clear cascaded blobs (add one to cascade)
-            ClearColor(color, chain, cascade+1);
+            Spellcast(color, chain, cascade+1);
         }
         
         // move to next in cycle position
