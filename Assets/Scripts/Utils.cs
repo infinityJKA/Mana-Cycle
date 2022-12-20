@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 class Utils
 {
-
     public static void Shuffle<T>(List<T> list)  
     {  
         int n = list.Count;  
