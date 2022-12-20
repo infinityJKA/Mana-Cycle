@@ -8,10 +8,12 @@ public class Tile : MonoBehaviour
     // Color of this title. (Public read but no public write)
     private ManaColor color;
 
+    private ManaCycle cycle;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        cycle = GameObject.Find("Cycle").GetComponent<ManaCycle>();
     }
 
     // Update is called once per frame
@@ -25,14 +27,12 @@ public class Tile : MonoBehaviour
         return color;
     }
 
-    public void Randomize()
+    public void Randomize(GameBoard board)
     {
-        bool OkayRNG = false;
         // Randomly choose color from color enum length
-        color = (ManaColor) Random.Range(0,5);
-        
+        color = Random.value < 0.2f ? cycle.GetColor(board.cyclePosition) : (ManaColor) Random.Range(0,5);
+
         // Get image and set color from the list in this scene's cycle
-        GetComponent<Image>().color =
-        GameObject.Find("Cycle").GetComponent<ManaCycle>().GetManaColors()[((int)color)];
+        GetComponent<Image>().color = cycle.GetManaColors()[((int)color)];
     }
 }

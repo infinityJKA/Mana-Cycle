@@ -13,7 +13,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private GameObject pointerPrefab;
     // Input prefab containing a script component
     [SerializeField] private GameObject inputObject;
-    private InputScript inputScript; 
+    private InputScript inputScript;
 
     // Cache the ManaCycle in this scene. (on start)
     private ManaCycle cycle;
@@ -21,7 +21,7 @@ public class GameBoard : MonoBehaviour
     // Cycle pointer game object that belongs to this board
     private GameObject pointer;
     // This board's current position in the cycle. starts at 0
-    private int cyclePosition;
+    public int cyclePosition;
 
     // Dimensions of the board
     public static readonly int width = 8;
@@ -145,7 +145,7 @@ public class GameBoard : MonoBehaviour
         piece = Instantiate(piecePrefab, Vector3.zero, Quaternion.identity, transform);
 
         // Randomize the piece's tiles' colors
-        piece.Randomize();
+        piece.Randomize(this);
 
         // Move the tile to the spawn location
         piece.MoveTo(3,1);
