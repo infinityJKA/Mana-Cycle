@@ -15,6 +15,9 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private GameObject inputObject;
     private InputScript inputScript; 
 
+    [SerializeField] private GameBoard enemyBoard;
+    [SerializeField] private HpBar hpBar;
+
     // Cache the ManaCycle in this scene. (on start)
     private ManaCycle cycle;
 
