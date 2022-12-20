@@ -52,11 +52,11 @@ public class Piece : MonoBehaviour
     }
 
     // Randomize this piece's tiles' colors.
-    public void Randomize()
+    public void Randomize(GameBoard board)
     {
-        center.Randomize();
-        top.Randomize();
-        right.Randomize();
+        center.Randomize(board);
+        top.Randomize(board);
+        right.Randomize(board);
     }
 
     // Translate this piece by the given X and Y.

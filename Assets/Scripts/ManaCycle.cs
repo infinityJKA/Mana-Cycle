@@ -123,6 +123,11 @@ public class ManaCycle : MonoBehaviour
         return cycle;
     }
 
+    public ManaColor GetColor(int index)
+    {
+        return cycle[index];
+    }
+
     public List<Color> GetManaColors()
     {
         return manaColors;
