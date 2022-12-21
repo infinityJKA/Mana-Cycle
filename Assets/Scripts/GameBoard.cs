@@ -15,7 +15,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private GameObject inputObject;
     private InputScript inputScript; 
 
-    [SerializeField] private GameBoard enemyBoard;
+    [SerializeField] public GameBoard enemyBoard;
     [SerializeField] private HpBar hpBar;
 
     // Cache the ManaCycle in this scene. (on start)
@@ -118,6 +118,8 @@ public class GameBoard : MonoBehaviour
                     PlacePiece();
                     // Spawn a new piece
                     SpawnPiece();
+                    // Move self damage cycle
+                    DamageCycle();
                 }         
                 // reset fall time
                 previousFallTime = Time.time;   
@@ -232,8 +234,38 @@ public class GameBoard : MonoBehaviour
     // Deal damage to the other player(s)
     public void DealDamage(float damage)
     {
-        // TODO: implement damage dealing
+        enemyBoard.hpBar.incoming1.dmg += (int) damage;
+        enemyBoard.hpBar.incoming1.GetComponent<TMPro.TextMeshProUGUI>().text = enemyBoard.hpBar.incoming1.dmg.ToString();
     }
+
+    // Moves incoming damage and take damage if at end
+    public void DamageCycle()
+    {
+        // Deal damage
+        hpBar.HpDisp.health -= hpBar.incoming6.dmg;
+        hpBar.HpDisp.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.HpDisp.health.ToString();
+
+        // Move forwards in damage cycle
+        hpBar.incoming6.dmg = hpBar.incoming5.dmg;
+        hpBar.incoming6.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming6.dmg.ToString();
+
+        hpBar.incoming5.dmg = hpBar.incoming4.dmg;
+        hpBar.incoming5.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming5.dmg.ToString();
+
+        hpBar.incoming4.dmg = hpBar.incoming3.dmg;
+        hpBar.incoming4.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming4.dmg.ToString();
+
+        hpBar.incoming3.dmg = hpBar.incoming2.dmg;
+        hpBar.incoming3.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming3.dmg.ToString();
+
+        hpBar.incoming2.dmg = hpBar.incoming1.dmg;
+        hpBar.incoming2.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming2.dmg.ToString();
+
+        hpBar.incoming1.dmg = 0;
+        hpBar.incoming1.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming1.dmg.ToString();
+
+    }
+
 
     //
     private static bool[,] tilesInBlobs;
