@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class HpBar : MonoBehaviour
 {
-    [SerializeField] private GameObject HpDisp;
+    [SerializeField] public HpNum HpDisp;
     [SerializeField] private GameObject IncomingDmgDisp;
     private Image hpBarImage;
     private Image incomingDmgBarImage;
@@ -17,6 +17,15 @@ public class HpBar : MonoBehaviour
     public float maxHp = 1000f;
     private float incomingDmg;
     private float hpBarTopY;
+
+    public HpNum HpText;
+
+    public Incoming incoming1;
+    public Incoming incoming2;
+    public Incoming incoming3;
+    public Incoming incoming4;
+    public Incoming incoming5;
+    public Incoming incoming6;
 
     // Start is called before the first frame update
     void Start()
