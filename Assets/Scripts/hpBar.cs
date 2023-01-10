@@ -48,11 +48,11 @@ public class HpBar : MonoBehaviour
     {
 
         // percentage of hpbar and dmgbar that should be filled
-        hpBarImage.fillAmount = currentHp / maxHp;
-        incomingDmgBarImage.fillAmount = incomingDmg / maxHp;
+        // hpBarImage.fillAmount = currentHp / maxHp;
+        // incomingDmgBarImage.fillAmount = incomingDmg / maxHp;
         
         // placement of dmg indicator, top of current hp bar
-        hpBarTopY = hpBarImage.fillAmount * hpBarRectTransform.localScale.y - hpBarRectTransform.localScale.y + 0.5f; // idk why you need the 0.5 in there i just adjusted it until it worked (lol)
+        // hpBarTopY = hpBarImage.fillAmount * hpBarRectTransform.localScale.y - hpBarRectTransform.localScale.y + 0.5f; // idk why you need the 0.5 in there i just adjusted it until it worked (lol)
         // change anchors of bar to update position
         incomingDmgBarRectTransform.anchorMin = new Vector2(incomingDmgBarRectTransform.anchorMin.x, hpBarTopY);
         incomingDmgBarRectTransform.anchorMax = new Vector2(incomingDmgBarRectTransform.anchorMax.x, hpBarTopY);

@@ -67,7 +67,7 @@ public class GameBoard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerControlled)
+        if (playerControlled && (!PauseMenuScript.paused))
         {
             // rotate left
             if (Input.GetKeyDown(inputScript.RotateLeft))
@@ -107,6 +107,7 @@ public class GameBoard : MonoBehaviour
                 Spellcast(clearColor, 1, 1);
             }
 
+
             // Get the time that has passed since the previous piece fall.
             // If it is greater than fall time (or fallTime/10 if holding down),
             // move the piece one down.
@@ -125,7 +126,13 @@ public class GameBoard : MonoBehaviour
                 previousFallTime = Time.time;   
             }
         }
+
+
+
     }
+
+
+
 
     // Update the pointer's cycle position.
     private void PointerReposition()

@@ -10,5 +10,6 @@ public class InputScript : MonoBehaviour
     public KeyCode RotateLeft;
     public KeyCode RotateRight;
     public KeyCode Cast;
+    public KeyCode Pause;
 
 }
