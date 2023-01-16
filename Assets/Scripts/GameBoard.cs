@@ -6,6 +6,8 @@ public class GameBoard : MonoBehaviour
 {
     // True if the player controls this board.
     [SerializeField] private bool playerControlled;
+    // 0 for left side, 1 for right side
+    [SerializeField] private int playerSide;
 
     // Piece prefab, containing an object with Tile gameobject children
     [SerializeField] private Piece piecePrefab;
@@ -141,7 +143,7 @@ public class GameBoard : MonoBehaviour
         Transform manaColor = cycle.transform.GetChild(cyclePosition);
         pointer.transform.SetParent(manaColor, false);
         // Move left or right based on if this is the player or not
-        if (playerControlled) {
+        if (playerSide == 0) {
             pointer.transform.localPosition = new Vector3(-100, 0, 0);
         } else {
             pointer.transform.localPosition = new Vector3(100, 0, 0);
