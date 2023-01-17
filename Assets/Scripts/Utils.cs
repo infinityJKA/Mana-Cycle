@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
-class Utils
+public class Utils : MonoBehaviour
 {
     public static void Shuffle<T>(List<T> list)  
     {  
@@ -13,5 +14,10 @@ class Utils
             list[k] = list[n];  
             list[n] = value;  
         }  
+    }
+
+    public void setScene(string scene)
+    {
+        SceneManager.LoadScene(scene);
     }
 }

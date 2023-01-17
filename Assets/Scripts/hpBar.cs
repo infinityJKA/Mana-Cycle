@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class HpBar : MonoBehaviour
 {
-    [SerializeField] private GameObject HpDisp;
+    [SerializeField] public HpNum HpDisp;
     [SerializeField] private GameObject IncomingDmgDisp;
     private Image hpBarImage;
     private Image incomingDmgBarImage;
@@ -17,6 +17,15 @@ public class HpBar : MonoBehaviour
     public float maxHp = 1000f;
     private float incomingDmg;
     private float hpBarTopY;
+
+    public HpNum HpText;
+
+    public Incoming incoming1;
+    public Incoming incoming2;
+    public Incoming incoming3;
+    public Incoming incoming4;
+    public Incoming incoming5;
+    public Incoming incoming6;
 
     // Start is called before the first frame update
     void Start()
@@ -39,11 +48,11 @@ public class HpBar : MonoBehaviour
     {
 
         // percentage of hpbar and dmgbar that should be filled
-        hpBarImage.fillAmount = currentHp / maxHp;
-        incomingDmgBarImage.fillAmount = incomingDmg / maxHp;
+        // hpBarImage.fillAmount = currentHp / maxHp;
+        // incomingDmgBarImage.fillAmount = incomingDmg / maxHp;
         
         // placement of dmg indicator, top of current hp bar
-        hpBarTopY = hpBarImage.fillAmount * hpBarRectTransform.localScale.y - hpBarRectTransform.localScale.y + 0.5f; // idk why you need the 0.5 in there i just adjusted it until it worked (lol)
+        // hpBarTopY = hpBarImage.fillAmount * hpBarRectTransform.localScale.y - hpBarRectTransform.localScale.y + 0.5f; // idk why you need the 0.5 in there i just adjusted it until it worked (lol)
         // change anchors of bar to update position
         incomingDmgBarRectTransform.anchorMin = new Vector2(incomingDmgBarRectTransform.anchorMin.x, hpBarTopY);
         incomingDmgBarRectTransform.anchorMax = new Vector2(incomingDmgBarRectTransform.anchorMax.x, hpBarTopY);
