@@ -54,30 +54,6 @@ public class ManaCycle : MonoBehaviour
 
         // Initialize a new list (will override old ones)
         cycle = new List<ManaColor>();
-        // Start color at -1, or no color, so color first can be any color
-        // int color = -1;
-        // int[] colors = new int[cycleLength];
-        // for (int i=0; i<cycleLength; i++) {
-        //     int newColor = color;
-        //     // Set color to random until it is different than the last color
-        //     while (newColor == color)
-        //     {
-        //         newColor = Random.Range(0,5);
-        //         if (checkCountInArray(colors,newColor) >= 2){
-        //             newColor = color;
-        //         }
-        //     }
-
-        //     Debug.Log(color);
-        //     color = newColor;
-        //     cycle.Add((ManaColor) color);
-
-        //     // Create cycle color object and add to this object as a child
-        //     Image cycleObject = Instantiate(cycleColorPrefab, Vector3.zero, Quaternion.identity);
-        //     cycleObject.color = manaColors[color];
-        //     cycleObjects.Add(cycleObject);
-        //     cycleObject.transform.SetParent(transform, false);
-        // }
 
         // Add one of each color to the list
         for (int i=0; i<5; i++)
@@ -102,6 +78,7 @@ public class ManaCycle : MonoBehaviour
             ManaColor colorAbove = (i == 0) ? cycle[cycle.Count-1] : cycle[i-1];
             ManaColor colorBelow = cycle[i+1];
 
+            // Keep picking a new color until it is different than the one above & below
             while (cycle[i] == colorAbove || cycle[i] == colorBelow)
             {
                 cycle[i] = (ManaColor)Random.Range(0,5);
