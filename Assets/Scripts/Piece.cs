@@ -51,7 +51,7 @@ public class Piece : MonoBehaviour
         }
     }
 
-    // Randomize this piece's tiles' colors.
+    // Randomize the color of the tiles of this piece.
     public void Randomize(GameBoard board)
     {
         center.Randomize(board);
@@ -64,18 +64,22 @@ public class Piece : MonoBehaviour
     {
         this.col += col;
         this.row += row;
-        // Set local position, Addhalf width and height cause it isnt working without that idk why.
-        transform.localPosition = new Vector3(this.col - 4, -this.row + 7, 0);
+        // Update local position, Add half width and height cause it isnt working without that idk why.
+        UpdatePosition();
+        
     }
     public void MoveTo(int col, int row)
     {
         this.col = col;
         this.row = row;
-        // Add half width and height
+        UpdatePosition();
+    }
+
+    public void UpdatePosition()
+    {
         transform.localPosition = new Vector3(this.col - 4, -this.row + 7, 0);
     }
 
-    // quirky enum addition and subtraction (ordinal values)
     // Rotate this piece to the right about the center.
     public void RotateRight()
     {
@@ -117,7 +121,7 @@ public class Piece : MonoBehaviour
     }
 
     // Iteration of all coordinates this piece currently occupies. Returns Vector2Ints of (col, row).
-    public System.Collections.Generic.IEnumerator<Vector2Int> GetEnumerator()
+    public IEnumerator<Vector2Int> GetEnumerator()
     {
         // Center
         yield return new Vector2Int(col, row);
@@ -168,6 +172,7 @@ public class Piece : MonoBehaviour
         }
     }
 
+    // Accessors
     public int GetRow()
     {
         return row;

@@ -5,10 +5,8 @@ using UnityEngine.UI;
 
 public class Tile : MonoBehaviour
 {
-    // Color of this title. (Public read but no public write)
-    private ManaColor color;
-
-    private ManaCycle cycle;
+    public ManaColor color;
+    public ManaCycle cycle;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +31,6 @@ public class Tile : MonoBehaviour
         color = Random.value < 0.2f ? cycle.GetColor(board.cyclePosition) : (ManaColor) Random.Range(0,5);
 
         // Get image and set color from the list in this scene's cycle
-        GetComponent<Image>().color = cycle.GetManaColors()[((int)color)];
+        GetComponent<Image>().color = cycle.GetManaColors()[ ((int)color) ];
     }
 }
