@@ -6,6 +6,8 @@ public class GameBoard : MonoBehaviour
 {
     // True if the player controls this board.
     [SerializeField] private bool playerControlled;
+    // 0 for left side, 1 for right side
+    [SerializeField] private int playerSide;
 
     // Piece prefab, containing an object with Tile gameobject children
     [SerializeField] private Piece piecePrefab;
@@ -14,6 +16,9 @@ public class GameBoard : MonoBehaviour
     // Input prefab containing a script component
     [SerializeField] private GameObject inputObject;
     private InputScript inputScript;
+
+    [SerializeField] public GameBoard enemyBoard;
+    [SerializeField] private HpBar hpBar;
 
     // Cache the ManaCycle in this scene. (on start)
     private ManaCycle cycle;
@@ -64,7 +69,7 @@ public class GameBoard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerControlled)
+        if (playerControlled && (!PauseMenuScript.paused))
         {
             // rotate left
             if (Input.GetKeyDown(inputScript.RotateLeft))
@@ -104,6 +109,7 @@ public class GameBoard : MonoBehaviour
                 Spellcast(clearColor, 1, 1);
             }
 
+
             // Get the time that has passed since the previous piece fall.
             // If it is greater than fall time (or fallTime/10 if holding down),
             // move the piece one down.
@@ -115,12 +121,20 @@ public class GameBoard : MonoBehaviour
                     PlacePiece();
                     // Spawn a new piece
                     SpawnPiece();
+                    // Move self damage cycle
+                    DamageCycle();
                 }         
                 // reset fall time
                 previousFallTime = Time.time;   
             }
         }
+
+
+
     }
+
+
+
 
     // Update the pointer's cycle position.
     private void PointerReposition()
@@ -129,7 +143,7 @@ public class GameBoard : MonoBehaviour
         Transform manaColor = cycle.transform.GetChild(cyclePosition);
         pointer.transform.SetParent(manaColor, false);
         // Move left or right based on if this is the player or not
-        if (playerControlled) {
+        if (playerSide == 0) {
             pointer.transform.localPosition = new Vector3(-100, 0, 0);
         } else {
             pointer.transform.localPosition = new Vector3(100, 0, 0);
@@ -229,8 +243,38 @@ public class GameBoard : MonoBehaviour
     // Deal damage to the other player(s)
     public void DealDamage(float damage)
     {
-        // TODO: implement damage dealing
+        enemyBoard.hpBar.incoming1.dmg += (int) damage;
+        enemyBoard.hpBar.incoming1.GetComponent<TMPro.TextMeshProUGUI>().text = enemyBoard.hpBar.incoming1.dmg.ToString();
     }
+
+    // Moves incoming damage and take damage if at end
+    public void DamageCycle()
+    {
+        // Deal damage
+        hpBar.HpDisp.health -= hpBar.incoming6.dmg;
+        hpBar.HpDisp.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.HpDisp.health.ToString();
+
+        // Move forwards in damage cycle
+        hpBar.incoming6.dmg = hpBar.incoming5.dmg;
+        hpBar.incoming6.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming6.dmg.ToString();
+
+        hpBar.incoming5.dmg = hpBar.incoming4.dmg;
+        hpBar.incoming5.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming5.dmg.ToString();
+
+        hpBar.incoming4.dmg = hpBar.incoming3.dmg;
+        hpBar.incoming4.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming4.dmg.ToString();
+
+        hpBar.incoming3.dmg = hpBar.incoming2.dmg;
+        hpBar.incoming3.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming3.dmg.ToString();
+
+        hpBar.incoming2.dmg = hpBar.incoming1.dmg;
+        hpBar.incoming2.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming2.dmg.ToString();
+
+        hpBar.incoming1.dmg = 0;
+        hpBar.incoming1.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming1.dmg.ToString();
+
+    }
+
 
     //
     private static bool[,] tilesInBlobs;
