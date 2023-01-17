@@ -21,7 +21,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private HpBar hpBar;
 
     // Cache the ManaCycle in this scene. (on start)
-    private ManaCycle cycle;
+    public ManaCycle cycle;
 
     // Cycle pointer game object that belongs to this board
     private GameObject pointer;
@@ -436,5 +436,10 @@ public class GameBoard : MonoBehaviour
         if (board[r,c] == null) return false;
         // if there is a tile, return true if it is the given color.
         return board[r,c].GetManaColor() == color;
+    }
+
+    public ManaColor CurrentColor()
+    {
+        return cycle.GetColor(cyclePosition);
     }
 }
