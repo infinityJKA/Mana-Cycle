@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Tile : MonoBehaviour
 {
-    public ManaColor color;
+    public ManaColor color { get; private set; }
     public ManaCycle cycle;
 
     public void Randomize(GameBoard board)

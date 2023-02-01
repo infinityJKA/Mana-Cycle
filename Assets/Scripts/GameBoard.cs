@@ -29,12 +29,12 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private HpBar hpBar;
 
     // Stores the ManaCycle in this scene. (on start)
-    public ManaCycle cycle;
+    public ManaCycle cycle { get; private set; }
 
     // Cycle pointer game object that belongs to this board
     private GameObject pointer;
     // This board's current position in the cycle. starts at 0
-    public int cyclePosition;
+    public int cyclePosition { get; private set; }
 
     // Dimensions of the board
     public static readonly int width = 8;

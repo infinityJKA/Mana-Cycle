@@ -19,7 +19,7 @@ public class HpBar : MonoBehaviour
     // using floats instead of ints to get percentage
     // just guessing max hp based on dmg formula, also might be different per character later on
     private float hpBarTopY;
-    public IncomingDamage[] damageQueue;
+    public IncomingDamage[] damageQueue { get; private set; }
 
     // Start is called before the first frame update
     void Start()
