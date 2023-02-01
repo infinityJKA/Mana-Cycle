@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class GameBoard : MonoBehaviour
 {
+    // Starting HP of this character.
+    public int maxHp { get; private set; }
+    // Amount of HP this player has remaining.
+    public int hp { get; private set; }
+
     // True if the player controls this board.
     [SerializeField] private bool playerControlled;
     // 0 for left side, 1 for right side
@@ -15,12 +20,15 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private GameObject pointerPrefab;
     // Input prefab containing a script component
     [SerializeField] private GameObject inputObject;
+    // Input mapping for this board
     private InputScript inputScript;
 
-    [SerializeField] public GameBoard enemyBoard;
+    // The board of the enemy of the player/enemy of this board
+    [SerializeField] private GameBoard enemyBoard;
+    // HP Bar game object on this board
     [SerializeField] private HpBar hpBar;
 
-    // Cache the ManaCycle in this scene. (on start)
+    // Stores the ManaCycle in this scene. (on start)
     public ManaCycle cycle;
 
     // Cycle pointer game object that belongs to this board
@@ -41,7 +49,7 @@ public class GameBoard : MonoBehaviour
     // Piece that is currently being dropped.
     private Piece piece;
 
-    // Amount of times the player has cleared the cycle.
+    // Amount of times the player has cleared the cycle. Used in daamge formula
     private int currentCycle = 0;
 
     // Start is called before the first frame update
@@ -49,6 +57,10 @@ public class GameBoard : MonoBehaviour
     {
         // script containing keycodes for controls
         inputScript = inputObject.GetComponent<InputScript>();
+
+        // (Later, this may depend on the character/mode)
+        maxHp = 2500;
+        hp = maxHp;
     }
 
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
@@ -234,50 +246,41 @@ public class GameBoard : MonoBehaviour
         board[row, col] = null;
     }
 
-    public struct Blob
+    // Deal damage to the other player(s(?))
+    public void DealDamage(int damage)
     {
-        public ManaColor color;
-        public List<Vector2Int> tiles;
+        enemyBoard.EnqueueDamage(damage);
     }
 
-    // Deal damage to the other player(s)
-    public void DealDamage(float damage)
+    // Enqueues damage to this board.
+    // Called from another board's DealDamage() method.
+    public void EnqueueDamage(int damage)
     {
-        enemyBoard.hpBar.incoming1.dmg += (int) damage;
-        enemyBoard.hpBar.incoming1.GetComponent<TMPro.TextMeshProUGUI>().text = enemyBoard.hpBar.incoming1.dmg.ToString();
+        hpBar.damageQueue[0].AddDamage(damage);
     }
 
     // Moves incoming damage and take damage if at end
     public void DamageCycle()
     {
-        // Deal damage
-        hpBar.HpDisp.health -= hpBar.incoming6.dmg;
-        hpBar.HpDisp.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.HpDisp.health.ToString();
-
-        // Move forwards in damage cycle
-        hpBar.incoming6.dmg = hpBar.incoming5.dmg;
-        hpBar.incoming6.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming6.dmg.ToString();
-
-        hpBar.incoming5.dmg = hpBar.incoming4.dmg;
-        hpBar.incoming5.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming5.dmg.ToString();
-
-        hpBar.incoming4.dmg = hpBar.incoming3.dmg;
-        hpBar.incoming4.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming4.dmg.ToString();
-
-        hpBar.incoming3.dmg = hpBar.incoming2.dmg;
-        hpBar.incoming3.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming3.dmg.ToString();
-
-        hpBar.incoming2.dmg = hpBar.incoming1.dmg;
-        hpBar.incoming2.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming2.dmg.ToString();
-
-        hpBar.incoming1.dmg = 0;
-        hpBar.incoming1.GetComponent<TMPro.TextMeshProUGUI>().text = hpBar.incoming1.dmg.ToString();
-
+        // TODO: going to change this so that the incoming damage objects themselves are queued, so that they can be animated easier.
+        // Will probably not use the grid layout and will instead make it puyo ish style
+        // Maybe
+        
+        // Deal damage, if any
+        hp -= hpBar.damageQueue[5].dmg;
+        hpBar.SetHealth(hp);
+        hpBar.AdvanceDamageQueue();
     }
 
 
-    //
+    // (Temporary, Only used for finding blobs)
     private static bool[,] tilesInBlobs;
+
+    struct Blob
+    {
+        public ManaColor color;
+        public List<Vector2Int> tiles;
+    }
 
     // Check the board for blobs of 4 or more of the given color, and clear them from the board, earning points/dealing damage.
     public void Spellcast(ManaColor color, int chain, int cascade)
@@ -310,7 +313,7 @@ public class GameBoard : MonoBehaviour
         int manaCleared = TotalMana(blobs);
         if (manaCleared > 0) {
             // Deal damage for the amount of mana cleared.
-            float damage = (manaCleared * 10) * chain * cascade * (1 + 0.3f*currentCycle);
+            int damage = (int)((manaCleared * 10) * chain * cascade * (1 + 0.3f*currentCycle));
             DealDamage(damage);
 
             // Clear all blob-contained tiles from the board.
@@ -334,7 +337,7 @@ public class GameBoard : MonoBehaviour
     }
 
     // Returns the total amount of mana in this set of blobs.
-    public int TotalMana(List<Blob> blobs)
+    int TotalMana(List<Blob> blobs)
     {
         int mana = 0;
         foreach (Blob blob in blobs)
@@ -344,7 +347,7 @@ public class GameBoard : MonoBehaviour
         return mana;
     }
 
-    public Blob CheckBlob(int c, int r, ManaColor color)
+    Blob CheckBlob(int c, int r, ManaColor color)
     {
         Blob blob = new Blob();
         blob.color = color;
@@ -355,7 +358,7 @@ public class GameBoard : MonoBehaviour
         return blob;
     }
 
-    public void ExpandBlob(ref Blob blob, int c, int r, ManaColor color, int recurseAmount)
+    void ExpandBlob(ref Blob blob, int c, int r, ManaColor color, int recurseAmount)
     {
         if (recurseAmount > 100) {
             Debug.LogError("MAX RECURSION REACHED!");
