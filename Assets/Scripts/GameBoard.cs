@@ -44,8 +44,6 @@ public class GameBoard : MonoBehaviour
     // The last time that the current piece fell down a tile.
     private float previousFallTime;
     [SerializeField] private float fallTime = 0.8f;
-    // Whether not a piece is currently being dropped. Paused while clearing/trash falling.
-    private bool pieceFalling;
 
     // Board containing all tiles that have been placed and their colors. NONE is an empty space (from ManaColor enum).
     private Tile[,] board;
@@ -64,8 +62,6 @@ public class GameBoard : MonoBehaviour
         // (Later, this may depend on the character/mode)
         maxHp = 2500;
         hp = maxHp;
-
-        pieceFalling = true;
     }
 
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
@@ -77,6 +73,7 @@ public class GameBoard : MonoBehaviour
         PointerReposition();
 
         piecePreview.Setup(this);
+        hpBar.Setup(this);
 
         board = new Tile[height, width];
         if (playerControlled) 
@@ -214,10 +211,12 @@ public class GameBoard : MonoBehaviour
         piece.GetTop().transform.SetParent(transform, true);
         piece.GetRight().transform.SetParent(transform, true);
 
+        // Destroy the piece containing the tiles, leaving only the tiles that were just taken out of the piece
         Destroy(piece);
 
         bool tileFell = true;
         // Keep looping until none of the piece's tiles fall
+        // (No other tiles need to be checked as tiles underneath them won't move, only tiles above)
         while (tileFell) {
             tileFell = false;
             
@@ -255,23 +254,20 @@ public class GameBoard : MonoBehaviour
     public void EnqueueDamage(int damage)
     {
         hpBar.DamageQueue[0].AddDamage(damage);
+        hpBar.Refresh();
     }
 
     // Moves incoming damage and take damage if at end
     public void DamageCycle()
     {
-        // TODO: going to change this so that the incoming damage objects themselves are queued, so that they can be animated easier.
-        // Will probably not use the grid layout and will instead make it puyo ish style
-        // Maybe
-        
         // Deal damage, if any
         hp -= hpBar.DamageQueue[5].dmg;
-        hpBar.SetHealth(hp);
         hpBar.AdvanceDamageQueue();
+        hpBar.Refresh();
     }
 
 
-    // (Temporary, Only used for finding blobs)
+    // Temporary, Only used for finding blobs within a single search, not used outside of search
     private static bool[,] tilesInBlobs;
 
     struct Blob
