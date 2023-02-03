@@ -9,30 +9,27 @@ public class HpBar : MonoBehaviour
     private GameBoard board;
 
     [SerializeField] public HpNum hpNum;
-    [SerializeField] private GameObject IncomingDmgDisp;
+    [SerializeField] public GameObject hpDisp;
+    [SerializeField] private GameObject incomingDmgDisp;
 
-    private Image hpBarImage;
-    private Image incomingDmgBarImage;
-    private RectTransform hpBarRectTransform;
-    private RectTransform incomingDmgBarRectTransform;
-
-    // using floats instead of ints to get percentage
-    // just guessing max hp based on dmg formula, also might be different per character later on
-    private float hpBarTopY;
+    // cached components o' stuff
+    private Image hpImage;
+    private Image incomingDmgImage;
+    private RectTransform hpTransform;
+    private RectTransform incomingDmgTransform;
     [SerializeField] private IncomingDamage[] damageQueue;
-
-    public IncomingDamage[] DamageQueue { get { return damageQueue; }}
+    public IncomingDamage[] DamageQueue { get { return damageQueue; }} // (public getter for private setter)
 
     // Start is called before the first frame update
     void Start()
     {   
         // get image components to edit attributes 
-        hpBarImage = hpNum.GetComponent<Image>();
-        incomingDmgBarImage = IncomingDmgDisp.GetComponent<Image>();
+        hpImage = hpDisp.GetComponent<Image>();
+        incomingDmgImage = incomingDmgDisp.GetComponent<Image>();
 
         // get rect transform to change positions later
-        hpBarRectTransform = hpNum.GetComponent<RectTransform>();
-        incomingDmgBarRectTransform = IncomingDmgDisp.GetComponent<RectTransform>();
+        hpTransform = hpDisp.GetComponent<RectTransform>();
+        incomingDmgTransform = incomingDmgDisp.GetComponent<RectTransform>();
 
         foreach (IncomingDamage incoming in damageQueue)
         {
@@ -41,7 +38,7 @@ public class HpBar : MonoBehaviour
     }
 
     // Initializes this HP bar for the GameBoard passed in which this hp bar is for.
-    void Setup(GameBoard board)
+    public void Setup(GameBoard board)
     {
         this.board = board;
     }
@@ -65,9 +62,23 @@ public class HpBar : MonoBehaviour
         // Debug.Log(hpBarTopY);
     }
 
-    public void SetHealth(int health)
+    public void Refresh()
     {
-        hpNum.SetHealth(health);
+        hpNum.SetHealth(board.hp);
+        Debug.Log(hpImage);
+        hpImage.fillAmount = 1f * board.hp / board.maxHp;
+        incomingDmgImage.fillAmount = 1f * TotalIncomingDamage() / board.maxHp;
+        // incomingDmgTransform.anchoredPosition = new Vector2(0, -1f * (1f - hpImage.fillAmount)); 
+    }
+
+    public int TotalIncomingDamage()
+    {
+        int total = 0;
+        foreach (IncomingDamage incoming in damageQueue)
+        {
+            total += incoming.dmg;
+        }
+        return total;
     }
 
     public void AdvanceDamageQueue()
