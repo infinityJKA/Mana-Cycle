@@ -12,7 +12,8 @@ public class Tile : MonoBehaviour
     {
         // Randomly choose color from color enum length
         // Color has a 15% chance to boe current color, and 85% chance to be random color (including current).
-        color = (Random.value < 0.2) ? board.CurrentColor() : (ManaColor)Random.Range(0,5);
+        // color = (Random.value < 0.2) ? board.CurrentColor() : (ManaColor)Random.Range(0,5); <-- will be infinity's rng pattern
+        color = (ManaColor)Random.Range(0,5);
 
         // Get image and set color from the list in this scene's cycle
         Image image = GetComponent<Image>();
