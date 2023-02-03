@@ -33,10 +33,10 @@ RectTransform:
   m_Father: {fileID: 9192991299566695996}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 50, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9192991298077285723
 CanvasRenderer:
@@ -128,11 +128,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e026d4a73dee57f49ad436c1a5f5e31b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hpDisp: {fileID: 0}
+  hpNum: {fileID: 0}
   IncomingDmgDisp: {fileID: 9192991299765080648}
-  maxHp: 1000
-  HpText: {fileID: 0}
-  incomingDamages: []
+  damageQueue: []
 --- !u!1 &9192991299765080648
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,10 +164,10 @@ RectTransform:
   m_Father: {fileID: 9192991299566695996}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 50, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9192991299765080655
 CanvasRenderer:
@@ -242,10 +240,10 @@ RectTransform:
   m_Father: {fileID: 9192991299566695996}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 50, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9192991299766452695
 CanvasRenderer:
