@@ -14,8 +14,6 @@ public class GameBoard : MonoBehaviour
     // 0 for left side, 1 for right side
     [SerializeField] private int playerSide;
 
-    // Piece prefab, containing an object with Tile gameobject children
-    [SerializeField] private Piece piecePrefab;
     // Prefab for cycle pointers
     [SerializeField] private GameObject pointerPrefab;
     // Input prefab containing a script component
@@ -27,6 +25,9 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private GameBoard enemyBoard;
     // HP Bar game object on this board
     [SerializeField] private HpBar hpBar;
+
+    // Stores the piece preview for this board
+    [SerializeField] private PiecePreview piecePreview;
 
     // Stores the ManaCycle in this scene. (on start)
     public ManaCycle cycle { get; private set; }
@@ -74,6 +75,8 @@ public class GameBoard : MonoBehaviour
 
         pointer = Instantiate(pointerPrefab, Vector3.zero, Quaternion.identity);
         PointerReposition();
+
+        piecePreview.Setup(this);
 
         board = new Tile[height, width];
         if (playerControlled) 
@@ -169,15 +172,7 @@ public class GameBoard : MonoBehaviour
     // Create a new piece and spawn it at the top of the board. Replaces the current piece field.
     public void SpawnPiece()
     {
-        // Creates a new piece at the spawn location.
-        // The new tiles' position Vector2 will determine how it is rendered.
-        piece = Instantiate(piecePrefab, Vector3.zero, Quaternion.identity, transform);
-
-        // Randomize the piece's tiles' colors
-        piece.Randomize(this);
-
-        // Move the tile to the spawn location
-        piece.MoveTo(3,1);
+        piece = piecePreview.SpawnNextPiece();
     }
 
     // Move the current piece by this amount.
