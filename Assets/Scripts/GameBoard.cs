@@ -43,6 +43,8 @@ public class GameBoard : MonoBehaviour
     // The last time that the current piece fell down a tile.
     private float previousFallTime;
     [SerializeField] private float fallTime = 0.8f;
+    // Whether not a piece is currently being dropped. Paused while clearing/trash falling.
+    private bool pieceFalling;
 
     // Board containing all tiles that have been placed and their colors. NONE is an empty space (from ManaColor enum).
     private Tile[,] board;
@@ -61,6 +63,8 @@ public class GameBoard : MonoBehaviour
         // (Later, this may depend on the character/mode)
         maxHp = 2500;
         hp = maxHp;
+
+        pieceFalling = true;
     }
 
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
@@ -117,8 +121,7 @@ public class GameBoard : MonoBehaviour
             if (Input.GetKeyDown(inputScript.Cast))
             {
                 // get current mana color from cycle, and clear that color
-                ManaColor clearColor = cycle.GetCycle()[cyclePosition];
-                Spellcast(clearColor, 1, 1);
+                Spellcast(1);
             }
 
 
@@ -256,7 +259,7 @@ public class GameBoard : MonoBehaviour
     // Called from another board's DealDamage() method.
     public void EnqueueDamage(int damage)
     {
-        hpBar.damageQueue[0].AddDamage(damage);
+        hpBar.DamageQueue[0].AddDamage(damage);
     }
 
     // Moves incoming damage and take damage if at end
@@ -267,7 +270,7 @@ public class GameBoard : MonoBehaviour
         // Maybe
         
         // Deal damage, if any
-        hp -= hpBar.damageQueue[5].dmg;
+        hp -= hpBar.DamageQueue[5].dmg;
         hpBar.SetHealth(hp);
         hpBar.AdvanceDamageQueue();
     }
@@ -282,15 +285,73 @@ public class GameBoard : MonoBehaviour
         public List<Vector2Int> tiles;
     }
 
+    private static int minBlobSize = 3;
+
     // Check the board for blobs of 4 or more of the given color, and clear them from the board, earning points/dealing damage.
-    public void Spellcast(ManaColor color, int chain, int cascade)
+    private void Spellcast(int chain)
     {
         // Save matrix of all tiles currently in one of the blobs
         tilesInBlobs = new bool[height, width];
 
         // List of all blobs
+        ManaColor color = cycle.GetCycle()[cyclePosition];
+        List<Blob> blobs = ClearManaOfColor(color);
+
+        // If there were no blobs, do not deal damage, and do not move forward in cycle
+        if (blobs.Count == 0) return;
+        int manaCleared = TotalMana(blobs);
+
+        // Keep clearing while mana cleared for current color is greater than 0
+        // Keep track of cascade for damage
+        int cascade = 0;
+        StartCoroutine(ClearCascadeWithDelay());
+        IEnumerator ClearCascadeWithDelay()
+        {
+            while (manaCleared > 0) {
+                // If this is cascading off the same color more than once, short delay between
+                yield return new WaitForSeconds(0.5f);
+
+                cascade += 1;
+
+                // Deal damage for the amount of mana cleared.
+                int damage = (int)((manaCleared * 10) * chain * cascade * (1 + 0.3f*currentCycle));
+                DealDamage(damage);
+
+                // Clear all blob-contained tiles from the board.
+                foreach (Blob blob in blobs) {
+                    foreach (Vector2Int pos in blob.tiles) {
+                        ClearTile(pos.x, pos.y);
+                    }
+                }
+
+                // Do gravity everywhere
+                AllTileGravity();
+
+                // Check for cascaded blobs
+                List<Blob> cascadedBlobs = ClearManaOfColor(color);
+                manaCleared = TotalMana(cascadedBlobs);
+            }
+
+             // move to next in cycle position
+            cyclePosition += 1;
+            if (cyclePosition >= ManaCycle.cycleLength) cyclePosition = 0;
+            PointerReposition();
+
+            // Spellcast for the new next color to check for chain
+            StartCoroutine(SpellcastAfterDelay());
+            IEnumerator SpellcastAfterDelay()
+            {
+                yield return new WaitForSeconds(0.75f);
+                Spellcast(chain+1);
+            }
+        }
+    }
+
+    // Clears the given color from the board.
+    // Returns a list of all blobs of mana that were cleared.
+    private List<Blob> ClearManaOfColor(ManaColor color)
+    {
         List<Blob> blobs = new List<Blob>();
-        int minBlobSize = 3;
 
         // Loop over rows (top to bottom)
         for (int r = 0; r < height; r++)
@@ -307,33 +368,7 @@ public class GameBoard : MonoBehaviour
             }
         }
 
-        // If there were no blobs, do not deal damage, and do not move forward in cycle
-        if (blobs.Count == 0) return;
-
-        int manaCleared = TotalMana(blobs);
-        if (manaCleared > 0) {
-            // Deal damage for the amount of mana cleared.
-            int damage = (int)((manaCleared * 10) * chain * cascade * (1 + 0.3f*currentCycle));
-            DealDamage(damage);
-
-            // Clear all blob-contained tiles from the board.
-            foreach (Blob blob in blobs) {
-                foreach (Vector2Int pos in blob.tiles) {
-                    ClearTile(pos.x, pos.y);
-                }
-            }
-
-            // Do gravity everywhere
-            AllTileGravity();
-
-            // Clear cascaded blobs (add one to cascade)
-            Spellcast(color, chain, cascade+1);
-        }
-        
-        // move to next in cycle position
-        cyclePosition += 1;
-        if (cyclePosition >= ManaCycle.cycleLength) cyclePosition = 0;
-        PointerReposition();
+        return blobs;
     }
 
     // Returns the total amount of mana in this set of blobs.
