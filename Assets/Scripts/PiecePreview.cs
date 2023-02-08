@@ -4,20 +4,22 @@ using UnityEngine;
 
 public class PiecePreview : MonoBehaviour
 {
-    // Next piece box where the next piece is stored abo e this piece preview
+    // Next piece box where the next piece is stored above this piece preview
     [SerializeField] private Transform nextPieceBox;
     // The board this piece preview is for
     [SerializeField] private GameBoard board;
     // Piece prefab, containing an object with Tile gameobject children
     [SerializeField] private Piece piecePrefab;
+    // Length of the preview list
+    [SerializeField] private int previewLength = 4;
 
     public void Setup(GameBoard board)
     {
         this.board = board;
 
-        // Add five pieces to list and one to next piece
-        NewPiece(nextPieceBox);
-        for (int i=0; i<5; i++) NewPiece(transform);
+        // populate the preview list & next piece box; add five pieces to list and one to next piece
+        CreateNewPiece(nextPieceBox);
+        for (int i=0; i<previewLength; i++) CreateNewPiece(transform);
     }
 
     // Spawns the next piece onto the game board and advances the list.
@@ -32,16 +34,15 @@ public class PiecePreview : MonoBehaviour
         // Set the next next piece
         transform.GetChild(0).SetParent(nextPieceBox, false);
 
-        // Add new piece to preview list
-        NewPiece(transform);
+        // Add a new piece to preview list
+        CreateNewPiece(transform);
 
         return nextPiece;
     }
 
-    Piece NewPiece(Transform parent)
+    Piece CreateNewPiece(Transform parent)
     {
         // Add a new piece to the queue
-        // The new tiles' position Vector2 will determine how it is rendered.
         Piece newPiece = Instantiate(piecePrefab, Vector3.zero, Quaternion.identity, parent);
 
         // Randomize the piece's tiles' colors

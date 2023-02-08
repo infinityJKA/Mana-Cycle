@@ -28,6 +28,8 @@ public class GameBoard : MonoBehaviour
 
     // Stores the piece preview for this board
     [SerializeField] private PiecePreview piecePreview;
+    // Stores the board's cycle level indicator
+    [SerializeField] private CycleLevel cycleLevelDisplay;
 
     // Stores the ManaCycle in this scene. (on start)
     public ManaCycle cycle { get; private set; }
@@ -44,6 +46,8 @@ public class GameBoard : MonoBehaviour
     // The last time that the current piece fell down a tile.
     private float previousFallTime;
     [SerializeField] private float fallTime = 0.8f;
+    // If this board is currently spellcasting (chaining).
+    private bool casting;
 
     // Board containing all tiles that have been placed and their colors. NONE is an empty space (from ManaColor enum).
     private Tile[,] board;
@@ -51,7 +55,7 @@ public class GameBoard : MonoBehaviour
     private Piece piece;
 
     // Amount of times the player has cleared the cycle. Used in daamge formula
-    private int currentCycle = 0;
+    private int cycleLevel = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -92,7 +96,8 @@ public class GameBoard : MonoBehaviour
             {
                 piece.RotateLeft();
                 if(!ValidPlacement()){
-                    piece.RotateRight();
+                    // try nudging left, then right, then up. If none work, undo the rotation
+                    if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
                 }
             }
 
@@ -101,7 +106,8 @@ public class GameBoard : MonoBehaviour
             {
                 piece.RotateRight();
                 if(!ValidPlacement()){
-                    piece.RotateLeft();
+                    // try nudging right, then left, then up. If none work, undo the rotation
+                    if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
                 }
             }
 
@@ -121,6 +127,7 @@ public class GameBoard : MonoBehaviour
             if (Input.GetKeyDown(inputScript.Cast))
             {
                 // get current mana color from cycle, and clear that color
+                // start at chain of 1
                 Spellcast(1);
             }
 
@@ -143,13 +150,7 @@ public class GameBoard : MonoBehaviour
                 previousFallTime = Time.time;   
             }
         }
-
-
-
     }
-
-
-
 
     // Update the pointer's cycle position.
     private void PointerReposition()
@@ -246,7 +247,9 @@ public class GameBoard : MonoBehaviour
     // Deal damage to the other player(s(?))
     public void DealDamage(int damage)
     {
+        damage = hpBar.CounterIncoming(damage);
         enemyBoard.EnqueueDamage(damage);
+        hpBar.Refresh();
     }
 
     // Enqueues damage to this board.
@@ -281,6 +284,8 @@ public class GameBoard : MonoBehaviour
     // Check the board for blobs of 4 or more of the given color, and clear them from the board, earning points/dealing damage.
     private void Spellcast(int chain)
     {
+        // Don't start a spellcast if already spellcasting
+        if (!casting) return;
         // Save matrix of all tiles currently in one of the blobs
         tilesInBlobs = new bool[height, width];
 
@@ -288,13 +293,17 @@ public class GameBoard : MonoBehaviour
         ManaColor color = cycle.GetCycle()[cyclePosition];
         List<Blob> blobs = ClearManaOfColor(color);
 
-        // If there were no blobs, do not deal damage, and do not move forward in cycle
-        if (blobs.Count == 0) return;
+        // If there were no blobs, do not deal damage, and do not move forward in cycle, end spellcast
+        if (blobs.Count == 0) {
+            casting = false;
+            return;
+        };
         int manaCleared = TotalMana(blobs);
 
         // Keep clearing while mana cleared for current color is greater than 0
-        // Keep track of cascade for damage
+        // Begin spellcast
         int cascade = 0;
+        casting = true;
         StartCoroutine(ClearCascadeWithDelay());
         IEnumerator ClearCascadeWithDelay()
         {
@@ -304,8 +313,13 @@ public class GameBoard : MonoBehaviour
 
                 cascade += 1;
 
+                // DMG per mana, starts at 10, increases by 3 per cycle level
+                int damagePerMana = 10 + 3*cycleLevel;
                 // Deal damage for the amount of mana cleared.
-                int damage = (int)((manaCleared * 10) * chain * cascade * (1 + 0.3f*currentCycle));
+                // DMG is scaled by chain and cascade.
+                int damage = (int)( (manaCleared * damagePerMana) * chain * cascade );
+
+                // Send the damage over. Will subtract from incoming damage first.
                 DealDamage(damage);
 
                 // Clear all blob-contained tiles from the board.
@@ -325,7 +339,11 @@ public class GameBoard : MonoBehaviour
 
              // move to next in cycle position
             cyclePosition += 1;
-            if (cyclePosition >= ManaCycle.cycleLength) cyclePosition = 0;
+            if (cyclePosition >= ManaCycle.cycleLength) {
+                cyclePosition = 0;
+                cycleLevel++;
+                cycleLevelDisplay.Set(cycleLevel);
+            }
             PointerReposition();
 
             // Spellcast for the new next color to check for chain
