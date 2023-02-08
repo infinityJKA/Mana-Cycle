@@ -37,6 +37,32 @@ public class HpBar : MonoBehaviour
         }
     }
 
+    // Counter the damage in this queue with an incoming damage source.
+    // Return the amount of leftover damage.
+    public int CounterIncoming(int damage)
+    {
+        // Iterate in reverse order; target closer daamges first
+        for (int i=5; i>=0; i--)
+        {
+            IncomingDamage incoming = DamageQueue[i];
+            // If incoming has equal or more damage to current, put all damage into it and return 0, no more leftover damage
+            if (incoming.dmg >= damage)
+            {
+                incoming.SubtractDamage(damage);
+                return 0;
+            } 
+            // otherwise, cancel out all its damage and move to next
+            // (will subtract 0 if empty)
+            else {
+                damage -= incoming.dmg;
+                incoming.SetDamage(0);
+            }
+        }
+
+        // return any leftover damage that will be sent to oppnent
+        return damage;
+    }
+
     // Initializes this HP bar for the GameBoard passed in which this hp bar is for.
     public void Setup(GameBoard board)
     {

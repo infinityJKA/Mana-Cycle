@@ -28,4 +28,9 @@ public class IncomingDamage : MonoBehaviour
     {
         SetDamage(dmg + damage);
     }
+
+    public void SubtractDamage(int damage)
+    {
+        AddDamage(-damage);
+    }
 }
