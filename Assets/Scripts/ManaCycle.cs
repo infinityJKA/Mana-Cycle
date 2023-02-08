@@ -19,6 +19,8 @@ public class ManaCycle : MonoBehaviour
     private List<Image> cycleObjects;
     // Length of the cycle
     public static int cycleLength = 7;
+
+
     void Start()
     {
         // Generate cycle that boards will use
@@ -31,19 +33,6 @@ public class ManaCycle : MonoBehaviour
         }
     }
 
-    private int checkCountInArray(int[] ar, int c){
-        if(ar.Length < 1){
-            return 0;
-        }
-        int no = 0;
-        for(int i = 0; i < ar.Length-1; i++){
-            if(ar[i] == c){
-                no++;
-            }
-        }
-        return no;
-    }
-
     public void GenerateCycle()
     {
         // Destroy all children (violently, and without remorse)
@@ -51,8 +40,6 @@ public class ManaCycle : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
         cycleObjects = new List<Image>();
-
-        // Initialize a new list (will override old ones)
         cycle = new List<ManaColor>();
 
         // Add one of each color to the list

@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class GameBoard : MonoBehaviour
 {
-    // Starting HP of this character.
-    public int maxHp { get; private set; }
-    // Amount of HP this player has remaining.
-    public int hp { get; private set; }
-
     // True if the player controls this board.
     [SerializeField] private bool playerControlled;
     // 0 for left side, 1 for right side
@@ -16,10 +11,8 @@ public class GameBoard : MonoBehaviour
 
     // Prefab for cycle pointers
     [SerializeField] private GameObject pointerPrefab;
-    // Input prefab containing a script component
-    [SerializeField] private GameObject inputObject;
     // Input mapping for this board
-    private InputScript inputScript;
+    [SerializeField] private InputScript inputScript;
 
     // The board of the enemy of the player/enemy of this board
     [SerializeField] private GameBoard enemyBoard;
@@ -30,6 +23,16 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private PiecePreview piecePreview;
     // Stores the board's cycle level indicator
     [SerializeField] private CycleLevel cycleLevelDisplay;
+
+    // Current fall delay for pieces.
+    [SerializeField] private float fallTime = 0.8f;
+
+
+
+    // Starting HP of this character.
+    public int maxHp { get; private set; }
+    // Amount of HP this player has remaining.
+    public int hp { get; private set; }
 
     // Stores the ManaCycle in this scene. (on start)
     public ManaCycle cycle { get; private set; }
@@ -45,9 +48,8 @@ public class GameBoard : MonoBehaviour
 
     // The last time that the current piece fell down a tile.
     private float previousFallTime;
-    [SerializeField] private float fallTime = 0.8f;
     // If this board is currently spellcasting (chaining).
-    private bool casting;
+    private bool casting = false;
 
     // Board containing all tiles that have been placed and their colors. NONE is an empty space (from ManaColor enum).
     private Tile[,] board;
@@ -60,11 +62,8 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // script containing keycodes for controls
-        inputScript = inputObject.GetComponent<InputScript>();
-
         // (Later, this may depend on the character/mode)
-        maxHp = 2500;
+        maxHp = 1500;
         hp = maxHp;
     }
 
@@ -285,7 +284,7 @@ public class GameBoard : MonoBehaviour
     private void Spellcast(int chain)
     {
         // Don't start a spellcast if already spellcasting
-        if (!casting) return;
+        if (casting) return;
         // Save matrix of all tiles currently in one of the blobs
         tilesInBlobs = new bool[height, width];
 
@@ -397,17 +396,13 @@ public class GameBoard : MonoBehaviour
         blob.color = color;
         blob.tiles = new List<Vector2Int>();
 
-        ExpandBlob(ref blob, c, r, color, 0);
+        ExpandBlob(ref blob, c, r, color);
 
         return blob;
     }
 
-    void ExpandBlob(ref Blob blob, int c, int r, ManaColor color, int recurseAmount)
+    void ExpandBlob(ref Blob blob, int c, int r, ManaColor color)
     {
-        if (recurseAmount > 100) {
-            Debug.LogError("MAX RECURSION REACHED!");
-        };
-
         // Don't add to blob if the tile is in an invalid position
         if (c < 0 || c >= width || r < 0 || r >= height) return;
 
@@ -421,15 +416,14 @@ public class GameBoard : MonoBehaviour
         if (board[r, c].GetManaColor() != color) return;
 
         // Add the tile to the blob and fill in its spot on the tilesInBlobs matrix
-        Debug.Log(c + ", " + r + ", " + blob.tiles.Count + ", " + recurseAmount);
         blob.tiles.Add(new Vector2Int(c, r));
         tilesInBlobs[r, c] = true;
 
         // Expand out the current blob on all sides, checking for the same colored tile to add to this blob
-        ExpandBlob(ref blob, c-1, r, color, recurseAmount+1);
-        ExpandBlob(ref blob, c+1, r, color, recurseAmount+1);
-        ExpandBlob(ref blob, c, r-1, color, recurseAmount+1);
-        ExpandBlob(ref blob, c, r+1, color, recurseAmount+1);
+        ExpandBlob(ref blob, c-1, r, color);
+        ExpandBlob(ref blob, c+1, r, color);
+        ExpandBlob(ref blob, c, r-1, color);
+        ExpandBlob(ref blob, c, r+1, color);
     }
 
     // Check the tile at the given index for gravity,
