@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputScript : MonoBehaviour
+[CreateAssetMenu(fileName = "Battler", menuName = "ManaCycle/Input Script")]
+public class InputScript : ScriptableObject
 {
     public KeyCode Left;
     public KeyCode Right;

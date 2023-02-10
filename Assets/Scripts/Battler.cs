@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
+using UnityEditor;
 
-[CreateAssetMenu(fileName = "Battler", menuName = "ManaCycle/Battler", order = 0)]
+[CreateAssetMenu(fileName = "Battler", menuName = "ManaCycle/Battler")]
 public class Battler : ScriptableObject {
-    [SerializeField] private string displayName;
-    [SerializeField] private Sprite sprite;
-    // The exact position & scale that the sprite is drawn on the board
-    [SerializeField] private RectTransform boardSpriteTransform;
+    [SerializeField] public string displayName;
+
+    [SerializeField] public Sprite sprite;
+
+    [SerializeField] public PieceRng pieceRng;
 }
