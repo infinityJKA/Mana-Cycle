@@ -54,9 +54,42 @@ public class Piece : MonoBehaviour
     // Randomize the color of the tiles of this piece.
     public void Randomize(GameBoard board)
     {
-        center.Randomize(board);
-        top.Randomize(board);
-        right.Randomize(board);
+        PieceRng rng = board.GetPieceRng();
+
+        if (rng == PieceRng.CurrentColorWeighted)
+        {
+            // Randomly choose color from color enum length
+            // Color has a 15% chance to boe current color, and 85% chance to be random color (including current).
+            // color = (Random.value < 0.2) ? board.CurrentColor() : (ManaColor)Random.Range(0,5); <-- will be infinity's rng pattern
+            center.SetColor(ColorWeightedRandom(board), board);
+            top.SetColor(ColorWeightedRandom(board), board);
+            right.SetColor(ColorWeightedRandom(board), board);
+        }
+
+        else if (rng == PieceRng.PureRandom)
+        {
+            // Randomly choose color from color enum length
+            // Color has a 15% chance to boe current color, and 85% chance to be random color (including current).
+            // color = (Random.value < 0.2) ? board.CurrentColor() : (ManaColor)Random.Range(0,5); <-- will be infinity's rng pattern
+            center.SetColor(RandomColor(), board);
+            top.SetColor(RandomColor(), board);
+            right.SetColor(RandomColor(), board);
+        }
+    }
+
+    private ManaColor RandomColor()
+    {
+        return (ManaColor)Random.Range(0,5);
+    }
+
+    private ManaColor ColorWeightedRandom(GameBoard board)
+    {
+        if (Random.value < 0.15)
+        {
+            return board.CurrentColor();
+        } else {
+            return RandomColor();
+        }
     }
 
     // Translate this piece by the given X and Y.

@@ -822,6 +822,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: inputScript
+      value: 
+      objectReference: {fileID: 11400000, guid: 23e0fde6fd3784132844b12c502f8b20, type: 2}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: inputGetterPrefab
       value: 
       objectReference: {fileID: 0}
@@ -920,6 +924,10 @@ PrefabInstance:
     - target: {fileID: 4931925509223754468, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: Left
       value: 106
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931925509223754468, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: Pause
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4931925509223754468, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: Right
@@ -1653,10 +1661,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 109460369072555599, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
-      propertyPath: m_RaycastTarget
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 231563411721414187, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2168,8 +2172,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 491f1f60f4f0476449f10f4d04ed139c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InputObj_P1: {fileID: 0}
-  InputObj_P2: {fileID: 0}
   PauseUI: {fileID: 4321311120628870816}
   pauseMenuItems:
   - {fileID: 154390324}

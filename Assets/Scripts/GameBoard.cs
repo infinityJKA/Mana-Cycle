@@ -1,9 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameBoard : MonoBehaviour
 {
+    // The battler selected for this board. Each one has different effects.
+    [SerializeField] private Battler battler;
     // True if the player controls this board.
     [SerializeField] private bool playerControlled;
     // 0 for left side, 1 for right side
@@ -23,6 +27,8 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private PiecePreview piecePreview;
     // Stores the board's cycle level indicator
     [SerializeField] private CycleLevel cycleLevelDisplay;
+    // Stores the image for the portrait
+    [SerializeField] private Image portrait;
 
     // Current fall delay for pieces.
     [SerializeField] private float fallTime = 0.8f;
@@ -59,12 +65,21 @@ public class GameBoard : MonoBehaviour
     // Amount of times the player has cleared the cycle. Used in daamge formula
     private int cycleLevel = 0;
 
+    // Cached pause menu, so this board can pause the game
+    private PauseMenu pauseMenu;
+
     // Start is called before the first frame update
     void Start()
     {
         // (Later, this may depend on the character/mode)
-        maxHp = 1500;
+        maxHp = 2000;
         hp = maxHp;
+
+        // Cache stuff
+        pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
+
+        // Setup battler
+        portrait.sprite = battler.sprite;
     }
 
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
@@ -88,65 +103,83 @@ public class GameBoard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerControlled && (!PauseMenuScript.paused))
+        if (playerControlled)
         {
-            // rotate left
-            if (Input.GetKeyDown(inputScript.RotateLeft))
+            if (Input.GetKeyDown(inputScript.Pause))
             {
-                piece.RotateLeft();
-                if(!ValidPlacement()){
-                    // try nudging left, then right, then up. If none work, undo the rotation
-                    if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
+                pauseMenu.TogglePause();
+            }
+
+            // control the pause menu if paused
+            if (pauseMenu.paused)
+            {
+                if (Input.GetKeyDown(inputScript.Up)) {
+                    pauseMenu.MoveCursor(1);
+                } else if (Input.GetKeyDown(inputScript.Down)) {
+                    pauseMenu.MoveCursor(-1);
                 }
-            }
-
-            // rotate right
-            if (Input.GetKeyDown(inputScript.RotateRight))
-            {
-                piece.RotateRight();
-                if(!ValidPlacement()){
-                    // try nudging right, then left, then up. If none work, undo the rotation
-                    if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
-                }
-            }
-
-            // move piece left
-            if (Input.GetKeyDown(inputScript.Left))
-            {
-                MovePiece(-1, 0);
-            }
-
-            // move piece right
-            if (Input.GetKeyDown(inputScript.Right))
-            {
-                MovePiece(1, 0);
-            }
-
-            // Spellcast
-            if (Input.GetKeyDown(inputScript.Cast))
-            {
-                // get current mana color from cycle, and clear that color
-                // start at chain of 1
-                Spellcast(1);
-            }
-
-
-            // Get the time that has passed since the previous piece fall.
-            // If it is greater than fall time (or fallTime/10 if holding down),
-            // move the piece one down.
-            if(Time.time - previousFallTime > (Input.GetKey(inputScript.Down) ? fallTime/10 : fallTime)){
-                // Try to move the piece down. If it can't be moved down,
-                if (!MovePiece(0, 1))
+            } 
+            
+            // If not paused, do piece movements
+            else {
+                // rotate left
+                if (Input.GetKeyDown(inputScript.RotateLeft))
                 {
-                    // Place the piece
-                    PlacePiece();
-                    // Spawn a new piece
-                    SpawnPiece();
-                    // Move self damage cycle
-                    DamageCycle();
-                }         
-                // reset fall time
-                previousFallTime = Time.time;   
+                    piece.RotateLeft();
+                    if(!ValidPlacement()){
+                        // try nudging left, then right, then up. If none work, undo the rotation
+                        if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
+                    }
+                }
+
+                // rotate right
+                if (Input.GetKeyDown(inputScript.RotateRight))
+                {
+                    piece.RotateRight();
+                    if(!ValidPlacement()){
+                        // try nudging right, then left, then up. If none work, undo the rotation
+                        if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
+                    }
+                }
+
+                // move piece left
+                if (Input.GetKeyDown(inputScript.Left))
+                {
+                    MovePiece(-1, 0);
+                }
+
+                // move piece right
+                if (Input.GetKeyDown(inputScript.Right))
+                {
+                    MovePiece(1, 0);
+                }
+
+                // Spellcast
+                if (Input.GetKeyDown(inputScript.Cast))
+                {
+                    // get current mana color from cycle, and clear that color
+                    // start at chain of 1
+                    Spellcast(1);
+                }
+
+
+                // Get the time that has passed since the previous piece fall.
+                // If it is greater than fall time (or fallTime/10 if holding down),
+                // move the piece one down.
+                if(Time.time - previousFallTime > (Input.GetKey(inputScript.Down) ? fallTime/10 : fallTime)){
+                    // Try to move the piece down. If it can't be moved down,
+                    if (!MovePiece(0, 1))
+                    {
+                        // Place the piece
+                        PlacePiece();
+                        // Spawn a new piece
+                        SpawnPiece();
+                        // Move self damage cycle
+                        DamageCycle();
+                    }         
+                    // reset fall time
+                    previousFallTime = Time.time;   
+                }
             }
         }
     }
@@ -482,5 +515,10 @@ public class GameBoard : MonoBehaviour
     public ManaColor CurrentColor()
     {
         return cycle.GetColor(cyclePosition);
+    }
+
+    public PieceRng GetPieceRng()
+    {
+        return battler.pieceRng;
     }
 }

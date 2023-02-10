@@ -38,7 +38,6 @@ RectTransform:
   - {fileID: 7768733765845821182}
   - {fileID: 6718323449216077770}
   - {fileID: 2263132178392268762}
-  - {fileID: 2526337504076431692}
   m_Father: {fileID: 0}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -97,14 +96,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0a7cf5b82664947ba9401b32f4386e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  battler: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   playerControlled: 1
   playerSide: 0
   pointerPrefab: {fileID: 4135175320746358973, guid: 4ef00abd28d4145b68c481ced91f462e, type: 3}
-  inputScript: {fileID: 4931925509223754468}
+  inputScript: {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
   enemyBoard: {fileID: 0}
   hpBar: {fileID: 2765294716893170645}
   piecePreview: {fileID: 8650080534907225375}
   cycleLevelDisplay: {fileID: 3564053475371671737}
+  portrait: {fileID: 7836459866606857623}
   fallTime: 0.8
 --- !u!1 &135124126067777765
 GameObject:
@@ -958,58 +959,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!1 &6988886328441738665
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2526337504076431692}
-  - component: {fileID: 4931925509223754468}
-  m_Layer: 0
-  m_Name: Controls
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2526337504076431692
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6988886328441738665}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8.179086, y: 1.4522412, z: 0}
-  m_LocalScale: {x: 0.06676971, y: 0.06676971, z: 3.3384855}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 109460369072555598}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4931925509223754468
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6988886328441738665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75ca004eb63f1ad42971ea6e834ca8a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Left: 97
-  Right: 100
-  Down: 115
-  Up: 119
-  RotateLeft: 113
-  RotateRight: 101
-  Cast: 114
-  Pause: 9
 --- !u!1 &9088282051862407895
 GameObject:
   m_ObjectHideFlags: 0
