@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-public class Utils
+public class Utils : MonoBehaviour // please keep this as MonoBehavior to prevent component errors.
 {
     public static void Shuffle<T>(List<T> list)  
     {  

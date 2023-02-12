@@ -317,7 +317,8 @@ public class GameBoard : MonoBehaviour
     private void Spellcast(int chain)
     {
         // Don't start a spellcast if already spellcasting
-        if (casting) return;
+        if (casting) {Debug.Log("cast failed"); return;}
+        Debug.Log("cast start");
         // Save matrix of all tiles currently in one of the blobs
         tilesInBlobs = new bool[height, width];
 
@@ -327,6 +328,7 @@ public class GameBoard : MonoBehaviour
 
         // If there were no blobs, do not deal damage, and do not move forward in cycle, end spellcast
         if (blobs.Count == 0) {
+            Debug.Log("end cast");
             casting = false;
             return;
         };
