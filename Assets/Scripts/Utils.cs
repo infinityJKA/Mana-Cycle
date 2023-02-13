@@ -15,4 +15,8 @@ public class Utils : MonoBehaviour // please keep this as MonoBehavior to preven
             list[n] = value;  
         }  
     }
+
+    public static void setScene(string scene){
+        SceneManager.LoadScene(scene);
+    }
 }
