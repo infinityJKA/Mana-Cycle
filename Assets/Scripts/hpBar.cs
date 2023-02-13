@@ -17,6 +17,7 @@ public class HpBar : MonoBehaviour
     private Image incomingDmgImage;
     private RectTransform hpTransform;
     private RectTransform incomingDmgTransform;
+    private float hpBarTopY;
     [SerializeField] private IncomingDamage[] damageQueue;
     public IncomingDamage[] DamageQueue { get { return damageQueue; }} // (public getter for private setter)
 
@@ -67,26 +68,10 @@ public class HpBar : MonoBehaviour
     public void Setup(GameBoard board)
     {
         this.board = board;
+        Refresh();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        // percentage of hpbar and dmgbar that should be filled
-        // hpBarImage.fillAmount = currentHp / maxHp;
-        // incomingDmgBarImage.fillAmount = incomingDmg / maxHp;
-        
-        // placement of dmg indicator, top of current hp bar
-        // hpBarTopY = hpBarImage.fillAmount * hpBarRectTransform.localScale.y - hpBarRectTransform.localScale.y + 0.5f; // idk why you need the 0.5 in there i just adjusted it until it worked (lol)
-        // change anchors of bar to update position
-
-        // TODO: Jack - disabled these 3 lines because erroring - morgan plz fix it idk how this code works
-        // incomingDmgBarRectTransform.anchorMin = new Vector2(incomingDmgBarRectTransform.anchorMin.x, hpBarTopY);
-        // incomingDmgBarRectTransform.anchorMax = new Vector2(incomingDmgBarRectTransform.anchorMax.x, hpBarTopY);
-        // incomingDmgBarRectTransform.anchoredPosition = Vector2.zero;
-
-        // Debug.Log(hpBarTopY);
-    }
+    // Update is called once per frame hahahahahahahahahahahahahaha just kidding
 
     public void Refresh()
     {
@@ -94,7 +79,10 @@ public class HpBar : MonoBehaviour
         Debug.Log(hpImage);
         hpImage.fillAmount = 1f * board.hp / board.maxHp;
         incomingDmgImage.fillAmount = 1f * TotalIncomingDamage() / board.maxHp;
-        // incomingDmgTransform.anchoredPosition = new Vector2(0, -1f * (1f - hpImage.fillAmount)); 
+        
+        // set incoming bar y to the top of current hp bar
+        hpBarTopY = hpImage.fillAmount * hpTransform.localScale.y - hpTransform.localScale.y + 1.0f;
+        incomingDmgTransform.anchoredPosition = new Vector2(incomingDmgTransform.anchoredPosition.x,hpBarTopY - incomingDmgImage.fillAmount*incomingDmgTransform.localScale.y);
     }
 
     public int TotalIncomingDamage()

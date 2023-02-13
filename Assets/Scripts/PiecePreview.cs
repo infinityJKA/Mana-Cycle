@@ -28,6 +28,7 @@ public class PiecePreview : MonoBehaviour
     {
         // Spawn the next piece on the baord and move it to the spawn location
         Piece nextPiece = nextPieceBox.GetChild(0).GetComponent<Piece>();
+        // Debug.Log("The next piece is " + nextPiece);
         nextPiece.transform.SetParent(board.transform, false);
         nextPiece.MoveTo(3,1);
 

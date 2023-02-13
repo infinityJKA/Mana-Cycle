@@ -159,7 +159,8 @@ public class GameBoard : MonoBehaviour
                 {
                     // get current mana color from cycle, and clear that color
                     // start at chain of 1
-                    Spellcast(1);
+                    // canCast argument is based on if a spellcast is currently in process.
+                    Spellcast(1, !casting);
                 }
 
 
@@ -314,10 +315,11 @@ public class GameBoard : MonoBehaviour
     private static int minBlobSize = 3;
 
     // Check the board for blobs of 4 or more of the given color, and clear them from the board, earning points/dealing damage.
-    private void Spellcast(int chain)
+    private void Spellcast(int chain, bool canCast)
     {
         // Don't start a spellcast if already spellcasting
-        if (casting) return;
+        if (!canCast) {Debug.Log("cast failed"); return;}
+        Debug.Log("cast start");
         // Save matrix of all tiles currently in one of the blobs
         tilesInBlobs = new bool[height, width];
 
@@ -325,8 +327,11 @@ public class GameBoard : MonoBehaviour
         ManaColor color = cycle.GetCycle()[cyclePosition];
         List<Blob> blobs = ClearManaOfColor(color);
 
+        Debug.Log(blobs);
+
         // If there were no blobs, do not deal damage, and do not move forward in cycle, end spellcast
         if (blobs.Count == 0) {
+            Debug.Log("end cast");
             casting = false;
             return;
         };
@@ -383,7 +388,8 @@ public class GameBoard : MonoBehaviour
             IEnumerator SpellcastAfterDelay()
             {
                 yield return new WaitForSeconds(0.75f);
-                Spellcast(chain+1);
+                // canCast should always be true when called recursivley, otherwise returns early and does not complete process.
+                Spellcast(chain+1,true);
             }
         }
     }
