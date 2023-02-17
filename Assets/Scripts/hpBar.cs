@@ -73,8 +73,6 @@ public class HpBar : MonoBehaviour
         Refresh();
     }
 
-    // Update is called once per frame hahahahahahahahahahahahahaha just kidding
-
     public void Refresh()
     {
         hpNum.SetHealth(board.hp);
