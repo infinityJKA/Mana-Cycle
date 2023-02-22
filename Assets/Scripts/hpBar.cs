@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class HpBar : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class HpBar : MonoBehaviour
     private float hpBarTopY;
     [SerializeField] private IncomingDamage[] damageQueue;
     public IncomingDamage[] DamageQueue { get { return damageQueue; }} // (public getter for private setter)
+    private float newIncomingPos;
 
     // Start is called before the first frame update
     void Start()
@@ -71,8 +73,6 @@ public class HpBar : MonoBehaviour
         Refresh();
     }
 
-    // Update is called once per frame hahahahahahahahahahahahahaha just kidding
-
     public void Refresh()
     {
         hpNum.SetHealth(board.hp);
@@ -81,7 +81,9 @@ public class HpBar : MonoBehaviour
         
         // set incoming bar y to the top of current hp bar
         hpBarTopY = hpImage.fillAmount * hpTransform.localScale.y - hpTransform.localScale.y + 1.0f;
-        incomingDmgTransform.anchoredPosition = new Vector2(incomingDmgTransform.anchoredPosition.x,hpBarTopY - incomingDmgImage.fillAmount*incomingDmgTransform.localScale.y);
+
+        newIncomingPos = Math.Max(hpBarTopY - incomingDmgImage.fillAmount*incomingDmgTransform.localScale.y, 0);
+        incomingDmgTransform.anchoredPosition = new Vector2(incomingDmgTransform.anchoredPosition.x, newIncomingPos);
     }
 
     public int TotalIncomingDamage()
