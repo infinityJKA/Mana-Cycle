@@ -1,3 +1,4 @@
+using System.Net.NetworkInformation;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,9 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private bool playerControlled;
     // 0 for left side, 1 for right side
     [SerializeField] private int playerSide;
+
+    // Obect where pieces are drawn
+    [SerializeField] public GameObject pieceBoard;
 
     // Prefab for cycle pointers
     [SerializeField] private GameObject pointerPrefab;
@@ -32,7 +36,6 @@ public class GameBoard : MonoBehaviour
 
     // Current fall delay for pieces.
     [SerializeField] private float fallTime = 0.8f;
-
 
 
     // Starting HP of this character.
@@ -68,6 +71,9 @@ public class GameBoard : MonoBehaviour
     // Cached pause menu, so this board can pause the game
     private PauseMenu pauseMenu;
 
+    // If this board is currently dropping pieces (not dead)
+    private bool defeated;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -94,7 +100,7 @@ public class GameBoard : MonoBehaviour
         hpBar.Setup(this);
 
         board = new Tile[height, width];
-        if (playerControlled) 
+        if (playerControlled)
         {
             SpawnPiece();
         }
@@ -103,7 +109,7 @@ public class GameBoard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerControlled)
+        if (playerControlled && !defeated)
         {
             if (Input.GetKeyDown(inputScript.Pause))
             {
@@ -204,6 +210,12 @@ public class GameBoard : MonoBehaviour
     public void SpawnPiece()
     {
         piece = piecePreview.SpawnNextPiece();
+
+        // If the piece is already in an invalid position, player has topped out
+        if (!ValidPlacement()) {
+            hp = 0;
+            Defeat();
+        }
     }
 
     // Move the current piece by this amount.
@@ -300,6 +312,9 @@ public class GameBoard : MonoBehaviour
         hp -= hpBar.DamageQueue[5].dmg;
         hpBar.AdvanceDamageQueue();
         hpBar.Refresh();
+
+        // If this player is out of HP, run defeat
+        if (hp <= 0) Defeat();
     }
 
 
@@ -526,5 +541,11 @@ public class GameBoard : MonoBehaviour
     public PieceRng GetPieceRng()
     {
         return battler.pieceRng;
+    }
+
+    public void Defeat() {
+        defeated = true;
+        Destroy(piece);
+        pieceBoard.SetActive(false);
     }
 }
