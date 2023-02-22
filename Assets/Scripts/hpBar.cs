@@ -100,7 +100,6 @@ public class HpBar : MonoBehaviour
         for (int i = 5; i >= 1; i--)
         {
             damageQueue[i].SetDamage(damageQueue[i-1].dmg);
-            
         }
 
         damageQueue[0].SetDamage(0);
