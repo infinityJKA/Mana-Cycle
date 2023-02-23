@@ -110,7 +110,7 @@ public class GameBoard : MonoBehaviour
 
     // piece movement is all in functions so they can be called by inputScript. this allows easier implementation of AI controls
 
-    public void rotateLeft(){
+    public void RotateLeft(){
         piece.RotateLeft();
         if(!ValidPlacement()){
             // try nudging left, then right, then up. If none work, undo the rotation
@@ -118,7 +118,7 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    public void rotateRight(){
+    public void RotateRight(){
         piece.RotateRight();
         if(!ValidPlacement()){
             // try nudging right, then left, then up. If none work, undo the rotation
@@ -126,30 +126,30 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    public void moveLeft(){
+    public void MoveLeft(){
         MovePiece(-1, 0);
     }
 
-    public void moveRight(){
+    public void MoveRight(){
         MovePiece(1, 0);
     }
 
-    public void spellcast(){
+    public void Spellcast(){
         // get current mana color from cycle, and clear that color
         // start at chain of 1
         // canCast argument is based on if a spellcast is currently in process.
         Spellcast(1, !casting);
     }
 
-    public bool getControlled(){
+    public bool isPlayerControlled(){
         return this.playerControlled;
     }
 
-    public bool getDefeated(){
+    public bool isDefeated(){
         return this.defeated;
     }
 
-    public bool getPieceSpawned(){
+    public bool isPieceSpawned(){
         return this.pieceSpawned;
     }
 
