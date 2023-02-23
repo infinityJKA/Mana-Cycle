@@ -106,7 +106,41 @@ public class GameBoard : MonoBehaviour
         }
     }
 
+    // piece movement is all in functions so they can be called by inputScript. this allows easier implementation of AI controls
+
+    public void rotateLeft(){
+        piece.RotateLeft();
+        if(!ValidPlacement()){
+            // try nudging left, then right, then up. If none work, undo the rotation
+            if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
+        }
+    }
+
+    public void rotateRight(){
+        piece.RotateRight();
+        if(!ValidPlacement()){
+            // try nudging right, then left, then up. If none work, undo the rotation
+            if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
+        }
+    }
+
+    public void moveLeft(){
+        MovePiece(-1, 0);
+    }
+
+    public void moveRight(){
+        MovePiece(1, 0);
+    }
+
+    public void spellcast(){
+        // get current mana color from cycle, and clear that color
+        // start at chain of 1
+        // canCast argument is based on if a spellcast is currently in process.
+        Spellcast(1, !casting);
+    }
+
     // Update is called once per frame
+
     void Update()
     {
         if (playerControlled && !defeated)
@@ -128,47 +162,6 @@ public class GameBoard : MonoBehaviour
             
             // If not paused, do piece movements
             else {
-                // rotate left
-                if (Input.GetKeyDown(inputScript.RotateLeft))
-                {
-                    piece.RotateLeft();
-                    if(!ValidPlacement()){
-                        // try nudging left, then right, then up. If none work, undo the rotation
-                        if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
-                    }
-                }
-
-                // rotate right
-                if (Input.GetKeyDown(inputScript.RotateRight))
-                {
-                    piece.RotateRight();
-                    if(!ValidPlacement()){
-                        // try nudging right, then left, then up. If none work, undo the rotation
-                        if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
-                    }
-                }
-
-                // move piece left
-                if (Input.GetKeyDown(inputScript.Left))
-                {
-                    MovePiece(-1, 0);
-                }
-
-                // move piece right
-                if (Input.GetKeyDown(inputScript.Right))
-                {
-                    MovePiece(1, 0);
-                }
-
-                // Spellcast
-                if (Input.GetKeyDown(inputScript.Cast))
-                {
-                    // get current mana color from cycle, and clear that color
-                    // start at chain of 1
-                    // canCast argument is based on if a spellcast is currently in process.
-                    Spellcast(1, !casting);
-                }
-
 
                 // Get the time that has passed since the previous piece fall.
                 // If it is greater than fall time (or fallTime/10 if holding down),
