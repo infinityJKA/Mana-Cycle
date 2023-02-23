@@ -50,9 +50,10 @@ public class Controller : MonoBehaviour
                 // this block runs when a new pieces is spawned
                 // TODO make target based on lowest col to survive longer
                 targetCol = (int) UnityEngine.Random.Range(0f,(float) GameBoard.width);
+                board.setFallTimeMult(1f);
             }
             // random number so ai moves at random intervals
-            if (((int) UnityEngine.Random.Range(0f,50f) == 0) && !board.isDefeated()){
+            if (((int) UnityEngine.Random.Range(0f,40f) == 0) && !board.getDefeated()){
                 
                 // random number to choose what to do
                 move = (int) UnityEngine.Random.Range(0f, 7f);
@@ -64,11 +65,15 @@ public class Controller : MonoBehaviour
                 else if (board.getPiece().GetCol() < this.targetCol){
                     board.MoveRight();
                 }
+                else{
+                    // we are at target, so quickdrop
+                    board.setFallTimeMult(0.1f);
+                }
 
                 switch(move){
-                    case 0: board.RotateLeft(); break;
-                    case 1: board.RotateRight(); break;
-                    case 2: board.Spellcast(); break;
+                    case 0: board.rotateLeft(); break;
+                    case 1: board.rotateRight(); break;
+                    case 2: board.spellcast(); break;
                 }
 
                 
