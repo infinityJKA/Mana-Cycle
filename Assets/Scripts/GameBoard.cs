@@ -74,6 +74,8 @@ public class GameBoard : MonoBehaviour
     // If this board is currently dropping pieces (not dead)
     private bool defeated;
 
+    private float fallTimeMult;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -100,10 +102,7 @@ public class GameBoard : MonoBehaviour
         hpBar.Setup(this);
 
         board = new Tile[height, width];
-        if (playerControlled)
-        {
-            SpawnPiece();
-        }
+        SpawnPiece();
     }
 
     // piece movement is all in functions so they can be called by inputScript. this allows easier implementation of AI controls
@@ -139,11 +138,19 @@ public class GameBoard : MonoBehaviour
         Spellcast(1, !casting);
     }
 
+    public bool getControlled(){
+        return this.playerControlled;
+    }
+
+    public bool getDefeated(){
+        return this.defeated;
+    }
+
     // Update is called once per frame
 
     void Update()
     {
-        if (playerControlled && !defeated)
+        if (!defeated)
         {
             if (Input.GetKeyDown(inputScript.Pause))
             {
@@ -158,15 +165,23 @@ public class GameBoard : MonoBehaviour
                 } else if (Input.GetKeyDown(inputScript.Down)) {
                     pauseMenu.MoveCursor(-1);
                 }
-            } 
+            }
+
+
             
             // If not paused, do piece movements
             else {
 
+                if (Input.GetKey(inputScript.Down) || !playerControlled){
+                    fallTimeMult = 0.1f;
+                }
+                else{
+                    fallTimeMult = 1f;
+                }
                 // Get the time that has passed since the previous piece fall.
                 // If it is greater than fall time (or fallTime/10 if holding down),
                 // move the piece one down.
-                if(Time.time - previousFallTime > (Input.GetKey(inputScript.Down) ? fallTime/10 : fallTime)){
+                if(Time.time - previousFallTime > fallTime*fallTimeMult){
                     // Try to move the piece down. If it can't be moved down,
                     if (!MovePiece(0, 1))
                     {
