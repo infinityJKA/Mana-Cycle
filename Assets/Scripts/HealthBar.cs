@@ -53,7 +53,7 @@ public class HealthBar : MonoBehaviour
             {
                 incoming.SubtractDamage(damage);
                 return 0;
-            } 
+            }
             // otherwise, cancel out all its damage and move to next
             // (will subtract 0 if empty)
             else {
@@ -77,10 +77,12 @@ public class HealthBar : MonoBehaviour
     {
         hpNum.SetHealth(board.hp);
         hpImage.fillAmount = 1f * board.hp / board.maxHp;
-        incomingDmgImage.fillAmount = 1f * TotalIncomingDamage() / board.maxHp;
-        
+
+        // incoming amount cannot be greater than hp fill amount 
+        incomingDmgImage.fillAmount = Math.Min(1f * TotalIncomingDamage() / board.maxHp, hpImage.fillAmount);
+
         // set incoming bar y to the top of current hp bar
-        hpBarTopY = hpImage.fillAmount * hpTransform.localScale.y - hpTransform.localScale.y + 1.0f;
+        hpBarTopY = (hpImage.fillAmount * hpTransform.localScale.y) - hpTransform.localScale.y + 1.0f;
 
         newIncomingPos = Math.Max(hpBarTopY - incomingDmgImage.fillAmount*incomingDmgTransform.localScale.y, 0);
         incomingDmgTransform.anchoredPosition = new Vector2(incomingDmgTransform.anchoredPosition.x, newIncomingPos);

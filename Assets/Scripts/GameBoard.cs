@@ -34,6 +34,11 @@ public class GameBoard : MonoBehaviour
     // Stores the image for the portrait
     [SerializeField] private Image portrait;
 
+    // Chain popup object
+    [SerializeField] private Popup chainPopup;
+    // Cascade popup object
+    [SerializeField] private Popup cascadePopup;
+
     // Current fall delay for pieces.
     [SerializeField] private float fallTime = 0.8f;
 
@@ -258,8 +263,7 @@ public class GameBoard : MonoBehaviour
         foreach (Vector2Int tile in piece)
         {
             // Return false if the tile is in an invalid position
-            // || tile.y < 0 - tiles can be above the ceiling, but if placed there, player dies.
-            if (tile.x < 0 || tile.x >= width || tile.y >= height) return false;
+            if (tile.x < 0 || tile.x >= width || tile.y < 0 || tile.y >= height) return false;
 
             // Return false here if the grid position's value is not null, so another tile is there
             if (board[tile.y, tile.x] != null) return false;
@@ -368,6 +372,7 @@ public class GameBoard : MonoBehaviour
             return;
         };
         int manaCleared = TotalMana(blobs);
+        if (chain > 1) chainPopup.Flash(chain.ToString());
 
         // Keep clearing while mana cleared for current color is greater than 0
         // Begin spellcast
@@ -381,6 +386,7 @@ public class GameBoard : MonoBehaviour
                 yield return new WaitForSeconds(0.5f);
 
                 cascade += 1;
+                if (cascade > 1) cascadePopup.Flash(cascade.ToString());
 
                 // DMG per mana, starts at 10, increases by 3 per cycle level
                 int damagePerMana = 10 + 3*cycleLevel;
