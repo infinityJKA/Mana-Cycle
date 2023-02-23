@@ -25,7 +25,7 @@ public class GameBoard : MonoBehaviour
     // The board of the enemy of the player/enemy of this board
     [SerializeField] private GameBoard enemyBoard;
     // HP Bar game object on this board
-    [SerializeField] private HpBar hpBar;
+    [SerializeField] private HealthBar hpBar;
 
     // Stores the piece preview for this board
     [SerializeField] private PiecePreview piecePreview;

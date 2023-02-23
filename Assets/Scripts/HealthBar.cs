@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class HpBar : MonoBehaviour
+public class HealthBar : MonoBehaviour
 {
     // The board this HP bar is for
     private GameBoard board;

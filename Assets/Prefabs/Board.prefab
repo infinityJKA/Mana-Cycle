@@ -72,7 +72,7 @@ MonoBehaviour:
   pointerPrefab: {fileID: 4135175320746358973, guid: 4ef00abd28d4145b68c481ced91f462e, type: 3}
   inputScript: {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
   enemyBoard: {fileID: 0}
-  hpBar: {fileID: 2765294716893170645}
+  hpBar: {fileID: 3207433290967925078}
   piecePreview: {fileID: 8650080534907225375}
   cycleLevelDisplay: {fileID: 3564053475371671737}
   portrait: {fileID: 7836459866606857623}
@@ -386,10 +386,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2765294716893170644}
-  - component: {fileID: 2765294716893170645}
   - component: {fileID: 5368032244508750367}
+  - component: {fileID: 3207433290967925078}
   m_Layer: 5
-  m_Name: HpBar
+  m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -418,7 +418,15 @@ RectTransform:
   m_AnchoredPosition: {x: 1.2, y: 0}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 1, y: 0.5}
---- !u!114 &2765294716893170645
+--- !u!222 &5368032244508750367
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2765294716893170647}
+  m_CullTransparentMesh: 1
+--- !u!114 &3207433290967925078
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -427,7 +435,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2765294716893170647}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e026d4a73dee57f49ad436c1a5f5e31b, type: 3}
+  m_Script: {fileID: 11500000, guid: a58843165eca643d2923c4bdde7fe0be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hpNum: {fileID: 210209703398581367}
@@ -440,14 +448,6 @@ MonoBehaviour:
   - {fileID: 4777057515343095531}
   - {fileID: 7087786244610995243}
   - {fileID: 231563411721414184}
---- !u!222 &5368032244508750367
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2765294716893170647}
-  m_CullTransparentMesh: 1
 --- !u!1 &2765294717091606432
 GameObject:
   m_ObjectHideFlags: 0
