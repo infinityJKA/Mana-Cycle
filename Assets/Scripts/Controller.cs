@@ -23,52 +23,52 @@ public class Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (board.getControlled()){
+        if (board.isPlayerControlled()){
             if (Input.GetKeyDown(inputs.RotateLeft)){
-                board.rotateLeft();
+                board.RotateLeft();
             }
 
             if (Input.GetKeyDown(inputs.RotateRight)){
-                board.rotateRight();
+                board.RotateRight();
             }
 
             if (Input.GetKeyDown(inputs.Left)){
-                board.moveLeft();
+                board.MoveLeft();
             }
 
             if (Input.GetKeyDown(inputs.Right)){
-                board.moveRight();
+                board.MoveRight();
             }
 
             if (Input.GetKeyDown(inputs.Cast)){
-                board.spellcast();
+                board.Spellcast();
             }
         }
         else{
             // AI movement
-            if (board.getPieceSpawned()){
+            if (board.isPieceSpawned()){
                 // this block runs when a new pieces is spawned
                 // TODO make target based on lowest col to survive longer
                 targetCol = (int) UnityEngine.Random.Range(0f,(float) GameBoard.width);
             }
             // random number so ai moves at random intervals
-            if (((int) UnityEngine.Random.Range(0f,50f) == 0) && !board.getDefeated()){
+            if (((int) UnityEngine.Random.Range(0f,50f) == 0) && !board.isDefeated()){
                 
                 // random number to choose what to do
                 move = (int) UnityEngine.Random.Range(0f, 7f);
 
                 // move the piece to our target col
                 if (board.getPiece().GetCol() > this.targetCol){
-                    board.moveLeft();
+                    board.MoveLeft();
                 }
                 else if (board.getPiece().GetCol() < this.targetCol){
-                    board.moveRight();
+                    board.MoveRight();
                 }
 
                 switch(move){
-                    case 0: board.rotateLeft(); break;
-                    case 1: board.rotateRight(); break;
-                    case 2: board.spellcast(); break;
+                    case 0: board.RotateLeft(); break;
+                    case 1: board.RotateRight(); break;
+                    case 2: board.Spellcast(); break;
                 }
 
                 
