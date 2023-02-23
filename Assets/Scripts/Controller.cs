@@ -68,6 +68,7 @@ public class Controller : MonoBehaviour
                 switch(move){
                     case 0: board.rotateLeft(); break;
                     case 1: board.rotateRight(); break;
+                    case 2: board.spellcast(); break;
                 }
 
                 
