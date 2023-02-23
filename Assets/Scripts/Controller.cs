@@ -9,7 +9,10 @@ public class Controller : MonoBehaviour
     // the board being controlled by this script
     [SerializeField] private GameBoard board;
     [SerializeField] private InputScript inputs;
+
+    // vars for AI
     private int move;
+    private int targetCol;
 
     // Start is called before the first frame update
     void Start()
@@ -43,22 +46,30 @@ public class Controller : MonoBehaviour
         }
         else{
             // AI movement
+            if (board.getPieceSpawned()){
+                // this block runs when a new pieces is spawned
+                // TODO make target based on lowest col to survive longer
+                targetCol = (int) UnityEngine.Random.Range(0f,(float) GameBoard.width);
+            }
             // random number so ai moves at random intervals
-            if (((int) UnityEngine.Random.Range(0f,25f) == 0) && !board.getDefeated()){
+            if (((int) UnityEngine.Random.Range(0f,50f) == 0) && !board.getDefeated()){
                 
                 // random number to choose what to do
                 move = (int) UnityEngine.Random.Range(0f, 7f);
-                
-                // smartest infinity main
-                switch(move){
-                    case 0: board.moveLeft(); break;
-                    case 1: board.moveLeft(); break;
-                    case 2: board.moveRight(); break;
-                    case 3: board.moveRight(); break;
-                    case 4: board.rotateLeft(); break;
-                    case 5: board.rotateRight(); break;
-                    case 6: board.spellcast(); break;
+
+                // move the piece to our target col
+                if (board.getPiece().GetCol() > this.targetCol){
+                    board.moveLeft();
                 }
+                else if (board.getPiece().GetCol() < this.targetCol){
+                    board.moveRight();
+                }
+
+                switch(move){
+                    case 0: board.rotateLeft(); break;
+                    case 1: board.rotateRight(); break;
+                }
+
                 
             }
 
