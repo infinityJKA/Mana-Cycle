@@ -50,4 +50,5 @@ public class PiecePreview : MonoBehaviour
         newPiece.Randomize(board);
         return newPiece;
     }
+
 }
