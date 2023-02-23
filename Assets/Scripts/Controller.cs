@@ -53,7 +53,7 @@ public class Controller : MonoBehaviour
                 board.setFallTimeMult(1f);
             }
             // random number so ai moves at random intervals
-            if (((int) UnityEngine.Random.Range(0f,40f) == 0) && !board.getDefeated()){
+            if (((int) UnityEngine.Random.Range(0f,40f) == 0) && !board.isDefeated()){
                 
                 // random number to choose what to do
                 move = (int) UnityEngine.Random.Range(0f, 7f);
@@ -71,9 +71,9 @@ public class Controller : MonoBehaviour
                 }
 
                 switch(move){
-                    case 0: board.rotateLeft(); break;
-                    case 1: board.rotateRight(); break;
-                    case 2: board.spellcast(); break;
+                    case 0: board.RotateLeft(); break;
+                    case 1: board.RotateRight(); break;
+                    default: board.Spellcast(); break;
                 }
 
                 
