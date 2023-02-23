@@ -342,7 +342,6 @@ public class GameBoard : MonoBehaviour
     {
         // Don't start a spellcast if already spellcasting
         if (!canCast) {Debug.Log("cast failed"); return;}
-        Debug.Log("cast start");
         // Save matrix of all tiles currently in one of the blobs
         tilesInBlobs = new bool[height, width];
 
@@ -350,11 +349,8 @@ public class GameBoard : MonoBehaviour
         ManaColor color = cycle.GetCycle()[cyclePosition];
         List<Blob> blobs = ClearManaOfColor(color);
 
-        Debug.Log(blobs);
-
         // If there were no blobs, do not deal damage, and do not move forward in cycle, end spellcast
         if (blobs.Count == 0) {
-            Debug.Log("end cast");
             casting = false;
             return;
         };
