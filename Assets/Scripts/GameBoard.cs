@@ -162,6 +162,10 @@ public class GameBoard : MonoBehaviour
         return this.piece;
     }
 
+    public void setFallTimeMult(float m){
+        this.fallTimeMult = m;
+    }
+
     // Update is called once per frame
 
     void Update()
@@ -182,23 +186,24 @@ public class GameBoard : MonoBehaviour
                     pauseMenu.MoveCursor(-1);
                 }
             }
-
-
             
             // If not paused, do piece movements
             else {
                 pieceSpawned = false;
 
-                if (Input.GetKey(inputScript.Down) || !playerControlled){
-                    fallTimeMult = 0.1f;
+                if (playerControlled){
+                    if (Input.GetKey(inputScript.Down)){
+                        this.fallTimeMult = 0.1f;
+                    }
+                    else{
+                        this.fallTimeMult = 1f;
+                    }
                 }
-                else{
-                    fallTimeMult = 1f;
-                }
+
                 // Get the time that has passed since the previous piece fall.
                 // If it is greater than fall time (or fallTime/10 if holding down),
                 // move the piece one down.
-                if(Time.time - previousFallTime > fallTime*fallTimeMult){
+                if(Time.time - previousFallTime > fallTime*this.fallTimeMult){
                     // Try to move the piece down. If it can't be moved down,
                     if (!MovePiece(0, 1))
                     {
