@@ -76,6 +76,9 @@ public class GameBoard : MonoBehaviour
 
     private float fallTimeMult;
 
+    // True for one frame when new piece spawns
+    private bool pieceSpawned;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -146,6 +149,14 @@ public class GameBoard : MonoBehaviour
         return this.defeated;
     }
 
+    public bool getPieceSpawned(){
+        return this.pieceSpawned;
+    }
+
+    public Piece getPiece(){
+        return this.piece;
+    }
+
     // Update is called once per frame
 
     void Update()
@@ -171,6 +182,7 @@ public class GameBoard : MonoBehaviour
             
             // If not paused, do piece movements
             else {
+                pieceSpawned = false;
 
                 if (Input.GetKey(inputScript.Down) || !playerControlled){
                     fallTimeMult = 0.1f;
@@ -217,6 +229,7 @@ public class GameBoard : MonoBehaviour
     // Create a new piece and spawn it at the top of the board. Replaces the current piece field.
     public void SpawnPiece()
     {
+        pieceSpawned = true;
         piece = piecePreview.SpawnNextPiece();
 
         // If the piece is already in an invalid position, player has topped out
