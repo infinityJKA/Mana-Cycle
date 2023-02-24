@@ -1,3 +1,4 @@
+using System.Net.NetworkInformation;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,9 @@ public class GameBoard : MonoBehaviour
     // 0 for left side, 1 for right side
     [SerializeField] private int playerSide;
 
+    // Obect where pieces are drawn
+    [SerializeField] public GameObject pieceBoard;
+
     // Prefab for cycle pointers
     [SerializeField] private GameObject pointerPrefab;
     // Input mapping for this board
@@ -21,7 +25,7 @@ public class GameBoard : MonoBehaviour
     // The board of the enemy of the player/enemy of this board
     [SerializeField] private GameBoard enemyBoard;
     // HP Bar game object on this board
-    [SerializeField] private HpBar hpBar;
+    [SerializeField] private HealthBar hpBar;
 
     // Stores the piece preview for this board
     [SerializeField] private PiecePreview piecePreview;
@@ -30,9 +34,13 @@ public class GameBoard : MonoBehaviour
     // Stores the image for the portrait
     [SerializeField] private Image portrait;
 
+    // Chain popup object
+    [SerializeField] private Popup chainPopup;
+    // Cascade popup object
+    [SerializeField] private Popup cascadePopup;
+
     // Current fall delay for pieces.
     [SerializeField] private float fallTime = 0.8f;
-
 
 
     // Starting HP of this character.
@@ -68,6 +76,14 @@ public class GameBoard : MonoBehaviour
     // Cached pause menu, so this board can pause the game
     private PauseMenu pauseMenu;
 
+    // If this board is currently dropping pieces (not dead)
+    private bool defeated;
+
+    private float fallTimeMult;
+
+    // True for one frame when new piece spawns
+    private bool pieceSpawned;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -94,16 +110,67 @@ public class GameBoard : MonoBehaviour
         hpBar.Setup(this);
 
         board = new Tile[height, width];
-        if (playerControlled) 
-        {
-            SpawnPiece();
+        SpawnPiece();
+    }
+
+    // piece movement is all in functions so they can be called by inputScript. this allows easier implementation of AI controls
+
+    public void RotateLeft(){
+        piece.RotateLeft();
+        if(!ValidPlacement()){
+            // try nudging left, then right, then up. If none work, undo the rotation
+            if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
         }
     }
 
+    public void RotateRight(){
+        piece.RotateRight();
+        if(!ValidPlacement()){
+            // try nudging right, then left, then up. If none work, undo the rotation
+            if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
+        }
+    }
+
+    public void MoveLeft(){
+        MovePiece(-1, 0);
+    }
+
+    public void MoveRight(){
+        MovePiece(1, 0);
+    }
+
+    public void Spellcast(){
+        // get current mana color from cycle, and clear that color
+        // start at chain of 1
+        // canCast argument is based on if a spellcast is currently in process.
+        Spellcast(1, !casting);
+    }
+
+    public bool isPlayerControlled(){
+        return this.playerControlled;
+    }
+
+    public bool isDefeated(){
+        return this.defeated;
+    }
+
+    public bool isPieceSpawned(){
+        return this.pieceSpawned;
+    }
+
+    public Piece getPiece(){
+        return this.piece;
+    }
+
+    public void setFallTimeMult(float m){
+        this.fallTimeMult = m;
+    }
+
     // Update is called once per frame
+
     void Update()
     {
-        if (playerControlled)
+        if (!defeated)
         {
             if (Input.GetKeyDown(inputScript.Pause))
             {
@@ -118,56 +185,25 @@ public class GameBoard : MonoBehaviour
                 } else if (Input.GetKeyDown(inputScript.Down)) {
                     pauseMenu.MoveCursor(-1);
                 }
-            } 
+            }
             
             // If not paused, do piece movements
             else {
-                // rotate left
-                if (Input.GetKeyDown(inputScript.RotateLeft))
-                {
-                    piece.RotateLeft();
-                    if(!ValidPlacement()){
-                        // try nudging left, then right, then up. If none work, undo the rotation
-                        if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
+                pieceSpawned = false;
+
+                if (playerControlled){
+                    if (Input.GetKey(inputScript.Down)){
+                        this.fallTimeMult = 0.1f;
+                    }
+                    else{
+                        this.fallTimeMult = 1f;
                     }
                 }
-
-                // rotate right
-                if (Input.GetKeyDown(inputScript.RotateRight))
-                {
-                    piece.RotateRight();
-                    if(!ValidPlacement()){
-                        // try nudging right, then left, then up. If none work, undo the rotation
-                        if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
-                    }
-                }
-
-                // move piece left
-                if (Input.GetKeyDown(inputScript.Left))
-                {
-                    MovePiece(-1, 0);
-                }
-
-                // move piece right
-                if (Input.GetKeyDown(inputScript.Right))
-                {
-                    MovePiece(1, 0);
-                }
-
-                // Spellcast
-                if (Input.GetKeyDown(inputScript.Cast))
-                {
-                    // get current mana color from cycle, and clear that color
-                    // start at chain of 1
-                    // canCast argument is based on if a spellcast is currently in process.
-                    Spellcast(1, !casting);
-                }
-
 
                 // Get the time that has passed since the previous piece fall.
                 // If it is greater than fall time (or fallTime/10 if holding down),
                 // move the piece one down.
-                if(Time.time - previousFallTime > (Input.GetKey(inputScript.Down) ? fallTime/10 : fallTime)){
+                if(Time.time - previousFallTime > fallTime*this.fallTimeMult){
                     // Try to move the piece down. If it can't be moved down,
                     if (!MovePiece(0, 1))
                     {
@@ -203,7 +239,14 @@ public class GameBoard : MonoBehaviour
     // Create a new piece and spawn it at the top of the board. Replaces the current piece field.
     public void SpawnPiece()
     {
+        pieceSpawned = true;
         piece = piecePreview.SpawnNextPiece();
+
+        // If the piece is already in an invalid position, player has topped out
+        if (!ValidPlacement()) {
+            hp = 0;
+            Defeat();
+        }
     }
 
     // Move the current piece by this amount.
@@ -225,8 +268,7 @@ public class GameBoard : MonoBehaviour
         foreach (Vector2Int tile in piece)
         {
             // Return false if the tile is in an invalid position
-            // || tile.y < 0 - tiles can be above the ceiling, but if placed there, player dies.
-            if (tile.x < 0 || tile.x >= width || tile.y >= height) return false;
+            if (tile.x < 0 || tile.x >= width || tile.y < 0 || tile.y >= height) return false;
 
             // Return false here if the grid position's value is not null, so another tile is there
             if (board[tile.y, tile.x] != null) return false;
@@ -300,6 +342,9 @@ public class GameBoard : MonoBehaviour
         hp -= hpBar.DamageQueue[5].dmg;
         hpBar.AdvanceDamageQueue();
         hpBar.Refresh();
+
+        // If this player is out of HP, run defeat
+        if (hp <= 0) Defeat();
     }
 
 
@@ -318,8 +363,7 @@ public class GameBoard : MonoBehaviour
     private void Spellcast(int chain, bool canCast)
     {
         // Don't start a spellcast if already spellcasting
-        if (!canCast) {Debug.Log("cast failed"); return;}
-        Debug.Log("cast start");
+        if (!canCast) {return;}
         // Save matrix of all tiles currently in one of the blobs
         tilesInBlobs = new bool[height, width];
 
@@ -327,15 +371,13 @@ public class GameBoard : MonoBehaviour
         ManaColor color = cycle.GetCycle()[cyclePosition];
         List<Blob> blobs = ClearManaOfColor(color);
 
-        Debug.Log(blobs);
-
         // If there were no blobs, do not deal damage, and do not move forward in cycle, end spellcast
         if (blobs.Count == 0) {
-            Debug.Log("end cast");
             casting = false;
             return;
         };
         int manaCleared = TotalMana(blobs);
+        if (chain > 1) chainPopup.Flash(chain.ToString());
 
         // Keep clearing while mana cleared for current color is greater than 0
         // Begin spellcast
@@ -349,6 +391,7 @@ public class GameBoard : MonoBehaviour
                 yield return new WaitForSeconds(0.5f);
 
                 cascade += 1;
+                if (cascade > 1) cascadePopup.Flash(cascade.ToString());
 
                 // DMG per mana, starts at 10, increases by 3 per cycle level
                 int damagePerMana = 10 + 3*cycleLevel;
@@ -526,5 +569,11 @@ public class GameBoard : MonoBehaviour
     public PieceRng GetPieceRng()
     {
         return battler.pieceRng;
+    }
+
+    public void Defeat() {
+        defeated = true;
+        Destroy(piece);
+        pieceBoard.SetActive(false);
     }
 }
