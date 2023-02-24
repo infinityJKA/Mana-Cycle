@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
-public class HpBar : MonoBehaviour
+public class HealthBar : MonoBehaviour
 {
     // The board this HP bar is for
     private GameBoard board;
@@ -20,6 +21,7 @@ public class HpBar : MonoBehaviour
     private float hpBarTopY;
     [SerializeField] private IncomingDamage[] damageQueue;
     public IncomingDamage[] DamageQueue { get { return damageQueue; }} // (public getter for private setter)
+    private float newIncomingPos;
 
     // Start is called before the first frame update
     void Start()
@@ -51,7 +53,7 @@ public class HpBar : MonoBehaviour
             {
                 incoming.SubtractDamage(damage);
                 return 0;
-            } 
+            }
             // otherwise, cancel out all its damage and move to next
             // (will subtract 0 if empty)
             else {
@@ -71,18 +73,19 @@ public class HpBar : MonoBehaviour
         Refresh();
     }
 
-    // Update is called once per frame hahahahahahahahahahahahahaha just kidding
-
     public void Refresh()
     {
         hpNum.SetHealth(board.hp);
-        Debug.Log(hpImage);
         hpImage.fillAmount = 1f * board.hp / board.maxHp;
-        incomingDmgImage.fillAmount = 1f * TotalIncomingDamage() / board.maxHp;
-        
+
+        // incoming amount cannot be greater than hp fill amount 
+        incomingDmgImage.fillAmount = Math.Min(1f * TotalIncomingDamage() / board.maxHp, hpImage.fillAmount);
+
         // set incoming bar y to the top of current hp bar
-        hpBarTopY = hpImage.fillAmount * hpTransform.localScale.y - hpTransform.localScale.y + 1.0f;
-        incomingDmgTransform.anchoredPosition = new Vector2(incomingDmgTransform.anchoredPosition.x,hpBarTopY - incomingDmgImage.fillAmount*incomingDmgTransform.localScale.y);
+        hpBarTopY = (hpImage.fillAmount * hpTransform.localScale.y) - hpTransform.localScale.y + 1.0f;
+
+        newIncomingPos = Math.Max(hpBarTopY - incomingDmgImage.fillAmount*incomingDmgTransform.localScale.y, 0);
+        incomingDmgTransform.anchoredPosition = new Vector2(incomingDmgTransform.anchoredPosition.x, newIncomingPos);
     }
 
     public int TotalIncomingDamage()
@@ -101,7 +104,6 @@ public class HpBar : MonoBehaviour
         for (int i = 5; i >= 1; i--)
         {
             damageQueue[i].SetDamage(damageQueue[i-1].dmg);
-            
         }
 
         damageQueue[0].SetDamage(0);
