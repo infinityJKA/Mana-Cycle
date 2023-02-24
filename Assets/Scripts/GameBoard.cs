@@ -363,7 +363,7 @@ public class GameBoard : MonoBehaviour
     private void Spellcast(int chain, bool canCast)
     {
         // Don't start a spellcast if already spellcasting
-        if (!canCast) {Debug.Log("cast failed"); return;}
+        if (!canCast) {return;}
         // Save matrix of all tiles currently in one of the blobs
         tilesInBlobs = new bool[height, width];
 
