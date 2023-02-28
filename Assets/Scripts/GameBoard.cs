@@ -576,4 +576,23 @@ public class GameBoard : MonoBehaviour
         Destroy(piece);
         pieceBoard.SetActive(false);
     }
+
+    public Tile[,] getBoard(){
+        return this.board;
+    }
+
+    public int getColHeight(int col){
+        int l = 0;
+        // loop through the given col, bottom to top.
+        for (int i = board.GetLength(0)-1; i > 0; i--){
+            // we have reached an empty tile aka top of the stack
+            if (board[i,col] == null){
+                l = height - i;
+                break;
+            }
+        }
+        // Debug.Log(l);
+        return l;
+    }
+
 }
