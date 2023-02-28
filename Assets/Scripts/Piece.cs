@@ -230,4 +230,8 @@ public class Piece : MonoBehaviour
     {
         return right;
     }
+
+    public Orientation getRot(){
+        return orientation;
+    }
 }
