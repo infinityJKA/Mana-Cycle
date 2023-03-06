@@ -13,6 +13,15 @@ public class Controller : MonoBehaviour
     // vars for AI
     private int move;
     private int targetCol;
+    private int targetRot;
+    private int colAdjust;
+    private List<int> coolio;
+    private int[] cLengths;
+    private Tile[,] boardLayout;
+    private int[] heights;
+    private int lowestHeight;
+    private int[] orderedHeights;
+    private List<int> lowestCols = new List<int>();
 
     // Start is called before the first frame update
     void Start()
@@ -29,14 +38,17 @@ public class Controller : MonoBehaviour
             }
 
             if (Input.GetKeyDown(inputs.RotateRight)){
+                // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
                 board.RotateRight();
             }
 
             if (Input.GetKeyDown(inputs.Left)){
+                // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
                 board.MoveLeft();
             }
 
             if (Input.GetKeyDown(inputs.Right)){
+                // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
                 board.MoveRight();
             }
 
@@ -48,21 +60,35 @@ public class Controller : MonoBehaviour
             // AI movement
             if (board.isPieceSpawned()){
                 // this block runs when a new pieces is spawned
-                // TODO make target based on lowest col to survive longer
-                targetCol = (int) UnityEngine.Random.Range(0f,(float) GameBoard.width);
+                // find cols with the least height and randomly choose between them
+                // TODO factor in making blobs in some way. likely by looping through each possible column and checking blob size / dmg
+                targetCol = FindLowestCols()[ (int) (UnityEngine.Random.Range(0f, FindLowestCols().Count)) ];
+
+                if (targetCol == 7){
+                    // piece can only reach edges in specific rotations.
+                    targetRot = (int) UnityEngine.Random.Range(0f,2f) * 3 + 1;
+                }
+                else if (targetCol == 0){
+                    targetRot = 3;
+                }
+                else{
+                    targetRot = (int) UnityEngine.Random.Range(0f, 4f);
+                }
+                
                 board.setFallTimeMult(1f);
             }
             // random number so ai moves at random intervals
-            if (((int) UnityEngine.Random.Range(0f,40f) == 0) && !board.isDefeated()){
+            if (((int) UnityEngine.Random.Range(0f,70f) == 0) && !board.isDefeated()){
                 
-                // random number to choose what to do
+                // random number to choose when to cast
                 move = (int) UnityEngine.Random.Range(0f, 7f);
 
                 // move the piece to our target col
-                if (board.getPiece().GetCol() > this.targetCol){
+
+                if (board.getPiece().GetCol() + colAdjust > this.targetCol){
                     board.MoveLeft();
                 }
-                else if (board.getPiece().GetCol() < this.targetCol){
+                else if (board.getPiece().GetCol() + colAdjust < this.targetCol){
                     board.MoveRight();
                 }
                 else{
@@ -70,16 +96,49 @@ public class Controller : MonoBehaviour
                     board.setFallTimeMult(0.1f);
                 }
 
-                switch(move){
-                    case 0: board.RotateLeft(); break;
-                    case 1: board.RotateRight(); break;
-                    default: board.Spellcast(); break;
+                if ((int) board.getPiece().getRot() > this.targetRot){
+                    board.RotateRight();
+                }
+                else if ((int) board.getPiece().getRot() < this.targetRot){
+                    board.RotateLeft();
                 }
 
-                
+                if (move == 0){
+                    board.Spellcast();
+                }
+
             }
 
         }
 
+    } // close Update()
+
+    public List<int> FindLowestCols(){
+        // slightly awkward naming convention 
+        boardLayout = board.getBoard();
+        heights = new int[GameBoard.width];
+
+        // loop over cols and create a list with their heights
+        for (int c = 0; c < boardLayout.GetLength(1); c++){  
+            heights[c] = board.getColHeight(c);
+        }
+        // Debug.Log(heights.ToString());
+
+        // we now have a list of all col's heights, left to right.
+        // now add the column numbers of all the lowest columns in a list.
+        // first, get the lowest height. 
+        orderedHeights = new int[heights.Length];
+        Array.Copy(heights, 0, orderedHeights, 0, heights.Length);
+        Array.Sort(orderedHeights); // these in place methods are killing me
+        lowestHeight = orderedHeights[0];
+        lowestCols = new List<int>();
+        for (int i = 0; i < heights.Length; i++){
+            if (heights[i] == lowestHeight){
+                lowestCols.Add(i);
+            }
+        }
+
+        return (lowestCols);
     }
+
 }
