@@ -373,7 +373,7 @@ public class GameBoard : MonoBehaviour
 
         // List of all blobs
         ManaColor color = cycle.GetCycle()[cyclePosition];
-        List<Blob> blobs = ClearManaOfColor(color);
+        List<Blob> blobs = FindBlobsOfColor(color);
 
         // If there were no blobs, do not deal damage, and do not move forward in cycle, end spellcast
         if (blobs.Count == 0) {
@@ -417,7 +417,7 @@ public class GameBoard : MonoBehaviour
                 AllTileGravity();
 
                 // Check for cascaded blobs
-                List<Blob> cascadedBlobs = ClearManaOfColor(color);
+                List<Blob> cascadedBlobs = FindBlobsOfColor(color);
                 manaCleared = TotalMana(cascadedBlobs);
             }
 
@@ -441,9 +441,8 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    // Clears the given color from the board.
     // Returns a list of all blobs of mana that were cleared.
-    private List<Blob> ClearManaOfColor(ManaColor color)
+    private List<Blob> FindBlobsOfColor(ManaColor color)
     {
         List<Blob> blobs = new List<Blob>();
 
