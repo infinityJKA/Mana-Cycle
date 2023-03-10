@@ -185,6 +185,10 @@ public class GameBoard : MonoBehaviour
                 } else if (Input.GetKeyDown(inputScript.Down)) {
                     pauseMenu.MoveCursor(-1);
                 }
+
+                if (Input.GetKeyDown(inputScript.Cast)){
+                    pauseMenu.SelectOption();
+                }
             }
             
             // If not paused, do piece movements
