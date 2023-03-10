@@ -80,7 +80,7 @@ public class Controller : MonoBehaviour
                 board.setFallTimeMult(1f);
             }
             // random number so ai moves at random intervals
-            if (((int) UnityEngine.Random.Range(0f,70f) == 0) && !board.isDefeated()){
+            if (((int) UnityEngine.Random.Range(0f,120f) == 0) && !board.isDefeated()){
                 
                 // random number to choose when to cast
                 move = (int) UnityEngine.Random.Range(0f, 7f);
