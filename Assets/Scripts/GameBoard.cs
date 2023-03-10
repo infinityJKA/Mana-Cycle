@@ -571,6 +571,10 @@ public class GameBoard : MonoBehaviour
         return battler.pieceRng;
     }
 
+    public bool isPaused(){
+        return pauseMenu.paused;
+    }
+
     public void Defeat() {
         defeated = true;
         Destroy(piece);

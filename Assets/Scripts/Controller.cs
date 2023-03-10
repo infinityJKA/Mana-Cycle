@@ -15,7 +15,6 @@ public class Controller : MonoBehaviour
     private int targetCol;
     private int targetRot;
     private int colAdjust;
-    private List<int> coolio;
     private int[] cLengths;
     private Tile[,] boardLayout;
     private int[] heights;
@@ -32,6 +31,9 @@ public class Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // stop movement while paused
+        if (board.isPaused()) return;
+
         if (board.isPlayerControlled()){
             if (Input.GetKeyDown(inputs.RotateLeft)){
                 board.RotateLeft();
