@@ -68,7 +68,7 @@ public class Controller : MonoBehaviour
 
                 if (targetCol == 7){
                     // piece can only reach edges in specific rotations.
-                    targetRot = (int) UnityEngine.Random.Range(0f,2f) * 3 + 1;
+                    targetRot = 2;
                 }
                 else if (targetCol == 0){
                     targetRot = 3;
@@ -80,18 +80,24 @@ public class Controller : MonoBehaviour
                 board.setFallTimeMult(1f);
 
                 // random number to choose when to cast
-                move = (int) UnityEngine.Random.Range(0f, 7f);
+                if (FindLowestCols()[0] < GameBoard.height/2){
+                    move = 0;
+                }
+                else{
+                    move = (int) UnityEngine.Random.Range(0f, 4f);
+                }
+               
 
                 if (move == 0){
                     board.Spellcast();
                 }
             }
             // random number so ai moves at random intervals
-            if (((int) UnityEngine.Random.Range(0f,120f) == 0) && !board.isDefeated()){
+            if (((int) UnityEngine.Random.Range(0f,110f) == 0) && !board.isDefeated()){
                 
                 // rotate peice to target rot
                 if ((int) board.getPiece().getRot() > this.targetRot){
-                    board.RotateRight();
+                    Debug.Log(board.getPiece().getRot());
                 }
                 else if ((int) board.getPiece().getRot() < this.targetRot){
                     board.RotateLeft();
