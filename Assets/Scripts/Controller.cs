@@ -78,39 +78,39 @@ public class Controller : MonoBehaviour
                 }
                 
                 board.setFallTimeMult(1f);
+
+                // random number to choose when to cast
+                move = (int) UnityEngine.Random.Range(0f, 7f);
+
+                if (move == 0){
+                    board.Spellcast();
+                }
             }
             // random number so ai moves at random intervals
             if (((int) UnityEngine.Random.Range(0f,120f) == 0) && !board.isDefeated()){
                 
-                // random number to choose when to cast
-                move = (int) UnityEngine.Random.Range(0f, 7f);
-
-                // move the piece to our target col
-
-                if (board.getPiece().GetCol() + colAdjust > this.targetCol){
-                    board.MoveLeft();
-                }
-                else if (board.getPiece().GetCol() + colAdjust < this.targetCol){
-                    board.MoveRight();
-                }
-                else{
-                    // we are at target, so quickdrop
-                    board.setFallTimeMult(0.1f);
-                }
-
+                // rotate peice to target rot
                 if ((int) board.getPiece().getRot() > this.targetRot){
                     board.RotateRight();
                 }
                 else if ((int) board.getPiece().getRot() < this.targetRot){
                     board.RotateLeft();
                 }
+                else{
 
-                if (move == 0){
-                    board.Spellcast();
+                    // move the piece to our target col, only if rot is met
+                    if (board.getPiece().GetCol() + colAdjust > this.targetCol){
+                        board.MoveLeft();
+                    }
+                    else if (board.getPiece().GetCol() + colAdjust < this.targetCol){
+                        board.MoveRight();
+                    }
+                    else{
+                        // we are at target, so quickdrop
+                        board.setFallTimeMult(0.1f);
+                    }
                 }
-
             }
-
         }
 
     } // close Update()
