@@ -10,17 +10,36 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] private List<InputScript> inputScripts;
     [SerializeField] private List<GameObject> menuItems;
+    // unity can't serialize 2d arrays so we have to do it goofy style
+    [SerializeField] private int columns = 2;
+    private int rows;
+    private int currentRow = 0;
+    private int currentCol = 0;
+    
+
     private int currentSelection = 0;
+
+    void Start(){
+        rows = menuItems.Count / columns;
+    }
 
     void Update(){
         foreach (InputScript inputScript in inputScripts)
         {
-            if (Input.GetKeyDown(inputScript.Down)){
-                currentSelection++;   
+            if (Input.GetKeyDown(inputScript.Right)){
+                currentCol = Math.Min(currentCol + 1, columns-1);   
+            }
+
+            if (Input.GetKeyDown(inputScript.Left)){
+                currentCol = Math.Max(currentCol - 1, 0);   
             }
 
             if (Input.GetKeyDown(inputScript.Up)){
-                currentSelection--;
+                currentRow = Math.Max(currentRow - 1, 0);   
+            }
+
+            if (Input.GetKeyDown(inputScript.Down)){
+                currentRow = Math.Min(currentRow + 1, rows-1);   
             }
 
             if (Input.GetKeyDown(inputScript.Cast)){
@@ -28,8 +47,9 @@ public class MainMenu : MonoBehaviour
                 (menuItems[currentSelection]).GetComponent<Button>().onClick.Invoke();
             }
                 
-            // make sure list selection doesnt go out of bounds
-            currentSelection = Math.Abs(currentSelection) % menuItems.Count;
+            // set row and col to correct item
+            currentSelection = currentCol + currentRow*columns;
+            // Debug.Log(currentCol + ", " + currentRow + "  |  " + currentSelection);
             EventSystem.current.SetSelectedGameObject(menuItems[currentSelection]);
         }
     }
