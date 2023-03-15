@@ -19,4 +19,10 @@ public class Utils : MonoBehaviour // please keep this as MonoBehavior to preven
     public static void setScene(string scene){
         SceneManager.LoadScene(scene);
     }
+
+    // % operator is strange with negative numbers
+    public static int mod(int x, int m) 
+    {
+        return (x%m + m)%m;
+    }
 }
