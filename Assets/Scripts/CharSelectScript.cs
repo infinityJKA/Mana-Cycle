@@ -44,7 +44,7 @@ public class CharSelectScript : MonoBehaviour
         }
 
         // keep selection in bounds
-        charSelection = Math.Abs(charSelection) % battlerList.Count;
+        charSelection = Utils.mod(charSelection, battlerList.Count);
 
         // update objects
         Battler currentChar = battlerList[charSelection];
