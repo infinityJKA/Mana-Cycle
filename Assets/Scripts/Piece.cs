@@ -51,6 +51,18 @@ public class Piece : MonoBehaviour
         }
     }
 
+    private Vector3 UndoOrientedDirection()
+    {
+        switch(orientation)
+        {
+            case Orientation.up: return Vector3.up;
+            case Orientation.left: return Vector3.right;
+            case Orientation.down: return Vector3.down;
+            case Orientation.right: return Vector3.left;
+            default: return Vector3.zero;
+        }
+    }
+
     // Randomize the color of the tiles of this piece.
     public void Randomize(GameBoard board)
     {
@@ -151,6 +163,12 @@ public class Piece : MonoBehaviour
     public void UpdateOrientation()
     {
         rotationCenter.rotation = Quaternion.LookRotation(Vector3.forward, OrientedDirection());
+
+        // make the inner tiles face opposite rotation, so animation stays correct
+        var opposite = UndoOrientedDirection();
+        center.transform.rotation = Quaternion.LookRotation(Vector3.forward, opposite);
+        top.transform.rotation = Quaternion.LookRotation(Vector3.forward, opposite);
+        right.transform.rotation = Quaternion.LookRotation(Vector3.forward, opposite);
     }
 
     // Iteration of all coordinates this piece currently occupies. Returns Vector2Ints of (col, row).
