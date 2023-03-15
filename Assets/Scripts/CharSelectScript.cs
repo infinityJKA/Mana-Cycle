@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 public class CharSelectScript : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class CharSelectScript : MonoBehaviour
     [SerializeField] private GameObject portraitDisp;
     [SerializeField] private GameObject nameDisp;
     private TMPro.TextMeshProUGUI nameText;
+    private Image portraitImg;
 
     private int charSelection = 0;
 
@@ -17,6 +19,7 @@ public class CharSelectScript : MonoBehaviour
     void Start()
     {
         nameText = nameDisp.GetComponent<TMPro.TextMeshProUGUI>();
+        portraitImg = portraitDisp.GetComponent<Image>();
     }
 
     // Update is called once per frame
@@ -38,5 +41,6 @@ public class CharSelectScript : MonoBehaviour
         // update objects
         Battler currentChar = battlerList[charSelection];
         nameText.text = currentChar.displayName;
+        portraitImg.sprite = currentChar.sprite;
     }
 }
