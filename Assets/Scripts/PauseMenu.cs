@@ -48,7 +48,7 @@ public class PauseMenu : MonoBehaviour
     public void MoveCursor(int amount)
     {
         currentSelection += amount;
-        currentSelection = Math.Abs(currentSelection) % pauseMenuItems.Count;
+        currentSelection = Utils.mod(currentSelection, pauseMenuItems.Count);
         EventSystem.current.SetSelectedGameObject(pauseMenuItems[currentSelection]);
     }
 

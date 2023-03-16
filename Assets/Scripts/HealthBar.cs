@@ -20,7 +20,7 @@ public class HealthBar : MonoBehaviour
     private RectTransform incomingDmgTransform;
     private float hpBarTopY;
     [SerializeField] private IncomingDamage[] damageQueue;
-    public IncomingDamage[] DamageQueue { get { return damageQueue; }} // (public getter for private setter)
+    public IncomingDamage[] DamageQueue { get { return damageQueue; } } // (public getter for private setter)
     private float newIncomingPos;
 
     // Start is called before the first frame update
