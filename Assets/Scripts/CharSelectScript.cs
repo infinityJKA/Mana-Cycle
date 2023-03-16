@@ -54,12 +54,20 @@ public class CharSelectScript : MonoBehaviour
 
     void updateLock(){
         if (!lockedIn){
+            // unlocked
             portraitImg.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
             nameText.fontStyle = (TMPro.FontStyles) FontStyle.Normal;
         }
         else{
+            // locked in
             portraitImg.color = new Color(1.0f, 1.0f, 1.0f, 1f);
             nameText.fontStyle = (TMPro.FontStyles) FontStyle.Bold;
+
+            // timerManager.Refresh();
         }
+    }
+
+    public bool GetLocked(){
+        return lockedIn;
     }
 }
