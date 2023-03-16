@@ -185,6 +185,10 @@ public class GameBoard : MonoBehaviour
                 } else if (Input.GetKeyDown(inputScript.Down)) {
                     pauseMenu.MoveCursor(-1);
                 }
+
+                if (Input.GetKeyDown(inputScript.Cast)){
+                    pauseMenu.SelectOption();
+                }
             }
             
             // If not paused, do piece movements
@@ -284,8 +288,13 @@ public class GameBoard : MonoBehaviour
 
         // Move the displayed tiles into the board parent
         piece.GetCenter().transform.SetParent(transform, true);
+        piece.GetCenter().transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+
         piece.GetTop().transform.SetParent(transform, true);
+        piece.GetTop().transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+
         piece.GetRight().transform.SetParent(transform, true);
+        piece.GetRight().transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
 
         // Destroy the piece containing the tiles, leaving only the tiles that were just taken out of the piece
         Destroy(piece);
@@ -369,7 +378,7 @@ public class GameBoard : MonoBehaviour
 
         // List of all blobs
         ManaColor color = cycle.GetCycle()[cyclePosition];
-        List<Blob> blobs = ClearManaOfColor(color);
+        List<Blob> blobs = FindBlobsOfColor(color);
 
         // If there were no blobs, do not deal damage, and do not move forward in cycle, end spellcast
         if (blobs.Count == 0) {
@@ -413,7 +422,7 @@ public class GameBoard : MonoBehaviour
                 AllTileGravity();
 
                 // Check for cascaded blobs
-                List<Blob> cascadedBlobs = ClearManaOfColor(color);
+                List<Blob> cascadedBlobs = FindBlobsOfColor(color);
                 manaCleared = TotalMana(cascadedBlobs);
             }
 
@@ -437,9 +446,8 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    // Clears the given color from the board.
     // Returns a list of all blobs of mana that were cleared.
-    private List<Blob> ClearManaOfColor(ManaColor color)
+    private List<Blob> FindBlobsOfColor(ManaColor color)
     {
         List<Blob> blobs = new List<Blob>();
 
@@ -528,6 +536,12 @@ public class GameBoard : MonoBehaviour
                     // I am subtracting half of width and height again here, because it only works tht way,
                     // i don't know enough about transforms to know why. bandaid solution moment.
                     board[rFall-1, c].transform.localPosition = new Vector3(c - 3.5f, -rFall + 1 + 6.5f, 0);
+
+                    board[rFall-1, c].AnimateMovement(
+                        new Vector2(0, (rFall-1)-r),
+                        new Vector2(0, 0)
+                    );
+
                     board[r, c] = null;
                     return true;
                 }
@@ -569,6 +583,10 @@ public class GameBoard : MonoBehaviour
     public PieceRng GetPieceRng()
     {
         return battler.pieceRng;
+    }
+
+    public bool isPaused(){
+        return pauseMenu.paused;
     }
 
     public void Defeat() {

@@ -15,7 +15,6 @@ public class Controller : MonoBehaviour
     private int targetCol;
     private int targetRot;
     private int colAdjust;
-    private List<int> coolio;
     private int[] cLengths;
     private Tile[,] boardLayout;
     private int[] heights;
@@ -32,6 +31,9 @@ public class Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // stop movement while paused
+        if (board.isPaused()) return;
+
         if (board.isPlayerControlled()){
             if (Input.GetKeyDown(inputs.RotateLeft)){
                 board.RotateLeft();
@@ -66,7 +68,7 @@ public class Controller : MonoBehaviour
 
                 if (targetCol == 7){
                     // piece can only reach edges in specific rotations.
-                    targetRot = (int) UnityEngine.Random.Range(0f,2f) * 3 + 1;
+                    targetRot = 2;
                 }
                 else if (targetCol == 0){
                     targetRot = 3;
@@ -76,39 +78,45 @@ public class Controller : MonoBehaviour
                 }
                 
                 board.setFallTimeMult(1f);
-            }
-            // random number so ai moves at random intervals
-            if (((int) UnityEngine.Random.Range(0f,70f) == 0) && !board.isDefeated()){
-                
+
                 // random number to choose when to cast
-                move = (int) UnityEngine.Random.Range(0f, 7f);
-
-                // move the piece to our target col
-
-                if (board.getPiece().GetCol() + colAdjust > this.targetCol){
-                    board.MoveLeft();
-                }
-                else if (board.getPiece().GetCol() + colAdjust < this.targetCol){
-                    board.MoveRight();
+                if (FindLowestCols()[0] < GameBoard.height/2){
+                    move = 0;
                 }
                 else{
-                    // we are at target, so quickdrop
-                    board.setFallTimeMult(0.1f);
+                    move = (int) UnityEngine.Random.Range(0f, 4f);
                 }
-
-                if ((int) board.getPiece().getRot() > this.targetRot){
-                    board.RotateRight();
-                }
-                else if ((int) board.getPiece().getRot() < this.targetRot){
-                    board.RotateLeft();
-                }
+               
 
                 if (move == 0){
                     board.Spellcast();
                 }
-
             }
+            // random number so ai moves at random intervals
+            if (((int) UnityEngine.Random.Range(0f,110f) == 0) && !board.isDefeated()){
+                
+                // rotate peice to target rot
+                if ((int) board.getPiece().getRot() > this.targetRot){
+                    Debug.Log(board.getPiece().getRot());
+                }
+                else if ((int) board.getPiece().getRot() < this.targetRot){
+                    board.RotateLeft();
+                }
+                else{
 
+                    // move the piece to our target col, only if rot is met
+                    if (board.getPiece().GetCol() + colAdjust > this.targetCol){
+                        board.MoveLeft();
+                    }
+                    else if (board.getPiece().GetCol() + colAdjust < this.targetCol){
+                        board.MoveRight();
+                    }
+                    else{
+                        // we are at target, so quickdrop
+                        board.setFallTimeMult(0.1f);
+                    }
+                }
+            }
         }
 
     } // close Update()
