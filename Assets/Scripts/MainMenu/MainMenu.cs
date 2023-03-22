@@ -56,7 +56,7 @@ public class MainMenu : MonoBehaviour
 
     public void OnPressStart()
     {
-        Debug.Log("Pressed start");
-        SceneManager.LoadScene("ManaCycle");
+        // Debug.Log("Pressed start");
+        SceneManager.LoadScene("CharSelect");
     }
 }
