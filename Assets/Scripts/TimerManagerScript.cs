@@ -9,15 +9,15 @@ public class TimerManagerScript : MonoBehaviour
 
     [SerializeField] private CharSelectScript p1Selector;
     [SerializeField] private CharSelectScript p2Selector;
-    [SerializeField] private GameObject FadeObject;
-    private Image fadeImg;
+    private TransitionScript TransitionHandler;
+    private double timer;
     private bool countdownStarted = false;
-    private double timer = 0;
-    private double maxTime = 1.5;
+    private double maxTime = 1.0;
+
     // Start is called before the first frame update
     void Start()
     {
-        fadeImg = FadeObject.GetComponent<Image>();
+        TransitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
     }
 
     // Update is called once per frame
@@ -39,21 +39,21 @@ public class TimerManagerScript : MonoBehaviour
             if (countdownStarted){
                 countdownStarted = false;
                 timer = 0.0;
-                fadeImg.color = new Color(0.0f, 0.0f, 0.0f, 0f);
             }
         }
 
         // update timer, if applicable
         if (countdownStarted){
             timer -= Time.deltaTime;
-            fadeImg.color = new Color(0.0f, 0.0f, 0.0f, (float) ((maxTime - timer)/maxTime));
+            
         }
 
         // when time reached
         if (timer <= 0 && countdownStarted)
         {
             timer = 0;
-            Utils.setScene("ManaCycle");
+            countdownStarted = false;
+            TransitionHandler.WipeToScene("ManaCycle");
         }
 
     }
