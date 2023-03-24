@@ -14,6 +14,8 @@ public class Menu3d : MonoBehaviour
     [SerializeField] private GameObject HTPFirstSelected;
     [SerializeField] private GameObject SettingsFirstSelected;
 
+    [SerializeField] private TransitionScript TransitionHandler;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,7 +30,7 @@ public class Menu3d : MonoBehaviour
 
     public void SelectVersus()
     {
-        SceneManager.LoadScene("CharSelect");
+        TransitionHandler.WipeToScene("CharSelect");
     }
 
     public void SelectHTP()
