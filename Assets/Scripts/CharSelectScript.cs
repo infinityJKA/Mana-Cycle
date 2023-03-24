@@ -10,6 +10,7 @@ public class CharSelectScript : MonoBehaviour
     [SerializeField] private List<Battler> battlerList;
     [SerializeField] private GameObject portraitDisp;
     [SerializeField] private GameObject nameDisp;
+    private Battler currentChar;
     private TMPro.TextMeshProUGUI nameText;
     private Image portraitImg;
 
@@ -47,7 +48,7 @@ public class CharSelectScript : MonoBehaviour
         charSelection = Utils.mod(charSelection, battlerList.Count);
 
         // update objects
-        Battler currentChar = battlerList[charSelection];
+        currentChar = battlerList[charSelection];
         nameText.text = currentChar.displayName;
         portraitImg.sprite = currentChar.sprite;
     }
@@ -69,5 +70,9 @@ public class CharSelectScript : MonoBehaviour
 
     public bool GetLocked(){
         return lockedIn;
+    }
+
+    public Battler GetChoice(){
+        return currentChar;
     }
 }
