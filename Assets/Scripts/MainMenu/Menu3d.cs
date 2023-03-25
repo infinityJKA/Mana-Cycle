@@ -12,9 +12,14 @@ public class Menu3d : MonoBehaviour
 
     [SerializeField] private GameObject MainFirstSelected;
     [SerializeField] private GameObject HTPFirstSelected;
+
+    [SerializeField] private GameObject SettingsWindow;
+    [SerializeField] private HowToPlay SettingsScript;
     [SerializeField] private GameObject SettingsFirstSelected;
 
     [SerializeField] private TransitionScript TransitionHandler;
+
+    [SerializeField] private GameObject HTPButton, SettingsButton;
 
     // Start is called before the first frame update
     void Start()
@@ -46,7 +51,23 @@ public class Menu3d : MonoBehaviour
     {
         HTPWindow.SetActive(false);
         MainWindow.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(MainFirstSelected);
+        EventSystem.current.SetSelectedGameObject(HTPButton);
     }
+
+    public void SelectSettings()
+    {
+        SettingsWindow.SetActive(true);
+        MainWindow.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(SettingsFirstSelected);
+        SettingsScript.Init();
+    }
+
+    public void CloseSettings()
+    {
+        SettingsWindow.SetActive(false);
+        MainWindow.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(SettingsButton);
+    }
+
 
 }
