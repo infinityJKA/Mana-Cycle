@@ -14,6 +14,9 @@ public class CountdownHandler : MonoBehaviour
     [SerializeField] private ManaCycle manaCycle;
     private bool cycleActivated = false;
 
+    [SerializeField] private AudioClip tickSFX;
+    [SerializeField] private AudioClip goSFX;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +39,7 @@ public class CountdownHandler : MonoBehaviour
             manaCycle.InitBoards();
             countDownText.text = "GO!";
             cycleActivated = true;
+            SoundManager.Instance.PlaySound(goSFX);
             
         }
 
@@ -51,6 +55,11 @@ public class CountdownHandler : MonoBehaviour
     {
         // called every time the number actually displayed by the timer text changes.
         countDownText.text = getIntTime(currentTime).ToString();
+
+        if (currentTime > 0){
+            SoundManager.Instance.PlaySound(tickSFX);
+        }
+        
 
     }
 
