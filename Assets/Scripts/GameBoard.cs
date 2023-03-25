@@ -84,6 +84,8 @@ public class GameBoard : MonoBehaviour
     // True for one frame when new piece spawns
     private bool pieceSpawned;
 
+    private BattlerStorage battlerStorage;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -94,8 +96,19 @@ public class GameBoard : MonoBehaviour
         // Cache stuff
         pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
 
-        // Setup battler
+        // Setup battler, from char selection screen
+        battlerStorage = GameObject.Find("SelectedBattlerStorage").GetComponent<BattlerStorage>();
+        if (playerSide == 0){
+            battler = battlerStorage.GetBattler1();
+            playerControlled = battlerStorage.GetPlayerControlled1();
+        }
+        else{
+            battler = battlerStorage.GetBattler2();
+            playerControlled = battlerStorage.GetPlayerControlled2();
+        }
         portrait.sprite = battler.sprite;
+
+        
     }
 
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
