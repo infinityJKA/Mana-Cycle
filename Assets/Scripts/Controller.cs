@@ -31,6 +31,8 @@ public class Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!board.isInitialized()) return;
+
         // stop movement while paused
         if (board.isPaused()) return;
 
