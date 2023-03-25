@@ -58,6 +58,8 @@ public class TimerManagerScript : MonoBehaviour
 
             battlerStorage.SetBattler1(p1Selector.GetChoice());
             battlerStorage.SetBattler2(p2Selector.GetChoice());
+            battlerStorage.SetPlayerControlled1(p1Selector.GetPlayerType());
+            battlerStorage.SetPlayerControlled2(p2Selector.GetPlayerType());
 
             transitionHandler.WipeToScene("ManaCycle");
         }
