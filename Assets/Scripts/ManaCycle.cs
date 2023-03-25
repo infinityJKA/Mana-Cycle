@@ -26,6 +26,10 @@ public class ManaCycle : MonoBehaviour
         // Generate cycle that boards will use
         GenerateCycle();
 
+    }
+
+    public void InitBoards()
+    {
         // Initialize game boards
         foreach (GameBoard board in boards)
         {

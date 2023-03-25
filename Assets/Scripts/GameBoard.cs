@@ -86,6 +86,8 @@ public class GameBoard : MonoBehaviour
 
     private BattlerStorage battlerStorage;
 
+    private bool cycleInitialized;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -119,6 +121,7 @@ public class GameBoard : MonoBehaviour
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
     public void InitializeCycle(ManaCycle cycle)
     {
+        cycleInitialized = true;
         this.cycle = cycle;
 
         pointer = Instantiate(pointerPrefab, Vector3.zero, Quaternion.identity);
@@ -188,6 +191,9 @@ public class GameBoard : MonoBehaviour
 
     void Update()
     {
+        // wait for cycle to initialize (after countdown) to run game logic
+        if (!cycleInitialized) return;
+
         if (!defeated)
         {
             if (Input.GetKeyDown(inputScript.Pause))
@@ -603,21 +609,25 @@ public class GameBoard : MonoBehaviour
         return battler.pieceRng;
     }
 
-    public bool isPaused(){
+    public bool isPaused()
+    {
         return pauseMenu.paused;
     }
 
-    public void Defeat() {
+    public void Defeat() 
+    {
         defeated = true;
         Destroy(piece);
         pieceBoard.SetActive(false);
     }
 
-    public Tile[,] getBoard(){
+    public Tile[,] getBoard()
+    {
         return this.board;
     }
 
-    public int getColHeight(int col){
+    public int getColHeight(int col)
+    {
         int l = 0;
         // loop through the given col, bottom to top.
         for (int i = board.GetLength(0)-1; i > 0; i--){
@@ -629,6 +639,11 @@ public class GameBoard : MonoBehaviour
         }
         // Debug.Log(l);
         return l;
+    }
+
+    public bool isInitialized()
+    {
+        return cycleInitialized;
     }
 
 }
