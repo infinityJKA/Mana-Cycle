@@ -98,16 +98,21 @@ public class GameBoard : MonoBehaviour
 
         // Setup battler, from char selection screen
         battlerStorage = GameObject.Find("SelectedBattlerStorage").GetComponent<BattlerStorage>();
-        if (playerSide == 0){
-            battler = battlerStorage.GetBattler1();
-            playerControlled = battlerStorage.GetPlayerControlled1();
+        // if any value in storage is null, it means we loaded straight to ManaCycle without going to CharSelect first. use default serialized values for battlers
+        if (!(battlerStorage.GetBattler1() == null))
+        {
+            if (playerSide == 0)
+            {
+                battler = battlerStorage.GetBattler1();
+                playerControlled = battlerStorage.GetPlayerControlled1();
+            }
+            else
+            {
+                battler = battlerStorage.GetBattler2();
+                playerControlled = battlerStorage.GetPlayerControlled2();
+            }
+            portrait.sprite = battler.sprite;
         }
-        else{
-            battler = battlerStorage.GetBattler2();
-            playerControlled = battlerStorage.GetPlayerControlled2();
-        }
-        portrait.sprite = battler.sprite;
-
         
     }
 
