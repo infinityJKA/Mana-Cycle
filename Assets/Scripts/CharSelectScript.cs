@@ -114,6 +114,10 @@ public class CharSelectScript : MonoBehaviour
         return currentChar;
     }
 
+    public bool GetPlayerType(){
+        return typeToggle.GetComponent<Toggle>().isOn;
+    }
+
     public void UpdateTypeDisp(){
         if (typeToggle.GetComponent<Toggle>().isOn)
         {
