@@ -89,6 +89,8 @@ public class GameBoard : MonoBehaviour
     private BattlerStorage battlerStorage;
 
     private bool cycleInitialized;
+    private bool postGame = false;
+    private PostGameMenu winMenu;
 
     // Start is called before the first frame update
     void Start()
@@ -101,6 +103,8 @@ public class GameBoard : MonoBehaviour
         pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
 
         winText = winTextObj.GetComponent<TMPro.TextMeshProUGUI>();
+        winMenu = GameObject.Find("PostGameMenu").GetComponent<PostGameMenu>();
+
 
         // Setup battler, from char selection screen
         battlerStorage = GameObject.Find("SelectedBattlerStorage").GetComponent<BattlerStorage>();
@@ -198,15 +202,15 @@ public class GameBoard : MonoBehaviour
         // wait for cycle to initialize (after countdown) to run game logic
         if (!cycleInitialized) return;
 
-        if (!defeated)
-        {
-            if (Input.GetKeyDown(inputScript.Pause))
+        // if (!defeated)
+        // {
+            if (Input.GetKeyDown(inputScript.Pause) && !postGame)
             {
                 pauseMenu.TogglePause();
             }
 
             // control the pause menu if paused
-            if (pauseMenu.paused)
+            if (pauseMenu.paused && !postGame)
             {
                 if (Input.GetKeyDown(inputScript.Up)) {
                     pauseMenu.MoveCursor(1);
@@ -216,6 +220,20 @@ public class GameBoard : MonoBehaviour
 
                 if (Input.GetKeyDown(inputScript.Cast)){
                     pauseMenu.SelectOption();
+                }
+            }
+
+            // same with post game menu
+            else if (postGame)
+            {
+                if (Input.GetKeyDown(inputScript.Up)) {
+                    winMenu.MoveCursor(1);
+                } else if (Input.GetKeyDown(inputScript.Down)) {
+                    winMenu.MoveCursor(-1);
+                }
+
+                if (Input.GetKeyDown(inputScript.Cast)){
+                    winMenu.SelectOption();
                 }
             }
             
@@ -250,7 +268,7 @@ public class GameBoard : MonoBehaviour
                     previousFallTime = Time.time;   
                 }
             }
-        }
+        // }
     }
 
     // Update the pointer's cycle position.
@@ -618,8 +636,14 @@ public class GameBoard : MonoBehaviour
         return pauseMenu.paused;
     }
 
+    public bool isPostGame()
+    {
+        return postGame;
+    }
+
     public void Defeat() 
     {
+        postGame = true;
         defeated = true;
         Destroy(piece);
         pieceBoard.SetActive(false);
@@ -632,8 +656,10 @@ public class GameBoard : MonoBehaviour
 
     public void Win()
     {
+        postGame = true;
         winTextObj.SetActive(true);
         winText.text = "WIN";
+        winMenu.AppearWithDelay(2d);
     }
 
     public Tile[,] getBoard()
