@@ -54,7 +54,7 @@ public class PauseMenu : MonoBehaviour
 
     public void SelectOption()
     {
-        Debug.Log(pauseMenuItems[currentSelection]);
+        // Debug.Log(pauseMenuItems[currentSelection]);
         pauseMenuItems[currentSelection].GetComponent<Button>().onClick.Invoke();
     }
 }

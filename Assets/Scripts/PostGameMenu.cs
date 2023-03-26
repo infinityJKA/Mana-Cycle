@@ -14,10 +14,11 @@ public class PostGameMenu : MonoBehaviour
     private double appearTime;
     private bool timerStarted = false;
     [SerializeField] private GameObject MenuUI;
+    private TransitionScript transitionHandler;
     // Start is called before the first frame update
     void Start()
     {
-        
+        transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
     }
 
     // Update is called once per frame
@@ -50,14 +51,31 @@ public class PostGameMenu : MonoBehaviour
     // alot of code is repeated from the pause menu script. could be cleaned up later
     public void MoveCursor(int amount)
     {
-        currentSelection += amount;
+        currentSelection -= amount;
         currentSelection = Utils.mod(currentSelection, MenuItems.Count);
         EventSystem.current.SetSelectedGameObject(MenuItems[currentSelection]);
     }
 
     public void SelectOption()
     {
-        Debug.Log(MenuItems[currentSelection]);
+        // Debug.Log(MenuItems[currentSelection]);
         MenuItems[currentSelection].GetComponent<Button>().onClick.Invoke();
+    }
+
+    public void SelectRematchButton()
+    {
+        SceneManager.LoadScene("ManaCycle");
+    }
+
+    public void SelectBackToMainButton()
+    {
+        Time.timeScale = 1f;
+        transitionHandler.WipeToScene("3dMenu");
+    }
+
+    public void SelectBackToCSS()
+    {
+        Time.timeScale = 1f;
+        transitionHandler.WipeToScene("CharSelect");
     }
 }
