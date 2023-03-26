@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
 
-    public bool paused  { get; private set; }
+    public bool paused  { get; set; }
     [SerializeField] private GameObject PauseUI;
     [SerializeField] private List<GameObject> pauseMenuItems;
     private int currentSelection = 0;
