@@ -52,7 +52,8 @@ public class TransitionScript : MonoBehaviour
 
     }
 
-    public void WipeToScene(string scene, double iT=0.5d, double oT=0.5d)
+    // inverting direction of transition is WIP
+    public void WipeToScene(string scene, double iT=0.5d, double oT=0.5d, bool inverted=false)
     {
         wipeImg.fillOrigin = (int) Image.OriginHorizontal.Right;
         inTime = iT;
@@ -64,8 +65,21 @@ public class TransitionScript : MonoBehaviour
 
     public void WipeOut()
     {
+        // FlipOrientation();
         wipeImg.fillOrigin = (int) Image.OriginHorizontal.Left;
         timePassed = 0d;
         transitionState = "out";
+    }
+
+    void FlipOrientation()
+    {
+        if (wipeImg.fillOrigin == (int) Image.OriginHorizontal.Left)
+        {
+            wipeImg.fillOrigin = (int) Image.OriginHorizontal.Right;
+        }
+        else
+        {
+            wipeImg.fillOrigin = (int) Image.OriginHorizontal.Left;
+        }
     }
 }

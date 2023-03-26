@@ -17,6 +17,7 @@ public class CharSelectScript : MonoBehaviour
     private TMPro.TextMeshProUGUI nameText;
     private TMPro.TextMeshProUGUI typeText;
     private Image portraitImg;
+    private TransitionScript transitionHandler;
 
     private bool lockedIn = false;
     private bool charSelectorFocused = true;
@@ -25,6 +26,7 @@ public class CharSelectScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
         nameText = nameDisp.GetComponent<TMPro.TextMeshProUGUI>();
         portraitImg = portraitDisp.GetComponent<Image>();
         typeText = typeLabel.GetComponent<TMPro.TextMeshProUGUI>();
@@ -71,6 +73,10 @@ public class CharSelectScript : MonoBehaviour
         if (Input.GetKeyDown(inputScript.Down) && !lockedIn)
         {
             charSelectorFocused = false;
+        }
+
+        if (Input.GetKeyDown(inputScript.Pause)){
+            transitionHandler.WipeToScene("3dMenu", inverted: true);
         }
 
         // keep selections in bounds
