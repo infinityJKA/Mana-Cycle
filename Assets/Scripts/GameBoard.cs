@@ -42,6 +42,8 @@ public class GameBoard : MonoBehaviour
     // Current fall delay for pieces.
     [SerializeField] private float fallTime = 0.8f;
 
+    [SerializeField] private GameObject winTextObj;
+    private TMPro.TextMeshProUGUI winText;
 
     // Starting HP of this character.
     public int maxHp { get; private set; }
@@ -97,6 +99,8 @@ public class GameBoard : MonoBehaviour
 
         // Cache stuff
         pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
+
+        winText = winTextObj.GetComponent<TMPro.TextMeshProUGUI>();
 
         // Setup battler, from char selection screen
         battlerStorage = GameObject.Find("SelectedBattlerStorage").GetComponent<BattlerStorage>();
@@ -619,6 +623,17 @@ public class GameBoard : MonoBehaviour
         defeated = true;
         Destroy(piece);
         pieceBoard.SetActive(false);
+        Time.timeScale = 0f;
+        winTextObj.SetActive(true);
+        winText.text = "LOSE";
+        enemyBoard.Win();
+
+    }
+
+    public void Win()
+    {
+        winTextObj.SetActive(true);
+        winText.text = "WIN";
     }
 
     public Tile[,] getBoard()
