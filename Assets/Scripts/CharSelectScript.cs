@@ -100,7 +100,7 @@ public class CharSelectScript : MonoBehaviour
         }
         else
         {
-            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(nameDisp);
         }
     }
 
@@ -114,7 +114,6 @@ public class CharSelectScript : MonoBehaviour
             // locked in
             portraitImg.color = new Color(1.0f, 1.0f, 1.0f, 1f);
             nameText.fontStyle = (TMPro.FontStyles) FontStyle.Bold;
-
             // timerManager.Refresh();
         }
     }
