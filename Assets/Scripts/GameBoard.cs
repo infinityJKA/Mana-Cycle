@@ -443,7 +443,7 @@ public class GameBoard : MonoBehaviour
         {
             while (manaCleared > 0) {
                 // If this is cascading off the same color more than once, short delay between
-                yield return new WaitForSeconds(0.5f);
+                if (cascade > 0) yield return new WaitForSeconds(0.5f);
 
                 cascade += 1;
                 if (cascade > 1) cascadePopup.Flash(cascade.ToString());
@@ -515,7 +515,7 @@ public class GameBoard : MonoBehaviour
         return blobs;
     }
 
-    // Returns the total amount of mana in this set of blobs.
+    // Returns the total amount of mana in the passed set of blobs.
     int TotalMana(List<Blob> blobs)
     {
         int mana = 0;
@@ -526,6 +526,7 @@ public class GameBoard : MonoBehaviour
         return mana;
     }
 
+    // Checks for a blob and recursively expands to all connected tiles
     Blob CheckBlob(int c, int r, ManaColor color)
     {
         Blob blob = new Blob();
@@ -537,6 +538,7 @@ public class GameBoard : MonoBehaviour
         return blob;
     }
 
+    // Recursively expands the passed blob to all connected tiles
     void ExpandBlob(ref Blob blob, int c, int r, ManaColor color)
     {
         // Don't add to blob if the tile is in an invalid position
@@ -564,7 +566,7 @@ public class GameBoard : MonoBehaviour
 
     // Check the tile at the given index for gravity,
     // pulling it down to the next available empty tile.
-    // Returns true if the fell at all.
+    // Returns true if the tile fell at all.
     public bool TileGravity(int c, int r)
     {
         // If there isn't a tile here, it can't fall, because it isnt a tile...
@@ -576,7 +578,7 @@ public class GameBoard : MonoBehaviour
             // Once a non-empty is found, or reached the bottom move the tile to right above it
             if (rFall == height || board[rFall, c] != null)
             {
-                // skip if tile is in same location
+                // only fall if tile is in a different position than before
                 if (rFall-1 != r) {
                     board[rFall-1, c] = board[r, c];
                     // I am subtracting half of width and height again here, because it only works tht way,
