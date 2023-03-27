@@ -32,7 +32,7 @@ public class TransitionScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timePassed += Time.unscaledDeltaTime;
+        timePassed += Time.deltaTime;
         if (transitionState == "in")
         {
             wipeImg.fillAmount = (float) Math.Pow((timePassed / inTime),2);
