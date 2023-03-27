@@ -12,7 +12,7 @@ public class ControlsDisplay : MonoBehaviour
     {
         keyText = gameObject.GetComponent<TMPro.TextMeshProUGUI>();
 
-        KeyCode[] keyList = new KeyCode[] {inputs.Left, inputs.Right, inputs.Up, inputs.Down, inputs.RotateLeft, inputs.RotateRight, inputs.Cast, inputs.Pause};
+        KeyCode[] keyList = new KeyCode[] {inputs.Up, inputs.Left, inputs.Down, inputs.Right, inputs.RotateLeft, inputs.RotateRight, inputs.Cast, inputs.Pause};
 
         keyText.text = "";
         foreach (KeyCode k in keyList)
