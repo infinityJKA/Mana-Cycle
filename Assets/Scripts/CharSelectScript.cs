@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class CharSelectScript : MonoBehaviour
 {
-    [SerializeField] private InputScript inputScript;
+    [SerializeField] private InputScript[] inputScripts;
     [SerializeField] private List<Battler> battlerList;
     [SerializeField] private GameObject portraitDisp;
     [SerializeField] private GameObject nameDisp;
@@ -36,47 +36,49 @@ public class CharSelectScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(inputScript.Cast))
-        {
-            if (charSelectorFocused)
+        foreach (InputScript inputScript in inputScripts) {
+            if (Input.GetKeyDown(inputScript.Cast))
             {
-                lockedIn = !lockedIn;
-                UpdateLock();
+                if (charSelectorFocused)
+                {
+                    lockedIn = !lockedIn;
+                    UpdateLock();
+                }
+                else
+                {
+                    typeToggle.GetComponent<Toggle>().isOn = !typeToggle.GetComponent<Toggle>().isOn;
+                }
             }
-            else
+
+            if (Input.GetKeyDown(inputScript.Left) && !lockedIn)
             {
-                typeToggle.GetComponent<Toggle>().isOn = !typeToggle.GetComponent<Toggle>().isOn;
+                if (charSelectorFocused)
+                {
+                    charSelection--;
+                }
             }
-        }
 
-        if (Input.GetKeyDown(inputScript.Left) && !lockedIn)
-        {
-            if (charSelectorFocused)
+            if (Input.GetKeyDown(inputScript.Right) && !lockedIn)
             {
-                charSelection--;
+                if (charSelectorFocused)
+                {
+                    charSelection++;
+                }
             }
-        }
 
-        if (Input.GetKeyDown(inputScript.Right) && !lockedIn)
-        {
-            if (charSelectorFocused)
+            if (Input.GetKeyDown(inputScript.Up) && !lockedIn)
             {
-                charSelection++;
+                charSelectorFocused = true;
             }
-        }
 
-        if (Input.GetKeyDown(inputScript.Up) && !lockedIn)
-        {
-            charSelectorFocused = true;
-        }
+            if (Input.GetKeyDown(inputScript.Down) && !lockedIn)
+            {
+                charSelectorFocused = false;
+            }
 
-        if (Input.GetKeyDown(inputScript.Down) && !lockedIn)
-        {
-            charSelectorFocused = false;
-        }
-
-        if (Input.GetKeyDown(inputScript.Pause)){
-            transitionHandler.WipeToScene("3dMenu", i: true);
+            if (Input.GetKeyDown(inputScript.Pause)){
+                transitionHandler.WipeToScene("3dMenu", i: true);
+            }
         }
 
         // keep selections in bounds
