@@ -7,12 +7,15 @@ using UnityEngine.UI;
 using TMPro;
 
 
- public class MenuButtonCam : MonoBehaviour, ISelectHandler
+ public class MenuButtonCam : MonoBehaviour, ISelectHandler, IDeselectHandler
  {
     public CinemachineVirtualCamera thisCam;
     public CinemachineBrain brain;
     public TMP_Text textBox;
     public string text;
+
+    // Components to only be enabled when this item is selected
+    public MonoBehaviour[] enableWhenSelected;
 
     public AudioClip selectSFX;
     public AudioClip clickSFX;
@@ -23,7 +26,17 @@ using TMPro;
             brain.ActiveVirtualCamera.Priority = 1;
             thisCam.Priority = 30;
             textBox.text = text;
-        // } 
+        // }
+
+        foreach (MonoBehaviour comp in enableWhenSelected) {
+            comp.enabled = true;
+        }
+    }
+
+    public void OnDeselect(BaseEventData eventData) {
+        foreach (MonoBehaviour comp in enableWhenSelected) {
+            comp.enabled = false;
+        }
     }
 
     public void PlayClickSFX(){
