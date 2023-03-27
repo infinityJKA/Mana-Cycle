@@ -70,12 +70,12 @@ public class PostGameMenu : MonoBehaviour
     public void SelectBackToMainButton()
     {
         Time.timeScale = 1f;
-        transitionHandler.WipeToScene("3dMenu");
+        transitionHandler.WipeToScene("3dMenu", i: true);
     }
 
     public void SelectBackToCSS()
     {
         Time.timeScale = 1f;
-        transitionHandler.WipeToScene("CharSelect");
+        transitionHandler.WipeToScene("CharSelect", i: true);
     }
 }
