@@ -22,17 +22,17 @@ public class CountdownHandler : MonoBehaviour
     {
         countDownText = this.GetComponent<TMPro.TextMeshProUGUI>();
         currentTime = countDownTime + countDownDelay;
-        lastIntTime = getIntTime(currentTime);
+        lastIntTime = GetIntTime(currentTime);
     }
 
     // Update is called once per frame
     void Update()
     {
         currentTime -= Time.deltaTime;
-        if (getIntTime(currentTime) != lastIntTime){
+        if (GetIntTime(currentTime) != lastIntTime){
             TimerTick();
         }
-        lastIntTime = getIntTime(currentTime);
+        lastIntTime = GetIntTime(currentTime);
 
         if (currentTime <= 0 && !cycleActivated)
         {
@@ -54,7 +54,7 @@ public class CountdownHandler : MonoBehaviour
     void TimerTick()
     {
         // called every time the number actually displayed by the timer text changes.
-        countDownText.text = getIntTime(currentTime).ToString();
+        countDownText.text = GetIntTime(currentTime).ToString();
 
         if (currentTime > 0){
             SoundManager.Instance.PlaySound(tickSFX);
@@ -63,7 +63,7 @@ public class CountdownHandler : MonoBehaviour
 
     }
 
-    int getIntTime(double t)
+    int GetIntTime(double t)
     {
         return (int) Math.Min(countDownTime,Math.Ceiling(currentTime));
     }

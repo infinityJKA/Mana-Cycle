@@ -30,7 +30,7 @@ public class CharSelectScript : MonoBehaviour
         nameText = nameDisp.GetComponent<TMPro.TextMeshProUGUI>();
         portraitImg = portraitDisp.GetComponent<Image>();
         typeText = typeLabel.GetComponent<TMPro.TextMeshProUGUI>();
-        updateLock();
+        UpdateLock();
     }
 
     // Update is called once per frame
@@ -41,7 +41,7 @@ public class CharSelectScript : MonoBehaviour
             if (charSelectorFocused)
             {
                 lockedIn = !lockedIn;
-                updateLock();
+                UpdateLock();
             }
             else
             {
@@ -104,7 +104,7 @@ public class CharSelectScript : MonoBehaviour
         }
     }
 
-    void updateLock(){
+    void UpdateLock(){
         if (!lockedIn){
             // unlocked
             portraitImg.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
