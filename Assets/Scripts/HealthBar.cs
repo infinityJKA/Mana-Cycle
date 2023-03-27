@@ -103,7 +103,11 @@ public class HealthBar : MonoBehaviour
         // Advance the incoming damage cycle
         for (int i = 5; i >= 1; i--)
         {
-            damageQueue[i].SetDamage(damageQueue[i-1].dmg);
+            var prev = damageQueue[i-1];
+            damageQueue[i].SetDamage(prev.dmg);
+
+            // sets the text's position to previous, to create a (kind of) seamless animation between them
+            damageQueue[i].textComponent.transform.position = prev.textComponent.transform.position;
         }
 
         damageQueue[0].SetDamage(0);
