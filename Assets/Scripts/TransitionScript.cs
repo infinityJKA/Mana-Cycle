@@ -16,6 +16,7 @@ public class TransitionScript : MonoBehaviour
     private static double timePassed;
     private static string gotoScene;
     private static bool wipingOut = false;
+    private static bool inverted;
 
     // Start is called before the first frame update
     void Start()
@@ -53,9 +54,18 @@ public class TransitionScript : MonoBehaviour
     }
 
     // inverting direction of transition is WIP
-    public void WipeToScene(string scene, double iT=0.5d, double oT=0.5d, bool inverted=false)
+    public void WipeToScene(string scene, double iT=0.5d, double oT=0.5d, bool i=false)
     {
-        wipeImg.fillOrigin = (int) Image.OriginHorizontal.Right;
+        inverted = i;
+        if (!inverted)
+        {
+            wipeImg.fillOrigin = (int) Image.OriginHorizontal.Right;
+        }
+        else
+        {
+            wipeImg.fillOrigin = (int) Image.OriginHorizontal.Left;
+        }
+       
         inTime = iT;
         outTime = oT;
         timePassed = 0d;
@@ -65,21 +75,16 @@ public class TransitionScript : MonoBehaviour
 
     public void WipeOut()
     {
-        // FlipOrientation();
-        wipeImg.fillOrigin = (int) Image.OriginHorizontal.Left;
+        if (!inverted)
+        {
+            wipeImg.fillOrigin = (int) Image.OriginHorizontal.Left;
+        }
+        else
+        {
+            wipeImg.fillOrigin = (int) Image.OriginHorizontal.Right;
+        }
         timePassed = 0d;
         transitionState = "out";
     }
 
-    void FlipOrientation()
-    {
-        if (wipeImg.fillOrigin == (int) Image.OriginHorizontal.Left)
-        {
-            wipeImg.fillOrigin = (int) Image.OriginHorizontal.Right;
-        }
-        else
-        {
-            wipeImg.fillOrigin = (int) Image.OriginHorizontal.Left;
-        }
-    }
 }

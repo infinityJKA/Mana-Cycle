@@ -76,7 +76,7 @@ public class CharSelectScript : MonoBehaviour
         }
 
         if (Input.GetKeyDown(inputScript.Pause)){
-            transitionHandler.WipeToScene("3dMenu", inverted: true);
+            transitionHandler.WipeToScene("3dMenu", i: true);
         }
 
         // keep selections in bounds
