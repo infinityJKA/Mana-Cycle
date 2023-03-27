@@ -11,9 +11,9 @@ public class TransitionScript : MonoBehaviour
     [SerializeField] private GameObject wipeObj;
     private Image wipeImg;
     private static string transitionState = "none";
-    private static double inTime;
-    private static double outTime;
-    private static double timePassed;
+    private static float inTime;
+    private static float outTime;
+    private static float timePassed;
     private static string gotoScene;
     private static bool wipingOut = false;
     private static bool inverted;
@@ -36,7 +36,7 @@ public class TransitionScript : MonoBehaviour
         timePassed += Time.deltaTime;
         if (transitionState == "in")
         {
-            wipeImg.fillAmount = (float) Math.Pow((timePassed / inTime),2);
+            wipeImg.fillAmount = Mathf.Pow(timePassed / inTime, 2);
             if (timePassed >= inTime){
                 wipingOut = true;
                 SceneManager.LoadScene(gotoScene);
@@ -47,14 +47,14 @@ public class TransitionScript : MonoBehaviour
 
         else if (transitionState == "out")
         {
-            wipeImg.fillAmount = (float) Math.Pow((timePassed / outTime),2) * -1 + 1;
+            wipeImg.fillAmount = Mathf.Pow(timePassed / outTime, 2) * -1 + 1;
         }
         
 
     }
 
     // inverting direction of transition is WIP
-    public void WipeToScene(string scene, double iT=0.5d, double oT=0.5d, bool i=false)
+    public void WipeToScene(string scene, float iT=0.5f, float oT=0.5f, bool i=false)
     {
         inverted = i;
         if (!inverted)
@@ -68,7 +68,7 @@ public class TransitionScript : MonoBehaviour
        
         inTime = iT;
         outTime = oT;
-        timePassed = 0d;
+        timePassed = 0;
         transitionState = "in";
         gotoScene = scene;
     }
@@ -83,8 +83,7 @@ public class TransitionScript : MonoBehaviour
         {
             wipeImg.fillOrigin = (int) Image.OriginHorizontal.Right;
         }
-        timePassed = 0d;
+        timePassed = 0;
         transitionState = "out";
     }
-
 }
