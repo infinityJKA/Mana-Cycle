@@ -124,6 +124,8 @@ public class GameBoard : MonoBehaviour
             portrait.sprite = battler.sprite;
         }
         
+        cyclePosition = 0;
+        PointerReposition();
     }
 
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
