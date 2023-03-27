@@ -32,7 +32,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private GameObject pointer;
 
     // Stores the board's cycle level indicator
-    [SerializeField] private CycleLevel cycleLevelDisplay;
+    [SerializeField] private CycleMultiplier cycleLevelDisplay;
     // Stores the image for the portrait
     [SerializeField] private Image portrait;
 
@@ -276,7 +276,9 @@ public class GameBoard : MonoBehaviour
     private void PointerReposition()
     {
         // Get the position of the ManColor the pointer is supposed to be on
+        Debug.Log(cycle);
         Transform manaColor = cycle.transform.GetChild(cyclePosition);
+        Debug.Log(cycle.transform.GetChild(cyclePosition));
 
         pointer.transform.position = new Vector3(
             // Move left or right based on if this is the player or not
