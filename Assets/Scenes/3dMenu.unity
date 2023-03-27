@@ -458,6 +458,7 @@ MonoBehaviour:
   brain: {fileID: 501347703}
   textBox: {fileID: 29470368}
   text: Play against your friends in this local versus mode!
+  enableWhenSelected: []
   selectSFX: {fileID: 8300000, guid: 1e0d785296ac5104f9d274582492c0f0, type: 3}
   clickSFX: {fileID: 8300000, guid: 2ed614660d0f3f5418b8a9aa05a1f7d8, type: 3}
 --- !u!1 &102548620
@@ -689,6 +690,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5894863403822994359, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.51
+      objectReference: {fileID: 0}
+    - target: {fileID: -5894863403822994359, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.58
+      objectReference: {fileID: 0}
+    - target: {fileID: -3756473180518285571, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
+      propertyPath: m_Name
+      value: Gear2
+      objectReference: {fileID: 0}
+    - target: {fileID: -2271502847731017999, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -2271502847731017999, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -2271502847731017999, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2271502847731017999, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
     - target: {fileID: -1823322365421230674, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -696,6 +725,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_Name
       value: SettingsTarget
+      objectReference: {fileID: 0}
+    - target: {fileID: 5233112405309087440, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
+      propertyPath: m_Name
+      value: Gear
       objectReference: {fileID: 0}
     - target: {fileID: 8442510506162454399, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -1581,6 +1614,7 @@ MonoBehaviour:
   brain: {fileID: 501347703}
   textBox: {fileID: 29470368}
   text: First time playing? Visit here to learn how to play!
+  enableWhenSelected: []
   selectSFX: {fileID: 8300000, guid: 1e0d785296ac5104f9d274582492c0f0, type: 3}
   clickSFX: {fileID: 8300000, guid: 2ed614660d0f3f5418b8a9aa05a1f7d8, type: 3}
 --- !u!1 &353482718
@@ -2713,7 +2747,7 @@ GameObject:
   - component: {fileID: 677448480}
   - component: {fileID: 677448479}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2873,6 +2907,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6028171278587595182, guid: 235341018754c42bb8c5cb099a2f47a6, type: 3}
   m_PrefabInstance: {fileID: 1225935561}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &725939795 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -3756473180518285571, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
+  m_PrefabInstance: {fileID: 136112773}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &725939799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 725939795}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71dfba47535e8413c8a74cd73fcfe07f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  axis: {x: 0, y: 0, z: -1}
+  speed: 0.2
 --- !u!1 &803713432
 GameObject:
   m_ObjectHideFlags: 0
@@ -3072,6 +3125,7 @@ MonoBehaviour:
   brain: {fileID: 501347703}
   textBox: {fileID: 29470368}
   text: Challenge the solo levels or play against the computer!
+  enableWhenSelected: []
   selectSFX: {fileID: 8300000, guid: 1e0d785296ac5104f9d274582492c0f0, type: 3}
   clickSFX: {fileID: 8300000, guid: 2ed614660d0f3f5418b8a9aa05a1f7d8, type: 3}
 --- !u!1 &982907111
@@ -6331,6 +6385,25 @@ RectTransform:
   m_AnchoredPosition: {x: -0.000029574878, y: -30}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1706744409 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5233112405309087440, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
+  m_PrefabInstance: {fileID: 136112773}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1706744413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1706744409}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71dfba47535e8413c8a74cd73fcfe07f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  axis: {x: 0, y: 0, z: 1}
+  speed: 0.2
 --- !u!1 &1740322481
 GameObject:
   m_ObjectHideFlags: 0
@@ -7582,6 +7655,9 @@ MonoBehaviour:
   brain: {fileID: 501347703}
   textBox: {fileID: 29470368}
   text: Adjust various settings of the game to your liking!
+  enableWhenSelected:
+  - {fileID: 1706744413}
+  - {fileID: 725939799}
   selectSFX: {fileID: 8300000, guid: 1e0d785296ac5104f9d274582492c0f0, type: 3}
   clickSFX: {fileID: 8300000, guid: 2ed614660d0f3f5418b8a9aa05a1f7d8, type: 3}
 --- !u!1 &2142917933
