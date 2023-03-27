@@ -17,8 +17,6 @@ public class GameBoard : MonoBehaviour
     // Obect where pieces are drawn
     [SerializeField] public GameObject pieceBoard;
 
-    // Prefab for cycle pointers
-    [SerializeField] private GameObject pointerPrefab;
     // Input mapping for this board
     [SerializeField] private InputScript inputScript;
 
@@ -29,6 +27,10 @@ public class GameBoard : MonoBehaviour
 
     // Stores the piece preview for this board
     [SerializeField] private PiecePreview piecePreview;
+
+    // Cycle pointer game object that belongs to this board
+    [SerializeField] private GameObject pointer;
+
     // Stores the board's cycle level indicator
     [SerializeField] private CycleLevel cycleLevelDisplay;
     // Stores the image for the portrait
@@ -53,8 +55,6 @@ public class GameBoard : MonoBehaviour
     // Stores the ManaCycle in this scene. (on start)
     public ManaCycle cycle { get; private set; }
 
-    // Cycle pointer game object that belongs to this board
-    private GameObject pointer;
     // This board's current position in the cycle. starts at 0
     public int cyclePosition { get; private set; }
 
@@ -132,7 +132,6 @@ public class GameBoard : MonoBehaviour
         cycleInitialized = true;
         this.cycle = cycle;
 
-        pointer = Instantiate(pointerPrefab, Vector3.zero, Quaternion.identity);
         PointerReposition();
 
         piecePreview.Setup(this);
@@ -171,8 +170,8 @@ public class GameBoard : MonoBehaviour
     public void Spellcast(){
         // get current mana color from cycle, and clear that color
         // start at chain of 1
-        // canCast argument is based on if a spellcast is currently in process.
-        Spellcast(1, !casting);
+        // canCast is true if a spellcast is currently in process.
+        if (!casting) Spellcast(1);
     }
 
     public bool isPlayerControlled(){
@@ -276,14 +275,13 @@ public class GameBoard : MonoBehaviour
     {
         // Get the position of the ManColor the pointer is supposed to be on
         Transform manaColor = cycle.transform.GetChild(cyclePosition);
-        pointer.transform.SetParent(manaColor, false);
-        // Move left or right based on if this is the player or not
-        if (playerSide == 0) {
-            pointer.transform.localPosition = new Vector3(-100, 0, 0);
-        } else {
-            pointer.transform.localPosition = new Vector3(100, 0, 0);
-        }
 
+        pointer.transform.position = new Vector3(
+            // Move left or right based on if this is the player or not
+            manaColor.transform.position.x + ((playerSide == 0) ? -100 : 100),
+            manaColor.transform.position.y,
+            0
+        );
     }
 
     // Create a new piece and spawn it at the top of the board. Replaces the current piece field.
@@ -415,35 +413,45 @@ public class GameBoard : MonoBehaviour
     private static int minBlobSize = 3;
 
     // Check the board for blobs of 4 or more of the given color, and clear them from the board, earning points/dealing damage.
-    private void Spellcast(int chain, bool canCast)
+    private void Spellcast(int chain)
     {
-        // Don't start a spellcast if already spellcasting
-        if (!canCast) {return;}
-        // Save matrix of all tiles currently in one of the blobs
+        // Save blank matrix of all tiles currently in one of the blobs
         tilesInBlobs = new bool[height, width];
 
         // List of all blobs
         ManaColor color = cycle.GetCycle()[cyclePosition];
         List<Blob> blobs = FindBlobsOfColor(color);
 
-        // If there were no blobs, do not deal damage, and do not move forward in cycle, end spellcast
+        // If there were no blobs, do not deal damage, and do not move forward in cycle, 
+        // end spellcast if active
         if (blobs.Count == 0) {
             casting = false;
             return;
         };
         int manaCleared = TotalMana(blobs);
-        if (chain > 1) chainPopup.Flash(chain.ToString());
 
         // Keep clearing while mana cleared for current color is greater than 0
         // Begin spellcast
         int cascade = 0;
         casting = true;
+
         StartCoroutine(ClearCascadeWithDelay());
         IEnumerator ClearCascadeWithDelay()
         {
+            // Brief delay before clearing current color
+            yield return new WaitForSeconds(0.8f);
+
+            // Check for any new blobs that may have formed in those 0.8 seconds
+            // (Replaces old list)
+            tilesInBlobs = new bool[height, width];
+            blobs = FindBlobsOfColor(color);
+            manaCleared = TotalMana(blobs);
+
             while (manaCleared > 0) {
                 // If this is cascading off the same color more than once, short delay between
                 if (cascade > 0) yield return new WaitForSeconds(0.5f);
+
+                if (chain > 1) chainPopup.Flash(chain.ToString());
 
                 cascade += 1;
                 if (cascade > 1) cascadePopup.Flash(cascade.ToString());
@@ -454,7 +462,7 @@ public class GameBoard : MonoBehaviour
                 // DMG is scaled by chain and cascade.
                 int damage = (int)( (manaCleared * damagePerMana) * chain * cascade );
 
-                // Send the damage over. Will subtract from incoming damage first.
+                // Send the damage over. Will counter incoming damage first.
                 DealDamage(damage);
 
                 // Clear all blob-contained tiles from the board.
@@ -468,11 +476,12 @@ public class GameBoard : MonoBehaviour
                 AllTileGravity();
 
                 // Check for cascaded blobs
+                tilesInBlobs = new bool[height, width];
                 List<Blob> cascadedBlobs = FindBlobsOfColor(color);
                 manaCleared = TotalMana(cascadedBlobs);
             }
 
-             // move to next in cycle position
+            // move to next in cycle position
             cyclePosition += 1;
             if (cyclePosition >= ManaCycle.cycleLength) {
                 cyclePosition = 0;
@@ -482,13 +491,7 @@ public class GameBoard : MonoBehaviour
             PointerReposition();
 
             // Spellcast for the new next color to check for chain
-            StartCoroutine(SpellcastAfterDelay());
-            IEnumerator SpellcastAfterDelay()
-            {
-                yield return new WaitForSeconds(0.75f);
-                // canCast should always be true when called recursivley, otherwise returns early and does not complete process.
-                Spellcast(chain+1,true);
-            }
+            Spellcast(chain+1);
         }
     }
 
