@@ -85,7 +85,14 @@ public class CharSelectScript : MonoBehaviour
 
         // update objects
         currentChar = battlerList[charSelection];
-        nameText.text = currentChar.displayName;
+        
+        // show arrows if not locked in
+        if (lockedIn) {
+            nameText.text = currentChar.displayName;
+        } else {
+            nameText.text = "< "+currentChar.displayName+" >";
+        }
+
         portraitImg.sprite = currentChar.sprite;
 
         if (!charSelectorFocused){
