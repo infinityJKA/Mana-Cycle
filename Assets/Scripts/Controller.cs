@@ -99,7 +99,7 @@ public class Controller : MonoBehaviour
                 
                 // rotate peice to target rot
                 if ((int) board.getPiece().getRot() > this.targetRot){
-                    Debug.Log(board.getPiece().getRot());
+                    // Debug.Log(board.getPiece().getRot());
                 }
                 else if ((int) board.getPiece().getRot() < this.targetRot){
                     board.RotateLeft();
