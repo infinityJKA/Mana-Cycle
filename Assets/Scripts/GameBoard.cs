@@ -335,13 +335,13 @@ public class GameBoard : MonoBehaviour
         piece.PlaceTilesOnBoard(ref board);
 
         // Move the displayed tiles into the board parent
-        piece.GetCenter().transform.SetParent(transform, true);
+        piece.GetCenter().transform.SetParent(pieceBoard.transform, true);
         piece.GetCenter().transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
 
-        piece.GetTop().transform.SetParent(transform, true);
+        piece.GetTop().transform.SetParent(pieceBoard.transform, true);
         piece.GetTop().transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
 
-        piece.GetRight().transform.SetParent(transform, true);
+        piece.GetRight().transform.SetParent(pieceBoard.transform, true);
         piece.GetRight().transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
 
         // Destroy the piece containing the tiles, leaving only the tiles that were just taken out of the piece
