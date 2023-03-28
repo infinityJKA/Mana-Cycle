@@ -20,4 +20,12 @@ public class ObjectiveListItem : MonoBehaviour
     {
         
     }
+
+    // Refresh this objective's text and color. Additionally, if complete, return true.
+    public bool Refresh(GameBoard board) {
+        textbox.text = objective.Status(board);
+        bool completed = objective.IsCompleted(board);
+        if (completed) textbox.color = Color.green;
+        return completed;
+    }
 }

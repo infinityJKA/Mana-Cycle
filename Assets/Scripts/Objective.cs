@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEditor;
 
 [CreateAssetMenu(fileName = "Objective", menuName = "ManaCycle/Level Objective")]
 public class Objective : ScriptableObject {
