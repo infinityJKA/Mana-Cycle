@@ -100,4 +100,8 @@ public class ManaCycle : MonoBehaviour
     {
         return manaColors;
     }
+
+    public Color GetManaColor(int index) {
+        return manaColors[index];
+    }
 }
