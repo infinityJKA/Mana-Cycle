@@ -113,5 +113,7 @@ public class HealthBar : MonoBehaviour
         }
 
         damageQueue[0].SetDamage(0);
+
+        Refresh();
     }
 }
