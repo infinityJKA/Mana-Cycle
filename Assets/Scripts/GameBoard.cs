@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class GameBoard : MonoBehaviour
 {
+    // If this board is in single player mode
+    [SerializeField] private bool singlePlayer;
     // The battler selected for this board. Each one has different effects.
     [SerializeField] private Battler battler;
     // True if the player controls this board.
@@ -101,8 +103,13 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // (Later, this may depend on the character/mode)
-        maxHp = 2000;
+        if (singlePlayer) {
+            // hp number is used as score, starts as 0
+            maxHp = 0;
+        } else {
+            // (Later, this may depend on the character/mode)
+            maxHp = 2000;
+        }
         hp = maxHp;
 
         // Cache stuff
@@ -283,9 +290,9 @@ public class GameBoard : MonoBehaviour
     private void PointerReposition()
     {
         // Get the position of the ManColor the pointer is supposed to be on
-        Debug.Log(cycle);
+        // Debug.Log(cycle);
         Transform manaColor = cycle.transform.GetChild(cyclePosition);
-        Debug.Log(cycle.transform.GetChild(cyclePosition));
+        // Debug.Log(cycle.transform.GetChild(cyclePosition));
 
         pointer.transform.position = new Vector3(
             // Move left or right based on if this is the player or not
@@ -387,35 +394,43 @@ public class GameBoard : MonoBehaviour
     // shootSpawnPos is where the shoot particle is spawned
     public void DealDamage(int damage, Vector3 shootSpawnPos, int color)
     {
-        // damage = hpBar.CounterIncoming(damage);
-        // enemyBoard.EnqueueDamage(damage);
-        // hpBar.Refresh();
+        // if singleplayer, add damage to hp
+        if (singlePlayer) {
+            hp += damage;
+            hpBar.Refresh();
+        } 
+        // if multiplayer, send damage to opponent
+        else {
+            // damage = hpBar.CounterIncoming(damage);
+            // enemyBoard.EnqueueDamage(damage);
+            // hpBar.Refresh();
 
-        // Spawn a new damageShoot and send it to the appropriate location
-        GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
-        DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
-        shoot.damage = damage;
+            // Spawn a new damageShoot and send it to the appropriate location
+            GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
+            DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
+            shoot.damage = damage;
 
-        // Blend mana color with existing damage shoot color
-        // var image = shootObj.GetComponent<Image>();
-        // image.color = Color.Lerp(image.color, cycle.GetManaColor(color), 0.5f);
+            // Blend mana color with existing damage shoot color
+            // var image = shootObj.GetComponent<Image>();
+            // image.color = Color.Lerp(image.color, cycle.GetManaColor(color), 0.5f);
 
-        // move towards the closest damage
-        // Iterate in reverse order; target closer daamges first
-        for (int i=5; i>=0; i--)
-        {
-            if (hpBar.DamageQueue[i].dmg > 0) {
-                shoot.target = this;
-                shoot.countering = true;
-                shoot.destination = hpBar.DamageQueue[i].transform.position;
-                return;
+            // move towards the closest damage
+            // Iterate in reverse order; target closer daamges first
+            for (int i=5; i>=0; i--)
+            {
+                if (hpBar.DamageQueue[i].dmg > 0) {
+                    shoot.target = this;
+                    shoot.countering = true;
+                    shoot.destination = hpBar.DamageQueue[i].transform.position;
+                    return;
+                }
             }
-        }
 
-        // if no incoming damage was found, send straight to opponent
-        shoot.target = enemyBoard;
-        shoot.countering = false;
-        shoot.destination = enemyBoard.hpBar.DamageQueue[0].transform.position;
+            // if no incoming damage was found, send straight to opponent
+            shoot.target = enemyBoard;
+            shoot.countering = false;
+            shoot.destination = enemyBoard.hpBar.DamageQueue[0].transform.position;
+        }
     }
 
     // Enqueues damage to this board.
@@ -713,7 +728,7 @@ public class GameBoard : MonoBehaviour
         Time.timeScale = 0f;
         winTextObj.SetActive(true);
         winText.text = "LOSE";
-        enemyBoard.Win();
+        if (!singlePlayer) enemyBoard.Win();
 
     }
 

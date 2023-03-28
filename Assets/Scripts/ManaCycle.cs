@@ -33,7 +33,7 @@ public class ManaCycle : MonoBehaviour
         // Initialize game boards
         foreach (GameBoard board in boards)
         {
-            board.InitializeCycle(this);
+            if (board.enabled) board.InitializeCycle(this);
         }
     }
 

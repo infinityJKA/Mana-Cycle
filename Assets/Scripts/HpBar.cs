@@ -76,7 +76,8 @@ public class HpBar : MonoBehaviour
     public void Refresh()
     {
         hpNum.SetHealth(board.hp);
-        Debug.Log(hpImage);
+        
+        // Debug.Log(hpImage);
         hpImage.fillAmount = 1f * board.hp / board.maxHp;
         incomingDmgImage.fillAmount = 1f * TotalIncomingDamage() / board.maxHp;
         
