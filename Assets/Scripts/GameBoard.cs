@@ -385,7 +385,7 @@ public class GameBoard : MonoBehaviour
 
     // Deal damage to the other player(s(?))
     // shootSpawnPos is where the shoot particle is spawned
-    public void DealDamage(int damage, Vector3 shootSpawnPos)
+    public void DealDamage(int damage, Vector3 shootSpawnPos, int color)
     {
         // damage = hpBar.CounterIncoming(damage);
         // enemyBoard.EnqueueDamage(damage);
@@ -395,6 +395,10 @@ public class GameBoard : MonoBehaviour
         GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
         DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
         shoot.damage = damage;
+
+        // Blend mana color with existing damage shoot color
+        // var image = shootObj.GetComponent<Image>();
+        // image.color = Color.Lerp(image.color, cycle.GetManaColor(color), 0.5f);
 
         // move towards the closest damage
         // Iterate in reverse order; target closer daamges first
@@ -517,7 +521,7 @@ public class GameBoard : MonoBehaviour
                 averagePos /= manaCleared;
 
                 // Send the damage over. Will counter incoming damage first.
-                DealDamage(damage, averagePos);
+                DealDamage(damage, averagePos, (int)color);
 
                 // Clear all blob-contained tiles from the board.
                 foreach (Blob blob in blobs) {
