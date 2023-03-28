@@ -100,15 +100,26 @@ public class GameBoard : MonoBehaviour
     /** Can be used to shake the board. cached on start */
     private Shake shake;
 
+    /** If in singleplayer, the objective list in this scene */
+    [SerializeField] private ObjectiveList objectiveList;
+
+    // STATS
+    /** Total amount of mana this board has cleared */
+    private int totalManaCleared;
+
     // Start is called before the first frame update
     void Start()
     {
         if (singlePlayer) {
             // hp number is used as score, starts as 0
             maxHp = 0;
+            if (enemyBoard != null) enemyBoard.gameObject.SetActive(false);
+            if (objectiveList != null) objectiveList.gameObject.SetActive(true);
         } else {
             // (Later, this may depend on the character/mode)
             maxHp = 2000;
+            if (enemyBoard != null) enemyBoard.gameObject.SetActive(true);
+            if (objectiveList != null) objectiveList.gameObject.SetActive(false);
         }
         hp = maxHp;
 
@@ -140,6 +151,8 @@ public class GameBoard : MonoBehaviour
         
         cyclePosition = 0;
         PointerReposition();
+
+        objectiveList.Refresh(this);
     }
 
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
@@ -278,6 +291,8 @@ public class GameBoard : MonoBehaviour
                         SpawnPiece();
                         // Move self damage cycle
                         DamageCycle();
+
+                        objectiveList.Refresh(this);
                     }         
                     // reset fall time
                     previousFallTime = Time.time;   
@@ -538,6 +553,8 @@ public class GameBoard : MonoBehaviour
                 // Send the damage over. Will counter incoming damage first.
                 DealDamage(damage, averagePos, (int)color);
 
+                totalManaCleared += manaCleared;
+
                 // Clear all blob-contained tiles from the board.
                 foreach (Blob blob in blobs) {
                     foreach (Vector2Int pos in blob.tiles) {
@@ -547,6 +564,8 @@ public class GameBoard : MonoBehaviour
 
                 // Do gravity everywhere
                 AllTileGravity();
+
+                objectiveList.Refresh(this);
 
                 // Check for cascaded blobs
                 tilesInBlobs = new bool[height, width];
@@ -765,4 +784,7 @@ public class GameBoard : MonoBehaviour
         return cycleInitialized;
     }
 
+    public int getTotalManaCleared() {
+        return totalManaCleared;
+    }
 }
