@@ -44,6 +44,7 @@ public class GameBoard : MonoBehaviour
     // Current fall delay for pieces.
     [SerializeField] private float fallTime = 0.8f;
 
+    // this needs to be below the board in the hierarchy, and not in the board prefabs. This is so they aren't covered up by mana tiles and arent effected by the board being disabled.
     [SerializeField] private GameObject winTextObj;
     private TMPro.TextMeshProUGUI winText;
 
