@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 109460369072555598}
   - component: {fileID: 109460369072555584}
   - component: {fileID: 2738482425047349209}
+  - component: {fileID: 1653424862917905127}
   m_Layer: 5
   m_Name: Board
   m_TagString: Untagged
@@ -85,6 +86,22 @@ MonoBehaviour:
   fallTime: 0.8
   winTextObj: {fileID: 7449748678207322561}
   damageShootPrefab: {fileID: 7061708752994457915, guid: f06a653b035c546668c3141a11501e75, type: 3}
+--- !u!114 &1653424862917905127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109460369072555597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bb94b2e5fb3f4acc9484bf83053c408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  center: {x: 0, y: 0, z: 0}
+  shakeDirection: {x: 1, y: 0, z: 0}
+  magnitude: 4
+  frequency: 4
 --- !u!1 &135124126067777765
 GameObject:
   m_ObjectHideFlags: 0
