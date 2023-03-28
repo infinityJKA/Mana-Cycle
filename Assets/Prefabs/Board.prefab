@@ -1020,7 +1020,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.33335963, g: 0.09242612, b: 0.6320754, a: 0.627451}
+  m_Color: {r: 0.279178, g: 0.23633854, b: 0.4433962, a: 0.627451}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1051,8 +1051,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   label: {fileID: 8726835277921127028}
   cycleLevelColors:
-  - {r: 0.33333334, g: 0.09411765, b: 0.6313726, a: 0.627451}
-  - {r: 0.1254902, g: 0.21568628, b: 0.8666667, a: 0.627451}
+  - {r: 0.2784314, g: 0.23529412, b: 0.44313726, a: 0.627451}
+  - {r: 0.08627451, g: 0.49803922, b: 0.8117647, a: 0.627451}
   - {r: 0.043137256, g: 0.7176471, b: 0.45882353, a: 0.627451}
   - {r: 0.5372549, g: 0.7176471, b: 0.043137256, a: 0.627451}
   - {r: 0.7921569, g: 0.6431373, b: 0.0627451, a: 0.627451}
@@ -1428,6 +1428,8 @@ GameObject:
   - component: {fileID: 2263132178392268762}
   - component: {fileID: 6920677845087830949}
   - component: {fileID: 7836459866606857623}
+  - component: {fileID: 181782023297252724}
+  - component: {fileID: 2777285348115337160}
   m_Layer: 5
   m_Name: Portrait
   m_TagString: Untagged
@@ -1476,7 +1478,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.47058824}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1493,6 +1495,35 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &181782023297252724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9159051575835955899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bb94b2e5fb3f4acc9484bf83053c408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  center: {x: 0, y: 0, z: 0}
+  shakeDirection: {x: 1, y: -0.5, z: 0}
+  magnitude: 2.5
+  frequency: 4
+--- !u!114 &2777285348115337160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9159051575835955899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac4d39d5442c461bb10fc0b889546d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashColor: {r: 0.8392157, g: 0.827451, b: 0.827451, a: 0.5176471}
 --- !u!1001 &216248985347870178
 PrefabInstance:
   m_ObjectHideFlags: 0
