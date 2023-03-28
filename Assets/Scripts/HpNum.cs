@@ -1,23 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class HpNum : MonoBehaviour
 {
-    TMPro.TextMeshProUGUI textbox;
-    void Start()
-    {
-        textbox = GetComponent<TMPro.TextMeshProUGUI>();
-    }
-
     public void SetHealth(int health)
     {
-        if (health > 0)
-        {
-            textbox.enabled = true;
-            textbox.text = health.ToString();
-        } else {
-            textbox.enabled = false;
-        }
+        var textbox = GetComponent<TMPro.TextMeshProUGUI>();
+        textbox.text = (Math.Max(health, 0)).ToString();
     }
 }
