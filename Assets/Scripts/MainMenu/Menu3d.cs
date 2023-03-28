@@ -69,5 +69,10 @@ public class Menu3d : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(SettingsButton);
     }
 
+    public void SelectSolo()
+    {
+        TransitionHandler.WipeToScene("SoloMenu");
+    }
+
 
 }
