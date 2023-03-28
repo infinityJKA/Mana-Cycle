@@ -21,9 +21,9 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private InputScript inputScript;
 
     // The board of the enemy of the player/enemy of this board
-    [SerializeField] private GameBoard enemyBoard;
+    [SerializeField] public GameBoard enemyBoard;
     // HP Bar game object on this board
-    [SerializeField] private HealthBar hpBar;
+    [SerializeField] public HealthBar hpBar;
 
     // Stores the piece preview for this board
     [SerializeField] private PiecePreview piecePreview;
@@ -91,6 +91,9 @@ public class GameBoard : MonoBehaviour
     private bool cycleInitialized;
     private bool postGame = false;
     private PostGameMenu winMenu;
+
+    /** Prefab for damage shoots, spawned when dealing damage. */
+    [SerializeField] private GameObject damageShootPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -377,11 +380,34 @@ public class GameBoard : MonoBehaviour
     }
 
     // Deal damage to the other player(s(?))
-    public void DealDamage(int damage)
+    // shootSpawnPos is where the shoot particle is spawned
+    public void DealDamage(int damage, Vector3 shootSpawnPos)
     {
-        damage = hpBar.CounterIncoming(damage);
-        enemyBoard.EnqueueDamage(damage);
-        hpBar.Refresh();
+        // damage = hpBar.CounterIncoming(damage);
+        // enemyBoard.EnqueueDamage(damage);
+        // hpBar.Refresh();
+
+        // Spawn a new damageShoot and send it to the appropriate location
+        GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
+        DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
+        shoot.damage = damage;
+
+        // move towards the closest damage
+        // Iterate in reverse order; target closer daamges first
+        for (int i=5; i>=0; i--)
+        {
+            if (hpBar.DamageQueue[i].dmg > 0) {
+                shoot.target = this;
+                shoot.countering = true;
+                shoot.destination = hpBar.DamageQueue[i].transform.position;
+                return;
+            }
+        }
+
+        // if no incoming damage was found, send straight to opponent
+        shoot.target = enemyBoard;
+        shoot.countering = false;
+        shoot.destination = enemyBoard.hpBar.DamageQueue[0].transform.position;
     }
 
     // Enqueues damage to this board.
@@ -466,8 +492,17 @@ public class GameBoard : MonoBehaviour
                 // DMG is scaled by chain and cascade.
                 int damage = (int)( (manaCleared * damagePerMana) * chain * cascade );
 
+                // Get the average of all tile positions; this is where shoot particle is spawned
+                Vector3 averagePos = Vector3.zero;
+                foreach (Blob blob in blobs) {
+                    foreach (Vector2Int pos in blob.tiles) {
+                        averagePos += board[pos.y, pos.x].transform.position;
+                    }
+                }
+                averagePos /= manaCleared;
+
                 // Send the damage over. Will counter incoming damage first.
-                DealDamage(damage);
+                DealDamage(damage, averagePos);
 
                 // Clear all blob-contained tiles from the board.
                 foreach (Blob blob in blobs) {
