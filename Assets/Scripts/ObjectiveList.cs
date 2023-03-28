@@ -4,18 +4,14 @@ using UnityEngine;
 
 public class ObjectiveList : MonoBehaviour
 {
-    [SerializeField] List<Objective> objectives;
+    [SerializeField] List<ObjectiveListItem> objectives;
 
     public void Refresh(GameBoard board) {
         bool allObjectivesComplete = true;
 
-        foreach (Objective objective in objectives) {
-            objective.Refresh(board);
-            if (objective.IsCompleted(board)) {
-                objective.textbox.color = Color.green;
-            } else {
-                allObjectivesComplete = false;
-            }
+        foreach (ObjectiveListItem objListItem in objectives) {
+            bool completed = objListItem.Refresh(board);
+            if (!completed) allObjectivesComplete = false;
         }
 
         if (allObjectivesComplete) {
