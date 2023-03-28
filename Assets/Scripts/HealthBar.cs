@@ -52,6 +52,7 @@ public class HealthBar : MonoBehaviour
             if (incoming.dmg >= damage)
             {
                 incoming.SubtractDamage(damage);
+                Refresh();
                 return 0;
             }
             // otherwise, cancel out all its damage and move to next
@@ -63,6 +64,7 @@ public class HealthBar : MonoBehaviour
         }
 
         // return any leftover damage that will be sent to oppnent
+        Refresh();
         return damage;
     }
 
