@@ -6,6 +6,7 @@ public class SoundManager : MonoBehaviour
 {   public static SoundManager Instance;
     
     public AudioSource musicSource, effectSource;
+    [SerializeField] private AudioClip sliderSFX;
 
     void Awake(){
         if(Instance == null){
@@ -21,8 +22,13 @@ public class SoundManager : MonoBehaviour
         effectSource.PlayOneShot(clip);
     }
 
-    public void ChangeMasterVolume(float value){
-        AudioListener.volume = value;
+    public void ChangeMusicVolume(float value){
+        musicSource.volume = value;
+    }
+
+    public void ChangeSFXVolume(float value){
+
+        effectSource.volume = value;
     }
 
 }
