@@ -428,8 +428,11 @@ public class GameBoard : MonoBehaviour
         // dequeue the closest damage
         int dmg = hpBar.DamageQueue[5].dmg;
         if (dmg > 0) {
-            // shake the board when damaged
+            // shake the board and portrait when damaged
             shake.ShakeForDuration(1);
+            portrait.GetComponent<Shake>().ShakeForDuration(1);
+            // flash portrait red
+            portrait.GetComponent<ColorFlash>().Flash(0.7f);
 
             // subtract from hp
             hp -= dmg;
