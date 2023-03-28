@@ -433,10 +433,10 @@ public class GameBoard : MonoBehaviour
         int dmg = hpBar.DamageQueue[5].dmg;
         if (dmg > 0) {
             // shake the board and portrait when damaged
-            shake.ShakeForDuration(1);
-            portrait.GetComponent<Shake>().ShakeForDuration(1);
+            shake.CauseShake();
+            portrait.GetComponent<Shake>().CauseShake();
             // flash portrait red
-            portrait.GetComponent<ColorFlash>().Flash(0.7f);
+            portrait.GetComponent<ColorFlash>().Flash();
 
             // subtract from hp
             hp -= dmg;

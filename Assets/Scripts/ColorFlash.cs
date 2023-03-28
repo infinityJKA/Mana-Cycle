@@ -13,7 +13,7 @@ public class ColorFlash : MonoBehaviour
     /** Color currently being flashed. **/
     public Color flashColor;
     /** Length of this flash */
-    private float duration = 0f;
+    private float duration = 0.7f;
     /** Amount of flash time remaining **/
     private float time = 0f;
 
@@ -41,8 +41,7 @@ public class ColorFlash : MonoBehaviour
         this.time = duration;
     }
 
-    public void Flash(float duration) {
-        this.duration = duration;
+    public void Flash() {
         this.time = duration;
     }
 }

@@ -10,6 +10,8 @@ public class Shake : MonoBehaviour
     public float magnitude = 10f;
     /** Amount of shakes per second */
     public float frequency = 5f;
+    /** Duration of shake **/
+    public float duration = 1f;
 
     /** Length of this shake */
     private float shakeDuration = 0f;
@@ -35,7 +37,7 @@ public class Shake : MonoBehaviour
         }
     }
 
-    public void ShakeForDuration(float duration) {
+    public void CauseShake() {
         shakeDuration = duration;
         shakeTime = duration;
     }
