@@ -9,13 +9,9 @@ public class ObjectiveList : MonoBehaviour
     public void Refresh(GameBoard board) {
         bool allObjectivesComplete = true;
 
-        foreach (ObjectiveListItem objective in objectives) {
-            objective.Refresh(board);
-            if (objective.IsCompleted(board)) {
-                objective.textbox.color = Color.green;
-            } else {
-                allObjectivesComplete = false;
-            }
+        foreach (ObjectiveListItem objListItem in objectives) {
+            bool completed = objListItem.Refresh(board);
+            if (!completed) allObjectivesComplete = false;
         }
 
         if (allObjectivesComplete) {
