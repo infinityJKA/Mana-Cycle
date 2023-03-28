@@ -95,6 +95,8 @@ public class GameBoard : MonoBehaviour
 
     /** Prefab for damage shoots, spawned when dealing damage. */
     [SerializeField] private GameObject damageShootPrefab;
+    /** Can be used to shake the board. cached on start */
+    private Shake shake;
 
     // Start is called before the first frame update
     void Start()
@@ -109,6 +111,7 @@ public class GameBoard : MonoBehaviour
         winText = winTextObj.GetComponent<TMPro.TextMeshProUGUI>();
         winMenu = GameObject.Find("PostGameMenu").GetComponent<PostGameMenu>();
 
+        shake = GetComponent<Shake>();
 
         // Setup battler, from char selection screen
         battlerStorage = GameObject.Find("SelectedBattlerStorage").GetComponent<BattlerStorage>();
@@ -422,13 +425,21 @@ public class GameBoard : MonoBehaviour
     // Moves incoming damage and take damage if at end
     public void DamageCycle()
     {
-        // Deal damage, if any
-        hp -= hpBar.DamageQueue[5].dmg;
-        hpBar.AdvanceDamageQueue();
-        hpBar.Refresh();
+        // dequeue the closest damage
+        int dmg = hpBar.DamageQueue[5].dmg;
+        if (dmg > 0) {
+            // shake the board when damaged
+            shake.ShakeForDuration(1);
 
-        // If this player is out of HP, run defeat
-        if (hp <= 0) Defeat();
+            // subtract from hp
+            hp -= dmg;
+
+            // If this player is out of HP, run defeat
+            if (hp <= 0) Defeat();
+        }
+
+        // advance queue
+        hpBar.AdvanceDamageQueue();
     }
 
 
