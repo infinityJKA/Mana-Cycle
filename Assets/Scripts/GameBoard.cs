@@ -283,7 +283,7 @@ public class GameBoard : MonoBehaviour
 
         pointer.transform.position = new Vector3(
             // Move left or right based on if this is the player or not
-            manaColor.transform.position.x + ((playerSide == 0) ? -100 : 100),
+            manaColor.transform.position.x + ((playerSide == 0) ? -50 : 50),
             manaColor.transform.position.y,
             0
         );
