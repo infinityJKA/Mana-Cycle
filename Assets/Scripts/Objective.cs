@@ -1,31 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
+using UnityEditor;
 
-public class Objective : MonoBehaviour
-{
-    // The text box contained in this objective
-    [SerializeField] public TMPro.TextMeshProUGUI textbox;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+[CreateAssetMenu(fileName = "Objective", menuName = "ManaCycle/Level Objective")]
+public class Objective : ScriptableObject {
+    public enum ObjectiveType {
+        Score,
+        ManaCleared
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    /** Type of objective this is; defines what quota means for this objective */
+    [SerializeField] private ObjectiveType objectiveType;
+    /** Quota to reach, depends on the type of objective this is */
+    [SerializeField] private int quota;
+
+    public bool IsCompleted(GameBoard board) {
+        switch (objectiveType) {
+            case ObjectiveType.Score: return board.hp >= quota; // in singleplayer, hp means score
+            case ObjectiveType.ManaCleared: return board.getTotalManaCleared() >= quota;
+            default: return false;
+        }
     }
 
-    /** function to determine if this objective is completed */
-    public virtual bool IsCompleted(GameBoard board) {
-        return false;
-    }
-
-    /** function to update the string displayed */
-    public virtual void Refresh(GameBoard board) {
-        textbox.text = "This is an objective";
+    public string Status(GameBoard board) {
+        switch (objectiveType) {
+            case ObjectiveType.Score: return board.getTotalManaCleared()+"/"+quota+" Points";
+            case ObjectiveType.ManaCleared: return board.getTotalManaCleared()+"/"+quota+" Mana Cleared";
+            default: return "This is an objective";
+        }
     }
 }
