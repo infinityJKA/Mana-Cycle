@@ -26,14 +26,6 @@ public class HealthBar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
-        // get image components to edit attributes 
-        hpImage = hpDisp.GetComponent<Image>();
-        incomingDmgImage = incomingDmgDisp.GetComponent<Image>();
-
-        // get rect transform to change positions later
-        hpTransform = hpDisp.GetComponent<RectTransform>();
-        incomingDmgTransform = incomingDmgDisp.GetComponent<RectTransform>();
-
         foreach (IncomingDamage incoming in damageQueue)
         {
             incoming.SetDamage(0);
@@ -77,6 +69,14 @@ public class HealthBar : MonoBehaviour
 
     public void Refresh()
     {
+        // get image components to edit attributes 
+        hpImage = hpDisp.GetComponent<Image>();
+        incomingDmgImage = incomingDmgDisp.GetComponent<Image>();
+
+        // get rect transform to change positions later
+        hpTransform = hpDisp.GetComponent<RectTransform>();
+        incomingDmgTransform = incomingDmgDisp.GetComponent<RectTransform>();
+
         hpNum.SetHealth(board.hp);
         hpImage.fillAmount = 1f * board.hp / board.maxHp;
 
