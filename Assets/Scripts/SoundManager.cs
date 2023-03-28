@@ -6,7 +6,6 @@ public class SoundManager : MonoBehaviour
 {   public static SoundManager Instance;
     
     public AudioSource musicSource, effectSource;
-    [SerializeField] private AudioClip sliderSFX;
 
     void Awake(){
         if(Instance == null){
