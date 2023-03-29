@@ -49,8 +49,15 @@ public class DamageShoot : MonoBehaviour {
                 }
             }
 
-            else { // dealing damage to enemy
-                target.EnqueueDamage(damage);
+            else { 
+                // if singleplayer, add to "score" (hp bar)
+                if (target.singlePlayer) {
+                    target.AddScore(damage);
+                } 
+                // else deal damage to target
+                else {
+                    target.EnqueueDamage(damage);
+                }
                 Destroy(this.gameObject);
             }
         }
