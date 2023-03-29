@@ -1,5 +1,3 @@
-using System.Net.NetworkInformation;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -263,8 +261,8 @@ public class GameBoard : MonoBehaviour
                 }
             }
 
-            // same with post game menu
-            else if (postGame)
+            // same with post game menu, if timer is not running
+            else if (postGame && !winMenu.timerRunning)
             {
                 if (Input.GetKeyDown(inputScript.Up)) {
                     winMenu.MoveCursor(1);
@@ -767,8 +765,10 @@ public class GameBoard : MonoBehaviour
         Destroy(piece);
         pieceBoard.SetActive(false);
         Time.timeScale = 0f;
+
         winTextObj.SetActive(true);
         winText.text = "LOSE";
+
         if (!singlePlayer) enemyBoard.Win();
 
     }
@@ -776,8 +776,9 @@ public class GameBoard : MonoBehaviour
     public void Win()
     {
         postGame = true;
-        winTextObj.SetActive(true);
         if (timer != null) timer.StopTimer();
+
+        winTextObj.SetActive(true);
         winText.text = "WIN";
         winMenu.AppearWithDelay(2d);
     }
