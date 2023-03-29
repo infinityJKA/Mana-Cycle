@@ -422,25 +422,28 @@ public class GameBoard : MonoBehaviour
     // shootSpawnPos is where the shoot particle is spawned
     public void DealDamage(int damage, Vector3 shootSpawnPos, int color)
     {
-        // if singleplayer, add damage to hp
+        // Spawn a new damageShoot
+        GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
+        DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
+        shoot.damage = damage;
+
+        // Blend mana color with existing damage shoot color
+        // var image = shootObj.GetComponent<Image>();
+        // image.color = Color.Lerp(image.color, cycle.GetManaColor(color), 0.5f);
+
+        // Send it to the appropriate location
+        // if singleplayer, add damage to score, send towards hp bar
         if (singlePlayer) {
-            hp += damage;
-            hpBar.Refresh();
+            shoot.target = this;
+            shoot.countering = false;
+            shoot.destination = hpBar.hpNum.transform.position;
         } 
+
         // if multiplayer, send damage to opponent
         else {
             // damage = hpBar.CounterIncoming(damage);
             // enemyBoard.EnqueueDamage(damage);
             // hpBar.Refresh();
-
-            // Spawn a new damageShoot and send it to the appropriate location
-            GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
-            DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
-            shoot.damage = damage;
-
-            // Blend mana color with existing damage shoot color
-            // var image = shootObj.GetComponent<Image>();
-            // image.color = Color.Lerp(image.color, cycle.GetManaColor(color), 0.5f);
 
             // move towards the closest damage
             // Iterate in reverse order; target closer daamges first
@@ -811,5 +814,10 @@ public class GameBoard : MonoBehaviour
 
     public Level GetLevel() {
         return level;
+    }
+
+    // Used in singleplayer, add points to "score" (hp)
+    public void AddScore(int score) {
+        hp += score;
     }
 }
