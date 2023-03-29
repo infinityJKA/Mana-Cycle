@@ -5,19 +5,35 @@ using System;
 
 public class LevelLister : MonoBehaviour
 {
+    // morgan please comment your code in the future :(
+
+    /** Conversation handler, to run conversation when level is selected */
+    [SerializeField] private ConvoHandler convoHandler;
+
+    /** List of levels to select */
     [SerializeField] private Level[] levelsList;
+
+    // List level object caches
     [SerializeField] private GameObject listObject;
     private TMPro.TextMeshProUGUI listText;
     private RectTransform listTransform;
     [SerializeField] private TMPro.TextMeshProUGUI descriptionText;
+
+    /** Inputs that control the level list */
     [SerializeField] private InputScript[] inputScripts;
+    /** y offset when scrolling (?) */
     [SerializeField] private float yOffset;
+    /** Index of current level selected */
     private int selection = 0;
+    /** Descent between lines in the level list */
     private float decLine;
 
+    /** current targeted scroll position */
     private Vector2 targetPosition;
+    /** current scroll velocity */
     private Vector2 vel = Vector2.zero;
 
+    /** If the level list is currently focused, instead of dialogue */
     private bool focused;
 
     // Start is called before the first frame update
@@ -27,6 +43,8 @@ public class LevelLister : MonoBehaviour
         listText = listObject.GetComponent<TMPro.TextMeshProUGUI>();
         decLine = (listText.font.faceInfo.descentLine);
         listTransform = listObject.GetComponent<RectTransform>();
+
+
         RefreshList();
     }
 
@@ -40,13 +58,16 @@ public class LevelLister : MonoBehaviour
             if (Input.GetKeyDown(inputScript.Up))
             {
                 selection--;
+                RefreshList();
             }
 
             if (Input.GetKeyDown(inputScript.Down))
             {
                 selection++;
+                RefreshList();
             }
 
+            // pause - go back to main menu
             if (Input.GetKeyDown(inputScript.Pause))
             {
                 GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("3dMenu", i : true);
@@ -54,23 +75,20 @@ public class LevelLister : MonoBehaviour
 
             selection = Math.Clamp(selection, 0, levelsList.Length-1);
 
+            // cast - open selected level
             if (Input.GetKeyDown(inputScript.Cast))
             {
-                GameObject.Find("ConvoHandler").GetComponent<ConvoHandler>().StartLevel(levelsList[selection]);
+                convoHandler.StartLevel(levelsList[selection]);
                 focused = false;
             }
-
-            
-
         }
 
-        RefreshList();
+        // smoothly update displayed y position of level list
         listTransform.position = Vector2.SmoothDamp(listTransform.position, targetPosition, ref vel, 0.1f);
     }
 
     void RefreshList()
     {
-        // update text
         string newText = "";
         // add and subtract 20 for extra lines at the start and end of list
         for (int i = -20; i < levelsList.Length + 20; i++)
@@ -91,11 +109,12 @@ public class LevelLister : MonoBehaviour
             }
 
         }
-
         listText.text = newText;
+
+        // display the description of the selected level
         descriptionText.text = levelsList[selection].description;
 
-        // update position
+        // update the targeted scroll position
         targetPosition = new Vector2(listTransform.position.x, selection*(50+decLine) + yOffset);
     }
 

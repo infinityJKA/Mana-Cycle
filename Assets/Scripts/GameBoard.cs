@@ -87,8 +87,6 @@ public class GameBoard : MonoBehaviour
     // True for one frame when new piece spawns
     private bool pieceSpawned;
 
-    private BattlerStorage battlerStorage;
-
     private bool cycleInitialized;
     private bool postGame = false;
     private PostGameMenu winMenu;
@@ -136,20 +134,18 @@ public class GameBoard : MonoBehaviour
 
         shake = GetComponent<Shake>();
 
-        // Setup battler, from char selection screen
-        battlerStorage = GameObject.Find("SelectedBattlerStorage").GetComponent<BattlerStorage>();
         // if any value in storage is null, it means we loaded straight to ManaCycle without going to CharSelect first. use default serialized values for battlers
-        if (!(battlerStorage.GetBattler1() == null))
+        if (Storage.battler1 == null)
         {
             if (playerSide == 0)
             {
-                battler = battlerStorage.GetBattler1();
-                playerControlled = battlerStorage.GetPlayerControlled1();
+                battler = Storage.battler1;
+                playerControlled = Storage.isPlayer1;
             }
             else
             {
-                battler = battlerStorage.GetBattler2();
-                playerControlled = battlerStorage.GetPlayerControlled2();
+                battler = Storage.battler2;
+                playerControlled = Storage.isPlayer2;
             }
             portrait.sprite = battler.sprite;
         }
