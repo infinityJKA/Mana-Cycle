@@ -78,13 +78,15 @@ public class ConvoHandler : MonoBehaviour
 
         if (currentConvo.leftFocused[convoPos])
         {
-            s1Img.color = new Color(1.0f, 1.0f, 1.0f, 1f);
+            s1Img.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             s2Img.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+
         }
         else
         {
             s1Img.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
-            s2Img.color = new Color(1.0f, 1.0f, 1.0f, 1f);
+            s2Img.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+
         }
         
     }
