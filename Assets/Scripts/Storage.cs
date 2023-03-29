@@ -15,6 +15,7 @@ public class Storage
     public static bool isPlayer2;
 
     /** level that the player selected */
+    public static Level level;
 
     // // i love getters and setters so fucking much
     // fuck getters and setters we goin public

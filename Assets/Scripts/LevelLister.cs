@@ -44,7 +44,6 @@ public class LevelLister : MonoBehaviour
         decLine = (listText.font.faceInfo.descentLine);
         listTransform = listObject.GetComponent<RectTransform>();
 
-
         RefreshList();
     }
 
@@ -78,6 +77,7 @@ public class LevelLister : MonoBehaviour
             // cast - open selected level
             if (Input.GetKeyDown(inputScript.Cast))
             {
+                Storage.level = levelsList[selection];
                 convoHandler.StartLevel(levelsList[selection]);
                 focused = false;
             }
@@ -121,5 +121,4 @@ public class LevelLister : MonoBehaviour
     public void SetFocus(bool f){
         focused = f;
     }
-
 }
