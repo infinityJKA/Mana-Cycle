@@ -65,7 +65,8 @@ public class ConvoHandler : MonoBehaviour
 
     void EndConvo()
     {
-        convoUI.SetActive(false);
+        // convoUI.SetActive(false);
+        GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(currentConvo.endScene);
     }
 
     void RefreshObjects()
