@@ -100,6 +100,8 @@ public class GameBoard : MonoBehaviour
     /** Can be used to shake the board. cached on start */
     private Shake shake;
 
+    /** The level the player is in, if not in versus mode */
+    [SerializeField] private Level level;
     /** If in singleplayer, the objective list in this scene */
     [SerializeField] private ObjectiveList objectiveList;
 
@@ -112,16 +114,18 @@ public class GameBoard : MonoBehaviour
     {
         if (singlePlayer) {
             // hp number is used as score, starts as 0
-            maxHp = 0;
+            maxHp = level.scoreGoal;
+            hp = 0;
             if (enemyBoard != null) enemyBoard.gameObject.SetActive(false);
             if (objectiveList != null) objectiveList.gameObject.SetActive(true);
         } else {
             // (Later, this may depend on the character/mode)
             maxHp = 2000;
+            hp = maxHp;
             if (enemyBoard != null) enemyBoard.gameObject.SetActive(true);
             if (objectiveList != null) objectiveList.gameObject.SetActive(false);
         }
-        hp = maxHp;
+        
 
         // Cache stuff
         pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
@@ -150,9 +154,10 @@ public class GameBoard : MonoBehaviour
         }
         
         cyclePosition = 0;
-        PointerReposition();
 
-        objectiveList.Refresh(this);
+        if (singlePlayer) {
+            objectiveList.InitializeObjectiveListItems(this);
+        }
     }
 
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
@@ -292,7 +297,7 @@ public class GameBoard : MonoBehaviour
                         // Move self damage cycle
                         DamageCycle();
 
-                        objectiveList.Refresh(this);
+                        if (singlePlayer) objectiveList.Refresh(this);
                     }         
                     // reset fall time
                     previousFallTime = Time.time;   
@@ -565,7 +570,7 @@ public class GameBoard : MonoBehaviour
                 // Do gravity everywhere
                 AllTileGravity();
 
-                objectiveList.Refresh(this);
+                if (singlePlayer) objectiveList.Refresh(this);
 
                 // Check for cascaded blobs
                 tilesInBlobs = new bool[height, width];
@@ -786,5 +791,9 @@ public class GameBoard : MonoBehaviour
 
     public int getTotalManaCleared() {
         return totalManaCleared;
+    }
+
+    public Level GetLevel() {
+        return level;
     }
 }
