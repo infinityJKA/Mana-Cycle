@@ -110,6 +110,12 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // load level if applicable
+        if (Storage.level != null && singlePlayer)
+        {
+            level = Storage.level;
+        }
+
         if (singlePlayer) {
             // hp number is used as score, starts as 0
             maxHp = level.scoreGoal;
@@ -760,7 +766,6 @@ public class GameBoard : MonoBehaviour
         defeated = true;
         Destroy(piece);
         pieceBoard.SetActive(false);
-        Time.timeScale = 0f;
 
         winTextObj.SetActive(true);
         winText.text = "LOSE";

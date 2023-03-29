@@ -33,6 +33,7 @@ public class PostGameMenu : MonoBehaviour
             if (appearTime <= 0)
             {
                 MenuUI.SetActive(true);
+                Time.timeScale = 0f;
                 timerRunning = false;
 
                 EventSystem.current.SetSelectedGameObject(null);
