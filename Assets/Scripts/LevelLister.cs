@@ -6,13 +6,24 @@ using System;
 public class LevelLister : MonoBehaviour
 {
     [SerializeField] private Level[] levelsList;
-    [SerializeField] private TMPro.TextMeshProUGUI listText;
+    [SerializeField] private GameObject listObject;
+    private TMPro.TextMeshProUGUI listText;
+    private RectTransform listTransform;
     [SerializeField] private TMPro.TextMeshProUGUI descriptionText;
-    private int selection = 0;
     [SerializeField] private InputScript[] inputScripts;
+    [SerializeField] private float yOffset;
+    private int selection = 0;
+    private float decLine;
+
+    private Vector2 targetPosition;
+    private Vector2 vel = Vector2.zero;
+    
     // Start is called before the first frame update
     void Start()
     {
+        listText = listObject.GetComponent<TMPro.TextMeshProUGUI>();
+        decLine = (listText.font.faceInfo.descentLine);
+        listTransform = listObject.GetComponent<RectTransform>();
         RefreshList();
     }
 
@@ -41,23 +52,38 @@ public class LevelLister : MonoBehaviour
         }
 
         RefreshList();
+        listTransform.position = Vector2.SmoothDamp(listTransform.position, targetPosition, ref vel, 0.1f);
     }
 
     void RefreshList()
     {
+        // update text
         string newText = "";
-        for (int i = 0; i < levelsList.Length; i++)
+        // add and subtract 20 for extra lines at the start and end of list
+        for (int i = -20; i < levelsList.Length + 20; i++)
         {
-            Level l = levelsList[i];
-
-            newText += l.levelName;
-            if (i == selection)
-            {
-                newText += " <";
+            if (i < 0 || i >= levelsList.Length){
+                // flavor lines
+                newText += "########" + "\n";
             }
-            newText += "\n";
+            else{
+                Level l = levelsList[i];
+
+                newText += l.levelName;
+                if (i == selection)
+                {
+                    newText += " <";
+                }
+                newText += "\n";
+            }
+
         }
+
         listText.text = newText;
         descriptionText.text = levelsList[selection].description;
+
+        // update position
+        targetPosition = new Vector2(listTransform.position.x, selection*(listTransform.rect.height+decLine) + yOffset);
     }
+
 }
