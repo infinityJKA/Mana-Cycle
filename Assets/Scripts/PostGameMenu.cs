@@ -12,19 +12,20 @@ public class PostGameMenu : MonoBehaviour
     [SerializeField] private List<GameObject> MenuItems;
     private int currentSelection = 0;
     private double appearTime;
-    private bool timerStarted = false;
+    public bool timerRunning {get; private set;}
     [SerializeField] private GameObject MenuUI;
     private TransitionScript transitionHandler;
     // Start is called before the first frame update
     void Start()
     {
         transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
+        timerRunning = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (timerStarted)
+        if (timerRunning)
         {
             // timescale is currently 0 to pause game logic, so used unscaled dt
             appearTime -= Time.unscaledDeltaTime;
@@ -32,7 +33,7 @@ public class PostGameMenu : MonoBehaviour
             if (appearTime <= 0)
             {
                 MenuUI.SetActive(true);
-                timerStarted = false;
+                timerRunning = false;
 
                 EventSystem.current.SetSelectedGameObject(null);
                 MoveCursor(0);
@@ -45,7 +46,7 @@ public class PostGameMenu : MonoBehaviour
     public void AppearWithDelay(double s)
     {
         appearTime = s;
-        timerStarted = true;
+        timerRunning = true;
     }
 
     // alot of code is repeated from the pause menu script. could be cleaned up later
