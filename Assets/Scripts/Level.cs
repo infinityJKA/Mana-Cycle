@@ -6,6 +6,9 @@ using UnityEngine;
 public class Level : ScriptableObject {
     [SerializeField] public string levelName = "Level";
     [SerializeField] public string description = "One of the levels of time";
+
+    /** Conversation that happens before this level */
+    [SerializeField] public Conversation conversation;
     
     /** Amount of time to complete the level, in seconds. */
     [SerializeField] public int time = 300;

@@ -56,7 +56,7 @@ public class LevelLister : MonoBehaviour
 
             if (Input.GetKeyDown(inputScript.Cast))
             {
-                GameObject.Find("ConvoHandler").GetComponent<ConvoHandler>().StartConvo(selection);
+                GameObject.Find("ConvoHandler").GetComponent<ConvoHandler>().StartLevel(levelsList[selection]);
                 focused = false;
             }
 
