@@ -13,7 +13,6 @@ public class Conversation : ScriptableObject {
     // [SerializeField] public bool[] leftFocused;
 
     [SerializeField] public ConversationLine[] dialogueList;
-    [SerializeField] public string endScene;
 }
 
 [Serializable]
@@ -30,7 +29,7 @@ public class ConversationLineDrawer : PropertyDrawer
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        return 40;
+        return 42;
     }
 
     // Draw the property inside the given rect
@@ -51,7 +50,7 @@ public class ConversationLineDrawer : PropertyDrawer
 
         EditorGUI.PropertyField(drawRect, text, GUIContent.none);
         // dialogue.stringValue = EditorGUI.TextField(position, dialogue.stringValue);
-        drawRect.y += 16;
+        drawRect.y += 20;
         drawRect.width /= 2.5f;
         var divideWidth = drawRect.width;
         drawRect.width -= 4;
