@@ -17,6 +17,9 @@ public class CountdownHandler : MonoBehaviour
     [SerializeField] private AudioClip tickSFX;
     [SerializeField] private AudioClip goSFX;
 
+    // timer to start when countdown ends
+    [SerializeField] private Timer timer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +40,7 @@ public class CountdownHandler : MonoBehaviour
         if (currentTime <= 0 && !cycleActivated)
         {
             manaCycle.InitBoards();
+            timer.StartTimer();
             countDownText.text = "GO!";
             cycleActivated = true;
             SoundManager.Instance.PlaySound(goSFX);
