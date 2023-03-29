@@ -7,18 +7,18 @@ using UnityEditor.UIElements;
 [CreateAssetMenu(fileName = "Conversations", menuName = "ManaCycle/Conversation")]
 
 public class Conversation : ScriptableObject {
-    [SerializeField] public string[] dialougeList;
-    [SerializeField] public Battler[] lSpeakerOrder;
-    [SerializeField] public Battler[] rSpeakerOrder;
-    [SerializeField] public bool[] leftFocused;
+    // [SerializeField] public string[] dialougeList;
+    // [SerializeField] public Battler[] lSpeakerOrder;
+    // [SerializeField] public Battler[] rSpeakerOrder;
+    // [SerializeField] public bool[] leftFocused;
 
-    [SerializeField] public ConversationLine[] lines;
+    [SerializeField] public ConversationLine[] dialogueList;
     [SerializeField] public string endScene;
 }
 
 [Serializable]
 public class ConversationLine {
-    public string dialogue;
+    public string text;
     public Battler leftSpeaker;
     public Battler rightSpeaker;
     public bool rightFocused;
@@ -40,14 +40,16 @@ public class ConversationLineDrawer : PropertyDrawer
         // prefab override logic works on the entire property.
         EditorGUI.BeginProperty(position, label, property);
 
-        var dialogue = property.FindPropertyRelative("dialogue");
+        position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+
+        var text = property.FindPropertyRelative("text");
         var leftSpeaker = property.FindPropertyRelative("leftSpeaker");
         var rightSpeaker = property.FindPropertyRelative("rightSpeaker");
         var rightFocused = property.FindPropertyRelative("rightFocused");
 
         Rect drawRect = new Rect(position.x, position.y, position.width, 16);
 
-        EditorGUI.PropertyField(drawRect, dialogue, GUIContent.none);
+        EditorGUI.PropertyField(drawRect, text, GUIContent.none);
         // dialogue.stringValue = EditorGUI.TextField(position, dialogue.stringValue);
         drawRect.y += 16;
         drawRect.width /= 2.5f;
