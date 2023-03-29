@@ -7,10 +7,10 @@ using UnityEditor.UIElements;
 [CreateAssetMenu(fileName = "Conversations", menuName = "ManaCycle/Conversation")]
 
 public class Conversation : ScriptableObject {
-    [SerializeField] public string[] dialougeList;
-    [SerializeField] public Battler[] lSpeakerOrder;
-    [SerializeField] public Battler[] rSpeakerOrder;
-    [SerializeField] public bool[] leftFocused;
+    // [SerializeField] public string[] dialougeList;
+    // [SerializeField] public Battler[] lSpeakerOrder;
+    // [SerializeField] public Battler[] rSpeakerOrder;
+    // [SerializeField] public bool[] leftFocused;
 
     [SerializeField] public ConversationLine[] lines;
     [SerializeField] public string endScene;
@@ -21,7 +21,7 @@ public class ConversationLine {
     public string dialogue;
     public Battler leftSpeaker;
     public Battler rightSpeaker;
-    public bool leftFocused = true;
+    public bool rightFocused = true;
 }
 
 [CustomPropertyDrawer(typeof(ConversationLine))]
@@ -43,7 +43,7 @@ public class ConversationLineDrawer : PropertyDrawer
         var dialogue = property.FindPropertyRelative("dialogue");
         var leftSpeaker = property.FindPropertyRelative("leftSpeaker");
         var rightSpeaker = property.FindPropertyRelative("rightSpeaker");
-        var leftFocused = property.FindPropertyRelative("leftFocused");
+        var rightFocused = property.FindPropertyRelative("rightFocused");
 
         Rect drawRect = new Rect(position.x, position.y, position.width, 16);
 
@@ -59,7 +59,7 @@ public class ConversationLineDrawer : PropertyDrawer
         drawRect.x += divideWidth;
         EditorGUI.PropertyField(drawRect, rightSpeaker, GUIContent.none);
         drawRect.x += divideWidth;
-        leftFocused.boolValue = EditorGUI.ToggleLeft(drawRect, leftFocused.boolValue ? "Left Focus" : "Right Focus", leftFocused.boolValue);
+        rightFocused.boolValue = EditorGUI.ToggleLeft(drawRect, rightFocused.boolValue ? "Right Focus" : "Left Focus", rightFocused.boolValue);
 
         EditorGUI.EndProperty();
     }
