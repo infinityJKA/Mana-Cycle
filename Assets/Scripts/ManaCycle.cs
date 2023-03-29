@@ -21,19 +21,22 @@ public class ManaCycle : MonoBehaviour
 
     // List of all cycleColor objects that represent the colors
     private List<Image> cycleObjects;
+
     // Length of the cycle
     public static int cycleLength = 7;
-
-
-    void Start()
-    {
-        // Generate cycle that boards will use
-        GenerateCycle();
-
-    }
+    // Amount of unique colors in the cycle
+    public static int cycleUniqueColors = 5;
 
     public void InitBoards()
     {
+        // Check if player 1 is in single player. if so, use its cycle length variables
+        if (boards[0].singlePlayer) {
+            cycleLength = boards[0].GetLevel().cycleLength;
+            cycleUniqueColors = boards[0].GetLevel().cycleUniqueColors;
+        }
+
+        GenerateCycle();
+
         // Initialize game boards
         foreach (GameBoard board in boards)
         {
@@ -51,15 +54,15 @@ public class ManaCycle : MonoBehaviour
         cycle = new List<ManaColor>();
 
         // Add one of each color to the list
-        for (int i=0; i<5; i++)
+        for (int i=0; i<cycleUniqueColors; i++)
         {
             cycle.Add((ManaColor)i);
         }
 
-        // Add two more random colors
-        for (int i=0; i<2; i++)
+        // Add random colors until length is met
+        for (int i=cycleUniqueColors; i<cycleLength; i++)
         {
-            cycle.Add((ManaColor)Random.Range(0,5));
+            cycle.Add((ManaColor)Random.Range(0,cycleUniqueColors));
         }
 
         // Shuffle the list
@@ -76,7 +79,7 @@ public class ManaCycle : MonoBehaviour
             // Keep picking a new color until it is different than the one above & below
             while (cycle[i] == colorAbove || cycle[i] == colorBelow)
             {
-                cycle[i] = (ManaColor)Random.Range(0,5);
+                cycle[i] = (ManaColor)Random.Range(0,cycleUniqueColors);
             }
         }
 

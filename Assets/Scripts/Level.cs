@@ -11,6 +11,15 @@ public class Level : ScriptableObject {
     [SerializeField] public double time = 300;
     /** Points needed to complete the level **/
     [SerializeField] public int scoreGoal = 2000;
+
+    /** Total length of the cycle. */
+    [SerializeField] public int cycleLength = 7;
+    /** Amount of unique colors in the cycle. */
+    [SerializeField] public int cycleUniqueColors = 5;
+
+    /** Falling delay of pieces in this level. **/
+    [SerializeField] public float fallTime = 0.8f;
+
     /** List of additional objectives that must be met to clear the stage **/
     [SerializeField] public List<Objective> objectives;
 }

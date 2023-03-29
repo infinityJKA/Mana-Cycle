@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class GameBoard : MonoBehaviour
 {
     // If this board is in single player mode
-    [SerializeField] private bool singlePlayer;
+    [SerializeField] public bool singlePlayer;
     // The battler selected for this board. Each one has different effects.
     [SerializeField] private Battler battler;
     // True if the player controls this board.
@@ -118,6 +118,8 @@ public class GameBoard : MonoBehaviour
             hp = 0;
             if (enemyBoard != null) enemyBoard.gameObject.SetActive(false);
             if (objectiveList != null) objectiveList.gameObject.SetActive(true);
+
+            fallTime = level.fallTime;
         } else {
             // (Later, this may depend on the character/mode)
             maxHp = 2000;
