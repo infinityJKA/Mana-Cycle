@@ -104,6 +104,8 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private Level level;
     /** If in singleplayer, the objective list in this scene */
     [SerializeField] private ObjectiveList objectiveList;
+    /** Timer, to stop when this player wins **/
+    [SerializeField] private Timer timer;
 
     // STATS
     /** Total amount of mana this board has cleared */
@@ -127,7 +129,6 @@ public class GameBoard : MonoBehaviour
             if (enemyBoard != null) enemyBoard.gameObject.SetActive(true);
             if (objectiveList != null) objectiveList.gameObject.SetActive(false);
         }
-        
 
         // Cache stuff
         pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
@@ -157,6 +158,8 @@ public class GameBoard : MonoBehaviour
         
         cyclePosition = 0;
 
+        hpBar.Setup(this);
+
         if (singlePlayer) {
             objectiveList.InitializeObjectiveListItems(this);
         }
@@ -168,10 +171,10 @@ public class GameBoard : MonoBehaviour
         cycleInitialized = true;
         this.cycle = cycle;
 
-        PointerReposition();
-
         piecePreview.Setup(this);
-        hpBar.Setup(this);
+
+        cyclePosition = 0;
+        PointerReposition();
 
         board = new Tile[height, width];
         SpawnPiece();
@@ -236,6 +239,8 @@ public class GameBoard : MonoBehaviour
     {
         // wait for cycle to initialize (after countdown) to run game logic
         if (!cycleInitialized) return;
+
+        PointerReposition();
 
         // if (!defeated)
         // {
@@ -416,25 +421,28 @@ public class GameBoard : MonoBehaviour
     // shootSpawnPos is where the shoot particle is spawned
     public void DealDamage(int damage, Vector3 shootSpawnPos, int color)
     {
-        // if singleplayer, add damage to hp
+        // Spawn a new damageShoot
+        GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
+        DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
+        shoot.damage = damage;
+
+        // Blend mana color with existing damage shoot color
+        // var image = shootObj.GetComponent<Image>();
+        // image.color = Color.Lerp(image.color, cycle.GetManaColor(color), 0.5f);
+
+        // Send it to the appropriate location
+        // if singleplayer, add damage to score, send towards hp bar
         if (singlePlayer) {
-            hp += damage;
-            hpBar.Refresh();
+            shoot.target = this;
+            shoot.countering = false;
+            shoot.destination = hpBar.hpNum.transform.position;
         } 
+
         // if multiplayer, send damage to opponent
         else {
             // damage = hpBar.CounterIncoming(damage);
             // enemyBoard.EnqueueDamage(damage);
             // hpBar.Refresh();
-
-            // Spawn a new damageShoot and send it to the appropriate location
-            GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
-            DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
-            shoot.damage = damage;
-
-            // Blend mana color with existing damage shoot color
-            // var image = shootObj.GetComponent<Image>();
-            // image.color = Color.Lerp(image.color, cycle.GetManaColor(color), 0.5f);
 
             // move towards the closest damage
             // Iterate in reverse order; target closer daamges first
@@ -769,6 +777,7 @@ public class GameBoard : MonoBehaviour
     {
         postGame = true;
         winTextObj.SetActive(true);
+        if (timer != null) timer.StopTimer();
         winText.text = "WIN";
         winMenu.AppearWithDelay(2d);
     }
@@ -804,5 +813,10 @@ public class GameBoard : MonoBehaviour
 
     public Level GetLevel() {
         return level;
+    }
+
+    // Used in singleplayer, add points to "score" (hp)
+    public void AddScore(int score) {
+        hp += score;
     }
 }

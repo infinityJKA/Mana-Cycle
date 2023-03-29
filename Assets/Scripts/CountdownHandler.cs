@@ -17,6 +17,9 @@ public class CountdownHandler : MonoBehaviour
     [SerializeField] private AudioClip tickSFX;
     [SerializeField] private AudioClip goSFX;
 
+    // Player1, level retrieved from if in solo mode
+    [SerializeField] private GameBoard player1;
+
     // timer to start when countdown ends
     [SerializeField] private Timer timer;
 
@@ -26,6 +29,8 @@ public class CountdownHandler : MonoBehaviour
         countDownText = this.GetComponent<TMPro.TextMeshProUGUI>();
         currentTime = countDownTime + countDownDelay;
         lastIntTime = GetIntTime(currentTime);
+
+        timer.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -40,7 +45,14 @@ public class CountdownHandler : MonoBehaviour
         if (currentTime <= 0 && !cycleActivated)
         {
             manaCycle.InitBoards();
-            timer.StartTimer();
+            
+            if (player1.singlePlayer) {
+                timer.gameObject.SetActive(true);
+                timer.duration = player1.GetLevel().time;
+                timer.StartTimer();
+            }
+
+            
             countDownText.text = "GO!";
             cycleActivated = true;
             SoundManager.Instance.PlaySound(goSFX);
