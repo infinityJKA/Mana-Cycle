@@ -95,7 +95,7 @@ public class ConvoHandler : MonoBehaviour
             s1NameBox.SetActive(false);
         }
 
-        if (dialogue.leftSpeaker != null)
+        if (dialogue.rightSpeaker != null)
         {
             s2Portrait.SetActive(true);
             s2NameBox.SetActive(true);
