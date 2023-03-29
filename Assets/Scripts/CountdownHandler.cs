@@ -28,7 +28,10 @@ public class CountdownHandler : MonoBehaviour
     {
         countDownText = this.GetComponent<TMPro.TextMeshProUGUI>();
         currentTime = countDownTime + countDownDelay;
-        lastIntTime = GetIntTime(currentTime);
+        // lastIntTime = GetIntTime(currentTime);
+        lastIntTime = 4;
+
+        countDownText.text = "";
 
         timer.gameObject.SetActive(false);
     }
@@ -36,51 +39,48 @@ public class CountdownHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // update time until "go" - negative if past
         currentTime -= Time.deltaTime;
-        if (GetIntTime(currentTime) != lastIntTime){
-            TimerTick();
-        }
-        lastIntTime = GetIntTime(currentTime);
 
-        if (currentTime <= 0 && !cycleActivated)
-        {
-            manaCycle.InitBoards();
-            
-            if (player1.singlePlayer) {
-                timer.gameObject.SetActive(true);
-                timer.duration = player1.GetLevel().time;
-                timer.StartTimer();
+        // If 0 reached and cycle has been activated
+        if (cycleActivated) {
+            // hide the go text if past go time
+            if (currentTime <= -goTime)
+            {
+                gameObject.SetActive(false);
             }
-
-            
-            countDownText.text = "GO!";
-            cycleActivated = true;
-            SoundManager.Instance.PlaySound(goSFX);
-            
-        }
-
-        if (currentTime <= goTime*-1)
-        {
-            gameObject.SetActive(false);
-        }
-
+        } 
         
-    }
+        // otherwise, still ticking down, cycle not activated yet
+        else {
+            // Tick if int time different than last frame
+            if (GetIntTime(currentTime) != lastIntTime){
+                // if countdown has hit 0; init boards, go text and SFX
+                if (currentTime <= 0)
+                {
+                    manaCycle.InitBoards();
+                    if (player1.singlePlayer) {
+                        timer.gameObject.SetActive(true);
+                        timer.duration = player1.GetLevel().time;
+                        timer.StartTimer();
+                    }
+                    countDownText.text = "GO!";
+                    cycleActivated = true;
+                    SoundManager.Instance.PlaySound(goSFX);
+                }
 
-    void TimerTick()
-    {
-        // called every time the number actually displayed by the timer text changes.
-        countDownText.text = GetIntTime(currentTime).ToString();
-
-        if (currentTime > 0){
-            SoundManager.Instance.PlaySound(tickSFX);
+                // if not reached 0 yet, tick; update text and play sound
+                else {
+                    countDownText.text = GetIntTime(currentTime).ToString();
+                    SoundManager.Instance.PlaySound(tickSFX);
+                }
+            }
+            lastIntTime = GetIntTime(currentTime);
         }
-        
-
     }
 
     int GetIntTime(double t)
     {
-        return (int) Math.Min(countDownTime,Math.Ceiling(currentTime));
+        return (int) Math.Ceiling(currentTime);
     }
 }
