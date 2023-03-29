@@ -8,4 +8,6 @@ public class Conversation : ScriptableObject {
     [SerializeField] public Battler[] lSpeakerOrder;
     [SerializeField] public Battler[] rSpeakerOrder;
     [SerializeField] public bool[] leftFocused;
+
+    [SerializeField] public string endScene;
 }
