@@ -5,37 +5,33 @@ using UnityEngine.UI;
 
 public class ConvoHandler : MonoBehaviour
 {
+    /** The level in which the current conversation is being played in.
+    This level's game challenge will be ran after the convo is over. */
+    private Level level;
+
+    /** Current conversation being played, should be the only convo in the level, 
+    unless things change in the future */
+    private Conversation convo;
+
+    /** inputs for controlling the conversation */
     [SerializeField] private InputScript inputScript;
-    [SerializeField] private Conversation[] convos;
+
+    /** object containing the conversation UI */
     [SerializeField] private GameObject convoUI;
-    private GameObject s1Portrait;
-    private GameObject s2Portrait;
-    private Image s1Img;
-    private Image s2Img;
-    private GameObject s1NameBox;
-    private GameObject s2NameBox;
-    private TMPro.TextMeshProUGUI s1NameText;
-    private TMPro.TextMeshProUGUI s2NameText;
-    private TMPro.TextMeshProUGUI dialougeText;
 
-    private int convoPos;
-    private Conversation currentConvo;
+    // references for objects within the convo UI
+    [SerializeField] private GameObject s1Portrait;
+    [SerializeField] private GameObject s2Portrait;
+    [SerializeField] private Image s1Img;
+    [SerializeField] private Image s2Img;
+    [SerializeField] private GameObject s1NameBox;
+    [SerializeField] private GameObject s2NameBox;
+    [SerializeField] private TMPro.TextMeshProUGUI s1NameText;
+    [SerializeField] private TMPro.TextMeshProUGUI s2NameText;
+    [SerializeField] private TMPro.TextMeshProUGUI dialougeText;
 
-    // start doesn't work here because all of these objects are set as not active on start
-    void InitVars()
-    {
-        s1Portrait = GameObject.Find("Speaker1");
-        s2Portrait = GameObject.Find("Speaker2");
-        s1Img = s1Portrait.GetComponent<Image>();
-        s2Img = s2Portrait.GetComponent<Image>();
-
-        s1NameBox = GameObject.Find("SpeakerNameBox1");
-        s2NameBox = GameObject.Find("SpeakerNameBox2");
-        s1NameText = GameObject.Find("SpeakerNameText1").GetComponent<TMPro.TextMeshProUGUI>();
-        s2NameText = GameObject.Find("SpeakerNameText2").GetComponent<TMPro.TextMeshProUGUI>();
-
-        dialougeText = GameObject.Find("DialougeText").GetComponent<TMPro.TextMeshProUGUI>();
-    }
+    /** current index of the conversation's dialogue lines */
+    private int index;
 
     // Update is called once per frame
     void Update()
@@ -44,8 +40,8 @@ public class ConvoHandler : MonoBehaviour
 
         if (Input.GetKeyDown(inputScript.Cast))
         {
-            convoPos++;
-            if (convoPos >= currentConvo.dialogueList.Length){
+            index++;
+            if (index >= convo.dialogueList.Length){
                 EndConvo();
             }
             else{
@@ -54,33 +50,37 @@ public class ConvoHandler : MonoBehaviour
         }
     }
 
-    public void StartConvo(int convoIndex)
+    public void StartLevel(Level level) {
+        this.level = level;
+        StartConvo(level.conversation);
+    }
+
+    public void StartConvo(Conversation convo)
     {
-        convoPos = 0;
-        currentConvo = convos[convoIndex];
+        this.convo = convo;
+        index = 0;
         convoUI.SetActive(true);
-        InitVars();
         RefreshObjects();
     }
 
     void EndConvo()
     {
-        // convoUI.SetActive(false);
-        if (currentConvo.endScene != "")
+        // once the end of the convo is reached, transition to manacycle scene where the level will begin
+        if (level != null)
         {
-            GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(currentConvo.endScene);
+            GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("ManaCycle");
         }
         else
         {
             convoUI.SetActive(false);
-            // GameObject.Find("LevelLister").GetComponent<LevelLister>().SetFocus(true);
+            GameObject.Find("LevelLister").GetComponent<LevelLister>().SetFocus(true);
         }
         
     }
 
     void RefreshObjects()
     {
-        var dialogue = currentConvo.dialogueList[convoPos];
+        var dialogue = convo.dialogueList[index];
         dialougeText.text = dialogue.text;
 
         if (dialogue.leftSpeaker != null)
