@@ -99,4 +99,8 @@ public class LevelLister : MonoBehaviour
         targetPosition = new Vector2(listTransform.position.x, selection*(50+decLine) + yOffset);
     }
 
+    public void SetFocus(bool f){
+        focused = f;
+    }
+
 }

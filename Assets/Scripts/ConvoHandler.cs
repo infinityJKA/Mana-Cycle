@@ -73,6 +73,7 @@ public class ConvoHandler : MonoBehaviour
         else
         {
             convoUI.SetActive(false);
+            // GameObject.Find("LevelLister").GetComponent<LevelLister>().SetFocus(true);
         }
         
     }
