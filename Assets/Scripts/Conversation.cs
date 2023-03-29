@@ -7,10 +7,10 @@ using UnityEditor.UIElements;
 [CreateAssetMenu(fileName = "Conversations", menuName = "ManaCycle/Conversation")]
 
 public class Conversation : ScriptableObject {
-    // [SerializeField] public string[] dialougeList;
-    // [SerializeField] public Battler[] lSpeakerOrder;
-    // [SerializeField] public Battler[] rSpeakerOrder;
-    // [SerializeField] public bool[] leftFocused;
+    [SerializeField] public string[] dialougeList;
+    [SerializeField] public Battler[] lSpeakerOrder;
+    [SerializeField] public Battler[] rSpeakerOrder;
+    [SerializeField] public bool[] leftFocused;
 
     [SerializeField] public ConversationLine[] lines;
     [SerializeField] public string endScene;
@@ -21,7 +21,7 @@ public class ConversationLine {
     public string dialogue;
     public Battler leftSpeaker;
     public Battler rightSpeaker;
-    public bool rightFocused = true;
+    public bool rightFocused;
 }
 
 [CustomPropertyDrawer(typeof(ConversationLine))]
