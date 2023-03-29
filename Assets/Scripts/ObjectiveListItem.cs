@@ -5,7 +5,7 @@ using UnityEngine;
 public class ObjectiveListItem : MonoBehaviour
 {
     // Objective this list item represents
-    [SerializeField] private Objective objective;
+    [SerializeField] public Objective objective;
     // The text box contained in this objective
     [SerializeField] public TMPro.TextMeshProUGUI textbox;
 
@@ -20,6 +20,8 @@ public class ObjectiveListItem : MonoBehaviour
     {
         
     }
+
+
 
     // Refresh this objective's text and color. Additionally, if complete, return true.
     public bool Refresh(GameBoard board) {
