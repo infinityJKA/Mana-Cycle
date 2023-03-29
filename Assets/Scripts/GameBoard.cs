@@ -129,7 +129,6 @@ public class GameBoard : MonoBehaviour
             if (enemyBoard != null) enemyBoard.gameObject.SetActive(true);
             if (objectiveList != null) objectiveList.gameObject.SetActive(false);
         }
-        
 
         // Cache stuff
         pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
@@ -159,6 +158,8 @@ public class GameBoard : MonoBehaviour
         
         cyclePosition = 0;
 
+        hpBar.Setup(this);
+
         if (singlePlayer) {
             objectiveList.InitializeObjectiveListItems(this);
         }
@@ -170,9 +171,7 @@ public class GameBoard : MonoBehaviour
         cycleInitialized = true;
         this.cycle = cycle;
 
-
         piecePreview.Setup(this);
-        hpBar.Setup(this);
 
         cyclePosition = 0;
         PointerReposition();
