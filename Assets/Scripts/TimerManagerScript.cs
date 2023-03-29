@@ -10,7 +10,6 @@ public class TimerManagerScript : MonoBehaviour
     [SerializeField] private CharSelectScript p1Selector;
     [SerializeField] private CharSelectScript p2Selector;
     private TransitionScript transitionHandler;
-    private BattlerStorage battlerStorage;
     private double timer;
     private bool countdownStarted = false;
     private double maxTime = 1.0;
@@ -19,7 +18,6 @@ public class TimerManagerScript : MonoBehaviour
     void Start()
     {
         transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
-        battlerStorage = GameObject.Find("SelectedBattlerStorage").GetComponent<BattlerStorage>();
     }
 
     // Update is called once per frame
@@ -56,14 +54,12 @@ public class TimerManagerScript : MonoBehaviour
             timer = 0;
             countdownStarted = false;
 
-            battlerStorage.SetBattler1(p1Selector.GetChoice());
-            battlerStorage.SetBattler2(p2Selector.GetChoice());
-            battlerStorage.SetPlayerControlled1(p1Selector.GetPlayerType());
-            battlerStorage.SetPlayerControlled2(p2Selector.GetPlayerType());
+            Storage.battler1 = p1Selector.GetChoice();
+            Storage.battler2 = p2Selector.GetChoice();
+            Storage.isPlayer1 = p1Selector.GetPlayerType();
+            Storage.isPlayer2 = p2Selector.GetPlayerType();
 
             transitionHandler.WipeToScene("ManaCycle");
         }
-
     }
-
 }

@@ -19,7 +19,8 @@ public class ConvoHandler : MonoBehaviour
     /** object containing the conversation UI */
     [SerializeField] private GameObject convoUI;
 
-    // references for objects within the convo UI
+    // references for objects within the convo UI 
+    // (fyi Morgan: inactive objects can still be referenced, and even call functions on them, they just aren't updated with Update(). Gameobject.Find is slow)
     [SerializeField] private GameObject s1Portrait;
     [SerializeField] private GameObject s2Portrait;
     [SerializeField] private Image s1Img;
@@ -28,7 +29,7 @@ public class ConvoHandler : MonoBehaviour
     [SerializeField] private GameObject s2NameBox;
     [SerializeField] private TMPro.TextMeshProUGUI s1NameText;
     [SerializeField] private TMPro.TextMeshProUGUI s2NameText;
-    [SerializeField] private TMPro.TextMeshProUGUI dialougeText;
+    [SerializeField] private TMPro.TextMeshProUGUI dialogueText;
 
     /** current index of the conversation's dialogue lines */
     private int index;
@@ -81,7 +82,7 @@ public class ConvoHandler : MonoBehaviour
     void RefreshObjects()
     {
         var dialogue = convo.dialogueList[index];
-        dialougeText.text = dialogue.text;
+        dialogueText.text = dialogue.text;
 
         if (dialogue.leftSpeaker != null)
         {
