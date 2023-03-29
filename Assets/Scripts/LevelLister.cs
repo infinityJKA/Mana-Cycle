@@ -73,8 +73,6 @@ public class LevelLister : MonoBehaviour
                 GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("3dMenu", i : true);
             }
 
-            selection = Math.Clamp(selection, 0, levelsList.Length-1);
-
             // cast - open selected level
             if (Input.GetKeyDown(inputScript.Cast))
             {
@@ -89,6 +87,8 @@ public class LevelLister : MonoBehaviour
 
     void RefreshList()
     {
+        selection = Math.Clamp(selection, 0, levelsList.Length-1);
+        
         string newText = "";
         // add and subtract 20 for extra lines at the start and end of list
         for (int i = -20; i < levelsList.Length + 20; i++)
