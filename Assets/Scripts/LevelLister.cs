@@ -95,7 +95,7 @@ public class LevelLister : MonoBehaviour
         descriptionText.text = levelsList[selection].description;
 
         // update position
-        targetPosition = new Vector2(listTransform.position.x, selection*(listTransform.rect.height+decLine) + yOffset);
+        targetPosition = new Vector2(listTransform.position.x, selection*(50+decLine) + yOffset);
     }
 
 }
