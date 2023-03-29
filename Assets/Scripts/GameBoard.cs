@@ -135,7 +135,7 @@ public class GameBoard : MonoBehaviour
         shake = GetComponent<Shake>();
 
         // if any value in storage is null, it means we loaded straight to ManaCycle without going to CharSelect first. use default serialized values for battlers
-        if (Storage.battler1 == null)
+        if (Storage.battler1 != null)
         {
             if (playerSide == 0)
             {
@@ -147,8 +147,8 @@ public class GameBoard : MonoBehaviour
                 battler = Storage.battler2;
                 playerControlled = Storage.isPlayer2;
             }
-            portrait.sprite = battler.sprite;
         }
+        portrait.sprite = battler.sprite;
         
         cyclePosition = 0;
 
