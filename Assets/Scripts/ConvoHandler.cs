@@ -66,7 +66,16 @@ public class ConvoHandler : MonoBehaviour
     void EndConvo()
     {
         // convoUI.SetActive(false);
-        GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(currentConvo.endScene);
+        if (! (currentConvo.endScene == ""))
+        {
+            GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(currentConvo.endScene);
+        }
+        else
+        {
+            convoUI.SetActive(false);
+            // GameObject.Find("LevelLister").GetComponent<LevelLister>().SetFocus(true);
+        }
+        
     }
 
     void RefreshObjects()
