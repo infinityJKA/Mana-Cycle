@@ -45,7 +45,7 @@ public class ConvoHandler : MonoBehaviour
         if (Input.GetKeyDown(inputScript.Cast))
         {
             convoPos++;
-            if (convoPos >= currentConvo.dialougeList.Length){
+            if (convoPos >= currentConvo.dialogueList.Length){
                 EndConvo();
             }
             else{
@@ -66,7 +66,7 @@ public class ConvoHandler : MonoBehaviour
     void EndConvo()
     {
         // convoUI.SetActive(false);
-        if (! (currentConvo.endScene == ""))
+        if (currentConvo.endScene != "")
         {
             GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(currentConvo.endScene);
         }
@@ -80,29 +80,28 @@ public class ConvoHandler : MonoBehaviour
 
     void RefreshObjects()
     {
-        dialougeText.text = currentConvo.dialougeList[convoPos];
+        var dialogue = currentConvo.dialogueList[convoPos];
+        dialougeText.text = dialogue.text;
 
-        Battler lSpeaker = currentConvo.lSpeakerOrder[convoPos];
-        Battler rSpeaker = currentConvo.rSpeakerOrder[convoPos];
-        if (!(lSpeaker == null)){
+        if (dialogue.leftSpeaker != null)
+        {
             s1Portrait.SetActive(true);
             s1NameBox.SetActive(true);
-            s1Img.sprite = lSpeaker.sprite;
-            s1NameText.text = lSpeaker.displayName;
-        }
-        else{
+            s1Img.sprite = dialogue.leftSpeaker.sprite;
+            s1NameText.text = dialogue.leftSpeaker.displayName;
+        } else {
             // narrator
             s1Portrait.SetActive(false);
             s1NameBox.SetActive(false);
         }
 
-        if (!(rSpeaker == null)){
+        if (dialogue.leftSpeaker != null)
+        {
             s2Portrait.SetActive(true);
             s2NameBox.SetActive(true);
-            s2Img.sprite = rSpeaker.sprite;
-            s2NameText.text = rSpeaker.displayName;
-        }
-        else{
+            s2Img.sprite = dialogue.rightSpeaker.sprite;
+            s2NameText.text = dialogue.rightSpeaker.displayName;
+        } else {
             // narrator
             s2Portrait.SetActive(false);
             s2NameBox.SetActive(false);
@@ -110,17 +109,15 @@ public class ConvoHandler : MonoBehaviour
         
         
 
-        if (currentConvo.leftFocused[convoPos])
-        {
-            s1Img.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-            s2Img.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
-
-        }
-        else
+        if (dialogue.rightFocused)
         {
             s1Img.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
             s2Img.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-
+        }
+        else
+        {
+            s1Img.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            s2Img.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
         }
         
     }

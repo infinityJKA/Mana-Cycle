@@ -12,44 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 670696f7b5b01e4438299a5538f61cba, type: 3}
   m_Name: TestConvo
   m_EditorClassIdentifier: 
-  dialougeList:
-  - hello aqua from mana cycle
-  - hello infinity from mana cycle
-  - hey guys :)
-  - hello the pyro from team fortress two
-  - hello the pyro from team fortress two
-  lSpeakerOrder:
-  - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
-  - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
-  - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
-  - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
-  - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
-  rSpeakerOrder:
-  - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
-  - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
-  - {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
-  - {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
-  - {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
-  leftFocused: 0100000101
-  lines:
-  - dialogue: hello aqua from mana cycle
-    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
-    rightSpeaker: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
-    rightFocused: 0
-  - dialogue: hello infinity from mana cycle
-    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
-    rightSpeaker: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+  dialogueList:
+  - text: this is test convo
+    leftSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
     rightFocused: 1
-  - dialogue: hey guys :)
-    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
-    rightSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
-    rightFocused: 1
-  - dialogue: hello the pyro from team fortress two
-    leftSpeaker: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
-    rightSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
-    rightFocused: 0
-  - dialogue: hello the pyro from team fortress two
-    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
-    rightSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+  - text: true
+    leftSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
     rightFocused: 0
   endScene: 
