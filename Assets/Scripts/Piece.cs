@@ -91,7 +91,7 @@ public class Piece : MonoBehaviour
 
     private ManaColor RandomColor()
     {
-        return (ManaColor)Random.Range(0,5);
+        return (ManaColor)Random.Range(0, ManaCycle.cycleUniqueColors);
     }
 
     private ManaColor ColorWeightedRandom(GameBoard board)
