@@ -533,7 +533,14 @@ public class GameBoard : MonoBehaviour
 
             while (manaCleared > 0) {
                 // If this is cascading off the same color more than once, short delay between
-                if (cascade > 0) yield return new WaitForSeconds(0.5f);
+                if (cascade > 0) {
+                    yield return new WaitForSeconds(0.5f);
+
+                    // recalculte blobs in case they changed
+                    tilesInBlobs = new bool[height, width];
+                    blobs = FindBlobsOfColor(color);
+                    manaCleared = TotalMana(blobs);
+                }
 
                 if (chain > 1) chainPopup.Flash(chain.ToString());
 
@@ -574,8 +581,8 @@ public class GameBoard : MonoBehaviour
 
                 // Check for cascaded blobs
                 tilesInBlobs = new bool[height, width];
-                List<Blob> cascadedBlobs = FindBlobsOfColor(color);
-                manaCleared = TotalMana(cascadedBlobs);
+                blobs = FindBlobsOfColor(color);
+                manaCleared = TotalMana(blobs);
             }
 
             // move to next in cycle position

@@ -7,14 +7,18 @@ public class ManaCycle : MonoBehaviour
     // Prefab for cycle colors to display
     [SerializeField] private Image cycleColorPrefab;
 
-    // All ManaColor colors to tint the Tile images
+    // All ManaColor colors to tint the cycle images
     [SerializeField] private List<Color> manaColors;
+
+    // List of sprites to use for mana of this color (corresponds to indexes in manaColors)
+    [SerializeField] public List<Sprite> manaSprites;
 
     // All GameBoards in the scene that use this cycle
     [SerializeField] private List<GameBoard> boards;
 
     // List of all colors in the cycle
     private List<ManaColor> cycle;
+
     // List of all cycleColor objects that represent the colors
     private List<Image> cycleObjects;
     // Length of the cycle
