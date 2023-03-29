@@ -104,6 +104,8 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private Level level;
     /** If in singleplayer, the objective list in this scene */
     [SerializeField] private ObjectiveList objectiveList;
+    /** Timer, to stop when this player wins **/
+    [SerializeField] private Timer timer;
 
     // STATS
     /** Total amount of mana this board has cleared */
@@ -168,10 +170,12 @@ public class GameBoard : MonoBehaviour
         cycleInitialized = true;
         this.cycle = cycle;
 
-        PointerReposition();
 
         piecePreview.Setup(this);
         hpBar.Setup(this);
+
+        cyclePosition = 0;
+        PointerReposition();
 
         board = new Tile[height, width];
         SpawnPiece();
@@ -236,6 +240,8 @@ public class GameBoard : MonoBehaviour
     {
         // wait for cycle to initialize (after countdown) to run game logic
         if (!cycleInitialized) return;
+
+        PointerReposition();
 
         // if (!defeated)
         // {
@@ -769,6 +775,7 @@ public class GameBoard : MonoBehaviour
     {
         postGame = true;
         winTextObj.SetActive(true);
+        if (timer != null) timer.StopTimer();
         winText.text = "WIN";
         winMenu.AppearWithDelay(2d);
     }
