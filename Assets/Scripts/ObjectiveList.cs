@@ -18,7 +18,7 @@ public class ObjectiveList : MonoBehaviour
 
         // if above 0, add score requirement as objective 
         if (level.scoreGoal > 0) {
-            Objective scoreObjective = new Objective();
+            Objective scoreObjective = ScriptableObject.CreateInstance<Objective>();
             scoreObjective.objectiveType = Objective.ObjectiveType.Score;
             scoreObjective.quota = level.scoreGoal;
 
