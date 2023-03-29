@@ -1704,6 +1704,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8363407567511348994, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 6.7499995
+      objectReference: {fileID: 0}
     - target: {fileID: 8820677269531747086, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2084,9 +2088,9 @@ MonoBehaviour:
   m_fontColorGradient:
     topLeft: {r: 0, g: 1, b: 0.010702133, a: 1}
     topRight: {r: 0, g: 1, b: 0.010702133, a: 1}
-    bottomLeft: {r: 0.51584196, g: 0.5283019, b: 0.5160238, a: 1}
-    bottomRight: {r: 0.51584196, g: 0.5283019, b: 0.5160238, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
+    bottomLeft: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 1}
+    bottomRight: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 1}
+  m_fontColorGradientPreset: {fileID: 11400000, guid: b0ac0efc6f03e4aa18e985ff48e7d253, type: 2}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
@@ -2160,6 +2164,8 @@ MonoBehaviour:
   player1: {fileID: 1918826929}
   duration: 300
   textbox: {fileID: 614271807}
+  greenGradient: {fileID: 11400000, guid: b0ac0efc6f03e4aa18e985ff48e7d253, type: 2}
+  redGradient: {fileID: 11400000, guid: b8360d654901f4bf8b6273c59d2041fc, type: 2}
 --- !u!1 &805168114
 GameObject:
   m_ObjectHideFlags: 0
@@ -3597,7 +3603,7 @@ MonoBehaviour:
     topRight: {r: 0, g: 1, b: 0.011764706, a: 1}
     bottomLeft: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
     bottomRight: {r: 0.3764706, g: 0.3764706, b: 0.3764706, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
+  m_fontColorGradientPreset: {fileID: 11400000, guid: b0ac0efc6f03e4aa18e985ff48e7d253, type: 2}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
@@ -3674,6 +3680,7 @@ MonoBehaviour:
   manaCycle: {fileID: 9213573022597873585}
   tickSFX: {fileID: 8300000, guid: 16a4748b3e8ee0542b60dc0c8d2a2aeb, type: 3}
   goSFX: {fileID: 8300000, guid: bdd1a8755e306d64f86460461e4819d5, type: 3}
+  player1: {fileID: 1918826929}
   timer: {fileID: 614271809}
 --- !u!1001 &1502687948
 PrefabInstance:
@@ -4676,6 +4683,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: bbedf4065086e4008927c4ea8aa60c0f, type: 2}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: timer
+      value: 
+      objectReference: {fileID: 614271809}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: enemyBoard
       value: 
       objectReference: {fileID: 1327112842}
@@ -4690,10 +4701,6 @@ PrefabInstance:
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: inputObject
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
-      propertyPath: singlePlayer
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: objectiveList
