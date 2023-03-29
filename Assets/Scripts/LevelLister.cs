@@ -52,14 +52,15 @@ public class LevelLister : MonoBehaviour
                 GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("3dMenu", i : true);
             }
 
+            selection = Math.Clamp(selection, 0, levelsList.Length-1);
+
             if (Input.GetKeyDown(inputScript.Cast))
             {
-                // THIS IS TEMP
-                GameObject.Find("ConvoHandler").GetComponent<ConvoHandler>().StartConvo(0);
+                GameObject.Find("ConvoHandler").GetComponent<ConvoHandler>().StartConvo(selection);
                 focused = false;
             }
 
-            selection = Math.Clamp(selection, 0, levelsList.Length-1);
+            
 
         }
 
@@ -96,6 +97,10 @@ public class LevelLister : MonoBehaviour
 
         // update position
         targetPosition = new Vector2(listTransform.position.x, selection*(50+decLine) + yOffset);
+    }
+
+    public void SetFocus(bool f){
+        focused = f;
     }
 
 }
