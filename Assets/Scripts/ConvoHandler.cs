@@ -71,10 +71,34 @@ public class ConvoHandler : MonoBehaviour
     void RefreshObjects()
     {
         dialougeText.text = currentConvo.dialougeList[convoPos];
-        s1Img.sprite = currentConvo.lSpeakerOrder[convoPos].sprite;
-        s1NameText.text = currentConvo.lSpeakerOrder[convoPos].displayName;
-        s2Img.sprite = currentConvo.rSpeakerOrder[convoPos].sprite;
-        s2NameText.text = currentConvo.rSpeakerOrder[convoPos].displayName;
+
+        Battler lSpeaker = currentConvo.lSpeakerOrder[convoPos];
+        Battler rSpeaker = currentConvo.rSpeakerOrder[convoPos];
+        if (!(lSpeaker == null)){
+            s1Portrait.SetActive(true);
+            s1NameBox.SetActive(true);
+            s1Img.sprite = lSpeaker.sprite;
+            s1NameText.text = lSpeaker.displayName;
+        }
+        else{
+            // narrator
+            s1Portrait.SetActive(false);
+            s1NameBox.SetActive(false);
+        }
+
+        if (!(rSpeaker == null)){
+            s2Portrait.SetActive(true);
+            s2NameBox.SetActive(true);
+            s2Img.sprite = rSpeaker.sprite;
+            s2NameText.text = rSpeaker.displayName;
+        }
+        else{
+            // narrator
+            s2Portrait.SetActive(false);
+            s2NameBox.SetActive(false);
+        }
+        
+        
 
         if (currentConvo.leftFocused[convoPos])
         {
