@@ -25,4 +25,12 @@ public class Utils : MonoBehaviour // please keep this as MonoBehavior to preven
     {
         return (x%m + m)%m;
     }
+
+    // get formatted time from seconds
+    public static string FormatTime(float s)
+    {
+        int seconds = (int)(s % 60);
+        int minutes = (int)(s/60);
+        return minutes + ":" + (seconds+"").PadLeft(2, '0');
+    }
 }
