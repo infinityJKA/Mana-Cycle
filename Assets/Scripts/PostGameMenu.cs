@@ -32,24 +32,22 @@ public class PostGameMenu : MonoBehaviour
 
             if (appearTime <= 0)
             {
-                MenuUI.SetActive(true);
-                Time.timeScale = 0f;
+
                 timerRunning = false;
 
                 if (Storage.gamemode == Storage.GameMode.Solo)
                 {
-                    // remove char select button in singleplayer
-                    MenuItems[2].SetActive(false);
-                    MenuItems.RemoveAt(2);
-                    
+                    // if solo mode, imediatly go back to solo menu
+                    Time.timeScale = 1f;
+                    transitionHandler.WipeToScene("SoloMenu", i:true);
                 }
-                else 
+                else
                 {
-                    // remove continue solo button in multiplayer
-                    MenuItems[3].SetActive(false);
-                    MenuItems.RemoveAt(3);
+                    MenuUI.SetActive(true);
+                    Time.timeScale = 0f;
                     
                 }
+                
 
                 EventSystem.current.SetSelectedGameObject(null);
                 MoveCursor(0);
