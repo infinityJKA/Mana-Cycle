@@ -283,8 +283,8 @@ public class GameBoard : MonoBehaviour
                 }
             }
             
-            // If not paused, do piece movements if not defeated yet
-            else if (defeated) {
+            // If not paused, do piece movements
+            else if (!defeated) {
                 pieceSpawned = false;
 
                 if (playerControlled){

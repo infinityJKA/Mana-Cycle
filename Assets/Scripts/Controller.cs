@@ -36,7 +36,7 @@ public class Controller : MonoBehaviour
         // stop movement while paused or post game
         if (board.isPaused() || board.isPostGame()) return;
 
-        if (board.isPlayerControlled()){
+        if (board.isPlayerControlled() && !board.isDefeated()){
             if (Input.GetKeyDown(inputs.RotateLeft)){
                 board.RotateLeft();
             }
