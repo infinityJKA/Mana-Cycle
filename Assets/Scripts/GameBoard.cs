@@ -110,8 +110,9 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        singlePlayer = Storage.singlePlayer;
         // load level if applicable
-        if (Storage.level != null && singlePlayer)
+        if (Storage.level != null)
         {
             level = Storage.level;
         }

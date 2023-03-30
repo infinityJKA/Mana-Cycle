@@ -17,6 +17,9 @@ public class Storage
     /** level that the player selected */
     public static Level level;
 
+    /** true if singleplayer, false if versus */
+    public static bool singlePlayer;
+
     // // i love getters and setters so fucking much
     // fuck getters and setters we goin public
     // public void SetBattler1(Battler b)
