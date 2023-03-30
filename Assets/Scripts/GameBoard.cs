@@ -110,7 +110,12 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        singlePlayer = Storage.singlePlayer;
+        if (Storage.gamemode != Storage.GameMode.Default && playerSide == 0) {
+            singlePlayer = (Storage.gamemode == Storage.GameMode.Solo);
+        } else {
+            singlePlayer = false;
+        }
+
         // load level if applicable
         if (Storage.level != null)
         {
@@ -278,8 +283,8 @@ public class GameBoard : MonoBehaviour
                 }
             }
             
-            // If not paused, do piece movements
-            else {
+            // If not paused, do piece movements if not defeated yet
+            else if (defeated) {
                 pieceSpawned = false;
 
                 if (playerControlled){

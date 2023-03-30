@@ -33,6 +33,9 @@ public class ManaCycle : MonoBehaviour
         if (boards[0].singlePlayer) {
             cycleLength = boards[0].GetLevel().cycleLength;
             cycleUniqueColors = boards[0].GetLevel().cycleUniqueColors;
+        } else {
+            cycleLength = 7;
+            cycleUniqueColors = 5;
         }
 
         GenerateCycle();

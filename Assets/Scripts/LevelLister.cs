@@ -76,7 +76,7 @@ public class LevelLister : MonoBehaviour
             if (Input.GetKeyDown(inputScript.Cast))
             {
                 Storage.level = levelsList[selection];
-                Storage.singlePlayer = true;
+                Storage.gamemode = Storage.GameMode.Solo;
                 convoHandler.StartLevel(levelsList[selection]);
                 focused = false;
             }

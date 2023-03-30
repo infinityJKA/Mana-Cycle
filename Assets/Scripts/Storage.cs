@@ -18,7 +18,12 @@ public class Storage
     public static Level level;
 
     /** true if singleplayer, false if versus */
-    public static bool singlePlayer;
+    public static GameMode gamemode;
+    public enum GameMode {
+        Default,
+        Solo,
+        Versus
+    }
 
     // // i love getters and setters so fucking much
     // fuck getters and setters we goin public
