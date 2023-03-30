@@ -78,7 +78,12 @@ public class ConvoHandler : MonoBehaviour
         else
         {
             convoUI.SetActive(false);
-            GameObject.Find("LevelLister").GetComponent<LevelLister>().SetFocus(true);
+
+            // look for level list it and select if it exists, it won't if in manaCycle scene
+            var levelLister = GameObject.Find("LevelLister");
+            if (levelLister != null) {
+                levelLister.GetComponent<LevelLister>().SetFocus(true);
+            }
         }
         
     }
