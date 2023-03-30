@@ -21,14 +21,18 @@ public class ConvoHandler : MonoBehaviour
 
     // references for objects within the convo UI 
     // (fyi Morgan: inactive objects can still be referenced, and even call functions on them, they just aren't updated with Update(). Gameobject.Find is slow)
-    [SerializeField] private GameObject s1Portrait;
-    [SerializeField] private GameObject s2Portrait;
-    [SerializeField] private Image s1Img;
-    [SerializeField] private Image s2Img;
-    [SerializeField] private GameObject s1NameBox;
-    [SerializeField] private GameObject s2NameBox;
-    [SerializeField] private TMPro.TextMeshProUGUI s1NameText;
-    [SerializeField] private TMPro.TextMeshProUGUI s2NameText;
+    // [SerializeField] private GameObject s1Portrait;
+    // [SerializeField] private GameObject s2Portrait;
+    // [SerializeField] private Image s1Img;
+    // [SerializeField] private Image s2Img;
+    // [SerializeField] private GameObject s1NameBox;
+    // [SerializeField] private GameObject s2NameBox;
+    // [SerializeField] private TMPro.TextMeshProUGUI s1NameText;
+    // [SerializeField] private TMPro.TextMeshProUGUI s2NameText;
+    [SerializeField] private ConvoSpeaker leftSpeaker;
+
+    [SerializeField] private ConvoSpeaker rightSpeaker;
+
     [SerializeField] private TMPro.TextMeshProUGUI dialogueText;
 
     /** current index of the conversation's dialogue lines */
@@ -46,7 +50,7 @@ public class ConvoHandler : MonoBehaviour
                 EndConvo();
             }
             else{
-                RefreshObjects();
+                DisplayConvoLine();
             }
         }
     }
@@ -61,7 +65,7 @@ public class ConvoHandler : MonoBehaviour
         this.convo = convo;
         index = 0;
         convoUI.SetActive(true);
-        RefreshObjects();
+        DisplayConvoLine();
     }
 
     void EndConvo()
@@ -79,48 +83,13 @@ public class ConvoHandler : MonoBehaviour
         
     }
 
-    void RefreshObjects()
+    // Is called once for each dialogue line
+    void DisplayConvoLine()
     {
         var dialogue = convo.dialogueList[index];
         dialogueText.text = dialogue.text;
-
-        if (dialogue.leftSpeaker != null)
-        {
-            s1Portrait.SetActive(true);
-            s1NameBox.SetActive(true);
-            s1Img.sprite = dialogue.leftSpeaker.sprite;
-            s1NameText.text = dialogue.leftSpeaker.displayName;
-        } else {
-            // narrator
-            s1Portrait.SetActive(false);
-            s1NameBox.SetActive(false);
-        }
-
-        if (dialogue.rightSpeaker != null)
-        {
-            s2Portrait.SetActive(true);
-            s2NameBox.SetActive(true);
-            s2Img.sprite = dialogue.rightSpeaker.sprite;
-            s2NameText.text = dialogue.rightSpeaker.displayName;
-        } else {
-            // narrator
-            s2Portrait.SetActive(false);
-            s2NameBox.SetActive(false);
-        }
-        
-        
-
-        if (dialogue.rightFocused)
-        {
-            s1Img.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
-            s2Img.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        }
-        else
-        {
-            s1Img.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-            s2Img.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
-        }
-        
+        leftSpeaker.SetSpeaker(dialogue.leftSpeaker, !dialogue.rightFocused);
+        rightSpeaker.SetSpeaker(dialogue.rightSpeaker, dialogue.rightFocused);        
     }
 
 }
