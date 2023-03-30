@@ -18,6 +18,7 @@ public class LevelLister : MonoBehaviour
     private TMPro.TextMeshProUGUI listText;
     private RectTransform listTransform;
     [SerializeField] private TMPro.TextMeshProUGUI descriptionText;
+    [SerializeField] private TMPro.TextMeshProUGUI timeText;
 
     /** Inputs that control the level list */
     [SerializeField] private InputScript[] inputScripts;
@@ -112,8 +113,9 @@ public class LevelLister : MonoBehaviour
         }
         listText.text = newText;
 
-        // display the description of the selected level
+        // display the description and time of the selected level
         descriptionText.text = levelsList[selection].description;
+        timeText.text = "Time: " + Utils.FormatTime(levelsList[selection].time);
 
         // update the targeted scroll position
         targetPosition = new Vector2(listTransform.position.x, selection*(50+decLine) + yOffset);
