@@ -36,6 +36,21 @@ public class PostGameMenu : MonoBehaviour
                 Time.timeScale = 0f;
                 timerRunning = false;
 
+                if (Storage.gamemode == Storage.GameMode.Solo)
+                {
+                    // remove char select button in singleplayer
+                    MenuItems[2].SetActive(false);
+                    MenuItems.RemoveAt(2);
+                    
+                }
+                else 
+                {
+                    // remove continue solo button in multiplayer
+                    MenuItems[3].SetActive(false);
+                    MenuItems.RemoveAt(3);
+                    
+                }
+
                 EventSystem.current.SetSelectedGameObject(null);
                 MoveCursor(0);
             }
@@ -79,5 +94,11 @@ public class PostGameMenu : MonoBehaviour
     {
         Time.timeScale = 1f;
         transitionHandler.WipeToScene("CharSelect", i: true);
+    }
+
+    public void SelectBackToSolo()
+    {
+        Time.timeScale = 1f;
+        transitionHandler.WipeToScene("SoloMenu", i: true);
     }
 }
