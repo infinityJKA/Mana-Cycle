@@ -826,5 +826,6 @@ public class GameBoard : MonoBehaviour
     // Used in singleplayer, add points to "score" (hp)
     public void AddScore(int score) {
         hp += score;
+        hpBar.Refresh();
     }
 }
