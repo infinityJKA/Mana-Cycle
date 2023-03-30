@@ -39,7 +39,7 @@ public class ConversationLineDrawer : PropertyDrawer
         // prefab override logic works on the entire property.
         EditorGUI.BeginProperty(position, label, property);
 
-        position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+        // position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
         var text = property.FindPropertyRelative("text");
         var leftSpeaker = property.FindPropertyRelative("leftSpeaker");
