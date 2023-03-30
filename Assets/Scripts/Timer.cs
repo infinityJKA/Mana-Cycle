@@ -56,9 +56,7 @@ public class Timer : MonoBehaviour
             textbox.text = "0:00";
             if (!player1.isDefeated()) player1.Defeat();
         } else {
-            int seconds = (int)(timeLeft % 60);
-            int minutes = (int)(timeLeft/60);
-            textbox.text = minutes + ":" + (seconds+"").PadLeft(2, '0');
+            textbox.text = Utils.FormatTime(timeLeft);
         }
     }
 }
