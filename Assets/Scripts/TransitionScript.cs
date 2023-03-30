@@ -56,6 +56,10 @@ public class TransitionScript : MonoBehaviour
     // inverting direction of transition is WIP
     public void WipeToScene(string scene, float iT=0.5f, float oT=0.5f, bool i=false)
     {
+
+        // dont start a transition if one is already in progress
+        if (transitionState == "in") return;
+
         inverted = i;
         if (!inverted)
         {
