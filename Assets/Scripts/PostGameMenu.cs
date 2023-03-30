@@ -35,9 +35,10 @@ public class PostGameMenu : MonoBehaviour
 
                 timerRunning = false;
 
-                if (Storage.gamemode == Storage.GameMode.Solo)
+                if (Storage.gamemode == Storage.GameMode.Solo && !Storage.level.isCleared)
                 {
                     // if solo mode, imediatly go back to solo menu
+                    Storage.level.isCleared = true;
                     Time.timeScale = 1f;
                     transitionHandler.WipeToScene("SoloMenu", i:true);
                 }

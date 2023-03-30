@@ -25,4 +25,7 @@ public class Level : ScriptableObject {
 
     /** List of additional objectives that must be met to clear the stage **/
     [SerializeField] public List<Objective> objectives;
+
+    // if the level has been cleared in solo mode
+    public bool isCleared = false;
 }
