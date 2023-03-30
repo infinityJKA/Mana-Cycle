@@ -73,6 +73,7 @@ public class ConvoHandler : MonoBehaviour
         // once the end of the convo is reached, transition to manacycle scene where the level will begin
         if (level != null)
         {
+            Storage.level = level;
             GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("ManaCycle");
         }
         else

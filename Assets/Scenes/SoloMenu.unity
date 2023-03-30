@@ -1869,7 +1869,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0f196bb6b95a491382be7fd898a9f35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  convoHandler: {fileID: 0}
+  convoHandler: {fileID: 7863578174897850017}
   levelsList:
   - {fileID: 11400000, guid: bbedf4065086e4008927c4ea8aa60c0f, type: 2}
   - {fileID: 11400000, guid: 1d1de2ddae3e142328c78b53cb5e82de, type: 2}
@@ -2024,6 +2024,10 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 1156501366}
     m_Modifications:
+    - target: {fileID: 2453605081250774414, guid: 00c9de84c9d0f407ca783879c33c83dd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5873809811838639628, guid: 00c9de84c9d0f407ca783879c33c83dd, type: 3}
       propertyPath: m_SizeDelta.x
       value: 1080
@@ -2276,3 +2280,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2453605081079221889, guid: 00c9de84c9d0f407ca783879c33c83dd, type: 3}
   m_PrefabInstance: {fileID: 7863578174897850015}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7863578174897850017 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2453605081079221890, guid: 00c9de84c9d0f407ca783879c33c83dd, type: 3}
+  m_PrefabInstance: {fileID: 7863578174897850015}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eb8633ebf205064d840082467a8bae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
