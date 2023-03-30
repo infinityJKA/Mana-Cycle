@@ -299,7 +299,13 @@ public class GameBoard : MonoBehaviour
                 // Get the time that has passed since the previous piece fall.
                 // If it is greater than fall time (or fallTime/10 if holding down),
                 // move the piece one down.
-                if(Time.time - previousFallTime > fallTime*this.fallTimeMult){
+                // (Final fall time has to be greater than 0.05)
+                double finalFallTime = fallTime*this.fallTimeMult;
+                if (finalFallTime < 0.05){
+                    finalFallTime = 0.05;
+                }
+
+                if(Time.time - previousFallTime > finalFallTime){
                     // Try to move the piece down. If it can't be moved down,
                     if (!MovePiece(0, 1))
                     {
