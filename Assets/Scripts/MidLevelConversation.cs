@@ -7,7 +7,12 @@ public class MidLevelConversation : Conversation {
     public enum AppearCondition {
         TimeRemaining,
         PointTotal,
-        BlobCount
+        ManaClearedTotal,
+        SpellcastTotal,
+        TopCombo,
+        BlobCount,
+        Defeated, // value irrelevant
+        Won // value irrelevant
     }
 
     /** Value, depends on the condition */
@@ -19,7 +24,12 @@ public class MidLevelConversation : Conversation {
         switch (appearCondition) {
             case AppearCondition.TimeRemaining: return board.timer.SecondsRemaining() <= value;
             case AppearCondition.PointTotal: return board.hp >= value;
-            case AppearCondition.BlobCount: return false;
+            case AppearCondition.ManaClearedTotal: return board.GetTotalManaCleared() >= value;
+            case AppearCondition.SpellcastTotal: return board.GetTotalSpellcasts() >= value;
+            case AppearCondition.TopCombo: return board.GetHighestCombo() >= value;
+            case AppearCondition.BlobCount: return board.GetBlobCount() >= value;
+            case AppearCondition.Defeated: return board.isDefeated();
+            case AppearCondition.Won: return board.isWon();
             default: return false;
         }
     }
