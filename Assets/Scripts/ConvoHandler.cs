@@ -101,9 +101,11 @@ public class ConvoHandler : MonoBehaviour
         var dialogue = convo.dialogueList[index];
 
         var text = dialogue.text;
-        text.Replace("{cycle0}", board.cycle.manaColorStrings[0]);
-        text.Replace("{cycle1}", board.cycle.manaColorStrings[1]);
-        text.Replace("{cycle2}", board.cycle.manaColorStrings[2]);
+        if (!board == null){
+            text.Replace("{cycle0}", board.cycle.manaColorStrings[0]);
+            text.Replace("{cycle1}", board.cycle.manaColorStrings[1]);
+            text.Replace("{cycle2}", board.cycle.manaColorStrings[2]);
+        }
         dialogueText.text = text;
         
         leftSpeaker.SetSpeaker(dialogue.leftSpeaker, !dialogue.rightFocused);
