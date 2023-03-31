@@ -80,6 +80,7 @@ public class LevelLister : MonoBehaviour
                 Storage.gamemode = Storage.GameMode.Solo;
                 convoHandler.StartLevel(levelsList[selection]);
                 focused = false;
+                Storage.levelSelectedThisInput = true;
             }
         }
 
