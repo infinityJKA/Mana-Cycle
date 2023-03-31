@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class ConvoHandler : MonoBehaviour
 {
@@ -44,6 +42,9 @@ public class ConvoHandler : MonoBehaviour
     /** Objects in the scene that should be disabled while convo is active */
     [SerializeField] private GameObject[] disableDuringConvo;
 
+    /** Objects in the scene to permanently disable when a convo begins */
+    [SerializeField] private GameObject[] disablePermanentOnConvo;
+
     // Update is called once per frame
     void Update()
     {
@@ -74,8 +75,12 @@ public class ConvoHandler : MonoBehaviour
         this.convo = convo;
         index = 0;
         convoUI.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(null);
 
         foreach (GameObject obj in disableDuringConvo) {
+            obj.SetActive(false);
+        }
+        foreach (GameObject obj in disablePermanentOnConvo) {
             obj.SetActive(false);
         }
 
@@ -89,6 +94,12 @@ public class ConvoHandler : MonoBehaviour
 
     void EndConvo()
     {
+        if (board != null) {
+            // Try to automatically start the next conversation avaialble. If none are, move on
+            bool nextConvoPlayed = board.CheckMidLevelConversations();
+            if (nextConvoPlayed) return;
+        }
+
         foreach (GameObject obj in disableDuringConvo) {
             obj.SetActive(true);
         }

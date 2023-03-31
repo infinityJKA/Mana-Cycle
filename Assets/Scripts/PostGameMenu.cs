@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System;
 using UnityEngine.SceneManagement;
 
 public class PostGameMenu : MonoBehaviour
@@ -39,8 +37,8 @@ public class PostGameMenu : MonoBehaviour
             if (appearTime <= 0 && !winningBoard.IsCasting() && !winningBoard.convoPaused)
             {
                 // Play convos if amy are remaining
-                winningBoard.CheckMidLevelConversations();
-                if (winningBoard.convoPaused) return;
+                bool convoPlayed = winningBoard.CheckMidLevelConversations();
+                if (convoPlayed) return;
 
                 timerRunning = false;
 
