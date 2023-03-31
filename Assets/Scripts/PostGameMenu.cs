@@ -46,6 +46,17 @@ public class PostGameMenu : MonoBehaviour
                 {
                     MenuUI.SetActive(true);
                     Time.timeScale = 0f;
+                    // when in solo mode, hide css button. when in multi, hide solo button.
+                    if (Storage.gamemode == Storage.GameMode.Solo)
+                    {
+                        MenuItems[2].SetActive(false);
+                        MenuItems.RemoveAt(2);
+                    }
+                    else
+                    {
+                        MenuItems[3].SetActive(false);
+                        MenuItems.RemoveAt(3);
+                    }
                     
                 }
                 
