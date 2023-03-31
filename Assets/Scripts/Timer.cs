@@ -48,20 +48,27 @@ public class Timer : MonoBehaviour
 
         float timeLeft = endTime - Time.time;
 
-        if (timeLeft <= 20) {
+        if (timeLeft <= 20 && !player1.level.survivalWin && player1.level.time != -1) {
             textbox.colorGradientPreset = redGradient;
         }
 
         if (timeLeft <= 0) {
-            textbox.text = "0:00";
-            if (!player1.level.survivalWin){
-                if (!player1.isDefeated()) player1.Defeat();
+            if(player1.level.time != -1){
+                textbox.text = "0:00";
+                if (!player1.level.survivalWin){
+                    if (!player1.isDefeated()) player1.Defeat();
+                }
+                else if(player1.level.time != -1){
+                    if (!player1.isDefeated()) player1.Win();
+                }
             }
             else{
-                if (!player1.isDefeated()) player1.Win();
+                textbox.text = "∞:∞";
             }
-        } else {
-            textbox.text = Utils.FormatTime(timeLeft);
+        } else{
+            if(player1.level.time != -1){
+                textbox.text = Utils.FormatTime(timeLeft);
+            }
         }
     }
 }
