@@ -30,6 +30,23 @@ public class PauseMenu : MonoBehaviour
             Time.timeScale = 0f; 
             PauseUI.SetActive(true);
 
+            // when in solo mode, hide css button. when in multi, hide solo button.
+            // only remove extra button if it still exists  
+            if (pauseMenuItems.Count > 3){
+                
+                if (Storage.gamemode == Storage.GameMode.Solo)
+                {
+                    pauseMenuItems[2].SetActive(false);
+                    pauseMenuItems.RemoveAt(2);
+                }
+                else
+                {
+                    pauseMenuItems[3].SetActive(false);
+                    pauseMenuItems.RemoveAt(3);
+                }
+            }
+
+
             // clear selected menu button
             EventSystem.current.SetSelectedGameObject(null);
             // set first selected button
