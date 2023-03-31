@@ -15,6 +15,11 @@ public class PostGameMenu : MonoBehaviour
     public bool timerRunning {get; private set;}
     [SerializeField] private GameObject MenuUI;
     private TransitionScript transitionHandler;
+
+    /** Board that won the game */
+    private GameBoard winningBoard;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,9 +35,9 @@ public class PostGameMenu : MonoBehaviour
             // timescale is currently 0 to pause game logic, so used unscaled dt
             appearTime -= Time.unscaledDeltaTime;
 
-            if (appearTime <= 0)
+            // also wait until the player is done spellcasting
+            if (appearTime <= 0 && winningBoard.IsCasting())
             {
-
                 timerRunning = false;
 
                 if (Storage.gamemode == Storage.GameMode.Solo && !Storage.level.isCleared)
@@ -68,8 +73,9 @@ public class PostGameMenu : MonoBehaviour
 
     }
 
-    public void AppearWithDelay(double s)
+    public void AppearWithDelay(double s, GameBoard winner)
     {
+        winningBoard = winner;
         appearTime = s;
         timerRunning = true;
     }

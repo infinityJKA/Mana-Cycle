@@ -807,7 +807,7 @@ public class GameBoard : MonoBehaviour
 
         winTextObj.SetActive(true);
         winText.text = "WIN";
-        winMenu.AppearWithDelay(2d);
+        winMenu.AppearWithDelay(2d, this);
     }
 
     /** Checks for mid-level conversations that need to be displayed. */
@@ -846,6 +846,10 @@ public class GameBoard : MonoBehaviour
     public bool isInitialized()
     {
         return cycleInitialized;
+    }
+
+    public bool IsCasting() {
+        return casting;
     }
 
     public int getTotalManaCleared() {
