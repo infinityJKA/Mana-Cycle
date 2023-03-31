@@ -98,7 +98,7 @@ public class LevelLister : MonoBehaviour
         {
             if (i < 0 || i >= levelsList.Length){
                 // flavor lines
-                newText += "########" + "\n";
+                newText += "################" + "\n";
             }
             else{
                 Level l = levelsList[i];
@@ -112,6 +112,17 @@ public class LevelLister : MonoBehaviour
                 {
                     newText += " <</color>";
                 }
+
+                // clear check
+                if (l.isCleared)
+                {
+                    newText += "<color=#00ffdf> X</color=#00ffdf>";
+                }
+                else
+                {
+                    newText += "<color=#000000> X</color=#000000>";
+                }
+
                 newText += "\n";
             }
 
@@ -119,8 +130,17 @@ public class LevelLister : MonoBehaviour
         listText.text = newText;
 
         // display the description and time of the selected level
-        descriptionText.text = levelsList[selection].description;
-        timeText.text = "Time: " + Utils.FormatTime(levelsList[selection].time);
+        Level selectedLevel = levelsList[selection];
+        descriptionText.text = selectedLevel.description;
+        if (selectedLevel.time != -1)
+        {
+            timeText.text = "Time: " + Utils.FormatTime(selectedLevel.time);
+        }
+        else
+        {
+            timeText.text = "Time: ∞";
+        }
+        
 
         // update the targeted scroll position
         targetPosition = new Vector2(listTransform.position.x, selection*(50+decLine) + yOffset);
