@@ -14,10 +14,20 @@ public class HowToPlay : MonoBehaviour
     [SerializeField] private Image currentImg;
     [SerializeField] private TMPro.TextMeshProUGUI pageText;
 
+    [SerializeField] private InputScript inputScript;
+    [SerializeField] private UnityEngine.UI.Button closeButton;
+
     public void Init()
     {
         HTPPage = 0;
         UpdatePage();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(inputScript.Pause)) {
+            closeButton.onClick.Invoke();
+        }
     }
 
     public void ChangePage(int change)
