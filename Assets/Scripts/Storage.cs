@@ -25,6 +25,9 @@ public class Storage
         Versus
     }
 
+    // true when R is pressed to select single player level, so convo doesnt skip first line
+    public static bool levelSelectedThisInput;
+
     // // i love getters and setters so fucking much
     // fuck getters and setters we goin public
     // public void SetBattler1(Battler b)

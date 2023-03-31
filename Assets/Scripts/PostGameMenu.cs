@@ -59,7 +59,6 @@ public class PostGameMenu : MonoBehaviour
                     }
                     
                 }
-                
 
                 EventSystem.current.SetSelectedGameObject(null);
                 MoveCursor(0);
