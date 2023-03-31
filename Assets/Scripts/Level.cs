@@ -34,4 +34,6 @@ public class Level : ScriptableObject {
 
     // if the level has been cleared in solo mode
     public bool isCleared = false;
+
+    public int highScore = 0;
 }
