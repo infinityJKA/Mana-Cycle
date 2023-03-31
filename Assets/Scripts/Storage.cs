@@ -17,7 +17,7 @@ public class Storage
     /** level that the player selected */
     public static Level level;
 
-    /** true if singleplayer, false if versus */
+    /** current gamemode selected by player */
     public static GameMode gamemode;
     public enum GameMode {
         Default,

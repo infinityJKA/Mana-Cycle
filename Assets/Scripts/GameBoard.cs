@@ -6,88 +6,88 @@ using UnityEngine.UI;
 
 public class GameBoard : MonoBehaviour
 {
-    // If this board is in single player mode
+    // If this board is in single player mode */
     [SerializeField] public bool singlePlayer;
     // The battler selected for this board. Each one has different effects.
     [SerializeField] private Battler battler;
-    // True if the player controls this board.
+    // True if the player controls this board. */
     [SerializeField] private bool playerControlled;
-    // 0 for left side, 1 for right side
+    /** 0 for left side, 1 for right side */
     [SerializeField] private int playerSide;
 
-    // Obect where pieces are drawn
+    /** Obect where pieces are drawn */
     [SerializeField] public GameObject pieceBoard;
 
-    // Input mapping for this board
+    /** Input mapping for this board */
     [SerializeField] public InputScript inputScript;
 
-    // The board of the enemy of the player/enemy of this board
+    /** The board of the enemy of the player/enemy of this board */
     [SerializeField] public GameBoard enemyBoard;
-    // HP Bar game object on this board
+    /** HP Bar game object on this board */
     [SerializeField] public HealthBar hpBar;
 
-    // Stores the piece preview for this board
+    /** Stores the piece preview for this board */
     [SerializeField] private PiecePreview piecePreview;
 
-    // Cycle pointer game object that belongs to this board
+    /** Cycle pointer game object that belongs to this board */
     [SerializeField] private GameObject pointer;
 
-    // Stores the board's cycle level indicator
+    /** Stores the board's cycle level indicator */
     [SerializeField] private CycleMultiplier cycleLevelDisplay;
-    // Stores the image for the portrait
+    /** Stores the image for the portrait */
     [SerializeField] private Image portrait;
 
-    // Chain popup object
+    /** Chain popup object */
     [SerializeField] private Popup chainPopup;
-    // Cascade popup object
+    /** Cascade popup object */
     [SerializeField] private Popup cascadePopup;
 
-    // Current fall delay for pieces.
+    /** Current fall delay for pieces. */
     [SerializeField] private float fallTime = 0.8f;
 
-    // this needs to be below the board in the hierarchy, and not in the board prefabs. This is so they aren't covered up by mana tiles and arent effected by the board being disabled.
+    /** Win/lose text that appears over the board */
     [SerializeField] private GameObject winTextObj;
     private TMPro.TextMeshProUGUI winText;
 
-    // Starting HP of this character.
+    /** Starting HP of this character. */
     public int maxHp { get; private set; }
-    // Amount of HP this player has remaining.
+    /** Amount of HP this player has remaining. */
     public int hp { get; private set; }
 
-    // Stores the ManaCycle in this scene. (on start)
+    /** Stores the ManaCycle in this scene. (on start) */
     public ManaCycle cycle { get; private set; }
 
-    // This board's current position in the cycle. starts at 0
+    /** This board's current position in the cycle. starts at 0 */
     public int cyclePosition { get; private set; }
 
-    // Dimensions of the board
+    /** Dimensions of the board */
     public static readonly int width = 8;
     public static readonly int height = 14;
 
-    // The last time that the current piece fell down a tile.
+    /** The last time that the current piece fell down a tile. */
     private float previousFallTime;
-    // If this board is currently spellcasting (chaining).
+    /** If this board is currently spellcasting (chaining). */
     private bool casting = false;
 
-    // Board containing all tiles that have been placed and their colors. NONE is an empty space (from ManaColor enum).
+    /** Board containing all tiles that have been placed and their colors. NONE is an empty space (from ManaColor enum). */
     private Tile[,] board;
-    // Piece that is currently being dropped.
+    /** Piece that is currently being dropped. */
     private Piece piece;
 
-    // Amount of times the player has cleared the cycle. Used in daamge formula
+    /** Amount of times the player has cleared the cycle. Used in daamge formula */
     private int cycleLevel = 0;
 
-    // Cached pause menu, so this board can pause the game
+    /** Cached pause menu, so this board can pause the game */
     private PauseMenu pauseMenu;
 
-    // If this board has had Defeat() called on it and in post game
+    /** If this board has had Defeat() called on it and in post game */
     private bool defeated;
-    // If this board has had Win() called on it and in post game
+    /** If this board has had Win() called on it and in post game */
     private bool won;
 
     private float fallTimeMult;
 
-    // True for one frame when new piece spawns
+    /** True for one frame when new piece spawns */
     private bool pieceSpawned;
 
     private bool cycleInitialized;
@@ -671,7 +671,7 @@ public class GameBoard : MonoBehaviour
     }
 
     IEnumerator CheckMidConvoAfterDelay() {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
         CheckMidLevelConversations();
     }
 
@@ -846,6 +846,7 @@ public class GameBoard : MonoBehaviour
 
     public void Win()
     {
+        won = true;
         postGame = true;
         if (timer != null) timer.StopTimer();
 
@@ -862,23 +863,25 @@ public class GameBoard : MonoBehaviour
         if (playerSide == 0 && level != null) objectiveList.Refresh(this);
     }
 
-    /** Checks for mid-level conversations that need to be displayed. */
-    public void CheckMidLevelConversations() {
+    /** Checks for mid-level conversations that need to be displayed. return true if convo was played */
+    public bool CheckMidLevelConversations() {
         // don't check if not player 1
-        if (playerSide == 1) return;
+        if (playerSide == 1) return false;
 
         // loop through and find the first with requirements met
-        Debug.Log(timer);
         foreach (MidLevelConversation convo in midLevelConvos) {
             if (convo.ShouldAppear(this)) {
+                Debug.Log(convo);
                 convoPaused = true;
                 Time.timeScale = 0;
                 convoHandler.StartConvo(convo, this);
                 midLevelConvos.Remove(convo);
                 // only one per check; return after, if any would be shown after this, they will be next check
-                return;
+                return true;
             }
         }
+
+        return false;
     }
 
     public Tile[,] getBoard()
