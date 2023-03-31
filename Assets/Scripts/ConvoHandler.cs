@@ -100,6 +100,8 @@ public class ConvoHandler : MonoBehaviour
             if (nextConvoPlayed) return;
         }
 
+        Storage.convoEndedThisInput = true;
+
         foreach (GameObject obj in disableDuringConvo) {
             obj.SetActive(true);
         }
