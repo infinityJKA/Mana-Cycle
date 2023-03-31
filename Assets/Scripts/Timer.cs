@@ -46,7 +46,7 @@ public class Timer : MonoBehaviour
     {
         if (!running) return;
 
-        float timeLeft = endTime - Time.time;
+        float timeLeft = SecondsRemaining();
 
         if (timeLeft <= 20 && !player1.level.survivalWin && player1.level.time != -1) {
             textbox.colorGradientPreset = redGradient;
@@ -70,5 +70,9 @@ public class Timer : MonoBehaviour
                 textbox.text = Utils.FormatTime(timeLeft);
             }
         }
+    }
+
+    public float SecondsRemaining() {
+        return endTime - Time.time;
     }
 }
