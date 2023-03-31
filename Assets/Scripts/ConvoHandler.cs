@@ -43,7 +43,7 @@ public class ConvoHandler : MonoBehaviour
     {
         if (!convoUI.activeSelf) return;
 
-        if (Input.GetKeyDown(inputScript.Cast))
+        if (Input.GetKeyDown(inputScript.Cast) && !Storage.levelSelectedThisInput)
         {
             index++;
             if (index >= convo.dialogueList.Length){
@@ -52,7 +52,10 @@ public class ConvoHandler : MonoBehaviour
             else{
                 DisplayConvoLine();
             }
+
         }
+
+        Storage.levelSelectedThisInput = false;
     }
 
     public void StartLevel(Level level) {
