@@ -54,7 +54,12 @@ public class Timer : MonoBehaviour
 
         if (timeLeft <= 0) {
             textbox.text = "0:00";
-            if (!player1.isDefeated()) player1.Defeat();
+            if (!player1.level.survivalWin){
+                if (!player1.isDefeated()) player1.Defeat();
+            }
+            else{
+                if (!player1.isDefeated()) player1.Win();
+            }
         } else {
             textbox.text = Utils.FormatTime(timeLeft);
         }

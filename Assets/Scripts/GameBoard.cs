@@ -97,7 +97,7 @@ public class GameBoard : MonoBehaviour
     private Shake shake;
 
     /** The level the player is in, if not in versus mode */
-    [SerializeField] private Level level;
+    [SerializeField] public Level level;
     /** If in singleplayer, the objective list in this scene */
     [SerializeField] private ObjectiveList objectiveList;
     /** Timer, to stop when this player wins **/
