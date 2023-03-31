@@ -11,7 +11,7 @@ public class Level : ScriptableObject {
     [SerializeField] public Conversation conversation;
 
     /** Conversations that happen during the level, each with their own condition */
-    [SerializeField] public MidLevelConversation[] midLevelConversations;
+    [SerializeField] public List<MidLevelConversation> midLevelConversations;
     
     /** Amount of time to complete the level, in seconds. */
     [SerializeField] public int time = 300;

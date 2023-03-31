@@ -102,6 +102,10 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private ObjectiveList objectiveList;
     /** Timer, to stop when this player wins **/
     [SerializeField] public Timer timer;
+    /** Mid-level conversations that are yet to be shown; removed from list when shown */
+    private List<MidLevelConversation> midLevelConvos;
+    /** Convo handler in this scene; to play mid-level convos when available */
+    [SerializeField] ConvoHandler convoHandler;
 
     // STATS
     /** Total amount of mana this board has cleared */
@@ -110,6 +114,8 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        blobs = new List<Blob>();
+
         if (Storage.gamemode != Storage.GameMode.Default && playerSide == 0) {
             singlePlayer = (Storage.gamemode == Storage.GameMode.Solo);
         } else {
@@ -120,6 +126,11 @@ public class GameBoard : MonoBehaviour
         if (Storage.level != null)
         {
             level = Storage.level;
+        }
+        if (level != null) {
+            midLevelConvos = new List<MidLevelConversation>(level.midLevelConversations);
+        } else {
+            midLevelConvos = new List<MidLevelConversation>();
         }
 
         if (singlePlayer) {
@@ -420,6 +431,8 @@ public class GameBoard : MonoBehaviour
                 }
             }
         }
+
+        RefreshBlobs();
     }
 
     // Clear the tile at the given index, destroying the Tile gameObject.
@@ -517,16 +530,24 @@ public class GameBoard : MonoBehaviour
     }
 
     private static int minBlobSize = 3;
+    /** Updated list of recognized blobs */
+    private List<Blob> blobs;
+    /** Total amount of mana in current blob list */
+    private int manaCleared;
+
+
+    /** Update the blob list this board has recognized. Should be called every time the board changes. */
+
+    public void RefreshBlobs() {
+        tilesInBlobs = new bool[height, width];
+        FindBlobs();
+        manaCleared = TotalMana(blobs);
+    }
 
     // Check the board for blobs of 4 or more of the given color, and clear them from the board, earning points/dealing damage.
     private void Spellcast(int chain)
     {
-        // Save blank matrix of all tiles currently in one of the blobs
-        tilesInBlobs = new bool[height, width];
-
-        // List of all blobs
-        ManaColor color = cycle.GetCycle()[cyclePosition];
-        List<Blob> blobs = FindBlobsOfColor(color);
+        RefreshBlobs();
 
         // If there were no blobs, do not deal damage, and do not move forward in cycle, 
         // end spellcast if active
@@ -534,7 +555,6 @@ public class GameBoard : MonoBehaviour
             casting = false;
             return;
         };
-        int manaCleared = TotalMana(blobs);
 
         // Keep clearing while mana cleared for current color is greater than 0
         // Begin spellcast
@@ -549,19 +569,15 @@ public class GameBoard : MonoBehaviour
 
             // Check for any new blobs that may have formed in those 0.8 seconds
             // (Replaces old list)
-            tilesInBlobs = new bool[height, width];
-            blobs = FindBlobsOfColor(color);
-            manaCleared = TotalMana(blobs);
+            // update: called on every place, so no longer needed here
+            // RefreshBlobs(color);
 
             while (manaCleared > 0) {
                 // If this is cascading off the same color more than once, short delay between
                 if (cascade > 0) {
                     yield return new WaitForSeconds(0.5f);
-
                     // recalculte blobs in case they changed
-                    tilesInBlobs = new bool[height, width];
-                    blobs = FindBlobsOfColor(color);
-                    manaCleared = TotalMana(blobs);
+                    RefreshBlobs();
                 }
 
                 if (chain > 1) chainPopup.Flash(chain.ToString());
@@ -585,7 +601,7 @@ public class GameBoard : MonoBehaviour
                 averagePos /= manaCleared;
 
                 // Send the damage over. Will counter incoming damage first.
-                DealDamage(damage, averagePos, (int)color);
+                DealDamage(damage, averagePos, (int)CurrentColor());
 
                 totalManaCleared += manaCleared;
 
@@ -602,9 +618,7 @@ public class GameBoard : MonoBehaviour
                 if (singlePlayer) objectiveList.Refresh(this);
 
                 // Check for cascaded blobs
-                tilesInBlobs = new bool[height, width];
-                blobs = FindBlobsOfColor(color);
-                manaCleared = TotalMana(blobs);
+                RefreshBlobs();
             }
 
             // move to next in cycle position
@@ -621,10 +635,12 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    // Returns a list of all blobs of mana that were cleared.
-    private List<Blob> FindBlobsOfColor(ManaColor color)
+    // Updates list of all blobs of mana that were cleared.
+    private void FindBlobs()
     {
-        List<Blob> blobs = new List<Blob>();
+        blobs.Clear();
+
+        var color = CurrentColor();
 
         // Loop over rows (top to bottom)
         for (int r = 0; r < height; r++)
@@ -640,8 +656,6 @@ public class GameBoard : MonoBehaviour
                 }
             }
         }
-
-        return blobs;
     }
 
     // Returns the total amount of mana in the passed set of blobs.
@@ -794,6 +808,19 @@ public class GameBoard : MonoBehaviour
         winTextObj.SetActive(true);
         winText.text = "WIN";
         winMenu.AppearWithDelay(2d);
+    }
+
+    /** Checks for mid-level conversations that need to be displayed. */
+    public void CheckMidLevelConversations() {
+        // loop through and find the first with requirements met
+        foreach (MidLevelConversation convo in midLevelConvos) {
+            if (convo.ShouldAppear(this)) {
+                convoHandler.StartConvo(convo);
+                midLevelConvos.Remove(convo);
+                // only one per check; return after, if any would be shown after this, they will be next check
+                return;
+            }
+        }
     }
 
     public Tile[,] getBoard()

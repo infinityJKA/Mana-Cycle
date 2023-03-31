@@ -2,7 +2,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "Mid-Level Conversation", menuName = "ManaCycle/MidLevelConversation")]
 public class MidLevelConversation : Conversation {
-    // Condition where the dialogue will first be shown
+    /** Condition where the dialogue will first be shown */
     [SerializeField] public AppearCondition appearCondition;
     public enum AppearCondition {
         TimeRemaining,
@@ -10,9 +10,10 @@ public class MidLevelConversation : Conversation {
         BlobCount
     }
 
-    // Value, depends on the condition
+    /** Value, depends on the condition */
     [SerializeField] public int value;
 
+    /** Method to decide when the conversation should be shown */
     public bool ShouldAppear(GameBoard board)
     {
         switch (appearCondition) {
