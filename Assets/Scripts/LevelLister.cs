@@ -114,7 +114,7 @@ public class LevelLister : MonoBehaviour
                 }
 
                 // clear check
-                if (l.isCleared)
+                if (l.cleared)
                 {
                     newText += "<color=#00ffdf> X</color=#00ffdf>";
                 }

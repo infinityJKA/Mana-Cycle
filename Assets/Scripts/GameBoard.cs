@@ -111,7 +111,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] ConvoHandler convoHandler;
 
     /** If currently paused to show dialogue */
-    public bool dialoguePaused;
+    public bool convoPaused;
 
     // STATS
     /** Total amount of mana this board has cleared */
@@ -313,7 +313,7 @@ public class GameBoard : MonoBehaviour
             }
             
             // If not pausemenu paused, do piece movements if not dialogue paused and not already dead, and not in postgame
-            else if (!defeated && !dialoguePaused && !postGame) {
+            else if (!defeated && !convoPaused && !postGame) {
                 pieceSpawned = false;
 
                 if (playerControlled){
@@ -455,7 +455,7 @@ public class GameBoard : MonoBehaviour
         }
 
         RefreshBlobs();
-        CheckMidLevelConversations();
+        StartCoroutine(CheckMidConvoAfterDelay());
     }
 
     // Clear the tile at the given index, destroying the Tile gameObject.
@@ -838,6 +838,10 @@ public class GameBoard : MonoBehaviour
 
         if (!singlePlayer) enemyBoard.Win();
 
+        if (level != null) {
+            winMenu.AppearWithDelay(2d, this);
+        }
+
     }
 
     public void Win()
@@ -848,6 +852,8 @@ public class GameBoard : MonoBehaviour
         winTextObj.SetActive(true);
         winText.text = "WIN";
         winMenu.AppearWithDelay(2d, this);
+
+        StartCoroutine(CheckMidConvoAfterDelay());
     }
 
     /** Refreshed the objectives list. Will grant win to this player if all objectives met */
@@ -865,7 +871,7 @@ public class GameBoard : MonoBehaviour
         Debug.Log(timer);
         foreach (MidLevelConversation convo in midLevelConvos) {
             if (convo.ShouldAppear(this)) {
-                dialoguePaused = true;
+                convoPaused = true;
                 Time.timeScale = 0;
                 convoHandler.StartConvo(convo, this);
                 midLevelConvos.Remove(convo);
@@ -928,6 +934,7 @@ public class GameBoard : MonoBehaviour
     public void AddScore(int score) {
         hp += score;
         hpBar.Refresh();
+        RefreshObjectives();
         CheckMidLevelConversations();
     }
 }

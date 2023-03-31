@@ -33,7 +33,7 @@ public class Level : ScriptableObject {
     public bool survivalWin = false;
 
     // if the level has been cleared in solo mode
-    public bool isCleared = false;
+    public bool cleared = false;
 
     public int highScore = 0;
 }

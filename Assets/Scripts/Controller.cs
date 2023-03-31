@@ -34,7 +34,7 @@ public class Controller : MonoBehaviour
         if (!board.isInitialized()) return;
 
         // stop movement while paused, post game or dialogue
-        if (board.isPaused() || board.isPostGame() || board.dialoguePaused) return;
+        if (board.isPaused() || board.isPostGame() || board.convoPaused) return;
 
         if (board.isPlayerControlled() && !board.isDefeated()){
             if (Input.GetKeyDown(inputs.RotateLeft)){

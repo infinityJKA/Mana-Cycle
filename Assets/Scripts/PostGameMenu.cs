@@ -16,7 +16,7 @@ public class PostGameMenu : MonoBehaviour
     [SerializeField] private GameObject MenuUI;
     private TransitionScript transitionHandler;
 
-    /** Board that won the game */
+    /** Board that won the game, or player1 in solo mode */
     private GameBoard winningBoard;
 
 
@@ -35,15 +35,19 @@ public class PostGameMenu : MonoBehaviour
             // timescale is currently 0 to pause game logic, so used unscaled dt
             appearTime -= Time.unscaledDeltaTime;
 
-            // also wait until the player is done spellcasting
-            if (appearTime <= 0 && !winningBoard.IsCasting())
+            // wait for spellcasts and convos to finish
+            if (appearTime <= 0 && !winningBoard.IsCasting() && !winningBoard.convoPaused)
             {
+                // Play convos if amy are remaining
+                winningBoard.CheckMidLevelConversations();
+                if (winningBoard.convoPaused) return;
+
                 timerRunning = false;
 
-                if (Storage.gamemode == Storage.GameMode.Solo && !Storage.level.isCleared)
+                if (Storage.gamemode == Storage.GameMode.Solo && !Storage.level.cleared)
                 {
                     // if solo mode, imediatly go back to solo menu
-                    Storage.level.isCleared = true;
+                    Storage.level.cleared = true;
                     Time.timeScale = 1f;
                     transitionHandler.WipeToScene("SoloMenu", i:true);
                 }

@@ -41,6 +41,9 @@ public class ConvoHandler : MonoBehaviour
     /** current index of the conversation's dialogue lines */
     private int index;
 
+    /** Objects in the scene that should be disabled while convo is active */
+    [SerializeField] private GameObject[] disableDuringConvo;
+
     // Update is called once per frame
     void Update()
     {
@@ -71,6 +74,11 @@ public class ConvoHandler : MonoBehaviour
         this.convo = convo;
         index = 0;
         convoUI.SetActive(true);
+
+        foreach (GameObject obj in disableDuringConvo) {
+            obj.SetActive(false);
+        }
+
         DisplayConvoLine();
     }
 
@@ -81,6 +89,10 @@ public class ConvoHandler : MonoBehaviour
 
     void EndConvo()
     {
+        foreach (GameObject obj in disableDuringConvo) {
+            obj.SetActive(true);
+        }
+
         // once the end of the convo is reached, transition to manacycle scene where the level will begin
         if (level != null)
         {
@@ -98,10 +110,10 @@ public class ConvoHandler : MonoBehaviour
             }
         }
         level = null;
-        Time.timeScale = 1;
 
         if (board != null) {
-            board.dialoguePaused = false;
+            board.convoPaused = false;
+            Time.timeScale = 1;
             board = null;
         }
     }
@@ -113,9 +125,9 @@ public class ConvoHandler : MonoBehaviour
 
         var text = dialogue.text;
         if (board != null) {
-            text = text.Replace("{cycle0}", board.cycle.manaColorStrings[0]);
-            text = text.Replace("{cycle1}", board.cycle.manaColorStrings[1]);
-            text = text.Replace("{cycle2}", board.cycle.manaColorStrings[2]);
+            text = text.Replace("{cycle0}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(0)]);
+            text = text.Replace("{cycle1}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(1)]);
+            text = text.Replace("{cycle2}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(2)]);
             text = text.Replace("{spellcast}", board.inputScript.Cast.ToString());
         }
         dialogueText.text = text;
