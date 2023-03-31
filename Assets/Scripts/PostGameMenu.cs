@@ -92,6 +92,7 @@ public class PostGameMenu : MonoBehaviour
 
     public void SelectOption()
     {
+        if (Storage.convoEndedThisInput) return;
         // Debug.Log(MenuItems[currentSelection]);
         MenuItems[currentSelection].GetComponent<Button>().onClick.Invoke();
     }
