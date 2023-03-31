@@ -71,8 +71,6 @@ public class PostGameMenu : MonoBehaviour
                 MoveCursor(0);
             }
         }
-
-
     }
 
     public void AppearWithDelay(double s, GameBoard winner)

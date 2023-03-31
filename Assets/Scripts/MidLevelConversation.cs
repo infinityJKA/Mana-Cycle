@@ -4,8 +4,10 @@ using UnityEditor;
 
 [CreateAssetMenu(fileName = "Mid-Level Conversation", menuName = "ManaCycle/MidLevelConversation")]
 public class MidLevelConversation : Conversation {
-    /** All conditions that need to be met to show this convo */
+    
+    [Tooltip("All conditions that need to be met to show this convo")]
     [SerializeField] public AppearConditionValue[] appearConditions;
+
     public enum AppearCondition {
         TimeRemaining,
         PointTotal,
@@ -19,29 +21,8 @@ public class MidLevelConversation : Conversation {
         Won
     }
 
-    [Serializable]
-    public class AppearConditionValue {
-        /** Condition where the dialogue will first be shown */
-        public AppearCondition condition;
-        /** Value, depends on the condition */
-        public int value;
-
-         /** Method to decide when the conversation should be shown, when all conditions are met */
-        public bool ShouldAppear(GameBoard board)
-        {
-            switch (condition) {
-                case AppearCondition.TimeRemaining: return board.timer.SecondsRemaining() <= value;
-                case AppearCondition.PointTotal: return board.hp >= value;
-                case AppearCondition.ManaClearedTotal: return board.GetTotalManaCleared() >= value;
-                case AppearCondition.SpellcastTotal: return board.GetTotalSpellcasts() >= value;
-                case AppearCondition.TopCombo: return board.GetHighestCombo() >= value;
-                case AppearCondition.BlobCount: return board.GetBlobCount() >= value;
-                case AppearCondition.Defeated: return value == 0 ? !board.isDefeated() : board.isDefeated();
-                case AppearCondition.Won: return value == 0 ? !board.isWon() : board.isWon();
-                default: return false;
-            }
-        }
-    }
+    [Tooltip("ID of tutorial mask shown. -1 for full dim, -2 for no dim")]
+    [SerializeField] public int tutorialMaskID = -1;
 
     public bool ShouldAppear(GameBoard board) {
         foreach (AppearConditionValue condition in appearConditions) {
@@ -51,7 +32,31 @@ public class MidLevelConversation : Conversation {
     }
 }
 
-[CustomPropertyDrawer(typeof(MidLevelConversation.AppearConditionValue))]
+[Serializable]
+public class AppearConditionValue {
+    /** Condition where the dialogue will first be shown */
+    public MidLevelConversation.AppearCondition condition;
+    /** Value, depends on the condition */
+    public int value;
+
+        /** Method to decide when the conversation should be shown, when all conditions are met */
+    public bool ShouldAppear(GameBoard board)
+    {
+        switch (condition) {
+            case MidLevelConversation.AppearCondition.TimeRemaining: return board.timer.SecondsRemaining() <= value;
+            case MidLevelConversation.AppearCondition.PointTotal: return board.hp >= value;
+            case MidLevelConversation.AppearCondition.ManaClearedTotal: return board.GetTotalManaCleared() >= value;
+            case MidLevelConversation.AppearCondition.SpellcastTotal: return board.GetTotalSpellcasts() >= value;
+            case MidLevelConversation.AppearCondition.TopCombo: return board.GetHighestCombo() >= value;
+            case MidLevelConversation.AppearCondition.BlobCount: return board.GetBlobCount() >= value;
+            case MidLevelConversation.AppearCondition.Defeated: return value == 0 ? !board.isDefeated() : board.isDefeated();
+            case MidLevelConversation.AppearCondition.Won: return value == 0 ? !board.isWon() : board.isWon();
+            default: return false;
+        }
+    }
+}
+
+[CustomPropertyDrawer(typeof(AppearConditionValue))]
 public class AppearConditionValueDrawer : PropertyDrawer
 {
     // Draw the property inside the given rect
