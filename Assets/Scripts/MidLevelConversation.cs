@@ -12,4 +12,14 @@ public class MidLevelConversation : Conversation {
 
     // Value, depends on the condition
     [SerializeField] public int value;
+
+    public bool ShouldAppear(GameBoard board)
+    {
+        switch (appearCondition) {
+            case AppearCondition.TimeRemaining: return board.timer.SecondsRemaining() <= value;
+            case AppearCondition.PointTotal: return board.hp >= value;
+            case AppearCondition.BlobCount: return false;
+            default: return false;
+        }
+    }
 }

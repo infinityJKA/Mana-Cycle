@@ -101,7 +101,7 @@ public class GameBoard : MonoBehaviour
     /** If in singleplayer, the objective list in this scene */
     [SerializeField] private ObjectiveList objectiveList;
     /** Timer, to stop when this player wins **/
-    [SerializeField] private Timer timer;
+    [SerializeField] public Timer timer;
 
     // STATS
     /** Total amount of mana this board has cleared */
