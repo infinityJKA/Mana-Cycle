@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Menu3d : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class Menu3d : MonoBehaviour
 
     [SerializeField] private GameObject HTPButton, SettingsButton;
 
+    // p1 input script so that R to submit works in menu
+    [SerializeField] private InputScript inputScript;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,7 +34,9 @@ public class Menu3d : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(inputScript.Cast)) {
+            EventSystem.current.currentSelectedGameObject.GetComponent<Button>().onClick.Invoke();
+        }
     }
 
     public void SelectVersus()
@@ -73,6 +79,4 @@ public class Menu3d : MonoBehaviour
     {
         TransitionHandler.WipeToScene("SoloMenu");
     }
-
-
 }
