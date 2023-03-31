@@ -130,8 +130,17 @@ public class LevelLister : MonoBehaviour
         listText.text = newText;
 
         // display the description and time of the selected level
-        descriptionText.text = levelsList[selection].description;
-        timeText.text = "Time: " + Utils.FormatTime(levelsList[selection].time);
+        Level selectedLevel = levelsList[selection];
+        descriptionText.text = selectedLevel.description;
+        if (selectedLevel.time != -1)
+        {
+            timeText.text = "Time: " + Utils.FormatTime(selectedLevel.time);
+        }
+        else
+        {
+            timeText.text = "Time: ∞";
+        }
+        
 
         // update the targeted scroll position
         targetPosition = new Vector2(listTransform.position.x, selection*(50+decLine) + yOffset);
