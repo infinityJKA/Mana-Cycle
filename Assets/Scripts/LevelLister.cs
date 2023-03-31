@@ -102,10 +102,14 @@ public class LevelLister : MonoBehaviour
             else{
                 Level l = levelsList[i];
 
+                if (i == selection)
+                {
+                    newText += " <color=#FFFFFF>";
+                }
                 newText += l.levelName;
                 if (i == selection)
                 {
-                    newText += " <";
+                    newText += " <</color>";
                 }
                 newText += "\n";
             }
