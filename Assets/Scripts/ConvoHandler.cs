@@ -45,6 +45,9 @@ public class ConvoHandler : MonoBehaviour
     /** Objects in the scene to permanently disable when a convo begins */
     [SerializeField] private GameObject[] disablePermanentOnConvo;
 
+    /** Turns on and off the tutorial mask in the ManaCycle scene. **/
+    [SerializeField] private TutorialDimMask tutorialDimMask;
+
     // Update is called once per frame
     void Update()
     {
@@ -82,6 +85,12 @@ public class ConvoHandler : MonoBehaviour
         }
         foreach (GameObject obj in disablePermanentOnConvo) {
             obj.SetActive(false);
+        }
+
+        var midLevelConvo = convo as MidLevelConversation;
+        if (midLevelConvo != null && tutorialDimMask != null) {
+            tutorialDimMask.Show();
+            tutorialDimMask.MaskTarget(midLevelConvo.tutorialMaskID);
         }
 
         DisplayConvoLine();

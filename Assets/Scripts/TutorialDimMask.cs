@@ -6,18 +6,30 @@ using UnityEngine.UI;
 public class TutorialDimMask : MonoBehaviour
 {
     // Images for all 4 sides around the rect
-    [SerializeField] Image left, right, top, bottom, center;
+    [SerializeField] Image left, right, top, bottom;
+
+    // RectTransform targets for undimmed area. Index in list is what is used in midlevelconvo mask ID.
+    [SerializeField] RectTransform[] targets;
 
     private static int width = 1920;
     private static int height = 1080;
     
     void Start() {
-        Debug.Log(center.rectTransform.anchoredPosition);
-
-        MaskToRect(center.rectTransform);
+        MaskTarget(0);
     }
 
-    public void MaskToRect(RectTransform center) {
+    public void MaskTarget(int id) {
+        if (id == -2) {
+            Hide();
+        } else if (id == -1) {
+            Show();
+            MaskToRect(new RectTransform());
+        } else {
+            MaskToRect(targets[id]);
+        }
+    }
+
+    void MaskToRect(RectTransform center) {
         left.rectTransform.sizeDelta = new Vector2(center.anchoredPosition.x, height);
 
         bottom.rectTransform.anchoredPosition = new Vector2(center.anchoredPosition.x, 0);
@@ -28,5 +40,19 @@ public class TutorialDimMask : MonoBehaviour
 
         top.rectTransform.anchoredPosition = new Vector2(center.anchoredPosition.x, center.anchoredPosition.y + center.sizeDelta.y);
         top.rectTransform.sizeDelta = new Vector2(center.sizeDelta.x, height - center.anchoredPosition.y - center.sizeDelta.y);
+    }
+
+    public void Show() {
+        left.enabled = true;
+        right.enabled = true;
+        top.enabled = true;
+        bottom.enabled = true;
+    }
+
+    public void Hide() {
+        left.enabled = false;
+        right.enabled = false;
+        top.enabled = false;
+        bottom.enabled = false;
     }
 }
