@@ -16,7 +16,7 @@ public class Objective : ScriptableObject {
     public bool IsCompleted(GameBoard board) {
         switch (objectiveType) {
             case ObjectiveType.Score: return board.hp >= quota; // in singleplayer, hp means score
-            case ObjectiveType.ManaCleared: return board.getTotalManaCleared() >= quota;
+            case ObjectiveType.ManaCleared: return board.GetTotalManaCleared() >= quota;
             default: return false;
         }
     }
@@ -24,7 +24,7 @@ public class Objective : ScriptableObject {
     public string Status(GameBoard board) {
         switch (objectiveType) {
             case ObjectiveType.Score: return board.hp+"/"+quota+" Points";
-            case ObjectiveType.ManaCleared: return board.getTotalManaCleared()+"/"+quota+" Mana Cleared";
+            case ObjectiveType.ManaCleared: return board.GetTotalManaCleared()+"/"+quota+" Mana Cleared";
             default: return "This is an objective";
         }
     }

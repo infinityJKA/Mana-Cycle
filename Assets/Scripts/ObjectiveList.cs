@@ -39,6 +39,8 @@ public class ObjectiveList : MonoBehaviour
     }
 
     public void Refresh(GameBoard board) {
+        if (board.singlePlayer && board.level == null) return;
+        
         bool allObjectivesComplete = true;
 
         foreach (ObjectiveListItem objListItem in objectiveItems) {

@@ -223,6 +223,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: P2ControlsGraphic
       objectReference: {fileID: 0}
+    - target: {fileID: 8654776037028284439, guid: 5ff0e7d8822724d5b92594c149c7b77a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 5ff0e7d8822724d5b92594c149c7b77a, type: 3}
@@ -2574,6 +2578,17 @@ MonoBehaviour:
   textbox: {fileID: 614271807}
   greenGradient: {fileID: 11400000, guid: b0ac0efc6f03e4aa18e985ff48e7d253, type: 2}
   redGradient: {fileID: 11400000, guid: b8360d654901f4bf8b6273c59d2041fc, type: 2}
+--- !u!114 &685212629 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2453605081079221890, guid: 00c9de84c9d0f407ca783879c33c83dd, type: 3}
+  m_PrefabInstance: {fileID: 58897848}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eb8633ebf205064d840082467a8bae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &698150982
 GameObject:
   m_ObjectHideFlags: 0
@@ -3779,12 +3794,12 @@ RectTransform:
   - {fileID: 1115376198}
   - {fileID: 1493097852}
   - {fileID: 614271806}
+  - {fileID: 75871982}
+  - {fileID: 221670562}
   - {fileID: 58897849}
   - {fileID: 3157420838353499076}
   - {fileID: 1160508882}
   - {fileID: 260809341}
-  - {fileID: 75871982}
-  - {fileID: 221670562}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5430,7 +5445,7 @@ PrefabInstance:
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: level
       value: 
-      objectReference: {fileID: 11400000, guid: bbedf4065086e4008927c4ea8aa60c0f, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: timer
       value: 
@@ -5451,6 +5466,10 @@ PrefabInstance:
       propertyPath: inputObject
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: convoHandler
+      value: 
+      objectReference: {fileID: 685212629}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: singlePlayer
       value: 0
@@ -6242,6 +6261,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: P1ControlsGraphic
       objectReference: {fileID: 0}
+    - target: {fileID: 8654776037028284439, guid: 5ff0e7d8822724d5b92594c149c7b77a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 5ff0e7d8822724d5b92594c149c7b77a, type: 3}
@@ -6284,6 +6307,12 @@ MonoBehaviour:
   - {r: 0.13685744, g: 0.9529412, b: 0.066666685, a: 1}
   - {r: 0.94863635, g: 0.9529412, b: 0.066666685, a: 1}
   - {r: 0.58086216, g: 0.066666685, b: 0.9529412, a: 1}
+  manaColorStrings:
+  - blue
+  - red
+  - green
+  - yellow
+  - purple
   manaSprites: []
   boards:
   - {fileID: 1918826929}

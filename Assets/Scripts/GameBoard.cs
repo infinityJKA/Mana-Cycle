@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,7 +19,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] public GameObject pieceBoard;
 
     // Input mapping for this board
-    [SerializeField] private InputScript inputScript;
+    [SerializeField] public InputScript inputScript;
 
     // The board of the enemy of the player/enemy of this board
     [SerializeField] public GameBoard enemyBoard;
@@ -79,8 +80,10 @@ public class GameBoard : MonoBehaviour
     // Cached pause menu, so this board can pause the game
     private PauseMenu pauseMenu;
 
-    // If this board is currently dropping pieces (not dead)
+    // If this board has had Defeat() called on it and in post game
     private bool defeated;
+    // If this board has had Win() called on it and in post game
+    private bool won;
 
     private float fallTimeMult;
 
@@ -107,9 +110,18 @@ public class GameBoard : MonoBehaviour
     /** Convo handler in this scene; to play mid-level convos when available */
     [SerializeField] ConvoHandler convoHandler;
 
+    /** If currently paused to show dialogue */
+    public bool dialoguePaused;
+
     // STATS
     /** Total amount of mana this board has cleared */
     private int totalManaCleared;
+    /** Total amount of spellcasts this player has performed */
+    private int totalSpellcasts;
+    /** Total amount of blobs currently lined up for the current color */
+    private int totalBlobs;
+    /** Highest combo scored by the player */
+    private int highestCombo;
 
     // Start is called before the first frame update
     void Start()
@@ -195,6 +207,8 @@ public class GameBoard : MonoBehaviour
 
         board = new Tile[height, width];
         SpawnPiece();
+
+        CheckMidLevelConversations();
     }
 
     // piece movement is all in functions so they can be called by inputScript. this allows easier implementation of AI controls
@@ -236,6 +250,10 @@ public class GameBoard : MonoBehaviour
 
     public bool isDefeated(){
         return this.defeated;
+    }
+
+    public bool isWon() {
+        return this.won;
     }
 
     public bool isPieceSpawned(){
@@ -294,8 +312,8 @@ public class GameBoard : MonoBehaviour
                 }
             }
             
-            // If not paused, do piece movements
-            else if (!defeated) {
+            // If not pausemenu paused, do piece movements if not dialogue paused and not already dead, and not in postgame
+            else if (!defeated && !dialoguePaused && !postGame) {
                 pieceSpawned = false;
 
                 if (playerControlled){
@@ -322,12 +340,16 @@ public class GameBoard : MonoBehaviour
                     {
                         // Place the piece
                         PlacePiece();
+
+                        // If postgame, don't spawn a new piece
+                        if (postGame) return;
+
                         // Spawn a new piece
                         SpawnPiece();
                         // Move self damage cycle
                         DamageCycle();
 
-                        if (singlePlayer) objectiveList.Refresh(this);
+                        RefreshObjectives();
                     }         
                     // reset fall time
                     previousFallTime = Time.time;   
@@ -433,6 +455,7 @@ public class GameBoard : MonoBehaviour
         }
 
         RefreshBlobs();
+        CheckMidLevelConversations();
     }
 
     // Clear the tile at the given index, destroying the Tile gameObject.
@@ -494,6 +517,7 @@ public class GameBoard : MonoBehaviour
     {
         hpBar.DamageQueue[0].AddDamage(damage);
         hpBar.Refresh();
+        CheckMidLevelConversations();
     }
 
     // Moves incoming damage and take damage if at end
@@ -513,6 +537,8 @@ public class GameBoard : MonoBehaviour
 
             // If this player is out of HP, run defeat
             if (hp <= 0) Defeat();
+
+            CheckMidLevelConversations();
         }
 
         // advance queue
@@ -552,7 +578,11 @@ public class GameBoard : MonoBehaviour
         // If there were no blobs, do not deal damage, and do not move forward in cycle, 
         // end spellcast if active
         if (blobs.Count == 0) {
+            // add to total if spellcasting and this ended it
+            if (casting) totalSpellcasts++;
             casting = false;
+            RefreshObjectives();
+            StartCoroutine(CheckMidConvoAfterDelay());
             return;
         };
 
@@ -605,6 +635,8 @@ public class GameBoard : MonoBehaviour
 
                 totalManaCleared += manaCleared;
 
+                highestCombo = Math.Max(highestCombo, chain);
+
                 // Clear all blob-contained tiles from the board.
                 foreach (Blob blob in blobs) {
                     foreach (Vector2Int pos in blob.tiles) {
@@ -615,10 +647,13 @@ public class GameBoard : MonoBehaviour
                 // Do gravity everywhere
                 AllTileGravity();
 
-                if (singlePlayer) objectiveList.Refresh(this);
+
 
                 // Check for cascaded blobs
                 RefreshBlobs();
+
+                RefreshObjectives();
+                StartCoroutine(CheckMidConvoAfterDelay());
             }
 
             // move to next in cycle position
@@ -633,6 +668,11 @@ public class GameBoard : MonoBehaviour
             // Spellcast for the new next color to check for chain
             Spellcast(chain+1);
         }
+    }
+
+    IEnumerator CheckMidConvoAfterDelay() {
+        yield return new WaitForSeconds(0.5f);
+        CheckMidLevelConversations();
     }
 
     // Updates list of all blobs of mana that were cleared.
@@ -810,12 +850,24 @@ public class GameBoard : MonoBehaviour
         winMenu.AppearWithDelay(2d, this);
     }
 
+    /** Refreshed the objectives list. Will grant win to this player if all objectives met */
+    public void RefreshObjectives() {
+        // only check if in a level and are player 1
+        if (playerSide == 0 && level != null) objectiveList.Refresh(this);
+    }
+
     /** Checks for mid-level conversations that need to be displayed. */
     public void CheckMidLevelConversations() {
+        // don't check if not player 1
+        if (playerSide == 1) return;
+
         // loop through and find the first with requirements met
+        Debug.Log(timer);
         foreach (MidLevelConversation convo in midLevelConvos) {
             if (convo.ShouldAppear(this)) {
-                convoHandler.StartConvo(convo);
+                dialoguePaused = true;
+                Time.timeScale = 0;
+                convoHandler.StartConvo(convo, this);
                 midLevelConvos.Remove(convo);
                 // only one per check; return after, if any would be shown after this, they will be next check
                 return;
@@ -852,8 +904,20 @@ public class GameBoard : MonoBehaviour
         return casting;
     }
 
-    public int getTotalManaCleared() {
+    public int GetTotalManaCleared() {
         return totalManaCleared;
+    }
+
+    public int GetTotalSpellcasts() {
+        return totalSpellcasts;
+    }
+
+    public int GetHighestCombo() {
+        return highestCombo;
+    }
+
+    public int GetBlobCount() {
+        return blobs.Count;
     }
 
     public Level GetLevel() {
@@ -864,5 +928,6 @@ public class GameBoard : MonoBehaviour
     public void AddScore(int score) {
         hp += score;
         hpBar.Refresh();
+        CheckMidLevelConversations();
     }
 }

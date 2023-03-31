@@ -35,6 +35,9 @@ public class ConvoHandler : MonoBehaviour
 
     [SerializeField] private TMPro.TextMeshProUGUI dialogueText;
 
+    // Set board in case the conversation needs to read/write from it
+    [SerializeField] private GameBoard board;
+
     /** current index of the conversation's dialogue lines */
     private int index;
 
@@ -71,8 +74,10 @@ public class ConvoHandler : MonoBehaviour
         DisplayConvoLine();
     }
 
-    // Set board in case the conversation needs to read/write from it
-    [SerializeField] private GameBoard board;
+    public void StartConvo(Conversation convo, GameBoard board) {
+        SetBoard(board);
+        StartConvo(convo);
+    }
 
     void EndConvo()
     {
@@ -93,6 +98,12 @@ public class ConvoHandler : MonoBehaviour
             }
         }
         level = null;
+        Time.timeScale = 1;
+
+        if (board != null) {
+            board.dialoguePaused = false;
+            board = null;
+        }
     }
 
     // Is called once for each dialogue line
@@ -101,13 +112,20 @@ public class ConvoHandler : MonoBehaviour
         var dialogue = convo.dialogueList[index];
 
         var text = dialogue.text;
-        text.Replace("{cycle0}", board.cycle.manaColorStrings[0]);
-        text.Replace("{cycle1}", board.cycle.manaColorStrings[1]);
-        text.Replace("{cycle2}", board.cycle.manaColorStrings[2]);
+        if (board != null) {
+            text = text.Replace("{cycle0}", board.cycle.manaColorStrings[0]);
+            text = text.Replace("{cycle1}", board.cycle.manaColorStrings[1]);
+            text = text.Replace("{cycle2}", board.cycle.manaColorStrings[2]);
+            text = text.Replace("{spellcast}", board.inputScript.Cast.ToString());
+        }
         dialogueText.text = text;
-        
+
         leftSpeaker.SetSpeaker(dialogue.leftSpeaker, !dialogue.rightFocused);
         rightSpeaker.SetSpeaker(dialogue.rightSpeaker, dialogue.rightFocused);        
     }
 
+    public void SetBoard(GameBoard board)
+    {
+        this.board = board;
+    }
 }

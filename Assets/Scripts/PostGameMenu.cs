@@ -36,7 +36,7 @@ public class PostGameMenu : MonoBehaviour
             appearTime -= Time.unscaledDeltaTime;
 
             // also wait until the player is done spellcasting
-            if (appearTime <= 0 && winningBoard.IsCasting())
+            if (appearTime <= 0 && !winningBoard.IsCasting())
             {
                 timerRunning = false;
 
