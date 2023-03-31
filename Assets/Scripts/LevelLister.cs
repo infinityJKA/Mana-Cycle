@@ -98,7 +98,7 @@ public class LevelLister : MonoBehaviour
         {
             if (i < 0 || i >= levelsList.Length){
                 // flavor lines
-                newText += "########" + "\n";
+                newText += "################" + "\n";
             }
             else{
                 Level l = levelsList[i];
