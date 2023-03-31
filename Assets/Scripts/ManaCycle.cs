@@ -10,6 +10,9 @@ public class ManaCycle : MonoBehaviour
     // All ManaColor colors to tint the cycle images
     [SerializeField] private List<Color> manaColors;
 
+    // String representations of the mana color
+    [SerializeField] public List<string> manaColorStrings;
+
     // List of sprites to use for mana of this color (corresponds to indexes in manaColors)
     [SerializeField] public List<Sprite> manaSprites;
 

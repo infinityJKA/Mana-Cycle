@@ -71,6 +71,9 @@ public class ConvoHandler : MonoBehaviour
         DisplayConvoLine();
     }
 
+    // Set board in case the conversation needs to read/write from it
+    [SerializeField] private GameBoard board;
+
     void EndConvo()
     {
         // once the end of the convo is reached, transition to manacycle scene where the level will begin
@@ -89,14 +92,20 @@ public class ConvoHandler : MonoBehaviour
                 levelLister.GetComponent<LevelLister>().SetFocus(true);
             }
         }
-        
+        level = null;
     }
 
     // Is called once for each dialogue line
     void DisplayConvoLine()
     {
         var dialogue = convo.dialogueList[index];
-        dialogueText.text = dialogue.text;
+
+        var text = dialogue.text;
+        text.Replace("{cycle0}", board.cycle.manaColorStrings[0]);
+        text.Replace("{cycle1}", board.cycle.manaColorStrings[1]);
+        text.Replace("{cycle2}", board.cycle.manaColorStrings[2]);
+        dialogueText.text = text;
+        
         leftSpeaker.SetSpeaker(dialogue.leftSpeaker, !dialogue.rightFocused);
         rightSpeaker.SetSpeaker(dialogue.rightSpeaker, dialogue.rightFocused);        
     }
