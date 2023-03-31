@@ -27,6 +27,7 @@ public class ObjectiveList : MonoBehaviour
             objectiveItems.Add(scoreItem);
         }
         
+        
         // add all other additional objectives
         foreach (Objective objective in level.objectives) {
             var objectiveListItem = Instantiate(objectiveListItemPrefab, objectiveListLayout.transform);
@@ -46,7 +47,7 @@ public class ObjectiveList : MonoBehaviour
         }
 
         // if all objectives are complete, and score req. is met, level is won
-        if (allObjectivesComplete && board.hp >= board.GetLevel().scoreGoal) {
+        if (allObjectivesComplete && board.hp >= board.GetLevel().scoreGoal && board.GetLevel().scoreGoal > 0) {
             board.Win();
         }
     }
