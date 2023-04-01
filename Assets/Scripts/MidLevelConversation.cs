@@ -6,7 +6,7 @@ public class MidLevelConversation : Conversation {
     [Tooltip("All conditions that need to be met to show this convo")]
     [SerializeField] public Objective[] appearConditions;
 
-    [Tooltip("ID of tutorial mask shown. -1 for full dim, -2 for no dim")]
+    [Tooltip("ID of tutorial mask shown. 0 for full dim, -1 for no dim")]
     [SerializeField] public int tutorialMaskID = -1;
 
     public bool ShouldAppear(GameBoard board) {
