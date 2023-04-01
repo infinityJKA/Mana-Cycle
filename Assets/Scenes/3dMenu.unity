@@ -1497,9 +1497,9 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 1859224593}
+    m_SelectOnUp: {fileID: 1860559703}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 1859224593}
+    m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
@@ -6443,19 +6443,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1579179229}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c428c74155fd0c4596137c9aded426c, type: 3}
+  m_Script: {fileID: 11500000, guid: 6363fc0e35b496a47a940d26ff327419, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HTPTexts:
-  - example text one
-  - qwdwec  WEFBIWEBFIUWBEFIUBWF
-  - 'ebebebebebebebebebebebebebebe '
-  HTPImgs: []
-  currentText: {fileID: 0}
-  currentImg: {fileID: 0}
-  pageText: {fileID: 0}
-  inputScript: {fileID: 0}
-  closeButton: {fileID: 0}
+  inputScript: {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
+  closeButton: {fileID: 315926936}
 --- !u!1 &1610330866
 GameObject:
   m_ObjectHideFlags: 0
@@ -7769,7 +7761,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1859224592
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8027,7 +8019,7 @@ MonoBehaviour:
     m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 692683072}
-    m_SelectOnDown: {fileID: 1915353834}
+    m_SelectOnDown: {fileID: 315926936}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -8249,7 +8241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1915353833
 RectTransform:
   m_ObjectHideFlags: 0
