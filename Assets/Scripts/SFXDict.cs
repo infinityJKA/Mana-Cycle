@@ -34,6 +34,4 @@ public class SFXDict : MonoBehaviour
     }
 
     [SerializeField] public sfxDict sfxDictionary;
-
-    
 }

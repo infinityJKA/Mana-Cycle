@@ -36,7 +36,10 @@ public class LevelLister : MonoBehaviour
     private Vector2 vel = Vector2.zero;
 
     /** If the level list is currently focused, instead of dialogue */
-    private bool focused;
+    private bool focused; 
+
+    [SerializeField] private AudioClip moveSFX;
+    [SerializeField] private AudioClip selectSFX;
 
     // Start is called before the first frame update
     void Start()
@@ -60,12 +63,14 @@ public class LevelLister : MonoBehaviour
             {
                 selection--;
                 RefreshList();
+                SoundManager.Instance.PlaySound(moveSFX, pitch : 1.1f);
             }
 
             if (Input.GetKeyDown(inputScript.Down))
             {
                 selection++;
                 RefreshList();
+                SoundManager.Instance.PlaySound(moveSFX);
             }
 
             // pause - go back to main menu
@@ -82,6 +87,7 @@ public class LevelLister : MonoBehaviour
                 convoHandler.StartLevel(levelsList[selection]);
                 focused = false;
                 Storage.levelSelectedThisInput = true;
+                SoundManager.Instance.PlaySound(selectSFX);
             }
         }
 
@@ -94,11 +100,11 @@ public class LevelLister : MonoBehaviour
         selection = Math.Clamp(selection, 0, levelsList.Length-1);
         
         string newText = "";
-        // add and subtract 20 for extra lines at the start and end of list
-        for (int i = -20; i < levelsList.Length + 20; i++)
+        // add and subtract for extra lines at the start and end of list
+        for (int i = -30; i < levelsList.Length + 30; i++)
         {
+            // flavor lines
             if (i < 0 || i >= levelsList.Length){
-                // flavor lines
                 newText += "################" + "\n";
             }
             else{
