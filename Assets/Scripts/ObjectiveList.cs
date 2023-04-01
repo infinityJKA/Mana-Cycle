@@ -26,6 +26,15 @@ public class ObjectiveList : MonoBehaviour
             scoreItem.objective = scoreObjective;
             objectiveItems.Add(scoreItem);
         }
+        // if survival, add "survive" objective
+        if (level.survivalWin) {
+            Objective surviveObjective = new Objective();
+            surviveObjective.condition = ObjectiveCondition.Survive;
+
+            var survivalItem = Instantiate(objectiveListItemPrefab, objectiveListLayout.transform);
+            survivalItem.objective = surviveObjective;
+            objectiveItems.Add(survivalItem);
+        }
         
         
         // add all other additional objectives
@@ -40,6 +49,8 @@ public class ObjectiveList : MonoBehaviour
 
     public void Refresh(GameBoard board) {
         if (board.singlePlayer && board.level == null) return;
+
+        // if there are no objectives, don't auto complete
         
         bool allObjectivesComplete = true;
 
