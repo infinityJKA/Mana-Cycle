@@ -45,6 +45,9 @@ public class GameBoard : MonoBehaviour
     /** Current fall delay for pieces. */
     [SerializeField] private float fallTime = 0.8f;
 
+    /** Extra time added to fallTime when piece is about to be placed. (Not affected by fallTimeMult) */
+    [SerializeField] private float slideTime = 0.4f;
+
     /** Win/lose text that appears over the board */
     [SerializeField] private GameObject winTextObj;
     private TMPro.TextMeshProUGUI winText;
@@ -321,6 +324,9 @@ public class GameBoard : MonoBehaviour
             else if (!convoPaused && !postGame) {
                 pieceSpawned = false;
 
+                // don't do fall if piece is destroyed (no falling piece until approximately 0.2s later)
+                if (piece == null) return;
+
                 if (playerControlled){
                     if (Input.GetKey(inputScript.Down)){
                         this.fallTimeMult = 0.1f;
@@ -340,24 +346,38 @@ public class GameBoard : MonoBehaviour
                 }
 
                 if(Time.time - previousFallTime > finalFallTime){
-                    // Try to move the piece down. If it can't be moved down,
-                    if (!MovePiece(0, 1))
+
+                    // Try to move the piece down.
+                    // If it can't be moved down,
+                    // also check for sliding buffer, and place if beyond that
+                    // don't use slide time if down held
+                    // if (!Input.GetKey(inputScript.Down)) {
+                    if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
+                        finalFallTime += slideTime;
+                    }
+
+                    // true if time is up for the extra slide buffer
+                    bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
+                    // if exxtended time is up and still can't move down, place
+                    if (pastExtraSlide && !MovePiece(0, 1))
                     {
                         // Place the piece
                         PlacePiece();
+
+                        // Move self damage cycle
+                        DamageCycle();
+
+                        RefreshObjectives();
 
                         // If postgame, don't spawn a new piece
                         if (postGame) return;
 
                         // Spawn a new piece
-                        SpawnPiece();
-                        // Move self damage cycle
-                        DamageCycle();
+                        SpawnPiece(); 
+                    }
 
-                        RefreshObjectives();
-                    }         
-                    // reset fall time
-                    previousFallTime = Time.time;   
+                    // reset fall time once extra slide is over
+                    if (pastExtraSlide) previousFallTime = Time.time;  
                 }
             }
         // }
