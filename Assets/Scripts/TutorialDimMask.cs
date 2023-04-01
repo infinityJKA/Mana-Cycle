@@ -9,6 +9,9 @@ public class TutorialDimMask : MonoBehaviour
     [SerializeField] Image left, right, top, bottom;
 
     // RectTransform targets for undimmed area. Index in list is what is used in midlevelconvo mask ID.
+    // 0 - full dim
+    // 1 - cycle
+    // 2 - player board
     [SerializeField] RectTransform[] targets;
 
     private static int width = 1920;
@@ -19,12 +22,10 @@ public class TutorialDimMask : MonoBehaviour
     }
 
     public void MaskTarget(int id) {
-        if (id == -2) {
+        if (id == -1) {
             Hide();
-        } else if (id == -1) {
-            Show();
-            MaskToRect(new RectTransform());
         } else {
+            Show();
             MaskToRect(targets[id]);
         }
     }
@@ -43,16 +44,16 @@ public class TutorialDimMask : MonoBehaviour
     }
 
     public void Show() {
-        left.enabled = true;
-        right.enabled = true;
-        top.enabled = true;
-        bottom.enabled = true;
+        left.gameObject.SetActive(true);
+        right.gameObject.SetActive(true);
+        top.gameObject.SetActive(true);
+        bottom.gameObject.SetActive(true);
     }
 
     public void Hide() {
-        left.enabled = false;
-        right.enabled = false;
-        top.enabled = false;
-        bottom.enabled = false;
+        left.gameObject.SetActive(false);
+        right.gameObject.SetActive(false);
+        top.gameObject.SetActive(false);
+        bottom.gameObject.SetActive(false);
     }
 }
