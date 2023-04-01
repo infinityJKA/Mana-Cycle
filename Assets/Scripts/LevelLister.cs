@@ -104,20 +104,22 @@ public class LevelLister : MonoBehaviour
                 newText += "################" + "\n";
             }
             else{
-                Level l = levelsList[i];
+                Level level = levelsList[i];
+
+                bool cleared = PlayerPrefs.GetInt(level.GetInstanceID()+"_Cleared", 0) == 1;
 
                 if (i == selection)
                 {
                     newText += " <color=#FFFFFF>";
                 }
-                newText += l.levelName;
+                newText += level.levelName;
                 if (i == selection)
                 {
                     newText += " <</color>";
                 }
 
                 // clear check
-                if (l.cleared)
+                if (cleared)
                 {
                     newText += "<color=#00ffdf> X</color=#00ffdf>";
                 }
@@ -136,6 +138,10 @@ public class LevelLister : MonoBehaviour
         Level selectedLevel = levelsList[selection];
         descriptionText.text = selectedLevel.description;
 
+        bool selectedCleared = PlayerPrefs.GetInt(selectedLevel.GetInstanceID()+"_Cleared", 0) == 1;
+        highScoreBG.SetActive(selectedCleared);
+        highScoreText.text = "High Score: "+PlayerPrefs.GetInt(selectedLevel.GetInstanceID()+"_HighScore", 0);
+
         if (selectedLevel.time != -1)
         {
             timeText.text = "Time: " + Utils.FormatTime(selectedLevel.time);
@@ -144,9 +150,6 @@ public class LevelLister : MonoBehaviour
         {
             timeText.text = "Time: ∞";
         }
-
-        highScoreBG.SetActive(selectedLevel.cleared);
-        highScoreText.text = "High Score: "+selectedLevel.highScore;
         
 
         // update the targeted scroll position

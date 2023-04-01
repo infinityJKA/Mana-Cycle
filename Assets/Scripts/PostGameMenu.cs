@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,11 +43,15 @@ public class PostGameMenu : MonoBehaviour
 
                 timerRunning = false;
 
-                if (board.isWinner() && Storage.gamemode == Storage.GameMode.Solo && !Storage.level.cleared)
+                int levelID = Storage.level.GetInstanceID();
+                bool cleared = PlayerPrefs.GetInt(levelID+"_Cleared", 0) == 1;
+                if (board.isWinner() && Storage.gamemode == Storage.GameMode.Solo && !cleared)
                 {
-                    // if solo mode, imediatly go back to solo menu
-                    Storage.level.cleared = true;
-                    Storage.level.highScore = board.hp;
+                    PlayerPrefs.SetInt(levelID+"_Cleared", 1);
+
+                    int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
+                    PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(board.hp, highScore));
+
                     Time.timeScale = 1f;
                     transitionHandler.WipeToScene("SoloMenu", i:true);
                 }

@@ -31,9 +31,4 @@ public class Level : ScriptableObject {
 
     // Win on timer 0
     public bool survivalWin = false;
-
-    // if the level has been cleared in solo mode
-    public bool cleared = false;
-
-    public int highScore = 0;
 }
