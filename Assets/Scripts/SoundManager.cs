@@ -52,8 +52,8 @@ public class SoundManager : MonoBehaviour
 
     public void Save()
     {
-        PlayerPrefs.SetFloat("musVolumeKey", effectSource.volume);
-        PlayerPrefs.SetFloat("musVolumeKey", effectSource.volume);
+        PlayerPrefs.SetFloat("musVolumeKey", musicSource.volume);
+        PlayerPrefs.SetFloat("sfxVolumeKey", effectSource.volume);
     }
 
     public void Load()
