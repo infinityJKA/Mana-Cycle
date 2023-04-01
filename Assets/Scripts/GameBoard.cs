@@ -680,6 +680,7 @@ public class GameBoard : MonoBehaviour
                         ClearTile(pos.x, pos.y);
                     }
                 }
+                PlaySFX("cast1", pitch : 1f + chain*0.1f);
 
                 // Do gravity everywhere
                 AllTileGravity();
