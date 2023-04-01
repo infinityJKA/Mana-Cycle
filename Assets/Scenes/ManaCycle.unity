@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.036
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.013945927, g: 0.011039757, b: 0.045795225, a: 0.036}
+  m_IndirectSpecularColor: {r: 0.013952271, g: 0.011046545, b: 0.045810357, a: 0.036}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4155,8 +4155,8 @@ RectTransform:
   - {fileID: 614271806}
   - {fileID: 75871982}
   - {fileID: 221670562}
-  - {fileID: 58897849}
   - {fileID: 1832975041}
+  - {fileID: 58897849}
   - {fileID: 3157420838353499076}
   - {fileID: 1160508882}
   - {fileID: 260809341}
@@ -4581,6 +4581,51 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1423442287}
+  m_CullTransparentMesh: 1
+--- !u!1 &1453077306
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1453077307}
+  - component: {fileID: 1453077308}
+  m_Layer: 5
+  m_Name: FullDimTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1453077307
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453077306}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1832975041}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 810, y: 160}
+  m_SizeDelta: {x: 300, y: 760}
+  m_Pivot: {x: 0, y: 0}
+--- !u!222 &1453077308
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453077306}
   m_CullTransparentMesh: 1
 --- !u!1 &1493097851
 GameObject:
@@ -5196,6 +5241,7 @@ RectTransform:
   - {fileID: 1053128607}
   - {fileID: 1214013975}
   - {fileID: 1841586113}
+  - {fileID: 1453077307}
   - {fileID: 710334297}
   - {fileID: 780189427}
   m_Father: {fileID: 1280025126}
@@ -5223,6 +5269,7 @@ MonoBehaviour:
   top: {fileID: 1214013976}
   bottom: {fileID: 1841586114}
   targets:
+  - {fileID: 1453077307}
   - {fileID: 710334297}
   - {fileID: 780189427}
 --- !u!1 &1841586112

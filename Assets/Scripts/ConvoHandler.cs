@@ -116,6 +116,11 @@ public class ConvoHandler : MonoBehaviour
             obj.SetActive(true);
         }
 
+        var midLevelConvo = convo as MidLevelConversation;
+        if (midLevelConvo != null && tutorialDimMask != null) {
+            tutorialDimMask.Hide();
+        }
+
         // once the end of the convo is reached, transition to manacycle scene where the level will begin
         if (level != null)
         {
