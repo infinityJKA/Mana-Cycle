@@ -7,32 +7,60 @@ public class SoundManager : MonoBehaviour
     
     public AudioSource musicSource, effectSource;
 
-    void Awake(){
-        if(Instance == null){
+    void Awake()
+    {
+        if(Instance == null)
+        {
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
         else{
             Destroy(gameObject);
         }
+
+        if (!PlayerPrefs.HasKey("musVolumeKey"))
+        {
+            PlayerPrefs.SetFloat("musVolumeKey", 0.5f);
+        }
+        Load();
     }
 
-    public void PlaySound(AudioClip clip, float pitch = 1f){
+    public void PlaySound(AudioClip clip, float pitch = 1f)
+    {
         // create a new gameobject with an audiosource, to avoid interfering with other sound effects
         GameObject tempEffectSource = new GameObject("tempEffectSource");
         tempEffectSource.AddComponent<AudioSource>();
         tempEffectSource.GetComponent<AudioSource>().pitch = pitch;
-        tempEffectSource.GetComponent<AudioSource>().PlayOneShot(clip);
+        tempEffectSource.GetComponent<AudioSource>().PlayOneShot(clip, effectSource.volume);
         Destroy(tempEffectSource, clip.length);
     }
 
-    public void ChangeMusicVolume(float value){
-        musicSource.volume = value;
+    // sliders cannot call functions with more than 1 param (?)
+    public void PlaySound(AudioClip clip)
+    {
+        PlaySound(clip, 1f);
     }
 
-    public void ChangeSFXVolume(float value){
+    public void ChangeMusicVolume(float value)
+    {
+        musicSource.volume = value;
+        Save();
+    }
+
+    public void ChangeSFXVolume(float value)
+    {
 
         effectSource.volume = value;
+    }
+
+    public void Save()
+    {
+        PlayerPrefs.SetFloat("musVolumeKey", musicSource.volume);
+    }
+
+    public void Load()
+    {
+        PlayerPrefs.GetFloat("musVolumeKey");
     }
 
 }
