@@ -19,6 +19,7 @@ public class Objective {
             case ObjectiveCondition.SpellcastTotal: return board.GetTotalSpellcasts() >= value;
             case ObjectiveCondition.TopCombo: return board.GetHighestCombo() >= value;
             case ObjectiveCondition.BlobCount: return board.GetBlobCount() >= value;
+            case ObjectiveCondition.Survive: return board.timer.TimeUp() || board.isWinner();
             case ObjectiveCondition.Defeated: return value == 0 ? !board.isDefeated() : board.isDefeated();
             case ObjectiveCondition.Won: return value == 0 ? !board.wonAndNotCasting() : board.wonAndNotCasting();
             default: return false;
@@ -29,6 +30,7 @@ public class Objective {
             case ObjectiveCondition.PointTotal: return board.hp+"/"+value+" Points";
             case ObjectiveCondition.ManaClearedTotal: return board.GetTotalManaCleared()+"/"+value+" Mana Cleared";
             case ObjectiveCondition.SpellcastTotal: return board.GetTotalSpellcasts()+"/"+value+" Spellcasts";
+            case ObjectiveCondition.Survive: return "Survive!";
             default: return "This is an objective";
         }
     }
@@ -41,10 +43,11 @@ public enum ObjectiveCondition {
     SpellcastTotal,
     TopCombo,
     BlobCount,
+    Survive,
     /** 0=false, 1=true */
     Defeated,
     /** 0=false, 1=true */
-    Won
+    Won,
 }
 
 [CustomPropertyDrawer(typeof(Objective))]

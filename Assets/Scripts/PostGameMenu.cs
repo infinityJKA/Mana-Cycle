@@ -46,6 +46,7 @@ public class PostGameMenu : MonoBehaviour
                 {
                     // if solo mode, imediatly go back to solo menu
                     Storage.level.cleared = true;
+                    Storage.level.highScore = board.hp;
                     Time.timeScale = 1f;
                     transitionHandler.WipeToScene("SoloMenu", i:true);
                 }

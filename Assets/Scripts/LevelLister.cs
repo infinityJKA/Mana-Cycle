@@ -20,6 +20,9 @@ public class LevelLister : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI descriptionText;
     [SerializeField] private TMPro.TextMeshProUGUI timeText;
 
+    [SerializeField] private GameObject highScoreBG;
+    [SerializeField] private TMPro.TextMeshProUGUI highScoreText;
+
     /** Inputs that control the level list */
     [SerializeField] private InputScript[] inputScripts;
     /** y offset when scrolling (?) */
@@ -132,6 +135,7 @@ public class LevelLister : MonoBehaviour
         // display the description and time of the selected level
         Level selectedLevel = levelsList[selection];
         descriptionText.text = selectedLevel.description;
+
         if (selectedLevel.time != -1)
         {
             timeText.text = "Time: " + Utils.FormatTime(selectedLevel.time);
@@ -140,6 +144,9 @@ public class LevelLister : MonoBehaviour
         {
             timeText.text = "Time: ∞";
         }
+
+        highScoreBG.SetActive(selectedLevel.cleared);
+        highScoreText.text = "High Score: "+selectedLevel.highScore;
         
 
         // update the targeted scroll position

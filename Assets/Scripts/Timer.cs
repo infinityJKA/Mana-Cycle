@@ -59,7 +59,10 @@ public class Timer : MonoBehaviour
                     if (!player1.isDefeated()) player1.Defeat();
                 }
                 else if(player1.level.time != -1){
-                    if (!player1.isDefeated()) player1.Win();
+                    if (!player1.isDefeated()) {
+                        player1.RefreshObjectives();
+                        if (!player1.isWinner()) player1.Defeat();
+                    }
                 }
             }
             else{
@@ -74,5 +77,9 @@ public class Timer : MonoBehaviour
 
     public float SecondsRemaining() {
         return endTime - Time.time;
+    }
+
+    public bool TimeUp() {
+        return running && SecondsRemaining() <= 0;
     }
 }
