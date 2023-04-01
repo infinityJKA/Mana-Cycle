@@ -302,6 +302,7 @@ public class GameBoard : MonoBehaviour
             if (Input.GetKeyDown(inputScript.Pause) && !postGame)
             {
                 pauseMenu.TogglePause();
+                PlaySFX("pause");
             }
 
             // control the pause menu if paused
@@ -309,8 +310,10 @@ public class GameBoard : MonoBehaviour
             {
                 if (Input.GetKeyDown(inputScript.Up)) {
                     pauseMenu.MoveCursor(1);
+                    PlaySFX("rotate", pitch : 2.1f);
                 } else if (Input.GetKeyDown(inputScript.Down)) {
                     pauseMenu.MoveCursor(-1);
+                    PlaySFX("rotate", pitch : 2.0f);
                 }
 
                 if (Input.GetKeyDown(inputScript.Cast)){
