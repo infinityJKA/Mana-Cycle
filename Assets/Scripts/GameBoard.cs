@@ -583,8 +583,6 @@ public class GameBoard : MonoBehaviour
         // If there were no blobs, do not deal damage, and do not move forward in cycle, 
         // end spellcast if active
         if (blobs.Count == 0) {
-            // add to total if spellcasting and this ended it
-            if (casting) totalSpellcasts++;
             casting = false;
             RefreshObjectives();
             StartCoroutine(CheckMidConvoAfterDelay());
@@ -638,6 +636,7 @@ public class GameBoard : MonoBehaviour
                 // Send the damage over. Will counter incoming damage first.
                 DealDamage(damage, averagePos, (int)CurrentColor());
 
+                totalSpellcasts++;
                 totalManaCleared += manaCleared;
 
                 highestCombo = Math.Max(highestCombo, chain);

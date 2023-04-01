@@ -18,9 +18,9 @@ public class ObjectiveList : MonoBehaviour
 
         // if above 0, add score requirement as objective 
         if (level.scoreGoal > 0) {
-            Objective scoreObjective = ScriptableObject.CreateInstance<Objective>();
-            scoreObjective.objectiveType = Objective.ObjectiveType.Score;
-            scoreObjective.quota = level.scoreGoal;
+            Objective scoreObjective = new Objective();
+            scoreObjective.condition = ObjectiveCondition.PointTotal;
+            scoreObjective.value = level.scoreGoal;
 
             var scoreItem = Instantiate(objectiveListItemPrefab, objectiveListLayout.transform);
             scoreItem.objective = scoreObjective;
@@ -49,7 +49,7 @@ public class ObjectiveList : MonoBehaviour
         }
 
         // if all objectives are complete, and score req. is met, level is won
-        if (allObjectivesComplete && board.hp >= board.GetLevel().scoreGoal && board.GetLevel().scoreGoal > 0) {
+        if (allObjectivesComplete && (board.hp >= board.GetLevel().scoreGoal || board.GetLevel().scoreGoal == 0)) {
             board.Win();
         }
     }

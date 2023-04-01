@@ -9,19 +9,6 @@ public class ObjectiveListItem : MonoBehaviour
     // The text box contained in this objective
     [SerializeField] public TMPro.TextMeshProUGUI textbox;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
 
     // Refresh this objective's text and color. Additionally, if complete, return true.
     public bool Refresh(GameBoard board) {
