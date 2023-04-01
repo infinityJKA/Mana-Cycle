@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: S2Mid1
   m_EditorClassIdentifier: 
   dialogueList:
-  - text: You've lined up enough {cycle0} tiles! Hit {spellcast} to spellcast!
+  - text: You've completed one full cycle! Each time the cycle is cleared, you gain
+      a permanent multiplier to points earned for the rest of battle.
     leftSpeaker: {fileID: 0}
     rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
     rightFocused: 1
   appearConditions:
-  - condition: 5
-    value: 1
+  - condition: 3
+    value: 4
   tutorialMaskID: 0

@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level2
   m_EditorClassIdentifier: 
-  levelName: Survival 1
-  description: A test of survival
+  levelName: Level 2
+  description: Clear a total of five times to finish this stage.
   conversation: {fileID: 11400000, guid: b18c48acfa6864947868fe145b2c8682, type: 2}
   midLevelConversations: []
-  time: 60
+  time: 120
   scoreGoal: 0
-  cycleLength: 5
+  cycleLength: 4
   cycleUniqueColors: 4
   fallTime: 0.8
-  objectives: []
-  survivalWin: 1
-  cleared: 0
+  objectives:
+  - condition: 3
+    value: 5
+  survivalWin: 0
+  cleared: 1
   highScore: 0
