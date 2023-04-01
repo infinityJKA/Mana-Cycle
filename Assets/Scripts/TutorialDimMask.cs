@@ -18,7 +18,7 @@ public class TutorialDimMask : MonoBehaviour
     private static int height = 1080;
     
     void Start() {
-        MaskTarget(0);
+        Hide();
     }
 
     public void MaskTarget(int id) {
