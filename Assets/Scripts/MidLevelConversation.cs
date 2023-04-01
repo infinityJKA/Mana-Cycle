@@ -8,7 +8,18 @@ public class MidLevelConversation : Conversation {
     [Tooltip("All conditions that need to be met to show this convo")]
     [SerializeField] public AppearConditionValue[] appearConditions;
 
-    public enum AppearCondition {
+    [Tooltip("ID of tutorial mask shown. -1 for full dim, -2 for no dim")]
+    [SerializeField] public int tutorialMaskID = -1;
+
+    public bool ShouldAppear(GameBoard board) {
+        foreach (AppearConditionValue condition in appearConditions) {
+            if (!condition.ShouldAppear(board)) return false;
+        }
+        return true;
+    }
+}
+
+public enum AppearCondition {
         TimeRemaining,
         PointTotal,
         ManaClearedTotal,
@@ -21,21 +32,10 @@ public class MidLevelConversation : Conversation {
         Won
     }
 
-    [Tooltip("ID of tutorial mask shown. -1 for full dim, -2 for no dim")]
-    [SerializeField] public int tutorialMaskID = -1;
-
-    public bool ShouldAppear(GameBoard board) {
-        foreach (AppearConditionValue condition in appearConditions) {
-            if (!condition.ShouldAppear(board)) return false;
-        }
-        return true;
-    }
-}
-
 [Serializable]
 public class AppearConditionValue {
     /** Condition where the dialogue will first be shown */
-    public MidLevelConversation.AppearCondition condition;
+    public AppearCondition condition;
     /** Value, depends on the condition */
     public int value;
 
@@ -43,14 +43,14 @@ public class AppearConditionValue {
     public bool ShouldAppear(GameBoard board)
     {
         switch (condition) {
-            case MidLevelConversation.AppearCondition.TimeRemaining: return board.timer.SecondsRemaining() <= value;
-            case MidLevelConversation.AppearCondition.PointTotal: return board.hp >= value;
-            case MidLevelConversation.AppearCondition.ManaClearedTotal: return board.GetTotalManaCleared() >= value;
-            case MidLevelConversation.AppearCondition.SpellcastTotal: return board.GetTotalSpellcasts() >= value;
-            case MidLevelConversation.AppearCondition.TopCombo: return board.GetHighestCombo() >= value;
-            case MidLevelConversation.AppearCondition.BlobCount: return board.GetBlobCount() >= value;
-            case MidLevelConversation.AppearCondition.Defeated: return value == 0 ? !board.isDefeated() : board.isDefeated();
-            case MidLevelConversation.AppearCondition.Won: return value == 0 ? !board.isWon() : board.isWon();
+            case AppearCondition.TimeRemaining: return board.timer.SecondsRemaining() <= value;
+            case AppearCondition.PointTotal: return board.hp >= value;
+            case AppearCondition.ManaClearedTotal: return board.GetTotalManaCleared() >= value;
+            case AppearCondition.SpellcastTotal: return board.GetTotalSpellcasts() >= value;
+            case AppearCondition.TopCombo: return board.GetHighestCombo() >= value;
+            case AppearCondition.BlobCount: return board.GetBlobCount() >= value;
+            case AppearCondition.Defeated: return value == 0 ? !board.isDefeated() : board.isDefeated();
+            case AppearCondition.Won: return value == 0 ? !board.wonAndNotCasting() : board.wonAndNotCasting();
             default: return false;
         }
     }
