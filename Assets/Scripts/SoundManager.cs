@@ -17,7 +17,8 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void PlaySound(AudioClip clip){
+    public void PlaySound(AudioClip clip, float pitch = 1f){
+        effectSource.pitch = pitch;
         effectSource.PlayOneShot(clip);
     }
 
