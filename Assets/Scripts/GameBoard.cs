@@ -360,36 +360,43 @@ public class GameBoard : MonoBehaviour
                 if(Time.time - previousFallTime > finalFallTime){
 
                     // Try to move the piece down.
-                    // If it can't be moved down,
-                    // also check for sliding buffer, and place if beyond that
-                    // don't use slide time if down held
-                    // if (!Input.GetKey(inputScript.Down)) {
-                    if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
-                        finalFallTime += slideTime;
+                    bool movedDown = MovePiece(0, 1);
+
+                    if (!movedDown) {
+                        // If it can't be moved down,
+                        // also check for sliding buffer, and place if beyond that
+                        // don't use slide time if down held
+                        // if (!Input.GetKey(inputScript.Down)) {
+                        
+                        // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
+                        if (!Input.GetKey(inputScript.Down)) {
+                            finalFallTime += slideTime;
+                        }
+
+                        // true if time is up for the extra slide buffer
+                        bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
+                        // if exxtended time is up and still can't move down, place
+                        if (pastExtraSlide && !movedDown)
+                        {
+                            // Place the piece
+                            PlacePiece();
+
+                            // Move self damage cycle
+                            DamageCycle();
+
+                            RefreshObjectives();
+
+                            // If postgame, don't spawn a new piece
+                            if (postGame) return;
+
+                            // Spawn a new piece & reset fall delay
+                            SpawnPiece();
+                            previousFallTime = Time.time;
+                        }
+                    } else {
+                        // if it did move, reset fall time
+                        previousFallTime = Time.time;  
                     }
-
-                    // true if time is up for the extra slide buffer
-                    bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
-                    // if exxtended time is up and still can't move down, place
-                    if (pastExtraSlide && !MovePiece(0, 1))
-                    {
-                        // Place the piece
-                        PlacePiece();
-
-                        // Move self damage cycle
-                        DamageCycle();
-
-                        RefreshObjectives();
-
-                        // If postgame, don't spawn a new piece
-                        if (postGame) return;
-
-                        // Spawn a new piece
-                        SpawnPiece(); 
-                    }
-
-                    // reset fall time once extra slide is over
-                    if (pastExtraSlide) previousFallTime = Time.time;  
                 }
             }
         // }
@@ -416,6 +423,8 @@ public class GameBoard : MonoBehaviour
     {
         pieceSpawned = true;
         piece = piecePreview.SpawnNextPiece();
+
+        
 
         // If the piece is already in an invalid position, player has topped out
         if (!ValidPlacement()) {
@@ -911,7 +920,6 @@ public class GameBoard : MonoBehaviour
         // loop through and find the first with requirements met
         foreach (MidLevelConversation convo in midLevelConvos) {
             if (convo.ShouldAppear(this)) {
-                Debug.Log(convo);
                 convoPaused = true;
                 Time.timeScale = 0;
                 convoHandler.StartConvo(convo, this);
