@@ -26,7 +26,7 @@ public class LevelLister : MonoBehaviour
     /** y offset when scrolling (?) */
     [SerializeField] private float yOffset;
     /** Index of current level selected */
-    private int selection = 0;
+    private int selection;
     /** Descent between lines in the level list */
     private float decLine;
 
@@ -48,6 +48,8 @@ public class LevelLister : MonoBehaviour
         listText = listObject.GetComponent<TMPro.TextMeshProUGUI>();
         decLine = (listText.font.faceInfo.descentLine);
         listTransform = listObject.GetComponent<RectTransform>();
+
+        selection = GetNextLevel();
 
         RefreshList();
     }
@@ -162,5 +164,16 @@ public class LevelLister : MonoBehaviour
 
     public void SetFocus(bool f){
         focused = f;
+    }
+
+    // loop through each level and return the index of the first one that hasn't been cleard.
+    public int GetNextLevel()
+    {
+        for (int i = 0; i < levelsList.Length; i++)
+        {
+            if (!(PlayerPrefs.GetInt(levelsList[i].GetInstanceID()+"_Cleared", 0) == 1)) return i;
+        }
+        // if all levels are cleared, start at 0
+        return 0;
     }
 }
