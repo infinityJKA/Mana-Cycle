@@ -579,6 +579,8 @@ public class GameBoard : MonoBehaviour
             // flash portrait red
             portrait.GetComponent<ColorFlash>().Flash();
 
+            PlaySFX("damageTaken");
+
             // subtract from hp
             hp -= dmg;
 
