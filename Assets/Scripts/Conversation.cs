@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
+#if (UNITY_EDITOR)
 using UnityEditor;
+#endif
 
 [CreateAssetMenu(fileName = "Conversations", menuName = "ManaCycle/Conversation")]
 
@@ -22,6 +24,7 @@ public class ConversationLine {
     public bool rightFocused;
 }
 
+#if (UNITY_EDITOR)
 [CustomPropertyDrawer(typeof(ConversationLine))]
 public class ConversationLineDrawer : PropertyDrawer
 {
@@ -65,3 +68,4 @@ public class ConversationLineDrawer : PropertyDrawer
         EditorGUI.EndProperty();
     }
 }
+#endif
