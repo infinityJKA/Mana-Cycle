@@ -14,8 +14,8 @@ public class PostGameMenu : MonoBehaviour
     [SerializeField] private GameObject MenuUI;
     private TransitionScript transitionHandler;
 
-    /** Board that won the game, or player1 in solo mode */
-    private GameBoard winningBoard;
+    /** player 1 if solo mode, otherwise winning board in versus */
+    private GameBoard board;
 
 
     // Start is called before the first frame update
@@ -34,15 +34,15 @@ public class PostGameMenu : MonoBehaviour
             appearTime -= Time.unscaledDeltaTime;
 
             // wait for spellcasts and convos to finish
-            if (appearTime <= 0 && !winningBoard.IsCasting() && !winningBoard.convoPaused)
+            if (appearTime <= 0 && !board.IsCasting() && !board.convoPaused)
             {
                 // Play convos if amy are remaining
-                bool convoPlayed = winningBoard.CheckMidLevelConversations();
+                bool convoPlayed = board.CheckMidLevelConversations();
                 if (convoPlayed) return;
 
                 timerRunning = false;
 
-                if (Storage.gamemode == Storage.GameMode.Solo && !Storage.level.cleared)
+                if (board.isWinner() && Storage.gamemode == Storage.GameMode.Solo && !Storage.level.cleared)
                 {
                     // if solo mode, imediatly go back to solo menu
                     Storage.level.cleared = true;
@@ -70,12 +70,14 @@ public class PostGameMenu : MonoBehaviour
                 EventSystem.current.SetSelectedGameObject(null);
                 MoveCursor(0);
             }
+
+            Storage.convoEndedThisInput = false;
         }
     }
 
     public void AppearWithDelay(double s, GameBoard winner)
     {
-        winningBoard = winner;
+        board = winner;
         appearTime = s;
         timerRunning = true;
     }

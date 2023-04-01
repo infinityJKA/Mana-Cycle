@@ -252,8 +252,13 @@ public class GameBoard : MonoBehaviour
         return this.defeated;
     }
 
-    public bool isWon() {
+    public bool isWinner() {
         return this.won;
+    }
+
+    // used by mid-level convo, to wait for spellcast to be done before convo.
+    public bool wonAndNotCasting() {
+        return this.won && !this.casting;
     }
 
     public bool isPieceSpawned(){
@@ -312,8 +317,8 @@ public class GameBoard : MonoBehaviour
                 }
             }
             
-            // If not pausemenu paused, do piece movements if not dialogue paused and not already dead, and not in postgame
-            else if (!defeated && !convoPaused && !postGame) {
+            // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
+            else if (!convoPaused && !postGame) {
                 pieceSpawned = false;
 
                 if (playerControlled){
@@ -830,7 +835,8 @@ public class GameBoard : MonoBehaviour
     {
         postGame = true;
         defeated = true;
-        Destroy(piece);
+        if (timer != null) timer.StopTimer();
+
         pieceBoard.SetActive(false);
 
         winTextObj.SetActive(true);
@@ -842,6 +848,7 @@ public class GameBoard : MonoBehaviour
             winMenu.AppearWithDelay(2d, this);
         }
 
+        StartCoroutine(CheckMidConvoAfterDelay());
     }
 
     public void Win()
