@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 [CreateAssetMenu(fileName = "Level", menuName = "ManaCycle/Levels")]
 public class Level : ScriptableObject {
@@ -31,4 +31,18 @@ public class Level : ScriptableObject {
 
     // Win on timer 0
     public bool survivalWin = false;
+}
+
+[CustomEditor(typeof(Level))]
+public class LevelListerEditor : Editor {
+    public override void OnInspectorGUI() {
+        base.OnInspectorGUI();
+        
+        GUILayout.Label("\"Reset Level Progress\" will reset progress of ALL levels, resetting clear status and highscore.");
+
+        if (GUILayout.Button("Reset Level Progress")) {
+            PlayerPrefs.DeleteAll();
+            Debug.Log("Level progress reset!");
+        }
+    }
 }
