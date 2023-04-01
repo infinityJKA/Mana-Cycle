@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+#if (UNITY_EDITOR)
 using UnityEditor;
+#endif
 
 [CreateAssetMenu(fileName = "Level", menuName = "ManaCycle/Levels")]
 public class Level : ScriptableObject {
@@ -33,6 +35,7 @@ public class Level : ScriptableObject {
     public bool survivalWin = false;
 }
 
+#if (UNITY_EDITOR)
 [CustomEditor(typeof(Level))]
 public class LevelListerEditor : Editor {
     public override void OnInspectorGUI() {
@@ -46,3 +49,4 @@ public class LevelListerEditor : Editor {
         }
     }
 }
+#endif

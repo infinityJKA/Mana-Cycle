@@ -1,6 +1,8 @@
 using UnityEngine;
 using System;
+#if (UNITY_EDITOR)
 using UnityEditor;
+#endif
 
 [Serializable]
 public class Objective {
@@ -50,6 +52,7 @@ public enum ObjectiveCondition {
     Won,
 }
 
+#if (UNITY_EDITOR)
 [CustomPropertyDrawer(typeof(Objective))]
 public class ObjectiveDrawer : PropertyDrawer
 {
@@ -73,3 +76,4 @@ public class ObjectiveDrawer : PropertyDrawer
         EditorGUI.EndProperty();
     }
 }
+#endif
