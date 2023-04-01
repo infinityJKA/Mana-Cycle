@@ -90,6 +90,7 @@ public class ConvoHandler : MonoBehaviour
         var midLevelConvo = convo as MidLevelConversation;
         if (midLevelConvo != null && tutorialDimMask != null) {
             tutorialDimMask.Show();
+            Debug.Log(midLevelConvo+": "+midLevelConvo.tutorialMaskID);
             tutorialDimMask.MaskTarget(midLevelConvo.tutorialMaskID);
         }
 
