@@ -126,13 +126,16 @@ public class GameBoard : MonoBehaviour
     /** Highest combo scored by the player */
     private int highestCombo;
 
-    [SerializeField] private SFXDict.sfxDict serializedSoundDict;
+    // use gameobject for sounds so it can be saved as prefab and shared between boards
+    [SerializeField] private GameObject sfxObject;
+    private SFXDict.sfxDict serializedSoundDict;
     private Dictionary<string,AudioClip> sfx;
 
     // Start is called before the first frame update
     void Start()
     {
         // get sfx as regular dict
+        serializedSoundDict = sfxObject.GetComponent<SFXDict>().sfxDictionary;
         sfx = serializedSoundDict.asDictionary();
         
         blobs = new List<Blob>();
