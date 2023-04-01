@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.036
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.013952271, g: 0.011046545, b: 0.045810357, a: 0.036}
+  m_IndirectSpecularColor: {r: 0.013945927, g: 0.011039757, b: 0.045795225, a: 0.036}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5905,6 +5905,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1115376201}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: sfx.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: playerControlled
       value: 1
       objectReference: {fileID: 0}
@@ -5912,6 +5916,22 @@ PrefabInstance:
       propertyPath: inputGetterPrefab
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: sfx.dict.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: serializedSoundDict.dict.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: serializedSoundDict.dict.Array.data[0].key
+      value: rotate
+      objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: serializedSoundDict.dict.Array.data[0].value
+      value: 
+      objectReference: {fileID: 8300000, guid: 5350ac1151c0d07459a7aa692b9e88da, type: 3}
     - target: {fileID: 2765294716893170644, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: m_Pivot.x
       value: 1

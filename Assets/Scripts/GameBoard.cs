@@ -126,9 +126,15 @@ public class GameBoard : MonoBehaviour
     /** Highest combo scored by the player */
     private int highestCombo;
 
+    [SerializeField] private SFXDict.sfxDict serializedSoundDict;
+    private Dictionary<string,AudioClip> sfx;
+
     // Start is called before the first frame update
     void Start()
     {
+        // get sfx as regular dict
+        sfx = serializedSoundDict.asDictionary();
+        
         blobs = new List<Blob>();
 
         if (Storage.gamemode != Storage.GameMode.Default && playerSide == 0) {
@@ -222,6 +228,7 @@ public class GameBoard : MonoBehaviour
             // try nudging left, then right, then up. If none work, undo the rotation
             if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
         }
+        PlaySFX("rotate");
     }
 
     public void RotateRight(){
@@ -230,6 +237,7 @@ public class GameBoard : MonoBehaviour
             // try nudging right, then left, then up. If none work, undo the rotation
             if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
         }
+        PlaySFX("rotate");
     }
 
     public void MoveLeft(){
@@ -965,5 +973,10 @@ public class GameBoard : MonoBehaviour
         hpBar.Refresh();
         RefreshObjectives();
         CheckMidLevelConversations();
+    }
+
+    public void PlaySFX(string value)
+    {
+        SoundManager.Instance.PlaySound(sfx[value]);
     }
 }
