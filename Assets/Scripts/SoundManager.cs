@@ -18,10 +18,6 @@ public class SoundManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (!PlayerPrefs.HasKey("musVolumeKey"))
-        {
-            PlayerPrefs.SetFloat("musVolumeKey", 0.5f);
-        }
         Load();
     }
 
@@ -51,16 +47,37 @@ public class SoundManager : MonoBehaviour
     {
 
         effectSource.volume = value;
+        Save();
     }
 
     public void Save()
     {
-        PlayerPrefs.SetFloat("musVolumeKey", musicSource.volume);
+        PlayerPrefs.SetFloat("musVolumeKey", effectSource.volume);
+        PlayerPrefs.SetFloat("musVolumeKey", effectSource.volume);
     }
 
     public void Load()
     {
-        PlayerPrefs.GetFloat("musVolumeKey");
+        // music
+        if (!PlayerPrefs.HasKey("musVolumeKey"))
+        {
+            PlayerPrefs.SetFloat("musVolumeKey", 0.5f);
+        }
+        else
+        {
+            musicSource.volume = PlayerPrefs.GetFloat("musVolumeKey");
+        }
+
+        // sfx
+        if (!PlayerPrefs.HasKey("sfxVolumeKey"))
+        {
+            PlayerPrefs.SetFloat("sfxVolumeKey", 0.5f);
+        }
+        else
+        {
+            effectSource.volume = PlayerPrefs.GetFloat("sfxVolumeKey");
+        }
+        
     }
 
 }
