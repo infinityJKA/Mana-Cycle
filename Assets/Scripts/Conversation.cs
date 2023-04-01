@@ -15,6 +15,7 @@ public class Conversation : ScriptableObject {
 
 [Serializable]
 public class ConversationLine {
+    [TextAreaAttribute]
     public string text;
     public Battler leftSpeaker;
     public Battler rightSpeaker;
@@ -27,7 +28,7 @@ public class ConversationLineDrawer : PropertyDrawer
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        return 42;
+        return 102;
     }
 
     // Draw the property inside the given rect
@@ -44,12 +45,13 @@ public class ConversationLineDrawer : PropertyDrawer
         var rightSpeaker = property.FindPropertyRelative("rightSpeaker");
         var rightFocused = property.FindPropertyRelative("rightFocused");
 
-        Rect drawRect = new Rect(position.x, position.y, position.width, 16);
+        Rect drawRect = new Rect(position.x, position.y, position.width, 80);
 
         EditorGUI.PropertyField(drawRect, text, GUIContent.none);
         // dialogue.stringValue = EditorGUI.TextField(position, dialogue.stringValue);
-        drawRect.y += 20;
-        drawRect.width /= 2.5f;
+        drawRect.y += 84;
+        drawRect.height /= 5;
+        drawRect.width /= 3f;
         var divideWidth = drawRect.width;
         drawRect.width -= 4;
 
