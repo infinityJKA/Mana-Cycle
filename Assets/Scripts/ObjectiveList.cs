@@ -51,6 +51,7 @@ public class ObjectiveList : MonoBehaviour
         if (board.singlePlayer && board.level == null) return;
 
         // if there are no objectives, don't auto complete
+        if (objectiveItems.Count == 0) return;
         
         bool allObjectivesComplete = true;
 
