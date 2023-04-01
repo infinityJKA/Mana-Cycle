@@ -232,7 +232,7 @@ public class GameBoard : MonoBehaviour
             // try nudging left, then right, then up. If none work, undo the rotation
             if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
         }
-        PlaySFX("rotate", pitch : Random.Range(0.5f,1.5f));
+        PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f));
     }
 
     public void RotateRight(){
@@ -241,7 +241,7 @@ public class GameBoard : MonoBehaviour
             // try nudging right, then left, then up. If none work, undo the rotation
             if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
         }
-        PlaySFX("rotate", pitch : Random.Range(0.5f,1.5f));
+        PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f));
     }
 
     public void MoveLeft(){
