@@ -43,14 +43,18 @@ public class PostGameMenu : MonoBehaviour
 
                 timerRunning = false;
 
-                int levelID = Storage.level.GetInstanceID();
-                bool cleared = PlayerPrefs.GetInt(levelID+"_Cleared", 0) == 1;
-                if (board.isWinner() && Storage.gamemode == Storage.GameMode.Solo && !cleared)
+                
+                if (board.isWinner() && Storage.gamemode == Storage.GameMode.Solo)
                 {
-                    PlayerPrefs.SetInt(levelID+"_Cleared", 1);
+                    int levelID = Storage.level.GetInstanceID();
+                    bool cleared = PlayerPrefs.GetInt(levelID+"_Cleared", 0) == 1;
+                    if (!cleared)
+                    {
+                        PlayerPrefs.SetInt(levelID+"_Cleared", 1);
 
-                    int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
-                    PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(board.hp, highScore));
+                        int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
+                        PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(board.hp, highScore));
+                    }
 
                     Time.timeScale = 1f;
                     transitionHandler.WipeToScene("SoloMenu", i:true);
