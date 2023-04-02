@@ -30,7 +30,7 @@ public class Controller : MonoBehaviour
     {
         // if in solo mode, add solo additional inputs
         if (Storage.gamemode == Storage.GameMode.Solo) inputsList = new InputScript[]{inputs,soloInputs};
-        else inputsList = new InputScript[]{inputs,soloInputs};
+        else inputsList = new InputScript[]{inputs};
         
     }
 
