@@ -12,7 +12,7 @@ public class ConvoHandler : MonoBehaviour
     private Conversation convo;
 
     /** inputs for controlling the conversation */
-    [SerializeField] private InputScript inputScript;
+    [SerializeField] private InputScript[] inputScripts;
 
     /** object containing the conversation UI */
     [SerializeField] private GameObject convoUI;
@@ -53,17 +53,20 @@ public class ConvoHandler : MonoBehaviour
     {
         if (!convoUI.activeSelf) return;
 
-        if (Input.GetKeyDown(inputScript.Cast) && !Storage.levelSelectedThisInput)
-        {
-            index++;
-            if (index >= convo.dialogueList.Length){
-                EndConvo();
-            }
-            else{
-                DisplayConvoLine();
-            }
+        foreach (InputScript inputScript in inputScripts){
+            if (Input.GetKeyDown(inputScript.Cast) && !Storage.levelSelectedThisInput)
+            {
+                index++;
+                if (index >= convo.dialogueList.Length){
+                    EndConvo();
+                }
+                else{
+                    DisplayConvoLine();
+                }
 
+            }
         }
+
 
         Storage.levelSelectedThisInput = false;
     }
