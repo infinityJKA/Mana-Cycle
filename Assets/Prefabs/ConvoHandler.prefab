@@ -738,11 +738,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eb8633ebf205064d840082467a8bae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputScript: {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
+  inputScripts: []
   convoUI: {fileID: 2453605081250774414}
   leftSpeaker: {fileID: 7024025478156195185}
   rightSpeaker: {fileID: 6762337074281977543}
-  dialogueText: {fileID: 2453605079939200184}
+  textLabel: {fileID: 2453605079939200184}
+  board: {fileID: 0}
+  disableDuringConvo: []
+  disablePermanentOnConvo: []
+  tutorialDimMask: {fileID: 0}
+  typeSpeed: 40
 --- !u!1 &2453605081250774414
 GameObject:
   m_ObjectHideFlags: 0
