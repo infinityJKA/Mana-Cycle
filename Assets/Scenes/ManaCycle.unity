@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.036
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.013946134, g: 0.0110399565, b: 0.045794696, a: 0.036}
+  m_IndirectSpecularColor: {r: 0.013945927, g: 0.011039757, b: 0.045795225, a: 0.036}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1497,6 +1497,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   board: {fileID: 1918826929}
   inputs: {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
+  soloInputs: {fileID: 11400000, guid: 1a9e593bfdbc8c44fb272a6e7be1fd94, type: 2}
 --- !u!4 &337036792
 Transform:
   m_ObjectHideFlags: 0
@@ -3579,6 +3580,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   board: {fileID: 1327112842}
   inputs: {fileID: 11400000, guid: 23e0fde6fd3784132844b12c502f8b20, type: 2}
+  soloInputs: {fileID: 0}
 --- !u!4 &1102535857
 Transform:
   m_ObjectHideFlags: 0
@@ -5963,6 +5965,10 @@ PrefabInstance:
       propertyPath: sfx.Array.size
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: soloInputScript
+      value: 
+      objectReference: {fileID: 11400000, guid: 1a9e593bfdbc8c44fb272a6e7be1fd94, type: 2}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: multiBattleMusic
       value: 

@@ -22,6 +22,11 @@ public class GameBoard : MonoBehaviour
     /** Input mapping for this board */
     [SerializeField] public InputScript inputScript;
 
+    // inputs used only in singleplayer mode
+    [SerializeField] public InputScript soloInputScript;
+
+    private InputScript[] inputsList;
+
     /** The board of the enemy of the player/enemy of this board */
     [SerializeField] public GameBoard enemyBoard;
     /** HP Bar game object on this board */
@@ -137,6 +142,10 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // if in solo mode, add solo additional inputs
+        if (Storage.gamemode == Storage.GameMode.Solo) inputsList = new InputScript[]{inputScript,soloInputScript};
+        else inputsList = new InputScript[]{inputScript,soloInputScript};
+
         // get sfx as regular dict
         serializedSoundDict = sfxObject.GetComponent<SFXDict>().sfxDictionary;
         sfx = serializedSoundDict.asDictionary();
@@ -305,6 +314,7 @@ public class GameBoard : MonoBehaviour
 
         // if (!defeated)
         // {
+        foreach (InputScript inputScript in inputsList){
             if (Input.GetKeyDown(inputScript.Pause) && !postGame)
             {
                 pauseMenu.TogglePause();
@@ -326,6 +336,7 @@ public class GameBoard : MonoBehaviour
                     pauseMenu.SelectOption();
                 }
             }
+            
 
             // same with post game menu, if timer is not running
             else if (postGame && !winMenu.timerRunning)
@@ -356,6 +367,7 @@ public class GameBoard : MonoBehaviour
                         this.fallTimeMult = 1f;
                     }
                 }
+            }
 
                 // Get the time that has passed since the previous piece fall.
                 // If it is greater than fall time (or fallTime/10 if holding down),
@@ -378,9 +390,11 @@ public class GameBoard : MonoBehaviour
                         // if (!Input.GetKey(inputScript.Down)) {
                         
                         // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
-                        if (!Input.GetKey(inputScript.Down)) {
-                            finalFallTime += slideTime;
-                        }
+            
+                            if (!Input.GetKey(inputScript.Down)) {
+                                finalFallTime += slideTime;
+                            }
+
 
                         // true if time is up for the extra slide buffer
                         bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
