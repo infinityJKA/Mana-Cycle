@@ -278,7 +278,9 @@ public class GameBoard : MonoBehaviour
         // get current mana color from cycle, and clear that color
         // start at chain of 1
         // canCast is true if a spellcast is currently in process.
-        if (!casting) Spellcast(1);
+        RefreshBlobs();
+        if (!casting && blobs.Count != 0) Spellcast(1);
+        else PlaySFX("failedCast");
     }
 
     public bool isPlayerControlled(){

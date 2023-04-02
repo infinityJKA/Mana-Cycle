@@ -23,7 +23,7 @@ using TMPro;
     public void OnSelect(BaseEventData eventData){
         // if(eventData.selectedObject == this.gameObject){
             SoundManager.Instance.PlaySound(selectSFX);
-            brain.ActiveVirtualCamera.Priority = 1;
+            if (brain.ActiveVirtualCamera != null) brain.ActiveVirtualCamera.Priority = 1;
             thisCam.Priority = 30;
             textBox.text = text;
         // }
