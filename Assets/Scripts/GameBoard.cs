@@ -229,6 +229,8 @@ public class GameBoard : MonoBehaviour
         piecePreview.Setup(this);
 
         cyclePosition = 0;
+        pointer.SetActive(true);
+        pointer.transform.SetParent(cycle.transform);
         PointerReposition();
 
         board = new Tile[height, width];
