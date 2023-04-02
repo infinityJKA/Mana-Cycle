@@ -33,6 +33,7 @@ public class Objective {
             case ObjectiveCondition.ManaClearedTotal: return board.GetTotalManaCleared()+"/"+value+" Mana Cleared";
             case ObjectiveCondition.SpellcastTotal: return board.GetTotalSpellcasts()+"/"+value+" Spellcasts";
             case ObjectiveCondition.Survive: return "Survive!";
+            case ObjectiveCondition.TopCombo: return "Best Combo: " + board.GetHighestCombo()+"/"+value;
             default: return "This is an objective";
         }
     }
