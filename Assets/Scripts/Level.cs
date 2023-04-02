@@ -33,6 +33,9 @@ public class Level : ScriptableObject {
 
     // Win on timer 0
     public bool survivalWin = false;
+
+    // Battle music
+    public AudioClip battleMusic;
 }
 
 #if (UNITY_EDITOR)

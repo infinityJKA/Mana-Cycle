@@ -56,6 +56,7 @@ public class PostGameMenu : MonoBehaviour
                         PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(board.hp, highScore));
                     }
 
+                    setMenuSong();
                     Time.timeScale = 1f;
                     transitionHandler.WipeToScene("SoloMenu", i:true);
                 }
@@ -114,19 +115,30 @@ public class PostGameMenu : MonoBehaviour
 
     public void SelectBackToMainButton()
     {
+        setMenuSong();
         Time.timeScale = 1f;
         transitionHandler.WipeToScene("3dMenu", i: true);
     }
 
     public void SelectBackToCSS()
     {
+        setMenuSong();
         Time.timeScale = 1f;
         transitionHandler.WipeToScene("CharSelect", i: true);
     }
 
     public void SelectBackToSolo()
     {
+        setMenuSong();
         Time.timeScale = 1f;
         transitionHandler.WipeToScene("SoloMenu", i: true);
     }
+
+    public void setMenuSong(){
+        SoundManager.Instance.musicSource.clip = SoundManager.Instance.mainMenuMusic;
+        SoundManager.Instance.musicSource.Stop();
+        SoundManager.Instance.musicSource.Play();
+    }
+
+
 }
