@@ -141,8 +141,8 @@ public class PostGameMenu : MonoBehaviour
     }
 
     public void setMenuSong(){
-        SoundManager.Instance.musicSource.clip = SoundManager.Instance.mainMenuMusic;
         SoundManager.Instance.musicSource.Stop();
+        SoundManager.Instance.musicSource.clip = SoundManager.Instance.mainMenuMusic;
         SoundManager.Instance.musicSource.Play();
     }
 
