@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -31,7 +33,7 @@ public class ConvoHandler : MonoBehaviour
 
     [SerializeField] private ConvoSpeaker rightSpeaker;
 
-    [SerializeField] private TMPro.TextMeshProUGUI dialogueText;
+    [SerializeField] private TMPro.TextMeshProUGUI textLabel;
 
     // Set board in case the conversation needs to read/write from it
     [SerializeField] private GameBoard board;
@@ -61,7 +63,15 @@ public class ConvoHandler : MonoBehaviour
                     EndConvo();
                 }
                 else{
-                    DisplayConvoLine();
+                    // if typing, set typing to false which will cause the coroutine to finish the current line on next update
+                    if (typing) 
+                    {
+                        typing = false;
+                    } 
+                    // otherwise, show next line
+                    else {
+                        DisplayConvoLine();
+                    }
                 }
             }
         }
@@ -147,22 +157,52 @@ public class ConvoHandler : MonoBehaviour
         }
     }
 
+    /** Current line being shown */
+    private ConversationLine line;
+    /** Current text being typed, after formats */
+    private string formattedText;
     // Is called once for each dialogue line
     void DisplayConvoLine()
     {
-        var dialogue = convo.dialogueList[index];
+        line = convo.dialogueList[index];
 
-        var text = dialogue.text;
+        formattedText = line.text;
         if (board != null) {
-            text = text.Replace("{cycle0}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(0)]);
-            text = text.Replace("{cycle1}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(1)]);
-            text = text.Replace("{cycle2}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(2)]);
-            text = text.Replace("{spellcast}", board.inputScript.Cast.ToString());
+            formattedText = formattedText.Replace("{cycle0}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(0)]);
+            formattedText = formattedText.Replace("{cycle1}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(1)]);
+            formattedText = formattedText.Replace("{cycle2}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(2)]);
+            formattedText = formattedText.Replace("{spellcast}", board.inputScript.Cast.ToString());
         }
-        dialogueText.text = text;
 
-        leftSpeaker.SetSpeaker(dialogue.leftSpeaker, !dialogue.rightFocused);
-        rightSpeaker.SetSpeaker(dialogue.rightSpeaker, dialogue.rightFocused);        
+        leftSpeaker.SetSpeaker(line.leftSpeaker, !line.rightFocused);
+        rightSpeaker.SetSpeaker(line.rightSpeaker, line.rightFocused);
+
+        StartCoroutine(TypeText());
+    }
+
+    [Tooltip("Typing speed, characters per second")]
+    [SerializeField] float typeSpeed = 40;
+    private bool typing = false;
+    IEnumerator TypeText()
+    {
+        float t = 0;
+        int charIndex = 0;
+        typing = true;
+
+        // While typing hasn't been set to false and still text to write: show substring of typed chars
+        while (typing && charIndex < line.text.Length)
+        {
+
+            t += Time.deltaTime*typeSpeed;
+            charIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, line.text.Length);
+
+            textLabel.text = line.text.Substring(0, charIndex);
+
+            yield return null;
+        }
+
+        typing = false;
+        textLabel.text = line.text;
     }
 
     public void SetBoard(GameBoard board)
