@@ -40,6 +40,7 @@ public class LevelLister : MonoBehaviour
 
     [SerializeField] private AudioClip moveSFX;
     [SerializeField] private AudioClip selectSFX;
+    [SerializeField] private AudioClip errorSFX;
 
     // Start is called before the first frame update
     void Start()
@@ -84,7 +85,13 @@ public class LevelLister : MonoBehaviour
             // cast - open selected level
             if (Input.GetKeyDown(inputScript.Cast))
             {
-                Storage.level = levelsList[selection];
+                if (!levelsList[selection].RequirementsMet()) 
+                {
+                    SoundManager.Instance.PlaySound(errorSFX);
+                    return;
+                }
+                
+                Storage.level = levelsList[selection]; 
                 Storage.gamemode = Storage.GameMode.Solo;
                 convoHandler.StartLevel(levelsList[selection]);
                 focused = false;
@@ -114,24 +121,25 @@ public class LevelLister : MonoBehaviour
 
                 bool cleared = PlayerPrefs.GetInt(level.GetInstanceID()+"_Cleared", 0) == 1;
 
-                if (i == selection)
-                {
-                    newText += " <color=#FFFFFF>";
-                }
+                if (i == selection && level.RequirementsMet()) newText += " <color=#FFFFFF>";
+
+                else if (!level.RequirementsMet()) newText += "<color=#015706>";
+
+                else newText += "<color=#00ff10>";
+
                 newText += level.levelName;
-                if (i == selection)
-                {
-                    newText += " <</color>";
-                }
+
+                if (i == selection) newText += " <";
+                newText += " </color>";
 
                 // clear check
                 if (cleared)
                 {
-                    newText += "<color=#00ffdf> X</color=#00ffdf>";
+                    newText += "<color=#00ffdf> X</color>";
                 }
                 else
                 {
-                    newText += "<color=#000000> X</color=#000000>";
+                    newText += "<color=#000000> X</color>";
                 }
 
                 newText += "\n";

@@ -33,11 +33,21 @@ public class Level : ScriptableObject {
     /** List of additional objectives that must be met to clear the stage **/
     [SerializeField] public List<Objective> objectives;
 
+    /** The level that needs to be beaten before this level is unlocked. 
+    could be expanded in the future to include things like high score requirements **/
+    [SerializeField] public Level levelRequirement; 
+
     // Win on timer 0
     public bool survivalWin = false;
 
     // Battle music
     public AudioClip battleMusic;
+
+    public bool RequirementsMet()
+    {
+        if (levelRequirement != null) return PlayerPrefs.GetInt(levelRequirement.GetInstanceID()+"_Cleared", 0) == 1;
+        else return true;
+    }
 }
 
 #if (UNITY_EDITOR)
