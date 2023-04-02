@@ -40,6 +40,7 @@ public class LevelLister : MonoBehaviour
 
     [SerializeField] private AudioClip moveSFX;
     [SerializeField] private AudioClip selectSFX;
+    [SerializeField] private AudioClip errorSFX;
 
     // Start is called before the first frame update
     void Start()
@@ -84,7 +85,13 @@ public class LevelLister : MonoBehaviour
             // cast - open selected level
             if (Input.GetKeyDown(inputScript.Cast))
             {
-                Storage.level = levelsList[selection];
+                if (!levelsList[selection].RequirementsMet()) 
+                {
+                    SoundManager.Instance.PlaySound(errorSFX);
+                    return;
+                }
+                
+                Storage.level = levelsList[selection]; 
                 Storage.gamemode = Storage.GameMode.Solo;
                 convoHandler.StartLevel(levelsList[selection]);
                 focused = false;
