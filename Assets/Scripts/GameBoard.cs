@@ -505,7 +505,7 @@ public class GameBoard : MonoBehaviour
         bool tileFell = true;
         // Keep looping until none of the piece's tiles fall
         // (No other tiles need to be checked as tiles underneath them won't move, only tiles above)
-        PlaySFX("place");
+        if (!postGame) PlaySFX("place");
         while (tileFell) {
             tileFell = false;
             
