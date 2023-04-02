@@ -50,6 +50,9 @@ public class ConvoHandler : MonoBehaviour
     /** Turns on and off the tutorial mask in the ManaCycle scene. **/
     [SerializeField] private TutorialDimMask tutorialDimMask;
 
+    /** If the current cutscene is a mid-level conversation. */
+    private bool isMidLevelConvo;
+
     // Update is called once per frame
     void Update()
     {
@@ -64,14 +67,9 @@ public class ConvoHandler : MonoBehaviour
                 }
                 else{
                     // if typing, set typing to false which will cause the coroutine to finish the current line on next update
-                    if (typing) 
-                    {
-                        typing = false;
-                    } 
+                    if (typing) typing = false;
                     // otherwise, show next line
-                    else {
-                        DisplayConvoLine();
-                    }
+                    else DisplayConvoLine();
                 }
             }
         }
@@ -101,6 +99,7 @@ public class ConvoHandler : MonoBehaviour
 
         var midLevelConvo = convo as MidLevelConversation;
         if (midLevelConvo != null && tutorialDimMask != null) {
+            isMidLevelConvo = true;
             tutorialDimMask.Show();
             tutorialDimMask.MaskTarget(midLevelConvo.tutorialMaskID);
         }
@@ -177,7 +176,12 @@ public class ConvoHandler : MonoBehaviour
         leftSpeaker.SetSpeaker(line.leftSpeaker, !line.rightFocused);
         rightSpeaker.SetSpeaker(line.rightSpeaker, line.rightFocused);
 
-        StartCoroutine(TypeText());
+        // no type effect if midlevelconvo
+        if (isMidLevelConvo) {
+            textLabel.text = line.text;
+        } else {
+            StartCoroutine(TypeText());
+        }
     }
 
     [Tooltip("Typing speed, characters per second")]
@@ -193,7 +197,7 @@ public class ConvoHandler : MonoBehaviour
         while (typing && charIndex < line.text.Length)
         {
 
-            t += Time.deltaTime*typeSpeed;
+            t += Time.unscaledDeltaTime*typeSpeed;
             charIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, line.text.Length);
 
             textLabel.text = line.text.Substring(0, charIndex);
