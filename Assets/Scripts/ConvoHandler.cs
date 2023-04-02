@@ -63,7 +63,6 @@ public class ConvoHandler : MonoBehaviour
                 else{
                     DisplayConvoLine();
                 }
-
             }
         }
 
