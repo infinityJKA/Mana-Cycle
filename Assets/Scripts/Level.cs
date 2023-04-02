@@ -28,6 +28,8 @@ public class Level : ScriptableObject {
     /** Falling delay of pieces in this level. **/
     [SerializeField] public float fallTime = 0.8f;
 
+    [SerializeField] public Battler battler;
+
     /** List of additional objectives that must be met to clear the stage **/
     [SerializeField] public List<Objective> objectives;
 
