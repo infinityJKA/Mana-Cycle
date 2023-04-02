@@ -209,6 +209,11 @@ public class GameBoard : MonoBehaviour
                 playerControlled = Storage.isPlayer2;
             }
         }
+        else
+        {
+            // if in solo mode, use battler serialized in level asset
+            if (Storage.gamemode == Storage.GameMode.Solo) battler = level.battler;
+        }
         portrait.sprite = battler.sprite;
         
         cyclePosition = 0;
