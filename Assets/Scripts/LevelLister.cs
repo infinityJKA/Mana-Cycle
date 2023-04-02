@@ -114,24 +114,25 @@ public class LevelLister : MonoBehaviour
 
                 bool cleared = PlayerPrefs.GetInt(level.GetInstanceID()+"_Cleared", 0) == 1;
 
-                if (i == selection)
-                {
-                    newText += " <color=#FFFFFF>";
-                }
+                if (i == selection && level.RequirementsMet()) newText += " <color=#FFFFFF>";
+
+                else if (!level.RequirementsMet()) newText += "<color=#015706>";
+
+                else newText += "<color=#00ff10>";
+
                 newText += level.levelName;
-                if (i == selection)
-                {
-                    newText += " <</color>";
-                }
+
+                if (i == selection) newText += " <";
+                newText += " </color>";
 
                 // clear check
                 if (cleared)
                 {
-                    newText += "<color=#00ffdf> X</color=#00ffdf>";
+                    newText += "<color=#00ffdf> X</color>";
                 }
                 else
                 {
-                    newText += "<color=#000000> X</color=#000000>";
+                    newText += "<color=#000000> X</color>";
                 }
 
                 newText += "\n";
