@@ -144,7 +144,7 @@ public class GameBoard : MonoBehaviour
     {
         // if in solo mode, add solo additional inputs
         if (Storage.gamemode == Storage.GameMode.Solo) inputsList = new InputScript[]{inputScript,soloInputScript};
-        else inputsList = new InputScript[]{inputScript,soloInputScript};
+        else inputsList = new InputScript[]{inputScript};
 
         // get sfx as regular dict
         serializedSoundDict = sfxObject.GetComponent<SFXDict>().sfxDictionary;
