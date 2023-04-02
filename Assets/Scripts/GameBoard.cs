@@ -132,6 +132,8 @@ public class GameBoard : MonoBehaviour
     private SFXDict.sfxDict serializedSoundDict;
     private Dictionary<string,AudioClip> sfx;
 
+    public AudioClip multiBattleMusic;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -162,6 +164,7 @@ public class GameBoard : MonoBehaviour
             // hp number is used as score, starts as 0
             maxHp = level.scoreGoal;
             hp = 0;
+            SoundManager.Instance.musicSource.clip = level.battleMusic;
             if (enemyBoard != null) enemyBoard.gameObject.SetActive(false);
             if (objectiveList != null) objectiveList.gameObject.SetActive(true);
 
@@ -170,6 +173,7 @@ public class GameBoard : MonoBehaviour
             // (Later, this may depend on the character/mode)
             maxHp = 2000;
             hp = maxHp;
+            SoundManager.Instance.musicSource.clip = multiBattleMusic;
             if (enemyBoard != null) enemyBoard.gameObject.SetActive(true);
             if (objectiveList != null) objectiveList.gameObject.SetActive(false);
         }

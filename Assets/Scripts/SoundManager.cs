@@ -6,6 +6,9 @@ public class SoundManager : MonoBehaviour
 {   
     public static SoundManager Instance;
     public AudioSource musicSource, effectSource;
+    
+    // mainMenuMusic used when returning back to the menu from a match
+    public AudioClip mainMenuMusic;
 
     void Awake()
     {
