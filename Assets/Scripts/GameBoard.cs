@@ -250,10 +250,12 @@ public class GameBoard : MonoBehaviour
 
     public void MoveLeft(){
         MovePiece(-1, 0);
+        PlaySFX("move", pitch : Random.Range(0.9f,1.1f));
     }
 
     public void MoveRight(){
         MovePiece(1, 0);
+        PlaySFX("move", pitch : Random.Range(0.9f,1.1f));
     }
 
     public void Spellcast(){
