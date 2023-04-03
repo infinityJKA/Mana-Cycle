@@ -9,4 +9,6 @@ public class Battler : ScriptableObject {
     [SerializeField] public Sprite sprite;
 
     [SerializeField] public PieceRng pieceRng;
+
+    [SerializeField] public AudioClip voiceSFX;
 }
