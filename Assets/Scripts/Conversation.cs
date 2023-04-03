@@ -24,7 +24,7 @@ public class ConversationLine {
     public bool rightFocused;
     public ConvoAnim leftAnim;
     public ConvoAnim rightAnim;
-    [Tooltip("Toggles the typing effect.")]
+    // Background - Null for no change from last line
     public Sprite background;
 }
 
