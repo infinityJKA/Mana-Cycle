@@ -206,16 +206,17 @@ public class ConvoHandler : MonoBehaviour
             charIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, line.text.Length);
 
 
-            AudioClip speakerSFX;
-            if (line.rightFocused) speakerSFX = line.rightSpeaker.voiceSFX;
-            else speakerSFX = line.leftSpeaker.voiceSFX;
+            AudioClip speakerSFX = null;
+            // If there is no speaker, don't use a speaker sound. otherwise, use speaker sfx from battler
+            if (line.rightFocused && line.rightSpeaker != null) speakerSFX = line.rightSpeaker.voiceSFX;
+            else if (line.leftSpeaker != null) speakerSFX = line.leftSpeaker.voiceSFX;
+
             // if char index and previous char index are different, we just drew a new char. play type sound
             // only play sound every other char because damn thats a lot of sounds
-            if(charIndex != prevCharIndex && charIndex%2 == 0) SoundManager.Instance.PlaySound(speakerSFX, pitch : Random.Range(1.4f,1.6f));
+            if(speakerSFX != null && charIndex != prevCharIndex && charIndex%2 == 0) SoundManager.Instance.PlaySound(speakerSFX, pitch : Random.Range(1.4f,1.6f));
 
             textLabel.text = line.text.Substring(0, charIndex);
             
-
             yield return null;
         }
 
