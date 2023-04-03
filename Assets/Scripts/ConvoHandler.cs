@@ -175,6 +175,7 @@ public class ConvoHandler : MonoBehaviour
             formattedText = formattedText.Replace("{cycle2}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(2)]);
             formattedText = formattedText.Replace("{spellcast}", board.inputScript.Cast.ToString());
         }
+        Debug.Log(formattedText);
 
         leftSpeaker.SetSpeaker(line.leftSpeaker, !line.rightFocused);
         rightSpeaker.SetSpeaker(line.rightSpeaker, line.rightFocused);
@@ -198,6 +199,7 @@ public class ConvoHandler : MonoBehaviour
         typing = true;
 
         // While typing hasn't been set to false and still text to write: show substring of typed chars
+        Debug.Log(formattedText);
         while (typing && charIndex < formattedText.Length)
         {
             prevCharIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, formattedText.Length);
@@ -221,7 +223,7 @@ public class ConvoHandler : MonoBehaviour
         }
 
         typing = false;
-        textLabel.text = line.text;
+        textLabel.text = formattedText;
     }
 
     public void SetBoard(GameBoard board)
