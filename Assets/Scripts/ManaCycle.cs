@@ -30,6 +30,8 @@ public class ManaCycle : MonoBehaviour
     // Amount of unique colors in the cycle
     public static int cycleUniqueColors = 5;
 
+    public bool usingSprites;
+
     public void InitBoards()
     {
         // Check if player 1 is in single player. if so, use its cycle length variables
