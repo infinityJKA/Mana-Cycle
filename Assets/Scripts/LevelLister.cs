@@ -25,10 +25,11 @@ public class LevelLister : MonoBehaviour
     [SerializeField] private InputScript[] inputScripts;
     /** y offset when scrolling (?) */
     [SerializeField] private float yOffset;
+    [SerializeField] private float scrollAmount;
     /** Index of current level selected */
     private int selection;
     /** Descent between lines in the level list */
-    private float decLine;
+    // private float decLine;
 
     /** current targeted scroll position */
     private Vector2 targetPosition;
@@ -47,7 +48,7 @@ public class LevelLister : MonoBehaviour
     {
         focused = true;
         listText = listObject.GetComponent<TMPro.TextMeshProUGUI>();
-        decLine = (listText.font.faceInfo.descentLine);
+        // decLine = (listText.font.faceInfo.descentLine);
         listTransform = listObject.GetComponent<RectTransform>();
 
         selection = GetNextLevel();
@@ -66,14 +67,15 @@ public class LevelLister : MonoBehaviour
             {
                 selection--;
                 RefreshList();
-                SoundManager.Instance.PlaySound(moveSFX, pitch : 1.1f);
+                // commented out because these cause errors now????? will look at later
+                // SoundManager.Instance.PlaySound(moveSFX, pitch : 1.1f);
             }
 
             if (Input.GetKeyDown(inputScript.Down))
             {
                 selection++;
                 RefreshList();
-                SoundManager.Instance.PlaySound(moveSFX);
+                // SoundManager.Instance.PlaySound(moveSFX);
             }
 
             // pause - go back to main menu
@@ -167,7 +169,7 @@ public class LevelLister : MonoBehaviour
         
 
         // update the targeted scroll position
-        targetPosition = new Vector2(listTransform.position.x, selection*(50+decLine) + yOffset);
+        targetPosition = new Vector2(listTransform.position.x, selection*(scrollAmount)*Screen.height + yOffset*Screen.height);
     }
 
     public void SetFocus(bool f){
