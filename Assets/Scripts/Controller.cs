@@ -92,12 +92,13 @@ public class Controller : MonoBehaviour
                 board.setFallTimeMult(1f);
 
                 // random number to choose when to cast
-                if (FindLowestCols()[0] < GameBoard.height/2){
+                if (board.getColHeight(FindLowestCols()[0]) > GameBoard.height/2){
                     move = 0;
                 }
                 else{
-                    move = (int) UnityEngine.Random.Range(0f, 4f);
+                    move = (int) UnityEngine.Random.Range(0f, 7f);
                 }
+
                
 
                 if (move == 0){

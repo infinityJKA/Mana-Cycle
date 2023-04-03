@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Random=UnityEngine.Random;
 
 public class ConvoHandler : MonoBehaviour
 {
@@ -52,6 +53,8 @@ public class ConvoHandler : MonoBehaviour
 
     /** If the current cutscene is a mid-level conversation. */
     private bool isMidLevelConvo;
+
+    // [SerializeField] private AudioClip typeSound;
 
     // Update is called once per frame
     void Update()
@@ -190,17 +193,28 @@ public class ConvoHandler : MonoBehaviour
     IEnumerator TypeText()
     {
         float t = 0;
+        int prevCharIndex;
         int charIndex = 0;
         typing = true;
 
         // While typing hasn't been set to false and still text to write: show substring of typed chars
         while (typing && charIndex < line.text.Length)
         {
+            prevCharIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, line.text.Length);
 
             t += Time.unscaledDeltaTime*typeSpeed;
             charIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, line.text.Length);
 
+
+            AudioClip speakerSFX;
+            if (line.rightFocused) speakerSFX = line.rightSpeaker.voiceSFX;
+            else speakerSFX = line.leftSpeaker.voiceSFX;
+            // if char index and previous char index are different, we just drew a new char. play type sound
+            // only play sound every other char because damn thats a lot of sounds
+            if(charIndex != prevCharIndex && charIndex%2 == 0) SoundManager.Instance.PlaySound(speakerSFX, pitch : Random.Range(1.4f,1.6f));
+
             textLabel.text = line.text.Substring(0, charIndex);
+            
 
             yield return null;
         }
