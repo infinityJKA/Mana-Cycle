@@ -82,8 +82,8 @@ public class PostGameMenu : MonoBehaviour
                         MenuUI.SetActive(true);
                         Time.timeScale = 0f;
                         // when in solo mode, disable css button
-                        MenuItems[2].SetActive(false);
-                        MenuItems.RemoveAt(2);
+                        MenuItems[1].SetActive(false);
+                        MenuItems.RemoveAt(1);
 
                         rematchTextGUI.text = "Retry";
                     }
@@ -93,8 +93,8 @@ public class PostGameMenu : MonoBehaviour
                     MenuUI.SetActive(true);
                     Time.timeScale = 0f;
                     // when in multi, disable solo button
-                    MenuItems[3].SetActive(false);
-                    MenuItems.RemoveAt(3);
+                    MenuItems[2].SetActive(false);
+                    MenuItems.RemoveAt(2);
 
                     rematchTextGUI.text = "Rematch";
                 }
