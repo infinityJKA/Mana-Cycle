@@ -910,12 +910,13 @@ public class GameBoard : MonoBehaviour
 
     public void Defeat() 
     {
+        if (defeated || won) return;
+
         postGame = true;
         defeated = true;
         if (timer != null) timer.StopTimer();
 
         pieceBoard.SetActive(false);
-
         winTextObj.SetActive(true);
         winText.text = "LOSE";
 
@@ -930,14 +931,17 @@ public class GameBoard : MonoBehaviour
 
     public void Win()
     {
-        won = true;
+        if (defeated || won) return;
+
         postGame = true;
+        won = true;
         if (timer != null) timer.StopTimer();
 
         winTextObj.SetActive(true);
         winText.text = "WIN";
-        winMenu.AppearWithDelay(2d, this);
 
+        winMenu.AppearWithDelay(2d, this);
+        
         StartCoroutine(CheckMidConvoAfterDelay());
     }
 
