@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class PiecePreview : MonoBehaviour
 {
+    [SerializeField] private Transform previewListTransform;
     // Next piece box where the next piece is stored above this piece preview
-    [SerializeField] private Transform nextPieceBox;
+    [SerializeField] private Transform nextPieceTransform;
     // The board this piece preview is for
     [SerializeField] private GameBoard board;
     // Piece prefab, containing an object with Tile gameobject children
@@ -18,8 +19,8 @@ public class PiecePreview : MonoBehaviour
         this.board = board;
 
         // populate the preview list & next piece box; add five pieces to list and one to next piece
-        CreateNewPiece(nextPieceBox);
-        for (int i=0; i<previewLength; i++) CreateNewPiece(transform);
+        CreateNewPiece(nextPieceTransform);
+        for (int i=0; i<previewLength; i++) CreateNewPiece(previewListTransform);
     }
 
     // Spawns the next piece onto the game board and advances the list.
@@ -27,16 +28,17 @@ public class PiecePreview : MonoBehaviour
     public Piece SpawnNextPiece()
     {
         // Spawn the next piece on the baord and move it to the spawn location
-        Piece nextPiece = nextPieceBox.GetChild(0).GetComponent<Piece>();
+        Piece nextPiece = nextPieceTransform.GetChild(0).GetComponent<Piece>();
         // Debug.Log("The next piece is " + nextPiece);
         nextPiece.transform.SetParent(board.pieceBoard.transform, false);
         nextPiece.MoveTo(3,1);
 
         // Set the next next piece
-        transform.GetChild(0).SetParent(nextPieceBox, false);
+        previewListTransform.GetChild(0).SetParent(nextPieceTransform, false);
+        nextPieceTransform.GetChild(0).transform.localPosition = new Vector3(0, 0, 0);
 
         // Add a new piece to preview list
-        CreateNewPiece(transform);
+        CreateNewPiece(previewListTransform);
 
         return nextPiece;
     }
@@ -45,6 +47,7 @@ public class PiecePreview : MonoBehaviour
     {
         // Add a new piece to the queue
         Piece newPiece = Instantiate(piecePrefab, Vector3.zero, Quaternion.identity, parent);
+        newPiece.transform.localPosition = new Vector3(0, 0, 0);
 
         // Randomize the piece's tiles' colors
         newPiece.Randomize(board);
