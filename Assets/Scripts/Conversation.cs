@@ -55,7 +55,7 @@ public class ConversationLineDrawer : PropertyDrawer
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        return 100;
+        return 104;
     }
 
     // Draw the property inside the given rect
@@ -76,12 +76,12 @@ public class ConversationLineDrawer : PropertyDrawer
         // var instant = property.FindPropertyRelative("instant");
         var background = property.FindPropertyRelative("background");
 
-        Rect drawRect = new Rect(position.x, position.y, position.width, 64);
+        Rect drawRect = new Rect(position.x, position.y, position.width, 68);
 
         EditorGUI.PropertyField(drawRect, text, GUIContent.none);
         // dialogue.stringValue = EditorGUI.TextField(position, dialogue.stringValue);
 
-        drawRect.y += 68;
+        drawRect.y += 72;
         drawRect.height /= 4;
         drawRect.width /= 3f;
         var divideWidth = drawRect.width;
