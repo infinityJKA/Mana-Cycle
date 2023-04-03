@@ -743,6 +743,7 @@ public class GameBoard : MonoBehaviour
                 cyclePosition = 0;
                 cycleLevel++;
                 cycleLevelDisplay.Set(cycleLevel);
+                PlaySFX("cycle");
             }
             PointerReposition();
 
