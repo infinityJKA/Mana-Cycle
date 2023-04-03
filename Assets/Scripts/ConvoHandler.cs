@@ -210,8 +210,8 @@ public class ConvoHandler : MonoBehaviour
             if (line.rightFocused) speakerSFX = line.rightSpeaker.voiceSFX;
             else speakerSFX = line.leftSpeaker.voiceSFX;
             // if char index and previous char index are different, we just drew a new char. play type sound
-            // only play sound every 3rd char because damn thats a lot of sounds
-            if(charIndex != prevCharIndex && charIndex%3 == 0) SoundManager.Instance.PlaySound(speakerSFX, pitch : Random.Range(1.4f,1.6f));
+            // only play sound every other char because damn thats a lot of sounds
+            if(charIndex != prevCharIndex && charIndex%2 == 0) SoundManager.Instance.PlaySound(speakerSFX, pitch : Random.Range(1.4f,1.6f));
 
             textLabel.text = line.text.Substring(0, charIndex);
             
