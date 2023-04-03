@@ -15,7 +15,7 @@ public class ConvoHandler : MonoBehaviour
     private Conversation convo;
 
     /** inputs for controlling the conversation */
-    [SerializeField] private InputScript[] inputScripts;
+    [SerializeField] private InputScript inputScript;
 
     /** object containing the conversation UI */
     [SerializeField] private GameObject convoUI;
@@ -61,19 +61,25 @@ public class ConvoHandler : MonoBehaviour
     {
         if (!convoUI.activeSelf) return;
 
-        foreach (InputScript inputScript in inputScripts){
-            if (Input.GetKeyDown(inputScript.Cast) && !Storage.levelSelectedThisInput)
-            {
+        if (Input.GetKeyDown(inputScript.Cast) && !Storage.levelSelectedThisInput)
+        {
+            // if typing, set typing to false which will cause the coroutine to finish the current line on next update
+            if (typing) {
+                typing = false;
+            }
+
+            // otherwise, display next line & finish any animation that may be happening
+            else {
                 index++;
+                leftSpeaker.animating = false;
+                rightSpeaker.animating = false;
+                // end convo when past the last index; otherwise, next line
                 if (index >= convo.dialogueList.Length){
                     EndConvo();
+                } else {
+                    DisplayConvoLine();
                 }
-                else{
-                    // if typing, set typing to false which will cause the coroutine to finish the current line on next update
-                    if (typing) typing = false;
-                    // otherwise, show next line
-                    else DisplayConvoLine();
-                }
+                
             }
         }
 
@@ -111,7 +117,7 @@ public class ConvoHandler : MonoBehaviour
     }
 
     public void StartConvo(Conversation convo, GameBoard board) {
-        SetBoard(board);
+        this.board = board;
         StartConvo(convo);
     }
 
@@ -175,14 +181,16 @@ public class ConvoHandler : MonoBehaviour
             formattedText = formattedText.Replace("{cycle2}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(2)]);
             formattedText = formattedText.Replace("{spellcast}", board.inputScript.Cast.ToString());
         }
-        Debug.Log(formattedText);
 
         leftSpeaker.SetSpeaker(line.leftSpeaker, !line.rightFocused);
         rightSpeaker.SetSpeaker(line.rightSpeaker, line.rightFocused);
 
+        leftSpeaker.StartAnim(line.leftAnim);
+        rightSpeaker.StartAnim(line.rightAnim);
+
         // no type effect if midlevelconvo
         if (isMidLevelConvo) {
-            textLabel.text = line.text;
+            textLabel.text = formattedText;
         } else {
             StartCoroutine(TypeText());
         }
@@ -199,7 +207,6 @@ public class ConvoHandler : MonoBehaviour
         typing = true;
 
         // While typing hasn't been set to false and still text to write: show substring of typed chars
-        Debug.Log(formattedText);
         while (typing && charIndex < formattedText.Length)
         {
             prevCharIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, formattedText.Length);
@@ -224,10 +231,5 @@ public class ConvoHandler : MonoBehaviour
 
         typing = false;
         textLabel.text = formattedText;
-    }
-
-    public void SetBoard(GameBoard board)
-    {
-        this.board = board;
     }
 }
