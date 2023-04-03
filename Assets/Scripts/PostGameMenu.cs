@@ -19,8 +19,10 @@ public class PostGameMenu : MonoBehaviour
     private GameBoard board;
 
     // if this post game menu has been displayed
-    bool displayed = false;
+    private bool displayed = false;
 
+    // Rematch button - text changed to "retry" in solo mode
+    public TMPro.TextMeshProUGUI rematchTextGUI;
 
     // Start is called before the first frame update
     void Start()
@@ -82,6 +84,8 @@ public class PostGameMenu : MonoBehaviour
                         // when in solo mode, disable css button
                         MenuItems[2].SetActive(false);
                         MenuItems.RemoveAt(2);
+
+                        rematchTextGUI.text = "Retry";
                     }
                 }
                 else
@@ -91,6 +95,8 @@ public class PostGameMenu : MonoBehaviour
                     // when in multi, disable solo button
                     MenuItems[3].SetActive(false);
                     MenuItems.RemoveAt(3);
+
+                    rematchTextGUI.text = "Rematch";
                 }
 
                 EventSystem.current.SetSelectedGameObject(null);
