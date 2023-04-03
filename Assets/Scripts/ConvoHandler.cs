@@ -198,12 +198,12 @@ public class ConvoHandler : MonoBehaviour
         typing = true;
 
         // While typing hasn't been set to false and still text to write: show substring of typed chars
-        while (typing && charIndex < line.text.Length)
+        while (typing && charIndex < formattedText.Length)
         {
-            prevCharIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, line.text.Length);
+            prevCharIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, formattedText.Length);
 
             t += Time.unscaledDeltaTime*typeSpeed;
-            charIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, line.text.Length);
+            charIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, formattedText.Length);
 
 
             AudioClip speakerSFX = null;
@@ -215,7 +215,7 @@ public class ConvoHandler : MonoBehaviour
             // only play sound every other char because damn thats a lot of sounds
             if(speakerSFX != null && charIndex != prevCharIndex && charIndex%2 == 0) SoundManager.Instance.PlaySound(speakerSFX, pitch : Random.Range(1.4f,1.6f));
 
-            textLabel.text = line.text.Substring(0, charIndex);
+            textLabel.text = formattedText.Substring(0, charIndex);
             
             yield return null;
         }
