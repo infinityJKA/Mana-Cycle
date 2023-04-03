@@ -25,7 +25,7 @@ public class ConversationLine {
     public ConvoAnim leftAnim;
     public ConvoAnim rightAnim;
     [Tooltip("Toggles the typing effect.")]
-    public bool instant;
+    public Sprite background;
 }
 
 [Serializable]
@@ -73,7 +73,8 @@ public class ConversationLineDrawer : PropertyDrawer
         var rightFocused = property.FindPropertyRelative("rightFocused");
         var leftAnim = property.FindPropertyRelative("leftAnim");
         var rightAnim = property.FindPropertyRelative("rightAnim");
-        var instant = property.FindPropertyRelative("instant");
+        // var instant = property.FindPropertyRelative("instant");
+        var background = property.FindPropertyRelative("background");
 
         Rect drawRect = new Rect(position.x, position.y, position.width, 64);
 
@@ -99,7 +100,8 @@ public class ConversationLineDrawer : PropertyDrawer
         drawRect.x += divideWidth;
         EditorGUI.PropertyField(drawRect, rightAnim, GUIContent.none);
         drawRect.x += divideWidth;
-        instant.boolValue = EditorGUI.ToggleLeft(drawRect, "Instant Text", instant.boolValue);
+        EditorGUI.PropertyField(drawRect, background, GUIContent.none);
+        // instant.boolValue = EditorGUI.ToggleLeft(drawRect, "Instant Text", instant.boolValue);
 
         EditorGUI.EndProperty();
     }
