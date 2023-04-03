@@ -122,7 +122,7 @@ public class Piece : MonoBehaviour
 
     public void UpdatePosition()
     {
-        if (this != null) transform.localPosition = new Vector3(this.col - 4, -this.row + 7, 0);
+        if (this != null) transform.localPosition = new Vector3(this.col - GameBoard.width/2f, -this.row + GameBoard.physicalHeight/2f + GameBoard.height - GameBoard.physicalHeight, 0);
     }
         
     // Rotate this piece to the right about the center.

@@ -54,6 +54,9 @@ public class GameBoard : MonoBehaviour
     /** Extra time added to fallTime when piece is about to be placed. (Not affected by fallTimeMult) */
     [SerializeField] private float slideTime = 0.4f;
 
+    /** Last time a piece was placed; new piece will not be placed within same as slideTime */
+    private float lastPlaceTime;
+
     /** Win/lose text that appears over the board */
     [SerializeField] private GameObject winTextObj;
     private TMPro.TextMeshProUGUI winText;
@@ -71,7 +74,10 @@ public class GameBoard : MonoBehaviour
 
     /** Dimensions of the board */
     public static readonly int width = 8;
-    public static readonly int height = 14;
+    public static readonly int height = 18;
+    // Visual size of the board; excludes top buffer rows incase piece is somehow moved up there; 
+    // and starting position is probably there too
+    public static readonly int physicalHeight = 14;
 
     /** The last time that the current piece fell down a tile. */
     private float previousFallTime;
@@ -408,7 +414,7 @@ public class GameBoard : MonoBehaviour
                         // true if time is up for the extra slide buffer
                         bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
                         // if exxtended time is up and still can't move down, place
-                        if (pastExtraSlide && !movedDown)
+                        if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
                         {
                             // Place the piece
                             PlacePiece();
@@ -496,6 +502,7 @@ public class GameBoard : MonoBehaviour
     // Place a piece on the grid, moving its Tiles into the board array and removing the Piece.
     public void PlacePiece()
     {
+        lastPlaceTime = Time.time;
         piece.PlaceTilesOnBoard(ref board);
 
         // Move the displayed tiles into the board parent
@@ -848,7 +855,10 @@ public class GameBoard : MonoBehaviour
                     board[rFall-1, c] = board[r, c];
                     // I am subtracting half of width and height again here, because it only works tht way,
                     // i don't know enough about transforms to know why. bandaid solution moment.
-                    board[rFall-1, c].transform.localPosition = new Vector3(c - 3.5f, -rFall + 1 + 6.5f, 0);
+                    board[rFall-1, c].transform.localPosition = new Vector3(
+                        c - GameBoard.width/2f + 0.5f, 
+                        -rFall + 1 + GameBoard.physicalHeight/2f - 0.5f + GameBoard.height - GameBoard.physicalHeight, 
+                    0);
 
                     board[rFall-1, c].AnimateMovement(
                         new Vector2(0, (rFall-1)-r),
@@ -941,7 +951,7 @@ public class GameBoard : MonoBehaviour
         winText.text = "WIN";
 
         winMenu.AppearWithDelay(2d, this);
-        
+
         StartCoroutine(CheckMidConvoAfterDelay());
     }
 

@@ -31,7 +31,7 @@ public class PiecePreview : MonoBehaviour
         Piece nextPiece = nextPieceTransform.GetChild(0).GetComponent<Piece>();
         // Debug.Log("The next piece is " + nextPiece);
         nextPiece.transform.SetParent(board.pieceBoard.transform, false);
-        nextPiece.MoveTo(3,1);
+        nextPiece.MoveTo(3,4);
 
         // Set the next next piece
         previewListTransform.GetChild(0).SetParent(nextPieceTransform, false);
