@@ -188,7 +188,7 @@ public class ConvoHandler : MonoBehaviour
             formattedText = formattedText.Replace("{cycle0}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(0)]);
             formattedText = formattedText.Replace("{cycle1}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(1)]);
             formattedText = formattedText.Replace("{cycle2}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(2)]);
-            formattedText = formattedText.Replace("{spellcast}", board.inputScript.Cast.ToString());
+            formattedText = formattedText.Replace("{spellcast}", board.inputScripts[0].Cast.ToString());
         }
 
         leftSpeaker.SetSpeaker(line.leftSpeaker, !line.rightFocused);

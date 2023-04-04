@@ -8,8 +8,8 @@ public class Controller : MonoBehaviour
 {
     // the board being controlled by this script
     [SerializeField] private GameBoard board;
-    [SerializeField] private InputScript inputs;
-    [SerializeField] private InputScript soloInputs;
+    [SerializeField] private InputScript[] inputScripts;
+    [SerializeField] private InputScript[] soloInputScripts;
 
     // vars for AI
     private int move;
@@ -27,7 +27,7 @@ public class Controller : MonoBehaviour
     void Start()
     {
         // if in solo mode, use solo additional inputs
-        if (Storage.gamemode == Storage.GameMode.Solo) inputs = soloInputs;
+        if (Storage.gamemode == Storage.GameMode.Solo) inputScripts = soloInputScripts;
         
     }
 
@@ -40,27 +40,29 @@ public class Controller : MonoBehaviour
         if (board.isPaused() || board.isPostGame() || board.convoPaused) return;
 
         if (board.isPlayerControlled() && !board.isDefeated()){
-            if (Input.GetKeyDown(inputs.RotateRight)){
-                board.RotateLeft();
-            }
+            foreach (InputScript inputScript in inputScripts) {
+                if (Input.GetKeyDown(inputScript.RotateRight)){
+                    board.RotateLeft();
+                }
 
-            if (Input.GetKeyDown(inputs.RotateLeft)){
-                // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
-                board.RotateRight();
-            }
+                if (Input.GetKeyDown(inputScript.RotateLeft)){
+                    // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
+                    board.RotateRight();
+                }
 
-            if (Input.GetKeyDown(inputs.Left)){
-                // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
-                board.MoveLeft();
-            }
+                if (Input.GetKeyDown(inputScript.Left)){
+                    // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
+                    board.MoveLeft();
+                }
 
-            if (Input.GetKeyDown(inputs.Right)){
-                // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
-                board.MoveRight();
-            }
+                if (Input.GetKeyDown(inputScript.Right)){
+                    // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
+                    board.MoveRight();
+                }
 
-            if (Input.GetKeyDown(inputs.Cast)){
-                board.Spellcast();
+                if (Input.GetKeyDown(inputScript.Cast)){
+                    board.Spellcast();
+                }
             }
         }
         else{
