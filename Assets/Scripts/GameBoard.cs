@@ -251,12 +251,12 @@ public class GameBoard : MonoBehaviour
         CheckMidLevelConversations();
     }
 
-    // piece movement is all in functions so they can be called by inputScript. this allows easier implementation of AI controls
 
     public void RotateLeft(){
         piece.RotateLeft();
         if(!ValidPlacement()){
             // try nudging left, then right, then up. If none work, undo the rotation
+            // only bump up if row fallen to 3 or less times
             if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
         }
         PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f));
@@ -318,6 +318,12 @@ public class GameBoard : MonoBehaviour
     public void setFallTimeMult(float m){
         this.fallTimeMult = m;
     }
+
+    // The row that this piece last fell to.
+    private int lastRowFall = 0;
+    // The amount of times the piece has fallen to this row. 
+    // If it falls to this row more than 3 times, it will auto-place.
+    private int rowFallCount = 0;
 
     // Update is called once per frame
 
@@ -416,27 +422,45 @@ public class GameBoard : MonoBehaviour
                     // if exxtended time is up and still can't move down, place
                     if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
                     {
-                        // Place the piece
-                        PlacePiece();
-
-                        // Move self damage cycle
-                        DamageCycle();
-
-                        RefreshObjectives();
-
-                        // If postgame, don't spawn a new piece
-                        if (postGame) return;
-
-                        // Spawn a new piece & reset fall delay
-                        SpawnPiece();
-                        previousFallTime = Time.time;
+                        Place();
                     }
                 } else {
+                    // If it did move down, adjust numbers.
+                    // reset to 0 if row fallen to is below the last.
+                    // otherwise, increment
+                    if (piece.GetRow() > lastRowFall) {
+                        lastRowFall = piece.GetRow();
+                        rowFallCount = 0;
+                    } else {
+                        rowFallCount++;
+                        // if row fall count exceeds 3, auto place
+                        if (rowFallCount > 3) {
+                            Place();
+                        }
+                    }
+
                     // if it did move, reset fall time
                     previousFallTime = Time.time;  
                 }
-            }
+            }     
         }
+    }
+
+    private void Place() {
+        // Place the piece
+        PlaceTilesOnBoard();
+
+        // Move self damage cycle
+        DamageCycle();
+
+        RefreshObjectives();
+
+        // If postgame, don't spawn a new piece
+        if (postGame) return;
+
+        // Spawn a new piece & reset fall delay & row
+        SpawnPiece();
+        previousFallTime = Time.time;
     }
 
     // Update the pointer's cycle position.
@@ -460,8 +484,8 @@ public class GameBoard : MonoBehaviour
     {
         pieceSpawned = true;
         piece = piecePreview.SpawnNextPiece();
-
-        
+        lastRowFall = piece.GetRow();
+        rowFallCount = 0;
 
         // If the piece is already in an invalid position, player has topped out
         if (!ValidPlacement()) {
@@ -499,7 +523,7 @@ public class GameBoard : MonoBehaviour
     }
 
     // Place a piece on the grid, moving its Tiles into the board array and removing the Piece.
-    public void PlacePiece()
+    public void PlaceTilesOnBoard()
     {
         lastPlaceTime = Time.time;
         piece.PlaceTilesOnBoard(ref board);
