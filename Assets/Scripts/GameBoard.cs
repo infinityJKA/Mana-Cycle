@@ -151,7 +151,6 @@ public class GameBoard : MonoBehaviour
     {
         // if in solo mode, add solo additional inputs
         if (Storage.gamemode == Storage.GameMode.Solo) inputScripts = soloInputScripts;
-        controlsGraphic.SetInputs(inputScripts[0]);
 
         // get sfx as regular dict
         serializedSoundDict = sfxObject.GetComponent<SFXDict>().sfxDictionary;
@@ -235,8 +234,12 @@ public class GameBoard : MonoBehaviour
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
     public void InitializeCycle(ManaCycle cycle)
     {
+        if (!enabled) return;
+
         cycleInitialized = true;
         this.cycle = cycle;
+
+        controlsGraphic.SetInputs(inputScripts[0]);
 
         piecePreview.Setup(this);
 
