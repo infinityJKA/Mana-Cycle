@@ -164,6 +164,9 @@ public class GameBoard : MonoBehaviour
             singlePlayer = false;
         }
 
+        // don't show controls for player2 if singleplayer and player 2
+        if ((playerSide == 0 || !singlePlayer) && inputScripts.Length > 0 && inputScripts[0] != null) controlsGraphic.SetInputs(inputScripts[0]);
+
         // load level if applicable
         if (Storage.level != null)
         {
@@ -238,8 +241,6 @@ public class GameBoard : MonoBehaviour
 
         cycleInitialized = true;
         this.cycle = cycle;
-
-        controlsGraphic.SetInputs(inputScripts[0]);
 
         piecePreview.Setup(this);
 
