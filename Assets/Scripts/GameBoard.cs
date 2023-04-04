@@ -25,6 +25,9 @@ public class GameBoard : MonoBehaviour
     /** Inputs to use for player 1 in solo mode */
     [SerializeField] public InputScript soloInputScript;
 
+    /** ControlsGraphic that will show the input keys */
+    [SerializeField] public ControlsGraphic controlsGraphic;
+
     /** The board of the enemy of the player/enemy of this board */
     [SerializeField] public GameBoard enemyBoard;
     /** HP Bar game object on this board */
@@ -148,6 +151,7 @@ public class GameBoard : MonoBehaviour
     {
         // if in solo mode, add solo additional inputs
         if (Storage.gamemode == Storage.GameMode.Solo) inputScript = soloInputScript;
+        controlsGraphic.SetInputs(inputScript);
 
         // get sfx as regular dict
         serializedSoundDict = sfxObject.GetComponent<SFXDict>().sfxDictionary;

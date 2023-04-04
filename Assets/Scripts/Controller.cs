@@ -40,11 +40,11 @@ public class Controller : MonoBehaviour
         if (board.isPaused() || board.isPostGame() || board.convoPaused) return;
 
         if (board.isPlayerControlled() && !board.isDefeated()){
-            if (Input.GetKeyDown(inputs.RotateLeft)){
+            if (Input.GetKeyDown(inputs.RotateRight)){
                 board.RotateLeft();
             }
 
-            if (Input.GetKeyDown(inputs.RotateRight)){
+            if (Input.GetKeyDown(inputs.RotateLeft)){
                 // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
                 board.RotateRight();
             }
