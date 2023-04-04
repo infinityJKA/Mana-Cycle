@@ -43,6 +43,10 @@ public class LevelLister : MonoBehaviour
     [SerializeField] private AudioClip selectSFX;
     [SerializeField] private AudioClip errorSFX;
 
+    [SerializeField] GameObject upArrow;
+
+    [SerializeField] GameObject downArrow;
+
     // Start is called before the first frame update
     void Start()
     {
