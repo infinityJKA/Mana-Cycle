@@ -49,6 +49,7 @@ public class ManaCycle : MonoBehaviour
         foreach (GameBoard board in boards)
         {
             if (board.enabled) board.InitializeCycle(this);
+            if (!board.enabled) board.pointer.SetActive(false);
         }
     }
 

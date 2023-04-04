@@ -37,7 +37,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private PiecePreview piecePreview;
 
     /** Cycle pointer game object that belongs to this board */
-    [SerializeField] private GameObject pointer;
+    [SerializeField] public GameObject pointer;
 
     /** Stores the board's cycle level indicator */
     [SerializeField] private CycleMultiplier cycleLevelDisplay;
@@ -183,7 +183,7 @@ public class GameBoard : MonoBehaviour
             maxHp = level.scoreGoal;
             hp = 0;
             SoundManager.Instance.musicSource.clip = level.battleMusic;
-            if (enemyBoard != null) enemyBoard.gameObject.SetActive(false);
+            if (enemyBoard != null) { enemyBoard.gameObject.SetActive(false); enemyBoard.pointer.SetActive(false); } 
             if (objectiveList != null) objectiveList.gameObject.SetActive(true);
 
             fallTime = level.fallTime;
@@ -245,8 +245,9 @@ public class GameBoard : MonoBehaviour
         piecePreview.Setup(this);
 
         cyclePosition = 0;
-        pointer.SetActive(true);
-        pointer.transform.SetParent(cycle.transform);
+        if (playerSide == 0 || !singlePlayer) pointer.SetActive(true);
+        if (singlePlayer) enemyBoard.pointer.SetActive(false);
+        pointer.transform.SetParent(cycle.transform.parent);
         PointerReposition();
 
         board = new Tile[height, width];
