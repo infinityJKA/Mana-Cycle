@@ -25,9 +25,19 @@ public class ControlKey : MonoBehaviour {
     public void SetKeyCode(KeyCode code) {
         // use < > for arrows
         if (code == KeyCode.LeftArrow) {
-            textGUI.text = "<";
+            textGUI.text = "←";
         } else if (code == KeyCode.RightArrow) {
-            textGUI.text = ">";
+            textGUI.text = "→";
+        } else if (code == KeyCode.DownArrow) {
+            textGUI.text = "↓";
+        } else if (code == KeyCode.UpArrow) {
+            textGUI.text = "↑";
+        } else if (code == KeyCode.Period) {
+            textGUI.text = ".";
+        } else if (code == KeyCode.Comma) {
+            textGUI.text = ",";
+        } else if (code == KeyCode.Slash) {
+            textGUI.text = "/";
         } else {
             textGUI.text = code.ToString();
         }
