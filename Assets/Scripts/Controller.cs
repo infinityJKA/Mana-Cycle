@@ -41,11 +41,11 @@ public class Controller : MonoBehaviour
 
         if (board.isPlayerControlled() && !board.isDefeated()){
             foreach (InputScript inputScript in inputScripts) {
-                if (Input.GetKeyDown(inputScript.RotateRight)){
+                if (Input.GetKeyDown(inputScript.RotateLeft)){
                     board.RotateLeft();
                 }
 
-                if (Input.GetKeyDown(inputScript.RotateLeft)){
+                if (Input.GetKeyDown(inputScript.RotateRight)){
                     // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
                     board.RotateRight();
                 }
