@@ -982,6 +982,9 @@ public class GameBoard : MonoBehaviour
         winMenu.AppearWithDelay(2d, this);
 
         StartCoroutine(CheckMidConvoAfterDelay());
+
+        SoundManager.Instance.musicSource.Pause();
+        PlaySFX("win");
     }
 
     /** Refreshed the objectives list. Will grant win to this player if all objectives met */
