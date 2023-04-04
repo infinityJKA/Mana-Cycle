@@ -23,6 +23,7 @@ public class ControlKey : MonoBehaviour {
     }
 
     public void SetKeyCode(KeyCode code) {
+        this.keyCode = code;
         // use < > for arrows
         if (code == KeyCode.LeftArrow) {
             textGUI.text = "←";
