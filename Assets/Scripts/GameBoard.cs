@@ -245,7 +245,8 @@ public class GameBoard : MonoBehaviour
         piecePreview.Setup(this);
 
         cyclePosition = 0;
-        if (playerSide == 0 || !singlePlayer) pointer.SetActive(true);
+        if (playerSide == 0 || !enemyBoard.singlePlayer) pointer.SetActive(true);
+        else pointer.SetActive(false);
         if (singlePlayer) enemyBoard.pointer.SetActive(false);
         pointer.transform.SetParent(cycle.transform.parent);
         PointerReposition();
