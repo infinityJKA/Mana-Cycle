@@ -22,10 +22,8 @@ public class GameBoard : MonoBehaviour
     /** Input mapping for this board */
     [SerializeField] public InputScript inputScript;
 
-    // inputs used only in singleplayer mode
+    /** Inputs to use for player 1 in solo mode */
     [SerializeField] public InputScript soloInputScript;
-
-    private InputScript[] inputsList;
 
     /** The board of the enemy of the player/enemy of this board */
     [SerializeField] public GameBoard enemyBoard;
@@ -149,8 +147,7 @@ public class GameBoard : MonoBehaviour
     void Start()
     {
         // if in solo mode, add solo additional inputs
-        if (Storage.gamemode == Storage.GameMode.Solo) inputsList = new InputScript[]{soloInputScript};
-        else inputsList = new InputScript[]{inputScript};
+        if (Storage.gamemode == Storage.GameMode.Solo) inputScript = soloInputScript;
 
         // get sfx as regular dict
         serializedSoundDict = sfxObject.GetComponent<SFXDict>().sfxDictionary;
@@ -327,117 +324,112 @@ public class GameBoard : MonoBehaviour
 
         PointerReposition();
 
-        // if (!defeated)
-        // {
-        foreach (InputScript inputScript in inputsList){
-            if (Input.GetKeyDown(inputScript.Pause) && !postGame)
-            {
-                pauseMenu.TogglePause();
-                PlaySFX("pause");
+        if (Input.GetKeyDown(inputScript.Pause) && !postGame)
+        {
+            pauseMenu.TogglePause();
+            PlaySFX("pause");
+        }
+
+        // control the pause menu if paused
+        if (pauseMenu.paused && !postGame)
+        {
+            if (Input.GetKeyDown(inputScript.Up)) {
+                pauseMenu.MoveCursor(1);
+                PlaySFX("rotate", pitch : 2.1f);
+            } else if (Input.GetKeyDown(inputScript.Down)) {
+                pauseMenu.MoveCursor(-1);
+                PlaySFX("rotate", pitch : 2.0f);
             }
 
-            // control the pause menu if paused
-            if (pauseMenu.paused && !postGame)
-            {
-                if (Input.GetKeyDown(inputScript.Up)) {
-                    pauseMenu.MoveCursor(1);
-                    PlaySFX("rotate", pitch : 2.1f);
-                } else if (Input.GetKeyDown(inputScript.Down)) {
-                    pauseMenu.MoveCursor(-1);
-                    PlaySFX("rotate", pitch : 2.0f);
-                }
+            if (Input.GetKeyDown(inputScript.Cast)){
+                pauseMenu.SelectOption();
+            }           
+        }
+        
 
-                if (Input.GetKeyDown(inputScript.Cast)){
-                    pauseMenu.SelectOption();
+        // same with post game menu, if timer is not running
+        else if (postGame && !winMenu.timerRunning)
+        {
+            if (Input.GetKeyDown(inputScript.Up)) {
+                winMenu.MoveCursor(1);
+            } else if (Input.GetKeyDown(inputScript.Down)) {
+                winMenu.MoveCursor(-1);
+            }
+
+            if (Input.GetKeyDown(inputScript.Cast)){
+                winMenu.SelectOption();
+            }
+        }
+        
+        // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
+        else if (!convoPaused && !postGame) {
+            pieceSpawned = false;
+
+            // don't do fall if piece is destroyed (no falling piece until approximately 0.2s later)
+            if (piece == null) return;
+
+            if (playerControlled){
+                if (Input.GetKey(inputScript.Down)){
+                    this.fallTimeMult = 0.1f;
+                }
+                else{
+                    this.fallTimeMult = 1f;
                 }
             }
-            
+        }
 
-            // same with post game menu, if timer is not running
-            else if (postGame && !winMenu.timerRunning)
-            {
-                if (Input.GetKeyDown(inputScript.Up)) {
-                    winMenu.MoveCursor(1);
-                } else if (Input.GetKeyDown(inputScript.Down)) {
-                    winMenu.MoveCursor(-1);
-                }
+        // Get the time that has passed since the previous piece fall.
+        // If it is greater than fall time (or fallTime/10 if holding down),
+        // move the piece one down.
+        // (Final fall time has to be greater than 0.05)
+        double finalFallTime = fallTime*this.fallTimeMult;
+        if (finalFallTime < 0.05){
+            finalFallTime = 0.05;
+        }
 
-                if (Input.GetKeyDown(inputScript.Cast)){
-                    winMenu.SelectOption();
-                }
-            }
-            
-            // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
-            else if (!convoPaused && !postGame) {
-                pieceSpawned = false;
+        if(Time.time - previousFallTime > finalFallTime){
 
-                // don't do fall if piece is destroyed (no falling piece until approximately 0.2s later)
-                if (piece == null) return;
+            // Try to move the piece down.
+            bool movedDown = MovePiece(0, 1);
 
-                if (playerControlled){
-                    if (Input.GetKey(inputScript.Down)){
-                        this.fallTimeMult = 0.1f;
+            if (!movedDown) {
+                // If it can't be moved down,
+                // also check for sliding buffer, and place if beyond that
+                // don't use slide time if down held
+                // if (!Input.GetKey(inputScript.Down)) {
+                
+                // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
+    
+                    if (!Input.GetKey(inputScript.Down)) {
+                        finalFallTime += slideTime;
                     }
-                    else{
-                        this.fallTimeMult = 1f;
-                    }
+
+
+                // true if time is up for the extra slide buffer
+                bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
+                // if exxtended time is up and still can't move down, place
+                if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
+                {
+                    // Place the piece
+                    PlacePiece();
+
+                    // Move self damage cycle
+                    DamageCycle();
+
+                    RefreshObjectives();
+
+                    // If postgame, don't spawn a new piece
+                    if (postGame) return;
+
+                    // Spawn a new piece & reset fall delay
+                    SpawnPiece();
+                    previousFallTime = Time.time;
                 }
+            } else {
+                // if it did move, reset fall time
+                previousFallTime = Time.time;  
             }
-
-                // Get the time that has passed since the previous piece fall.
-                // If it is greater than fall time (or fallTime/10 if holding down),
-                // move the piece one down.
-                // (Final fall time has to be greater than 0.05)
-                double finalFallTime = fallTime*this.fallTimeMult;
-                if (finalFallTime < 0.05){
-                    finalFallTime = 0.05;
-                }
-
-                if(Time.time - previousFallTime > finalFallTime){
-
-                    // Try to move the piece down.
-                    bool movedDown = MovePiece(0, 1);
-
-                    if (!movedDown) {
-                        // If it can't be moved down,
-                        // also check for sliding buffer, and place if beyond that
-                        // don't use slide time if down held
-                        // if (!Input.GetKey(inputScript.Down)) {
-                        
-                        // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
-            
-                            if (!Input.GetKey(inputScript.Down)) {
-                                finalFallTime += slideTime;
-                            }
-
-
-                        // true if time is up for the extra slide buffer
-                        bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
-                        // if exxtended time is up and still can't move down, place
-                        if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
-                        {
-                            // Place the piece
-                            PlacePiece();
-
-                            // Move self damage cycle
-                            DamageCycle();
-
-                            RefreshObjectives();
-
-                            // If postgame, don't spawn a new piece
-                            if (postGame) return;
-
-                            // Spawn a new piece & reset fall delay
-                            SpawnPiece();
-                            previousFallTime = Time.time;
-                        }
-                    } else {
-                        // if it did move, reset fall time
-                        previousFallTime = Time.time;  
-                    }
-                }
-            }
-        // }
+        }
     }
 
     // Update the pointer's cycle position.
