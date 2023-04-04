@@ -1612,8 +1612,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 1918826929}
-  inputs: {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
-  soloInputs: {fileID: 11400000, guid: 1a9e593bfdbc8c44fb272a6e7be1fd94, type: 2}
+  inputScripts:
+  - {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
+  soloInputScripts:
+  - {fileID: 11400000, guid: 1a9e593bfdbc8c44fb272a6e7be1fd94, type: 2}
+  - {fileID: 11400000, guid: 760544065f79b4fd9a51408197f0d17f, type: 2}
+  - {fileID: 11400000, guid: 6b068398bbf2d48f68d8331347d2b06a, type: 2}
 --- !u!4 &337036792
 Transform:
   m_ObjectHideFlags: 0
@@ -1912,6 +1916,18 @@ PrefabInstance:
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: inputGetterPrefab
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: inputScripts.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: inputScripts.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 23e0fde6fd3784132844b12c502f8b20, type: 2}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: soloInputScripts.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2765294716893170644, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: m_AnchorMax.x
@@ -3786,8 +3802,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 1327112842}
-  inputs: {fileID: 11400000, guid: 23e0fde6fd3784132844b12c502f8b20, type: 2}
-  soloInputs: {fileID: 0}
+  inputScripts:
+  - {fileID: 11400000, guid: 23e0fde6fd3784132844b12c502f8b20, type: 2}
+  soloInputScripts: []
 --- !u!4 &1102535857
 Transform:
   m_ObjectHideFlags: 0
@@ -6140,6 +6157,30 @@ PrefabInstance:
       propertyPath: sfx.dict.Array.size
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: inputScripts.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: inputScripts.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: soloInputScripts.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: soloInputScripts.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 1a9e593bfdbc8c44fb272a6e7be1fd94, type: 2}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: soloInputScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 760544065f79b4fd9a51408197f0d17f, type: 2}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: soloInputScripts.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 6b068398bbf2d48f68d8331347d2b06a, type: 2}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: serializedSoundDict.dict.Array.size
       value: 2
