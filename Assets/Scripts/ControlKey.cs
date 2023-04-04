@@ -25,5 +25,11 @@ public class ControlKey : MonoBehaviour {
     public void SetKeyCode(KeyCode code) {
         keyCode = code;
         textGUI.text = code.ToString();
+
+        // bandaid fix for better position of down arrow
+        if (keyCode == KeyCode.DownArrow) {
+            var rectTransform = GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = new Vector2(80, rectTransform.anchoredPosition.y);
+        }
     }
 }

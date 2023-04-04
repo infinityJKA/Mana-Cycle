@@ -2019,9 +2019,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'cast (r) to select
+  m_text: '[Enter] to Select
 
-    Pause (esc) to return to menu
+    [TAB] to return to menu
 
 '
   m_isRightToLeft: 0
@@ -2189,8 +2189,9 @@ MonoBehaviour:
   highScoreBG: {fileID: 1618512183}
   highScoreText: {fileID: 167389118}
   inputScripts:
-  - {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
-  - {fileID: 11400000, guid: 1a9e593bfdbc8c44fb272a6e7be1fd94, type: 2}
+  - {fileID: 11400000, guid: 1afc0772476604e739f7b2912c7a89dc, type: 2}
+  - {fileID: 11400000, guid: 760544065f79b4fd9a51408197f0d17f, type: 2}
+  - {fileID: 11400000, guid: 6b068398bbf2d48f68d8331347d2b06a, type: 2}
   yOffset: -1.7
   scrollAmount: 0.05
   moveSFX: {fileID: 8300000, guid: 036e7382fcbf1354fae5ab4fd98684a9, type: 3}
@@ -2345,16 +2346,20 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 54d1036ecbed19f41981e5ce8c3f4dc7, type: 3}
     - target: {fileID: 2453605081079221890, guid: 00c9de84c9d0f407ca783879c33c83dd, type: 3}
       propertyPath: inputScripts.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2453605081079221890, guid: 00c9de84c9d0f407ca783879c33c83dd, type: 3}
       propertyPath: inputScripts.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
+      objectReference: {fileID: 11400000, guid: 1afc0772476604e739f7b2912c7a89dc, type: 2}
     - target: {fileID: 2453605081079221890, guid: 00c9de84c9d0f407ca783879c33c83dd, type: 3}
       propertyPath: inputScripts.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: 1a9e593bfdbc8c44fb272a6e7be1fd94, type: 2}
+      objectReference: {fileID: 11400000, guid: 760544065f79b4fd9a51408197f0d17f, type: 2}
+    - target: {fileID: 2453605081079221890, guid: 00c9de84c9d0f407ca783879c33c83dd, type: 3}
+      propertyPath: inputScripts.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 6b068398bbf2d48f68d8331347d2b06a, type: 2}
     - target: {fileID: 2453605081250774414, guid: 00c9de84c9d0f407ca783879c33c83dd, type: 3}
       propertyPath: m_IsActive
       value: 0
