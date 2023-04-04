@@ -9,6 +9,7 @@ public class ControlsGraphic : MonoBehaviour {
     [SerializeField] private ControlKey left, down, right, up, rotateLeft, rotateRight, spellcast;
 
     void Start() {
+        var inputScript = board.soloInputScript != null ? board.soloInputScript : board.inputScript;
         left.SetKeyCode(board.inputScript.Left);
         down.SetKeyCode(board.inputScript.Down);
         right.SetKeyCode(board.inputScript.Right);
