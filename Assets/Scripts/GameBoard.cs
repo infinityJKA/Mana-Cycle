@@ -324,11 +324,12 @@ public class GameBoard : MonoBehaviour
 
         PointerReposition();
 
-        if (Input.GetKeyDown(inputScript.Pause) && !postGame)
+        if (Input.GetKeyDown(inputScript.Pause) && !postGame && !Storage.convoSkippedThisInput)
         {
             pauseMenu.TogglePause();
             PlaySFX("pause");
         }
+        Storage.convoSkippedThisInput = false;
 
         // control the pause menu if paused
         if (pauseMenu.paused && !postGame)
