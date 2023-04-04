@@ -38,6 +38,8 @@ public class ManaCycle : MonoBehaviour
         if (boards[0].singlePlayer) {
             cycleLength = boards[0].GetLevel().cycleLength;
             cycleUniqueColors = boards[0].GetLevel().cycleUniqueColors;
+            boards[1].pointer.SetActive(false);
+            boards[1].pointer.gameObject.SetActive(false);
         } else {
             cycleLength = 7;
             cycleUniqueColors = 5;
@@ -49,6 +51,7 @@ public class ManaCycle : MonoBehaviour
         foreach (GameBoard board in boards)
         {
             if (board.enabled) board.InitializeCycle(this);
+            if (!board.enabled) board.pointer.SetActive(false);
         }
     }
 
