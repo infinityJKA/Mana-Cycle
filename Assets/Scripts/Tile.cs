@@ -22,8 +22,8 @@ public class Tile : MonoBehaviour
     {
         // Get image and set color from the list in this scene's cycle
         this.color = color;
-        if (!board.cycle.usingSprites) imageObject.GetComponent<Image>().color = board.cycle.GetManaColors()[ ((int)color) ];
-        else imageObject.GetComponent<Image>().sprite = board.cycle.manaSprites[ ((int)color) ];
+        imageObject.GetComponent<Image>().color = board.cycle.GetManaColors()[ ((int)color) ];
+        if (board.cycle.usingSprites) imageObject.GetComponent<Image>().sprite = board.cycle.manaSprites[ ((int)color) ];
     }
 
     public ManaColor GetManaColor()
