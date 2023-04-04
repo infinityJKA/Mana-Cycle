@@ -52,19 +52,11 @@ public class PostGameMenu : MonoBehaviour
                 if (Storage.gamemode == Storage.GameMode.Solo)
                 {
                     int levelID = Storage.level.GetInstanceID();
-                    bool cleared = PlayerPrefs.GetInt(levelID+"_Cleared", 0) == 1;
-
-                    // if played endless mode, set clear status
-                    bool firstClear = false;
-                    if (!cleared)
-                    {
-                        PlayerPrefs.SetInt(levelID+"_Cleared", 1);
-                        cleared = true;
-                        firstClear = true;
-                    }
 
                     // if not endless mode and is winner, level is cleared
-                    if (board.isWinner() || (Storage.level.time == -1 && Storage.level.scoreGoal == 0)) PlayerPrefs.SetInt(levelID+"_Cleared", 1);
+                    bool clearedBefore = PlayerPrefs.GetInt(levelID+"_Cleared", 0) == 1;
+                    bool cleared = board.isWinner() || (Storage.level.time == -1 && Storage.level.scoreGoal == 0);
+                    if (cleared) PlayerPrefs.SetInt(levelID+"_Cleared", 1);
 
                     // set highscore if level was cleared
                     if (cleared) {
@@ -76,7 +68,7 @@ public class PostGameMenu : MonoBehaviour
                     Time.timeScale = 1f;
                     
                     // if first clear, immediately exit back to solomenu; otherwise, open menu
-                    if (firstClear) {
+                    if (!clearedBefore && cleared) {
                         transitionHandler.WipeToScene("SoloMenu", i:true);
                     } else {
                         MenuUI.SetActive(true);
