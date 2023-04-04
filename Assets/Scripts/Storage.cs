@@ -29,6 +29,8 @@ public class Storage
     public static bool levelSelectedThisInput;
     // true when R is pressed to prevent input for convo being used in postgamemenu
     public static bool convoEndedThisInput;
+    // true when hitting pause during a midlevelconvo, to prevent pausing menu
+    public static bool convoSkippedThisInput;
 
     // // i love getters and setters so fucking much
     // fuck getters and setters we goin public
