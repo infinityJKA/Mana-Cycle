@@ -15,9 +15,9 @@ public class ControlsDisplay : MonoBehaviour
         KeyCode[] keyList = new KeyCode[] {inputs.Up, inputs.Left, inputs.Down, inputs.Right, inputs.RotateLeft, inputs.RotateRight, inputs.Cast, inputs.Pause};
 
         keyText.text = "";
-        foreach (KeyCode k in keyList)
-        {
-            keyText.text += k.ToString() + "\n";
+        foreach (KeyCode keyCode in keyList)
+        {   
+            keyText.text += Utils.KeySymbol(keyCode) + "\n";
         }
         
     }
