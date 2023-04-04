@@ -149,7 +149,7 @@ public class GameBoard : MonoBehaviour
     void Start()
     {
         // if in solo mode, add solo additional inputs
-        if (Storage.gamemode == Storage.GameMode.Solo) inputsList = new InputScript[]{inputScript,soloInputScript};
+        if (Storage.gamemode == Storage.GameMode.Solo) inputsList = new InputScript[]{soloInputScript};
         else inputsList = new InputScript[]{inputScript};
 
         // get sfx as regular dict
