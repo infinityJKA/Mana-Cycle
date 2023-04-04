@@ -54,17 +54,17 @@ public class PostGameMenu : MonoBehaviour
                     int levelID = Storage.level.GetInstanceID();
                     bool cleared = PlayerPrefs.GetInt(levelID+"_Cleared", 0) == 1;
 
-                    // if not endless mode and is winner, level is cleared
-                    if (board.isWinner()) PlayerPrefs.SetInt(levelID+"_Cleared", 1);
-
                     // if played endless mode, set clear status
                     bool firstClear = false;
-                    if (!cleared && Storage.level.time == -1)
+                    if (!cleared)
                     {
                         PlayerPrefs.SetInt(levelID+"_Cleared", 1);
                         cleared = true;
                         firstClear = true;
                     }
+
+                    // if not endless mode and is winner, level is cleared
+                    if (board.isWinner() || (Storage.level.time == -1 && Storage.level.scoreGoal == 0)) PlayerPrefs.SetInt(levelID+"_Cleared", 1);
 
                     // set highscore if level was cleared
                     if (cleared) {
