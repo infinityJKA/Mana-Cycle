@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Random=UnityEngine.Random;
 
 public class ConvoHandler : MonoBehaviour
 {
@@ -53,24 +54,40 @@ public class ConvoHandler : MonoBehaviour
     /** If the current cutscene is a mid-level conversation. */
     private bool isMidLevelConvo;
 
+    // [SerializeField] private AudioClip typeSound;
+
     // Update is called once per frame
     void Update()
     {
         if (!convoUI.activeSelf) return;
 
-        foreach (InputScript inputScript in inputScripts){
+        foreach (InputScript inputScript in inputScripts) {
+
             if (Input.GetKeyDown(inputScript.Cast) && !Storage.levelSelectedThisInput)
             {
-                index++;
-                if (index >= convo.dialogueList.Length){
-                    EndConvo();
+                // if typing, set typing to false which will cause the coroutine to finish the current line on next update
+                if (typing) {
+                    typing = false;
                 }
-                else{
-                    // if typing, set typing to false which will cause the coroutine to finish the current line on next update
-                    if (typing) typing = false;
-                    // otherwise, show next line
-                    else DisplayConvoLine();
+
+                // otherwise, display next line & finish any animation that may be happening
+                else {
+                    index++;
+                    leftSpeaker.animating = false;
+                    rightSpeaker.animating = false;
+                    // end convo when past the last index; otherwise, next line
+                    if (index >= convo.dialogueList.Length){
+                        EndConvo();
+                    } else {
+                        DisplayConvoLine();
+                    }
                 }
+            } 
+            
+            // skip rest of convo when pause pressed
+            else if (Input.GetKeyDown(inputScript.Pause)) {
+                Storage.convoEndedThisInput = true;
+                EndConvo();
             }
         }
 
@@ -108,7 +125,7 @@ public class ConvoHandler : MonoBehaviour
     }
 
     public void StartConvo(Conversation convo, GameBoard board) {
-        SetBoard(board);
+        this.board = board;
         StartConvo(convo);
     }
 
@@ -170,15 +187,20 @@ public class ConvoHandler : MonoBehaviour
             formattedText = formattedText.Replace("{cycle0}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(0)]);
             formattedText = formattedText.Replace("{cycle1}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(1)]);
             formattedText = formattedText.Replace("{cycle2}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(2)]);
-            formattedText = formattedText.Replace("{spellcast}", board.inputScript.Cast.ToString());
+            formattedText = formattedText.Replace("{rotateccw}", board.inputScripts[0].RotateLeft.ToString());
+            formattedText = formattedText.Replace("{rotatecw}", board.inputScripts[0].RotateRight.ToString());
+            formattedText = formattedText.Replace("{spellcast}", board.inputScripts[0].Cast.ToString());
         }
 
         leftSpeaker.SetSpeaker(line.leftSpeaker, !line.rightFocused);
         rightSpeaker.SetSpeaker(line.rightSpeaker, line.rightFocused);
 
+        leftSpeaker.StartAnim(line.leftAnim);
+        rightSpeaker.StartAnim(line.rightAnim);
+
         // no type effect if midlevelconvo
         if (isMidLevelConvo) {
-            textLabel.text = line.text;
+            textLabel.text = formattedText;
         } else {
             StartCoroutine(TypeText());
         }
@@ -190,27 +212,34 @@ public class ConvoHandler : MonoBehaviour
     IEnumerator TypeText()
     {
         float t = 0;
+        int prevCharIndex;
         int charIndex = 0;
         typing = true;
 
         // While typing hasn't been set to false and still text to write: show substring of typed chars
-        while (typing && charIndex < line.text.Length)
+        while (typing && charIndex < formattedText.Length)
         {
+            prevCharIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, formattedText.Length);
 
             t += Time.unscaledDeltaTime*typeSpeed;
-            charIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, line.text.Length);
+            charIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, formattedText.Length);
 
-            textLabel.text = line.text.Substring(0, charIndex);
 
+            AudioClip speakerSFX = null;
+            // If there is no speaker, don't use a speaker sound. otherwise, use speaker sfx from battler
+            if (line.rightFocused && line.rightSpeaker != null) speakerSFX = line.rightSpeaker.voiceSFX;
+            else if (line.leftSpeaker != null) speakerSFX = line.leftSpeaker.voiceSFX;
+
+            // if char index and previous char index are different, we just drew a new char. play type sound
+            // only play sound every other char because damn thats a lot of sounds
+            if(speakerSFX != null && charIndex != prevCharIndex && charIndex%2 == 0) SoundManager.Instance.PlaySound(speakerSFX, pitch : Random.Range(1.4f,1.6f));
+
+            textLabel.text = formattedText.Substring(0, charIndex);
+            
             yield return null;
         }
 
         typing = false;
-        textLabel.text = line.text;
-    }
-
-    public void SetBoard(GameBoard board)
-    {
-        this.board = board;
+        textLabel.text = formattedText;
     }
 }

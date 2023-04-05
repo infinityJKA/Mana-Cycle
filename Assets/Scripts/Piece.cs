@@ -51,17 +51,17 @@ public class Piece : MonoBehaviour
         }
     }
 
-    private Vector3 UndoOrientedDirection()
-    {
-        switch(orientation)
-        {
-            case Orientation.up: return Vector3.up;
-            case Orientation.left: return Vector3.right;
-            case Orientation.down: return Vector3.down;
-            case Orientation.right: return Vector3.left;
-            default: return Vector3.zero;
-        }
-    }
+    // private Vector3 UndoOrientedDirection()
+    // {
+    //     switch(orientation)
+    //     {
+    //         case Orientation.up: return Vector3.up;
+    //         case Orientation.left: return Vector3.right;
+    //         case Orientation.down: return Vector3.down;
+    //         case Orientation.right: return Vector3.left;
+    //         default: return Vector3.zero;
+    //     }
+    // }
 
     // Randomize the color of the tiles of this piece.
     public void Randomize(GameBoard board)
@@ -122,7 +122,7 @@ public class Piece : MonoBehaviour
 
     public void UpdatePosition()
     {
-        if (this != null) transform.localPosition = new Vector3(this.col - 4, -this.row + 7, 0);
+        if (this != null) transform.localPosition = new Vector3(this.col - GameBoard.width/2f, -this.row + GameBoard.physicalHeight/2f + GameBoard.height - GameBoard.physicalHeight, 0);
     }
         
     // Rotate this piece to the right about the center.
@@ -165,10 +165,10 @@ public class Piece : MonoBehaviour
         rotationCenter.rotation = Quaternion.LookRotation(Vector3.forward, OrientedDirection());
 
         // make the inner tiles face opposite rotation, so animation stays correct
-        var opposite = UndoOrientedDirection();
-        center.transform.rotation = Quaternion.LookRotation(Vector3.forward, opposite);
-        top.transform.rotation = Quaternion.LookRotation(Vector3.forward, opposite);
-        right.transform.rotation = Quaternion.LookRotation(Vector3.forward, opposite);
+        // var opposite = UndoOrientedDirection();
+        center.GetComponent<RectTransform>().rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+        top.GetComponent<RectTransform>().rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+        right.GetComponent<RectTransform>().rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
     }
 
     // Iteration of all coordinates this piece currently occupies. Returns Vector2Ints of (col, row).

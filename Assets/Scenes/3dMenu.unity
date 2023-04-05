@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.09481978, g: 0.09493873, b: 0.09481978, a: 1}
+  m_IndirectSpecularColor: {r: 0.095430024, g: 0.09529812, b: 0.095430024, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -497,7 +497,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2147483647
 --- !u!114 &102548622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -589,7 +589,8 @@ MonoBehaviour:
   TransitionHandler: {fileID: 986701444}
   HTPButton: {fileID: 340910114}
   SettingsButton: {fileID: 2112243608}
-  inputScript: {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
+  inputScripts:
+  - {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
 --- !u!1 &118444161
 GameObject:
   m_ObjectHideFlags: 0
@@ -949,7 +950,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3590,11 +3591,28 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 2325366773014884887, guid: b619406261355b04589ac2863cf824a2, type: 3}
+      propertyPath: m_Type
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2325366773014884887, guid: b619406261355b04589ac2863cf824a2, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: fcbf2e3fb0a5a433ca76115b1e5f3370, type: 3}
+    - target: {fileID: 2325366773014884887, guid: b619406261355b04589ac2863cf824a2, type: 3}
+      propertyPath: m_FillAmount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2325366773014884887, guid: b619406261355b04589ac2863cf824a2, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2325366773014884889, guid: b619406261355b04589ac2863cf824a2, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2325366772495311026, guid: b619406261355b04589ac2863cf824a2, type: 3}
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: b619406261355b04589ac2863cf824a2, type: 3}
 --- !u!114 &986701444 stripped
@@ -3696,13 +3714,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
-  m_fontSizeBase: 60
+  m_fontSize: 72
+  m_fontSizeBase: 72
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -5975,7 +5993,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -30, y: 65}
-  m_SizeDelta: {x: 528.7879, y: -190}
+  m_SizeDelta: {x: 512.7265, y: -190}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1502423767
 MonoBehaviour:
@@ -6194,7 +6212,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -6897,7 +6915,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -7238,13 +7256,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HTPTexts:
-  - example text one
-  - qwdwec  WEFBIWEBFIUWBEFIUBWF
-  - 'ebebebebebebebebebebebebebebe '
+  - 'Mana Cycle has a simple premise: Pieces of mana will fall from the top of the
+    board. You must move and rotate these pieces to match at least 3 mana tiles of
+    the same color. '
+  - 'The color you clear must match your position in the cycle, which can be seen
+    to the side of your board. After you match the correct color mana, you can preform
+    a spellcast. '
+  - Spellcasting clears your matched mana from the board and progresses your position
+    in the cycle, meaning you must match mana of a new color. If you have a match
+    of the new color already on the board, your spellcast will automatically continue,
+    and your combo will increase.
+  - The more mana you connect before clearing, and the bigger your combo, the more
+    points you earn. Try to think ahead to get big combos!
+  - The game is lost when your board has no more room to place pieces, resulting
+    in a "top-out." Good luck!
   HTPImgs:
   - {fileID: 21300000, guid: 86afab55231934696acc4fa3d818464c, type: 3}
   - {fileID: 21300000, guid: a0cd650c3e24f45f7a561ac8cdfcc2ec, type: 3}
   - {fileID: 21300000, guid: cd2bf5c78a84c4e70bab7ec31e259fb2, type: 3}
+  - {fileID: 21300000, guid: 21b9f09e17d5796469ddf2fdf9a45bbc, type: 3}
+  - {fileID: 21300000, guid: 21b9f09e17d5796469ddf2fdf9a45bbc, type: 3}
   currentText: {fileID: 1001747049}
   currentImg: {fileID: 1502423767}
   pageText: {fileID: 1067160526}
@@ -8775,7 +8806,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

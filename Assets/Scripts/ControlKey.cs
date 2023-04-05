@@ -23,7 +23,7 @@ public class ControlKey : MonoBehaviour {
     }
 
     public void SetKeyCode(KeyCode code) {
-        keyCode = code;
-        textGUI.text = code.ToString();
+        this.keyCode = code;
+        textGUI.text = Utils.KeySymbol(code);
     }
 }

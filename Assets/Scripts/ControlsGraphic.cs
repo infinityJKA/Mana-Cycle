@@ -2,13 +2,11 @@ using UnityEngine;
 using TMPro;
 
 public class ControlsGraphic : MonoBehaviour {
-    /** Inputs to display */
-    [SerializeField] private InputScript inputScript;
-
     // References for all key tmpros
     [SerializeField] private ControlKey left, down, right, up, rotateLeft, rotateRight, spellcast;
 
-    void Start() {
+    public void SetInputs(InputScript inputScript) {
+        gameObject.SetActive(true);
         left.SetKeyCode(inputScript.Left);
         down.SetKeyCode(inputScript.Down);
         right.SetKeyCode(inputScript.Right);
