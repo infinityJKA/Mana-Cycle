@@ -48,6 +48,8 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private Popup chainPopup;
     /** Cascade popup object */
     [SerializeField] private Popup cascadePopup;
+    /** Attak popup object */
+    [SerializeField] private AttackPopup attackPopup;
 
     /** Current fall delay for pieces. */
     [SerializeField] private float fallTime = 0.8f;
@@ -224,6 +226,7 @@ public class GameBoard : MonoBehaviour
             if (Storage.gamemode == Storage.GameMode.Solo) battler = level.battler;
         }
         portrait.sprite = battler.sprite;
+        attackPopup.SetBattler(battler);
         
         cyclePosition = 0;
 
@@ -590,12 +593,14 @@ public class GameBoard : MonoBehaviour
 
     // Deal damage to the other player(s(?))
     // shootSpawnPos is where the shoot particle is spawned
-    public void DealDamage(int damage, Vector3 shootSpawnPos, int color)
+    public void DealDamage(int damage, Vector3 shootSpawnPos, int color, int chain)
     {
         // Spawn a new damageShoot
         GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
         DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
         shoot.damage = damage;
+
+        if (chain >= 2) attackPopup.AttackAnimation();
 
         // Blend mana color with existing damage shoot color
         // var image = shootObj.GetComponent<Image>();
@@ -754,7 +759,7 @@ public class GameBoard : MonoBehaviour
                 averagePos /= manaCleared;
 
                 // Send the damage over. Will counter incoming damage first.
-                DealDamage(damage, averagePos, (int)CurrentColor());
+                DealDamage(damage, averagePos, (int)CurrentColor(), chain);
 
                 totalSpellcasts++;
                 totalManaCleared += manaCleared;
