@@ -32,46 +32,4 @@ public class Storage
     // true when hitting pause during a midlevelconvo, to prevent pausing menu
     public static bool convoSkippedThisInput;
 
-    // // i love getters and setters so fucking much
-    // fuck getters and setters we goin public
-    // public void SetBattler1(Battler b)
-    // {
-    //     battler1 = b;
-    // }
-
-    // public void SetBattler2(Battler b)
-    // {
-    //     battler2 = b;
-    // }
-
-    // public Battler GetBattler1()
-    // {
-    //     return battler1;
-    // }
-
-    // public Battler GetBattler2()
-    // {
-    //     return battler2;
-    // }
-
-    // public void SetPlayerControlled1(bool b)
-    // {
-    //     isPlayer1 = b;
-    // }
-
-    // public void SetPlayerControlled2(bool b)
-    // {
-    //     isPlayer2 = b;
-    // }
-
-    // public bool GetPlayerControlled1()
-    // {
-    //     return isPlayer1;
-    // }
-
-    // public bool GetPlayerControlled2()
-    // {
-    //     return isPlayer2;
-    // }
-
 }

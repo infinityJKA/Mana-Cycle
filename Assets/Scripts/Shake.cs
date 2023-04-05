@@ -19,26 +19,34 @@ public class Shake : MonoBehaviour
     private float shakeTime = 0f;
     /** Current magnitude */
     private float currentMagnitude = 0f;
-
-    void Start() {
-        center = transform.position;
-    }
+    
+    /** If currently shaking. */
+    private bool shaking;
 
     // Update is called once per frame
     void Update()
     {
-        shakeTime -= Time.deltaTime;
+        if (shaking) {
+            shakeTime -= Time.deltaTime;
 
-        if (shakeTime > 0) {
-            currentMagnitude = magnitude * (shakeTime / shakeDuration);
-            transform.position = center + shakeDirection * Mathf.Sin(shakeTime * 2*Mathf.PI * frequency) * currentMagnitude;
-        } else {
-            transform.position = center;
+            if (shakeTime > 0) {
+                currentMagnitude = magnitude * (shakeTime / shakeDuration);
+                transform.position = center + shakeDirection * Mathf.Sin(shakeTime * 2*Mathf.PI * frequency) * currentMagnitude;
+            } else {
+                transform.position = center;
+                shaking = false;
+            }
         }
     }
 
-    public void CauseShake() {
+    public void StartShake() {
+        center = transform.position;
         shakeDuration = duration;
         shakeTime = duration;
+        shaking = true;
+    }
+
+    public void StopShake() {
+        shaking = false;
     }
 }
