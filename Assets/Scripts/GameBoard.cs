@@ -50,6 +50,8 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private Popup cascadePopup;
     /** Attak popup object */
     [SerializeField] private AttackPopup attackPopup;
+    /** Board background. Animated fall down when defeated */
+    [SerializeField] private BoardDefeatFall boardDefeatFall;
 
     /** Current fall delay for pieces. */
     [SerializeField] private float fallTime = 0.8f;
@@ -407,59 +409,62 @@ public class GameBoard : MonoBehaviour
                 }
             }
 
-            // Get the time that has passed since the previous piece fall.
-            // If it is greater than fall time (or fallTime/10 if holding down),
-            // move the piece one down.
-            // (Final fall time has to be greater than 0.05)
-            double finalFallTime = fallTime*this.fallTimeMult;
-            if (finalFallTime < 0.05){
-                finalFallTime = 0.05;
-            }
+            if (!defeated)
+            {
+                // Get the time that has passed since the previous piece fall.
+                // If it is greater than fall time (or fallTime/10 if holding down),
+                // move the piece one down.
+                // (Final fall time has to be greater than 0.05)
+                double finalFallTime = fallTime*this.fallTimeMult;
+                if (finalFallTime < 0.05){
+                    finalFallTime = 0.05;
+                }
 
-            if(Time.time - previousFallTime > finalFallTime){
+                if(Time.time - previousFallTime > finalFallTime){
 
-                // Try to move the piece down.
-                bool movedDown = MovePiece(0, 1);
+                    // Try to move the piece down.
+                    bool movedDown = MovePiece(0, 1);
 
-                if (!movedDown) {
-                    // If it can't be moved down,
-                    // also check for sliding buffer, and place if beyond that
-                    // don't use slide time if down held
-                    // if (!Input.GetKey(inputScript.Down)) {
-                    
-                    // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
-        
-                        if (!Input.GetKey(inputScript.Down)) {
-                            finalFallTime += slideTime;
-                        }
+                    if (!movedDown) {
+                        // If it can't be moved down,
+                        // also check for sliding buffer, and place if beyond that
+                        // don't use slide time if down held
+                        // if (!Input.GetKey(inputScript.Down)) {
+                        
+                        // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
+            
+                            if (!Input.GetKey(inputScript.Down)) {
+                                finalFallTime += slideTime;
+                            }
 
 
-                    // true if time is up for the extra slide buffer
-                    bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
-                    // if exxtended time is up and still can't move down, place
-                    if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
-                    {
-                        Place();
-                    }
-                } else {
-                    // If it did move down, adjust numbers.
-                    // reset to 0 if row fallen to is below the last.
-                    // otherwise, increment
-                    if (piece.GetRow() > lastRowFall) {
-                        lastRowFall = piece.GetRow();
-                        rowFallCount = 0;
-                    } else {
-                        rowFallCount++;
-                        // if row fall count exceeds 3, auto place
-                        if (rowFallCount > 3) {
+                        // true if time is up for the extra slide buffer
+                        bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
+                        // if exxtended time is up and still can't move down, place
+                        if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
+                        {
                             Place();
                         }
-                    }
+                    } else {
+                        // If it did move down, adjust numbers.
+                        // reset to 0 if row fallen to is below the last.
+                        // otherwise, increment
+                        if (piece.GetRow() > lastRowFall) {
+                            lastRowFall = piece.GetRow();
+                            rowFallCount = 0;
+                        } else {
+                            rowFallCount++;
+                            // if row fall count exceeds 3, auto place
+                            if (rowFallCount > 3) {
+                                Place();
+                            }
+                        }
 
-                    // if it did move, reset fall time
-                    previousFallTime = Time.time;  
-                }
-            }     
+                        // if it did move, reset fall time
+                        previousFallTime = Time.time;  
+                    }
+                }    
+            } 
         }
     }
 
@@ -507,6 +512,8 @@ public class GameBoard : MonoBehaviour
         // If the piece is already in an invalid position, player has topped out
         if (!ValidPlacement()) {
             hp = 0;
+            piece.gameObject.SetActive(false);
+            Destroy(piece);
             Defeat();
         }
     }
@@ -968,14 +975,16 @@ public class GameBoard : MonoBehaviour
         defeated = true;
         if (timer != null) timer.StopTimer();
 
-        pieceBoard.SetActive(false);
+        // pieceBoard.SetActive(false);
         winTextObj.SetActive(true);
         winText.text = "LOSE";
+
+        boardDefeatFall.StartFall();
 
         if (!singlePlayer) enemyBoard.Win();
 
         if (level != null) {
-            winMenu.AppearWithDelay(2d, this);
+            winMenu.AppearAfterDelay(this);
         }
 
         StartCoroutine(CheckMidConvoAfterDelay());
@@ -992,7 +1001,7 @@ public class GameBoard : MonoBehaviour
         winTextObj.SetActive(true);
         winText.text = "WIN";
 
-        winMenu.AppearWithDelay(2d, this);
+        winMenu.AppearAfterDelay(this);
 
         StartCoroutine(CheckMidConvoAfterDelay());
 

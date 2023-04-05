@@ -99,11 +99,11 @@ public class PostGameMenu : MonoBehaviour
         }
     }
 
-    public void AppearWithDelay(double s, GameBoard board)
+    public void AppearAfterDelay(GameBoard board)
     {
         if (timerRunning || displayed) return;
         this.board = board;
-        appearTime = s;
+        appearTime = 3d;
         timerRunning = true;
     }
 
