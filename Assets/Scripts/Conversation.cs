@@ -24,8 +24,8 @@ public class ConversationLine {
     public bool rightFocused;
     public ConvoAnim leftAnim;
     public ConvoAnim rightAnim;
-    [Tooltip("Toggles the typing effect.")]
-    public bool instant;
+    // Background - Null for no change from last line
+    public Sprite background;
 }
 
 [Serializable]
@@ -55,7 +55,7 @@ public class ConversationLineDrawer : PropertyDrawer
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        return 100;
+        return 104;
     }
 
     // Draw the property inside the given rect
@@ -73,14 +73,15 @@ public class ConversationLineDrawer : PropertyDrawer
         var rightFocused = property.FindPropertyRelative("rightFocused");
         var leftAnim = property.FindPropertyRelative("leftAnim");
         var rightAnim = property.FindPropertyRelative("rightAnim");
-        var instant = property.FindPropertyRelative("instant");
+        // var instant = property.FindPropertyRelative("instant");
+        var background = property.FindPropertyRelative("background");
 
-        Rect drawRect = new Rect(position.x, position.y, position.width, 64);
+        Rect drawRect = new Rect(position.x, position.y, position.width, 68);
 
         EditorGUI.PropertyField(drawRect, text, GUIContent.none);
         // dialogue.stringValue = EditorGUI.TextField(position, dialogue.stringValue);
 
-        drawRect.y += 68;
+        drawRect.y += 72;
         drawRect.height /= 4;
         drawRect.width /= 3f;
         var divideWidth = drawRect.width;
@@ -99,7 +100,8 @@ public class ConversationLineDrawer : PropertyDrawer
         drawRect.x += divideWidth;
         EditorGUI.PropertyField(drawRect, rightAnim, GUIContent.none);
         drawRect.x += divideWidth;
-        instant.boolValue = EditorGUI.ToggleLeft(drawRect, "Instant Text", instant.boolValue);
+        EditorGUI.PropertyField(drawRect, background, GUIContent.none);
+        // instant.boolValue = EditorGUI.ToggleLeft(drawRect, "Instant Text", instant.boolValue);
 
         EditorGUI.EndProperty();
     }

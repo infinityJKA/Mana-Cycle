@@ -23,7 +23,7 @@ public class Menu3d : MonoBehaviour
     [SerializeField] private GameObject HTPButton, SettingsButton;
 
     // p1 input script so that R to submit works in menu
-    [SerializeField] private InputScript inputScript;
+    [SerializeField] private InputScript[] inputScripts;
 
     // Start is called before the first frame update
     void Start()
@@ -34,8 +34,10 @@ public class Menu3d : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(inputScript.Cast)) {
-            EventSystem.current.currentSelectedGameObject.GetComponent<Button>().onClick.Invoke();
+        foreach (InputScript inputScript in inputScripts) {
+            if (Input.GetKeyDown(inputScript.Cast)) {
+                EventSystem.current.currentSelectedGameObject.GetComponent<Button>().onClick.Invoke();
+            }
         }
     }
 

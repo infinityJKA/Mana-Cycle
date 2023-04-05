@@ -8,10 +8,8 @@ public class Controller : MonoBehaviour
 {
     // the board being controlled by this script
     [SerializeField] private GameBoard board;
-    [SerializeField] private InputScript inputs;
-    [SerializeField] private InputScript soloInputs;
-
-    private InputScript[] inputsList;
+    [SerializeField] private InputScript[] inputScripts;
+    [SerializeField] private InputScript[] soloInputScripts;
 
     // vars for AI
     private int move;
@@ -28,9 +26,8 @@ public class Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // if in solo mode, add solo additional inputs
-        if (Storage.gamemode == Storage.GameMode.Solo) inputsList = new InputScript[]{inputs,soloInputs};
-        else inputsList = new InputScript[]{inputs};
+        // if in solo mode, use solo additional inputs
+        if (Storage.gamemode == Storage.GameMode.Solo) inputScripts = soloInputScripts;
         
     }
 
@@ -43,32 +40,30 @@ public class Controller : MonoBehaviour
         if (board.isPaused() || board.isPostGame() || board.convoPaused) return;
 
         if (board.isPlayerControlled() && !board.isDefeated()){
-            foreach (InputScript inputs in inputsList)
-            {
-                if (Input.GetKeyDown(inputs.RotateLeft)){
+            foreach (InputScript inputScript in inputScripts) {
+                if (Input.GetKeyDown(inputScript.RotateLeft)){
                     board.RotateLeft();
                 }
 
-                if (Input.GetKeyDown(inputs.RotateRight)){
+                if (Input.GetKeyDown(inputScript.RotateRight)){
                     // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
                     board.RotateRight();
                 }
 
-                if (Input.GetKeyDown(inputs.Left)){
+                if (Input.GetKeyDown(inputScript.Left)){
                     // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
                     board.MoveLeft();
                 }
 
-                if (Input.GetKeyDown(inputs.Right)){
+                if (Input.GetKeyDown(inputScript.Right)){
                     // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
                     board.MoveRight();
                 }
 
-                if (Input.GetKeyDown(inputs.Cast)){
+                if (Input.GetKeyDown(inputScript.Cast)){
                     board.Spellcast();
                 }
             }
-
         }
         else{
             // AI movement
@@ -92,12 +87,13 @@ public class Controller : MonoBehaviour
                 board.setFallTimeMult(1f);
 
                 // random number to choose when to cast
-                if (FindLowestCols()[0] < GameBoard.height/2){
+                if (board.getColHeight(FindLowestCols()[0]) > GameBoard.height/2){
                     move = 0;
                 }
                 else{
-                    move = (int) UnityEngine.Random.Range(0f, 4f);
+                    move = (int) UnityEngine.Random.Range(0f, 7f);
                 }
+
                
 
                 if (move == 0){

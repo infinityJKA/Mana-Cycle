@@ -20,12 +20,13 @@ public class GameBoard : MonoBehaviour
     [SerializeField] public GameObject pieceBoard;
 
     /** Input mapping for this board */
-    [SerializeField] public InputScript inputScript;
+    [SerializeField] public InputScript[] inputScripts;
 
-    // inputs used only in singleplayer mode
-    [SerializeField] public InputScript soloInputScript;
+    /** Inputs that replace inputScripts list if solo mode */
+    [SerializeField] public InputScript[] soloInputScripts;
 
-    private InputScript[] inputsList;
+    /** ControlsGraphic that will show the input keys */
+    [SerializeField] public ControlsGraphic controlsGraphic;
 
     /** The board of the enemy of the player/enemy of this board */
     [SerializeField] public GameBoard enemyBoard;
@@ -36,7 +37,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private PiecePreview piecePreview;
 
     /** Cycle pointer game object that belongs to this board */
-    [SerializeField] private GameObject pointer;
+    [SerializeField] public GameObject pointer;
 
     /** Stores the board's cycle level indicator */
     [SerializeField] private CycleMultiplier cycleLevelDisplay;
@@ -53,6 +54,9 @@ public class GameBoard : MonoBehaviour
 
     /** Extra time added to fallTime when piece is about to be placed. (Not affected by fallTimeMult) */
     [SerializeField] private float slideTime = 0.4f;
+
+    /** Last time a piece was placed; new piece will not be placed within same as slideTime */
+    private float lastPlaceTime;
 
     /** Win/lose text that appears over the board */
     [SerializeField] private GameObject winTextObj;
@@ -71,7 +75,10 @@ public class GameBoard : MonoBehaviour
 
     /** Dimensions of the board */
     public static readonly int width = 8;
-    public static readonly int height = 14;
+    public static readonly int height = 18;
+    // Visual size of the board; excludes top buffer rows incase piece is somehow moved up there; 
+    // and starting position is probably there too
+    public static readonly int physicalHeight = 14;
 
     /** The last time that the current piece fell down a tile. */
     private float previousFallTime;
@@ -143,8 +150,7 @@ public class GameBoard : MonoBehaviour
     void Start()
     {
         // if in solo mode, add solo additional inputs
-        if (Storage.gamemode == Storage.GameMode.Solo) inputsList = new InputScript[]{inputScript,soloInputScript};
-        else inputsList = new InputScript[]{inputScript};
+        if (Storage.gamemode == Storage.GameMode.Solo) inputScripts = soloInputScripts;
 
         // get sfx as regular dict
         serializedSoundDict = sfxObject.GetComponent<SFXDict>().sfxDictionary;
@@ -157,6 +163,9 @@ public class GameBoard : MonoBehaviour
         } else {
             singlePlayer = false;
         }
+
+        // don't show controls for player2 if singleplayer and player 2
+        if ((playerSide == 0 || !singlePlayer) && inputScripts.Length > 0 && inputScripts[0] != null) controlsGraphic.SetInputs(inputScripts[0]);
 
         // load level if applicable
         if (Storage.level != null)
@@ -174,7 +183,7 @@ public class GameBoard : MonoBehaviour
             maxHp = level.scoreGoal;
             hp = 0;
             SoundManager.Instance.musicSource.clip = level.battleMusic;
-            if (enemyBoard != null) enemyBoard.gameObject.SetActive(false);
+            if (enemyBoard != null) { enemyBoard.gameObject.SetActive(false); enemyBoard.pointer.SetActive(false); } 
             if (objectiveList != null) objectiveList.gameObject.SetActive(true);
 
             fallTime = level.fallTime;
@@ -228,14 +237,18 @@ public class GameBoard : MonoBehaviour
     // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
     public void InitializeCycle(ManaCycle cycle)
     {
+        if (!enabled) return;
+
         cycleInitialized = true;
         this.cycle = cycle;
 
         piecePreview.Setup(this);
 
         cyclePosition = 0;
-        pointer.SetActive(true);
-        pointer.transform.SetParent(cycle.transform);
+        if (playerSide == 0 || !enemyBoard.singlePlayer) pointer.SetActive(true);
+        else pointer.SetActive(false);
+        if (singlePlayer) enemyBoard.pointer.SetActive(false);
+        pointer.transform.SetParent(cycle.transform.parent);
         PointerReposition();
 
         board = new Tile[height, width];
@@ -244,12 +257,12 @@ public class GameBoard : MonoBehaviour
         CheckMidLevelConversations();
     }
 
-    // piece movement is all in functions so they can be called by inputScript. this allows easier implementation of AI controls
 
     public void RotateLeft(){
         piece.RotateLeft();
         if(!ValidPlacement()){
             // try nudging left, then right, then up. If none work, undo the rotation
+            // only bump up if row fallen to 3 or less times
             if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
         }
         PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f));
@@ -312,6 +325,12 @@ public class GameBoard : MonoBehaviour
         this.fallTimeMult = m;
     }
 
+    // The row that this piece last fell to.
+    private int lastRowFall = 0;
+    // The amount of times the piece has fallen to this row. 
+    // If it falls to this row more than 3 times, it will auto-place.
+    private int rowFallCount = 0;
+
     // Update is called once per frame
 
     void Update()
@@ -321,14 +340,13 @@ public class GameBoard : MonoBehaviour
 
         PointerReposition();
 
-        // if (!defeated)
-        // {
-        foreach (InputScript inputScript in inputsList){
-            if (Input.GetKeyDown(inputScript.Pause) && !postGame)
+        foreach (InputScript inputScript in inputScripts) {
+            if (Input.GetKeyDown(inputScript.Pause) && !postGame && !Storage.convoSkippedThisInput)
             {
                 pauseMenu.TogglePause();
                 PlaySFX("pause");
             }
+            Storage.convoSkippedThisInput = false;
 
             // control the pause menu if paused
             if (pauseMenu.paused && !postGame)
@@ -343,7 +361,7 @@ public class GameBoard : MonoBehaviour
 
                 if (Input.GetKeyDown(inputScript.Cast)){
                     pauseMenu.SelectOption();
-                }
+                }           
             }
             
 
@@ -378,60 +396,77 @@ public class GameBoard : MonoBehaviour
                 }
             }
 
-                // Get the time that has passed since the previous piece fall.
-                // If it is greater than fall time (or fallTime/10 if holding down),
-                // move the piece one down.
-                // (Final fall time has to be greater than 0.05)
-                double finalFallTime = fallTime*this.fallTimeMult;
-                if (finalFallTime < 0.05){
-                    finalFallTime = 0.05;
-                }
-
-                if(Time.time - previousFallTime > finalFallTime){
-
-                    // Try to move the piece down.
-                    bool movedDown = MovePiece(0, 1);
-
-                    if (!movedDown) {
-                        // If it can't be moved down,
-                        // also check for sliding buffer, and place if beyond that
-                        // don't use slide time if down held
-                        // if (!Input.GetKey(inputScript.Down)) {
-                        
-                        // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
-            
-                            if (!Input.GetKey(inputScript.Down)) {
-                                finalFallTime += slideTime;
-                            }
-
-
-                        // true if time is up for the extra slide buffer
-                        bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
-                        // if exxtended time is up and still can't move down, place
-                        if (pastExtraSlide && !movedDown)
-                        {
-                            // Place the piece
-                            PlacePiece();
-
-                            // Move self damage cycle
-                            DamageCycle();
-
-                            RefreshObjectives();
-
-                            // If postgame, don't spawn a new piece
-                            if (postGame) return;
-
-                            // Spawn a new piece & reset fall delay
-                            SpawnPiece();
-                            previousFallTime = Time.time;
-                        }
-                    } else {
-                        // if it did move, reset fall time
-                        previousFallTime = Time.time;  
-                    }
-                }
+            // Get the time that has passed since the previous piece fall.
+            // If it is greater than fall time (or fallTime/10 if holding down),
+            // move the piece one down.
+            // (Final fall time has to be greater than 0.05)
+            double finalFallTime = fallTime*this.fallTimeMult;
+            if (finalFallTime < 0.05){
+                finalFallTime = 0.05;
             }
-        // }
+
+            if(Time.time - previousFallTime > finalFallTime){
+
+                // Try to move the piece down.
+                bool movedDown = MovePiece(0, 1);
+
+                if (!movedDown) {
+                    // If it can't be moved down,
+                    // also check for sliding buffer, and place if beyond that
+                    // don't use slide time if down held
+                    // if (!Input.GetKey(inputScript.Down)) {
+                    
+                    // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
+        
+                        if (!Input.GetKey(inputScript.Down)) {
+                            finalFallTime += slideTime;
+                        }
+
+
+                    // true if time is up for the extra slide buffer
+                    bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
+                    // if exxtended time is up and still can't move down, place
+                    if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
+                    {
+                        Place();
+                    }
+                } else {
+                    // If it did move down, adjust numbers.
+                    // reset to 0 if row fallen to is below the last.
+                    // otherwise, increment
+                    if (piece.GetRow() > lastRowFall) {
+                        lastRowFall = piece.GetRow();
+                        rowFallCount = 0;
+                    } else {
+                        rowFallCount++;
+                        // if row fall count exceeds 3, auto place
+                        if (rowFallCount > 3) {
+                            Place();
+                        }
+                    }
+
+                    // if it did move, reset fall time
+                    previousFallTime = Time.time;  
+                }
+            }     
+        }
+    }
+
+    private void Place() {
+        // Place the piece
+        PlaceTilesOnBoard();
+
+        // Move self damage cycle
+        DamageCycle();
+
+        RefreshObjectives();
+
+        // If postgame, don't spawn a new piece
+        if (postGame) return;
+
+        // Spawn a new piece & reset fall delay & row
+        SpawnPiece();
+        previousFallTime = Time.time;
     }
 
     // Update the pointer's cycle position.
@@ -455,8 +490,8 @@ public class GameBoard : MonoBehaviour
     {
         pieceSpawned = true;
         piece = piecePreview.SpawnNextPiece();
-
-        
+        lastRowFall = piece.GetRow();
+        rowFallCount = 0;
 
         // If the piece is already in an invalid position, player has topped out
         if (!ValidPlacement()) {
@@ -494,8 +529,9 @@ public class GameBoard : MonoBehaviour
     }
 
     // Place a piece on the grid, moving its Tiles into the board array and removing the Piece.
-    public void PlacePiece()
+    public void PlaceTilesOnBoard()
     {
+        lastPlaceTime = Time.time;
         piece.PlaceTilesOnBoard(ref board);
 
         // Move the displayed tiles into the board parent
@@ -848,7 +884,10 @@ public class GameBoard : MonoBehaviour
                     board[rFall-1, c] = board[r, c];
                     // I am subtracting half of width and height again here, because it only works tht way,
                     // i don't know enough about transforms to know why. bandaid solution moment.
-                    board[rFall-1, c].transform.localPosition = new Vector3(c - 3.5f, -rFall + 1 + 6.5f, 0);
+                    board[rFall-1, c].transform.localPosition = new Vector3(
+                        c - GameBoard.width/2f + 0.5f, 
+                        -rFall + 1 + GameBoard.physicalHeight/2f - 0.5f + GameBoard.height - GameBoard.physicalHeight, 
+                    0);
 
                     board[rFall-1, c].AnimateMovement(
                         new Vector2(0, (rFall-1)-r),
@@ -910,12 +949,13 @@ public class GameBoard : MonoBehaviour
 
     public void Defeat() 
     {
+        if (defeated || won) return;
+
         postGame = true;
         defeated = true;
         if (timer != null) timer.StopTimer();
 
         pieceBoard.SetActive(false);
-
         winTextObj.SetActive(true);
         winText.text = "LOSE";
 
@@ -930,15 +970,21 @@ public class GameBoard : MonoBehaviour
 
     public void Win()
     {
-        won = true;
+        if (defeated || won) return;
+
         postGame = true;
+        won = true;
         if (timer != null) timer.StopTimer();
 
         winTextObj.SetActive(true);
         winText.text = "WIN";
+
         winMenu.AppearWithDelay(2d, this);
 
         StartCoroutine(CheckMidConvoAfterDelay());
+
+        SoundManager.Instance.musicSource.Pause();
+        PlaySFX("win");
     }
 
     /** Refreshed the objectives list. Will grant win to this player if all objectives met */

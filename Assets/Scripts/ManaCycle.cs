@@ -5,7 +5,8 @@ using System.Collections.Generic;
 public class ManaCycle : MonoBehaviour
 {
     // Prefab for cycle colors to display
-    [SerializeField] private Image cycleColorPrefab;
+    [SerializeField] private Image manaImage;
+    [SerializeField] private Image bgImage;
 
     // All ManaColor colors to tint the cycle images
     [SerializeField] private List<Color> manaColors;
@@ -30,12 +31,16 @@ public class ManaCycle : MonoBehaviour
     // Amount of unique colors in the cycle
     public static int cycleUniqueColors = 5;
 
+    public bool usingSprites;
+
     public void InitBoards()
     {
         // Check if player 1 is in single player. if so, use its cycle length variables
         if (boards[0].singlePlayer) {
             cycleLength = boards[0].GetLevel().cycleLength;
             cycleUniqueColors = boards[0].GetLevel().cycleUniqueColors;
+            boards[1].pointer.SetActive(false);
+            boards[1].pointer.gameObject.SetActive(false);
         } else {
             cycleLength = 7;
             cycleUniqueColors = 5;
@@ -47,6 +52,7 @@ public class ManaCycle : MonoBehaviour
         foreach (GameBoard board in boards)
         {
             if (board.enabled) board.InitializeCycle(this);
+            if (!board.enabled) board.pointer.SetActive(false);
         }
     }
 
@@ -92,10 +98,15 @@ public class ManaCycle : MonoBehaviour
         // Create cycle color objects for each cycle color
         for (int i=0; i<cycleLength; i++)
         {
-            Image cycleObject = Instantiate(cycleColorPrefab, Vector3.zero, Quaternion.identity);
+            Image cycleObject = Instantiate(manaImage, Vector3.zero, Quaternion.identity);
+            // Image bgObject = Instantiate(bgImage, Vector3.zero, Quaternion.identity);
             cycleObject.color = manaColors[(int)cycle[i]];
+            // bgObject.color = cycleObject.color = manaColors[(int)cycle[i]];
+            if (usingSprites) cycleObject.sprite = manaSprites[(int)cycle[i]];
             cycleObjects.Add(cycleObject);
+            // cycleObjects.Add(bgObject);
             cycleObject.transform.SetParent(transform, false);
+            // bgObject.transform.SetParent(transform, false);
         }
     }
 

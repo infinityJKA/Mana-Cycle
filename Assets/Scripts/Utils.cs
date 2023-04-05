@@ -33,4 +33,17 @@ public class Utils : MonoBehaviour // please keep this as MonoBehavior to preven
         int minutes = (int)(s/60);
         return minutes + ":" + (seconds+"").PadLeft(2, '0');
     }
+
+    public static string KeySymbol(KeyCode keyCode) {
+        switch(keyCode) {
+            case KeyCode.LeftArrow: return "←";
+            case KeyCode.RightArrow: return "→";
+            case KeyCode.DownArrow: return "↓";
+            case KeyCode.UpArrow: return "↑";
+            case KeyCode.Period: return ".";
+            case KeyCode.Comma: return ",";
+            case KeyCode.Slash: return "/";
+            default: return keyCode.ToString();
+        }
+    }
 }

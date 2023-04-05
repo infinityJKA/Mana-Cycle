@@ -36,7 +36,7 @@ public class TransitionScript : MonoBehaviour
         timePassed += Time.deltaTime;
         if (transitionState == "in")
         {
-            wipeImg.fillAmount = Mathf.Pow(timePassed / inTime, 2);
+            wipeImg.fillAmount = Mathf.Pow((timePassed + 0.1f) / inTime, 2);
             if (timePassed >= inTime){
                 wipingOut = true;
                 SceneManager.LoadScene(gotoScene);
@@ -47,7 +47,7 @@ public class TransitionScript : MonoBehaviour
 
         else if (transitionState == "out")
         {
-            wipeImg.fillAmount = Mathf.Pow(timePassed / outTime, 2) * -1 + 1;
+            wipeImg.fillAmount = Mathf.Pow(timePassed  / outTime, 2) * -1 + 1;
         }
         
 
