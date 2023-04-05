@@ -5,7 +5,8 @@ using System.Collections.Generic;
 public class ManaCycle : MonoBehaviour
 {
     // Prefab for cycle colors to display
-    [SerializeField] private Image cycleColorPrefab;
+    [SerializeField] private Image manaImage;
+    [SerializeField] private Image bgImage;
 
     // All ManaColor colors to tint the cycle images
     [SerializeField] private List<Color> manaColors;
@@ -97,10 +98,15 @@ public class ManaCycle : MonoBehaviour
         // Create cycle color objects for each cycle color
         for (int i=0; i<cycleLength; i++)
         {
-            Image cycleObject = Instantiate(cycleColorPrefab, Vector3.zero, Quaternion.identity);
+            Image cycleObject = Instantiate(manaImage, Vector3.zero, Quaternion.identity);
+            // Image bgObject = Instantiate(bgImage, Vector3.zero, Quaternion.identity);
             cycleObject.color = manaColors[(int)cycle[i]];
+            // bgObject.color = cycleObject.color = manaColors[(int)cycle[i]];
+            if (usingSprites) cycleObject.sprite = manaSprites[(int)cycle[i]];
             cycleObjects.Add(cycleObject);
+            // cycleObjects.Add(bgObject);
             cycleObject.transform.SetParent(transform, false);
+            // bgObject.transform.SetParent(transform, false);
         }
     }
 
