@@ -71,15 +71,14 @@ public class LevelLister : MonoBehaviour
             {
                 selection--;
                 RefreshList();
-                // commented out because these cause errors now????? will look at later
-                // SoundManager.Instance.PlaySound(moveSFX, pitch : 1.1f);
+                SoundManager.Instance.PlaySound(moveSFX, pitch : 1.1f);
             }
 
             if (Input.GetKeyDown(inputScript.Down))
             {
                 selection++;
                 RefreshList();
-                // SoundManager.Instance.PlaySound(moveSFX);
+                SoundManager.Instance.PlaySound(moveSFX);
             }
 
             // pause - go back to main menu
