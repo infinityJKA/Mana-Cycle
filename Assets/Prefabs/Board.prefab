@@ -119,8 +119,9 @@ MonoBehaviour:
   playerControlled: 1
   playerSide: 0
   pieceBoard: {fileID: 5659340913180476123}
-  inputScript: {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
-  soloInputScript: {fileID: 0}
+  inputScripts: []
+  soloInputScripts: []
+  controlsGraphic: {fileID: 0}
   enemyBoard: {fileID: 0}
   hpBar: {fileID: 3207433290967925078}
   piecePreview: {fileID: 8650080534907225375}
@@ -147,14 +148,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 109460369072555597}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2bb94b2e5fb3f4acc9484bf83053c408, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   center: {x: 0, y: 0, z: 0}
   shakeDirection: {x: 1, y: 0, z: 0}
-  magnitude: 3
+  magnitude: 8
   frequency: 5
   duration: 1
 --- !u!114 &3933151752034113109
@@ -681,6 +682,7 @@ GameObject:
   - component: {fileID: 5772421829298210278}
   - component: {fileID: 4442309938234162096}
   - component: {fileID: 7817557659022097812}
+  - component: {fileID: 2834064031139953319}
   m_Layer: 5
   m_Name: CyclePointer
   m_TagString: Untagged
@@ -746,6 +748,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2834064031139953319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2456237102310508810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bb94b2e5fb3f4acc9484bf83053c408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  center: {x: 0, y: 0, z: 0}
+  shakeDirection: {x: 1, y: 0, z: 0}
+  magnitude: 12
+  frequency: 8
+  duration: 0.5
 --- !u!1 &2765294716485640380
 GameObject:
   m_ObjectHideFlags: 0
@@ -1807,7 +1826,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9159051575835955899}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2bb94b2e5fb3f4acc9484bf83053c408, type: 3}
   m_Name: 

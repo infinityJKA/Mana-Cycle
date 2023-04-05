@@ -292,8 +292,16 @@ public class GameBoard : MonoBehaviour
         // start at chain of 1
         // canCast is true if a spellcast is currently in process.
         RefreshBlobs();
-        if (!casting && blobs.Count != 0) Spellcast(1);
-        else PlaySFX("failedCast");
+        if (!casting && blobs.Count != 0) {
+            var shake = pointer.GetComponent<Shake>();
+            if (shake != null) shake.StopShake();
+            Spellcast(1);
+        }
+        else {
+            PlaySFX("failedCast");
+            var shake = pointer.GetComponent<Shake>();
+            if (shake != null) shake.StartShake();
+        }
     }
 
     public bool isPlayerControlled(){
@@ -642,8 +650,8 @@ public class GameBoard : MonoBehaviour
         int dmg = hpBar.DamageQueue[5].dmg;
         if (dmg > 0) {
             // shake the board and portrait when damaged
-            shake.CauseShake();
-            portrait.GetComponent<Shake>().CauseShake();
+            shake.StartShake();
+            portrait.GetComponent<Shake>().StartShake();
             // flash portrait red
             portrait.GetComponent<ColorFlash>().Flash();
 
