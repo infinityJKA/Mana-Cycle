@@ -11,4 +11,7 @@ public class Battler : ScriptableObject {
     [SerializeField] public PieceRng pieceRng;
 
     [SerializeField] public AudioClip voiceSFX;
+
+    // used for the attack popup gradients
+    [SerializeField] public Material gradientMat;
 }
