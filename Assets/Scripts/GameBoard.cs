@@ -726,6 +726,8 @@ public class GameBoard : MonoBehaviour
         int cascade = 0;
         casting = true;
 
+        if (chain == 1) PlaySFX("startupCast");
+
         StartCoroutine(ClearCascadeWithDelay());
         IEnumerator ClearCascadeWithDelay()
         {
