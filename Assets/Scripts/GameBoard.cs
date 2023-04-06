@@ -370,7 +370,7 @@ public class GameBoard : MonoBehaviour
                 pauseMenu.TogglePause();
                 PlaySFX("pause");
             }
-            Storage.convoSkippedThisInput = false;
+            Storage.convoEndedThisInput = false;
 
             // control the pause menu if paused
             if (pauseMenu.paused && !postGame)
