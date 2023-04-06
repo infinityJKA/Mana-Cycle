@@ -513,7 +513,6 @@ public class GameBoard : MonoBehaviour
         if (!ValidPlacement()) {
             hp = 0;
             piece.gameObject.SetActive(false);
-            Destroy(piece);
             Defeat();
         }
     }
@@ -714,7 +713,8 @@ public class GameBoard : MonoBehaviour
 
         // If there were no blobs, do not deal damage, and do not move forward in cycle, 
         // end spellcast if active
-        if (blobs.Count == 0) {
+        // also end if defeated, combo shouldn't extend while dead
+        if (defeated || blobs.Count == 0) {
             casting = false;
             RefreshObjectives();
             StartCoroutine(CheckMidConvoAfterDelay());
@@ -974,6 +974,8 @@ public class GameBoard : MonoBehaviour
         postGame = true;
         defeated = true;
         if (timer != null) timer.StopTimer();
+
+        Destroy(piece);
 
         // pieceBoard.SetActive(false);
         winTextObj.SetActive(true);
