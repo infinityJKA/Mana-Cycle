@@ -990,6 +990,7 @@ public class GameBoard : MonoBehaviour
         if (level != null) {
             winMenu.AppearAfterDelay(this);
             PlaySFX("lose");
+            SoundManager.Instance.musicSource.Pause();
         }
 
         StartCoroutine(CheckMidConvoAfterDelay());
