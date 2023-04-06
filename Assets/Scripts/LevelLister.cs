@@ -55,7 +55,9 @@ public class LevelLister : MonoBehaviour
         // decLine = (listText.font.faceInfo.descentLine);
         listTransform = listObject.GetComponent<RectTransform>();
 
-        selection = GetNextLevel();
+        // last level selected when in this window.
+        if (Storage.lastLevelSelectedIndex == -1) Storage.lastLevelSelectedIndex = GetNextLevel();
+        Storage.lastLevelSelectedIndex = selection;
 
         RefreshList();
     }
@@ -70,6 +72,7 @@ public class LevelLister : MonoBehaviour
             if (Input.GetKeyDown(inputScript.Up))
             {
                 selection--;
+                Storage.lastLevelSelectedIndex = selection;
                 RefreshList();
                 SoundManager.Instance.PlaySound(moveSFX, pitch : 1.1f);
             }
@@ -77,6 +80,7 @@ public class LevelLister : MonoBehaviour
             if (Input.GetKeyDown(inputScript.Down))
             {
                 selection++;
+                Storage.lastLevelSelectedIndex = selection;
                 RefreshList();
                 SoundManager.Instance.PlaySound(moveSFX);
             }
