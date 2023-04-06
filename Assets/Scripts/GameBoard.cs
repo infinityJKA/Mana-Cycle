@@ -366,10 +366,10 @@ public class GameBoard : MonoBehaviour
             {
                 if (Input.GetKeyDown(inputScript.Up)) {
                     pauseMenu.MoveCursor(1);
-                    PlaySFX("rotate", pitch : 2.1f);
+                    PlaySFX("move", pitch : 0.8f);
                 } else if (Input.GetKeyDown(inputScript.Down)) {
                     pauseMenu.MoveCursor(-1);
-                    PlaySFX("rotate", pitch : 2.0f);
+                    PlaySFX("move", pitch : 0.75f);
                 }
 
                 if (Input.GetKeyDown(inputScript.Cast)){
