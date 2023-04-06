@@ -567,7 +567,7 @@ public class GameBoard : MonoBehaviour
     // Place a piece on the grid, moving its Tiles into the board array and removing the Piece.
     public void PlaceTilesOnBoard()
     {
-        if (piece != null) return;
+        if (piece == null) return;
         lastPlaceTime = Time.time;
         piece.PlaceTilesOnBoard(ref board);
 
