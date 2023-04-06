@@ -365,7 +365,7 @@ public class GameBoard : MonoBehaviour
         PointerReposition();
 
         foreach (InputScript inputScript in inputScripts) {
-            if (Input.GetKeyDown(inputScript.Pause) && !postGame && !Storage.convoSkippedThisInput)
+            if (Input.GetKeyDown(inputScript.Pause) && !postGame && !Storage.convoEndedThisInput)
             {
                 pauseMenu.TogglePause();
                 PlaySFX("pause");

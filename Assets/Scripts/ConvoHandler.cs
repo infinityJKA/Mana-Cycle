@@ -87,6 +87,7 @@ public class ConvoHandler : MonoBehaviour
             // skip rest of convo when pause pressed
             else if (Input.GetKeyDown(inputScript.Pause)) {
                 Storage.convoEndedThisInput = true;
+                // Storage.convoSkippedThisInput = true;
                 EndConvo();
             }
         }
