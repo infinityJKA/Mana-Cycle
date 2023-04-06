@@ -24,7 +24,8 @@ public class PostGameMenu : MonoBehaviour
     // Rematch button - text changed to "retry" in solo mode
     public TMPro.TextMeshProUGUI rematchTextGUI;
 
-    [SerializeField] private AudioClip postGameMusic;
+    [SerializeField] private AudioClip defeatMusic;
+    [SerializeField] private AudioClip winMusic;
     [SerializeField] private AudioClip moveSFX;
     [SerializeField] private AudioClip selectSFX;
 
@@ -69,7 +70,7 @@ public class PostGameMenu : MonoBehaviour
                     }
 
                     SoundManager.Instance.musicSource.Stop();
-                    SoundManager.Instance.musicSource.clip = postGameMusic;
+                    SoundManager.Instance.musicSource.clip = cleared ? winMusic : defeatMusic;
                     SoundManager.Instance.musicSource.Play();
                     Time.timeScale = 1f;
                     
