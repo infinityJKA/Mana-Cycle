@@ -26,9 +26,9 @@ public class LevelLister : MonoBehaviour
     [SerializeField] private InputScript[] inputScripts;
 
     /** Initial offset of the list, saved on start from anchored position */
-    [SerializeField] private Vector2 listOffset;
+    private Vector2 listOffset;
     /** amount to scroll by for each line. set to font size on start */
-    [SerializeField] private float scrollAmount;
+    private float scrollAmount;
 
     /** Index of current level selected */
     private int selectedLevelIndex;
