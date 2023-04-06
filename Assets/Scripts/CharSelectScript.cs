@@ -13,6 +13,8 @@ public class CharSelectScript : MonoBehaviour
     [SerializeField] private GameObject nameDisp;
     [SerializeField] private GameObject typeToggle;
     [SerializeField] private GameObject typeLabel;
+    [SerializeField] private AudioClip switchSFX;
+    [SerializeField] private AudioClip selectSFX;
     private Battler currentChar;
     private TMPro.TextMeshProUGUI nameText;
     private TMPro.TextMeshProUGUI typeText;
@@ -42,6 +44,7 @@ public class CharSelectScript : MonoBehaviour
                 if (charSelectorFocused)
                 {
                     lockedIn = !lockedIn;
+                    if (lockedIn) SoundManager.Instance.PlaySound(selectSFX);
                     UpdateLock();
                 }
                 else
@@ -55,6 +58,7 @@ public class CharSelectScript : MonoBehaviour
                 if (charSelectorFocused)
                 {
                     charSelection--;
+                    SoundManager.Instance.PlaySound(switchSFX);
                 }
             }
 
@@ -63,6 +67,7 @@ public class CharSelectScript : MonoBehaviour
                 if (charSelectorFocused)
                 {
                     charSelection++;
+                    SoundManager.Instance.PlaySound(switchSFX);
                 }
             }
 
