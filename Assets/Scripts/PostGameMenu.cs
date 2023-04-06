@@ -24,6 +24,10 @@ public class PostGameMenu : MonoBehaviour
     // Rematch button - text changed to "retry" in solo mode
     public TMPro.TextMeshProUGUI rematchTextGUI;
 
+    [SerializeField] private AudioClip postGameMusic;
+    [SerializeField] private AudioClip moveSFX;
+    [SerializeField] private AudioClip selectSFX;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -64,7 +68,9 @@ public class PostGameMenu : MonoBehaviour
                         PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(board.hp, highScore));
                     }
 
-                    setMenuSong();
+                    SoundManager.Instance.musicSource.Stop();
+                    SoundManager.Instance.musicSource.clip = postGameMusic;
+                    SoundManager.Instance.musicSource.Play();
                     Time.timeScale = 1f;
                     
                     // if first clear, immediately exit back to solomenu; otherwise, open menu
@@ -113,6 +119,7 @@ public class PostGameMenu : MonoBehaviour
         currentSelection -= amount;
         currentSelection = Utils.mod(currentSelection, MenuItems.Count);
         EventSystem.current.SetSelectedGameObject(MenuItems[currentSelection]);
+        SoundManager.Instance.PlaySound(moveSFX, pitch : 0.75f);
     }
 
     public void SelectOption()
@@ -120,6 +127,7 @@ public class PostGameMenu : MonoBehaviour
         if (Storage.convoEndedThisInput) return;
         // Debug.Log(MenuItems[currentSelection]);
         MenuItems[currentSelection].GetComponent<Button>().onClick.Invoke();
+        SoundManager.Instance.PlaySound(selectSFX);
     }
 
     public void SelectRematchButton()

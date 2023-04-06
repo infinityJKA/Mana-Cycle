@@ -1,0 +1,154 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 670696f7b5b01e4438299a5538f61cba, type: 3}
+  m_Name: Stage6Convo
+  m_EditorClassIdentifier: 
+  dialogueList:
+  - text: Hey, what do you think your most fun training exercise is?
+    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 0
+    leftAnim: 2
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "Hmmm\u2026\r"
+    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 1
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: Well, there is a very popular multi-person exercise that I have.
+    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 1
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: What is it?
+    leftSpeaker: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 0
+    leftAnim: 2
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "It\u2019s a series of training challenges collected together in a role-played
+      story.\r"
+    leftSpeaker: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 1
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: Like a tabletop game?
+    leftSpeaker: {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 0
+    leftAnim: 1
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "Yes, but with the power of the Infinite Battle Network you are able to
+      live through it.\r"
+    leftSpeaker: {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 1
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "Sounds interesting enough, why don\u2019t we give it a try?"
+    leftSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 0
+    leftAnim: 1
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "Okay then. Please read the roles that you have been given, and we will
+      begin momentarily\u2026"
+    leftSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 1
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "[The lights dimmer\u2026]"
+    leftSpeaker: {fileID: 0}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "In an old old age\u2026\r"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 1
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: 'A dark shroud begins to cover the kingdom.
+
+'
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "The king has gathered four brave souls to conquer this evil and free the
+      kingdom\u2026\r\n"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "The Soldier\u2026"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 1
+    background: {fileID: 0}
+  - text: "The Brawler\u2026"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 1
+    background: {fileID: 0}
+  - text: "The Paladin\u2026"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 1
+    background: {fileID: 0}
+  - text: "The Druid\u2026"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 1
+    background: {fileID: 0}
+  - text: Together, the four heroes set off to stop the evil.
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: The road ahead is long and arduous, but can they survive it?
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
