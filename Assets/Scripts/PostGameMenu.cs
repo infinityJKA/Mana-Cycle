@@ -95,6 +95,10 @@ public class PostGameMenu : MonoBehaviour
                     MenuItems[2].SetActive(false);
                     MenuItems.RemoveAt(2);
 
+                    SoundManager.Instance.musicSource.Stop();
+                    SoundManager.Instance.musicSource.clip = winMusic;
+                    SoundManager.Instance.musicSource.Play();
+
                     rematchTextGUI.text = "Rematch";
                 }
 
