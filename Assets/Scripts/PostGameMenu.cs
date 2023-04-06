@@ -129,21 +129,21 @@ public class PostGameMenu : MonoBehaviour
 
     public void SelectBackToMainButton()
     {
-        setMenuSong();
+        // setMenuSong();
         Time.timeScale = 1f;
         transitionHandler.WipeToScene("3dMenu", i: true);
     }
 
     public void SelectBackToCSS()
     {
-        setMenuSong();
+        // setMenuSong();
         Time.timeScale = 1f;
         transitionHandler.WipeToScene("CharSelect", i: true);
     }
 
     public void SelectBackToSolo()
     {
-        setMenuSong();
+        // setMenuSong();
         Time.timeScale = 1f;
         transitionHandler.WipeToScene("SoloMenu", i: true);
     }
