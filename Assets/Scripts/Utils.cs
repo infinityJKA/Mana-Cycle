@@ -43,6 +43,7 @@ public class Utils : MonoBehaviour // please keep this as MonoBehavior to preven
             case KeyCode.Period: return ".";
             case KeyCode.Comma: return ",";
             case KeyCode.Slash: return "/";
+            case KeyCode.Delete: return "DEL";
             default: return keyCode.ToString();
         }
     }
