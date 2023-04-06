@@ -69,9 +69,7 @@ public class PostGameMenu : MonoBehaviour
                         PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(board.hp, highScore));
                     }
 
-                    SoundManager.Instance.musicSource.Stop();
-                    SoundManager.Instance.musicSource.clip = cleared ? winMusic : defeatMusic;
-                    SoundManager.Instance.musicSource.Play();
+                    SoundManager.Instance.SetBGM(cleared ? winMusic : defeatMusic);
                     Time.timeScale = 1f;
                     
                     // if first clear, immediately exit back to solomenu; otherwise, open menu
@@ -95,9 +93,7 @@ public class PostGameMenu : MonoBehaviour
                     MenuItems[2].SetActive(false);
                     MenuItems.RemoveAt(2);
 
-                    SoundManager.Instance.musicSource.Stop();
-                    SoundManager.Instance.musicSource.clip = winMusic;
-                    SoundManager.Instance.musicSource.Play();
+                    SoundManager.Instance.SetBGM(winMusic);
 
                     rematchTextGUI.text = "Rematch";
                 }
@@ -162,9 +158,7 @@ public class PostGameMenu : MonoBehaviour
     }
 
     public void setMenuSong(){
-        SoundManager.Instance.musicSource.Stop();
-        SoundManager.Instance.musicSource.clip = SoundManager.Instance.mainMenuMusic;
-        SoundManager.Instance.musicSource.Play();
+        SoundManager.Instance.SetBGM(SoundManager.Instance.mainMenuMusic);
     }
 
 
