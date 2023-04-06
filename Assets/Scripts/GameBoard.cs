@@ -150,6 +150,9 @@ public class GameBoard : MonoBehaviour
 
     public AudioClip multiBattleMusic;
 
+    // used for testing portrait offsets
+    // private Vector2 initialPos;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -228,6 +231,8 @@ public class GameBoard : MonoBehaviour
             if (Storage.gamemode == Storage.GameMode.Solo) battler = level.battler;
         }
         portrait.sprite = battler.sprite;
+        // initialPos = portrait.GetComponent<RectTransform>().anchoredPosition;
+        portrait.GetComponent<RectTransform>().anchoredPosition = portrait.GetComponent<RectTransform>().anchoredPosition + battler.portraitOffset;
         attackPopup.SetBattler(battler);
         
         cyclePosition = 0;
@@ -348,6 +353,8 @@ public class GameBoard : MonoBehaviour
 
     void Update()
     {
+        // temporarily in update() to find the correct values quicker, keeping in case needed again in the future
+        // portrait.GetComponent<RectTransform>().anchoredPosition = initialPos + battler.portraitOffset;
         // wait for cycle to initialize (after countdown) to run game logic
         if (!cycleInitialized) return;
 
