@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
+  m_Name: Level12
+  m_EditorClassIdentifier: 
+  levelName: Level 12
+  description: With increased drop speed, clear 120 mana in 90 seconds!
+  conversation: {fileID: 11400000, guid: bb4d16c43c754db4b846b123514fc908, type: 2}
+  midLevelConversations: []
+  time: 90
+  scoreGoal: 0
+  cycleLength: 7
+  cycleUniqueColors: 5
+  fallTime: 0.15
+  battler: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+  objectives:
+  - condition: 2
+    value: 120
+  levelRequirement: {fileID: 11400000, guid: 13588a560ccdc47418d30e1e2d520c0e, type: 2}
+  survivalWin: 0
+  battleMusic: {fileID: 8300000, guid: 8f57f9b80aeb41e4b92ad52f5743bdf0, type: 3}
