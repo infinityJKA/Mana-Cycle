@@ -49,8 +49,12 @@ public class SoundManager : MonoBehaviour
         Instance.musicSource.clip = clip;
     }
 
-    public void UnpauseBGM() {
+    public void PlayBGM() {
         Instance.musicSource.Play();
+    }
+
+    public void UnpauseBGM() {
+        Instance.musicSource.UnPause();
     }
 
     public void PauseBGM() {

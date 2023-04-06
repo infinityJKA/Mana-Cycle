@@ -69,7 +69,6 @@ public class PostGameMenu : MonoBehaviour
                         PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(board.hp, highScore));
                     }
 
-                    if (clearedBefore) SoundManager.Instance.SetBGM(cleared ? winMusic : defeatMusic);
                     Time.timeScale = 1f;
                     
                     // if first clear, immediately exit back to solomenu; otherwise, open menu
@@ -77,6 +76,7 @@ public class PostGameMenu : MonoBehaviour
                         transitionHandler.WipeToScene("SoloMenu", i:true);
                         setMenuSong();
                     } else {
+                        SoundManager.Instance.SetBGM(cleared ? winMusic : defeatMusic);
                         MenuUI.SetActive(true);
                         Time.timeScale = 0f;
                         // when in solo mode, disable css button
