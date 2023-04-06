@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
+  m_Name: Level9
+  m_EditorClassIdentifier: 
+  levelName: Level 9
+  description: In 2 minutes with increased drop speed, score 3000 minutes and a combo
+    of 6.
+  conversation: {fileID: 11400000, guid: b6539458d80341e4ea28d3b5faebb223, type: 2}
+  midLevelConversations: []
+  time: 120
+  scoreGoal: 0
+  cycleLength: 7
+  cycleUniqueColors: 5
+  fallTime: 0.45
+  battler: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+  objectives:
+  - condition: 1
+    value: 3000
+  - condition: 4
+    value: 6
+  levelRequirement: {fileID: 11400000, guid: 9e9db0819655b64469e94f6a439a0f46, type: 2}
+  survivalWin: 0
+  battleMusic: {fileID: 8300000, guid: 2d4799e5a59601b44a2f1673cb0e301c, type: 3}
