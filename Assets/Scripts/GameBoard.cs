@@ -485,7 +485,10 @@ public class GameBoard : MonoBehaviour
         RefreshObjectives();
 
         // If postgame, don't spawn a new piece
-        if (postGame) return;
+        if (postGame) {
+            piece = null;
+            return;
+        }
 
         // Spawn a new piece & reset fall delay & row
         SpawnPiece();
@@ -528,6 +531,8 @@ public class GameBoard : MonoBehaviour
     // Return true if the piece is not blocked from moving to the new location.
     public bool MovePiece(int col, int row)
     {
+        if (piece == null) return true;
+
         piece.Move(col, row);
         // Check if the piece now overlaps any grid tiles, if so, move the tile back and return false
         if (!ValidPlacement()) {

@@ -36,13 +36,13 @@ public class PauseMenu : MonoBehaviour
                 
                 if (Storage.gamemode == Storage.GameMode.Solo)
                 {
-                    pauseMenuItems[2].SetActive(false);
-                    pauseMenuItems.RemoveAt(2);
+                    pauseMenuItems[1].SetActive(false);
+                    pauseMenuItems.RemoveAt(1);
                 }
                 else
                 {
-                    pauseMenuItems[3].SetActive(false);
-                    pauseMenuItems.RemoveAt(3);
+                    pauseMenuItems[2].SetActive(false);
+                    pauseMenuItems.RemoveAt(2);
                 }
             }
 
