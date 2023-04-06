@@ -751,79 +751,84 @@ public class GameBoard : MonoBehaviour
             // Brief delay before clearing current color
             yield return new WaitForSeconds(0.8f);
 
-            // Check for any new blobs that may have formed in those 0.8 seconds
-            // (Replaces old list)
-            // update: called on every place, so no longer needed here
-            // RefreshBlobs(color);
+            if (!defeated) {
+                // Check for any new blobs that may have formed in those 0.8 seconds
+                // (Replaces old list)
+                // update: called on every place, so no longer needed here
+                // RefreshBlobs(color);
 
-            while (manaCleared > 0) {
-                // If this is cascading off the same color more than once, short delay between
-                if (cascade > 0) {
-                    yield return new WaitForSeconds(0.5f);
-                    // recalculte blobs in case they changed
+                while (manaCleared > 0) {
+                    // If this is cascading off the same color more than once, short delay between
+                    if (cascade > 0) {
+                        yield return new WaitForSeconds(0.5f);
+
+                        if (defeated) 
+
+                        // recalculte blobs in case they changed
+                        RefreshBlobs();
+                    }
+
+                    if (chain > 1) chainPopup.Flash(chain.ToString());
+
+                    cascade += 1;
+                    if (cascade > 1) cascadePopup.Flash(cascade.ToString());
+
+                    // DMG per mana, starts at 10, increases by 3 per cycle level
+                    int damagePerMana = 10 + 3*cycleLevel;
+                    // Deal damage for the amount of mana cleared.
+                    // DMG is scaled by chain and cascade.
+                    int damage = (int)( (manaCleared * damagePerMana) * chain * cascade );
+
+                    // Get the average of all tile positions; this is where shoot particle is spawned
+                    Vector3 averagePos = Vector3.zero;
+                    foreach (Blob blob in blobs) {
+                        foreach (Vector2Int pos in blob.tiles) {
+                            averagePos += board[pos.y, pos.x].transform.position;
+                        }
+                    }
+                    averagePos /= manaCleared;
+
+                    // Send the damage over. Will counter incoming damage first.
+                    DealDamage(damage, averagePos, (int)CurrentColor(), chain);
+
+                    totalSpellcasts++;
+                    totalManaCleared += manaCleared;
+
+                    highestCombo = Math.Max(highestCombo, chain);
+
+                    // Clear all blob-contained tiles from the board.
+                    foreach (Blob blob in blobs) {
+                        foreach (Vector2Int pos in blob.tiles) {
+                            ClearTile(pos.x, pos.y);
+                        }
+                    }
+                    PlaySFX("cast1", pitch : 1f + chain*0.1f);
+
+                    // Do gravity everywhere
+                    AllTileGravity();
+
+
+
+                    // Check for cascaded blobs
                     RefreshBlobs();
+
+                    RefreshObjectives();
+                    StartCoroutine(CheckMidConvoAfterDelay());
                 }
 
-                if (chain > 1) chainPopup.Flash(chain.ToString());
-
-                cascade += 1;
-                if (cascade > 1) cascadePopup.Flash(cascade.ToString());
-
-                // DMG per mana, starts at 10, increases by 3 per cycle level
-                int damagePerMana = 10 + 3*cycleLevel;
-                // Deal damage for the amount of mana cleared.
-                // DMG is scaled by chain and cascade.
-                int damage = (int)( (manaCleared * damagePerMana) * chain * cascade );
-
-                // Get the average of all tile positions; this is where shoot particle is spawned
-                Vector3 averagePos = Vector3.zero;
-                foreach (Blob blob in blobs) {
-                    foreach (Vector2Int pos in blob.tiles) {
-                        averagePos += board[pos.y, pos.x].transform.position;
-                    }
+                // move to next in cycle position
+                cyclePosition += 1;
+                if (cyclePosition >= ManaCycle.cycleLength) {
+                    cyclePosition = 0;
+                    cycleLevel++;
+                    cycleLevelDisplay.Set(cycleLevel);
+                    PlaySFX("cycle");
                 }
-                averagePos /= manaCleared;
+                PointerReposition();
 
-                // Send the damage over. Will counter incoming damage first.
-                DealDamage(damage, averagePos, (int)CurrentColor(), chain);
-
-                totalSpellcasts++;
-                totalManaCleared += manaCleared;
-
-                highestCombo = Math.Max(highestCombo, chain);
-
-                // Clear all blob-contained tiles from the board.
-                foreach (Blob blob in blobs) {
-                    foreach (Vector2Int pos in blob.tiles) {
-                        ClearTile(pos.x, pos.y);
-                    }
-                }
-                PlaySFX("cast1", pitch : 1f + chain*0.1f);
-
-                // Do gravity everywhere
-                AllTileGravity();
-
-
-
-                // Check for cascaded blobs
-                RefreshBlobs();
-
-                RefreshObjectives();
-                StartCoroutine(CheckMidConvoAfterDelay());
-            }
-
-            // move to next in cycle position
-            cyclePosition += 1;
-            if (cyclePosition >= ManaCycle.cycleLength) {
-                cyclePosition = 0;
-                cycleLevel++;
-                cycleLevelDisplay.Set(cycleLevel);
-                PlaySFX("cycle");
-            }
-            PointerReposition();
-
-            // Spellcast for the new next color to check for chain
-            Spellcast(chain+1);
+                // Spellcast for the new next color to check for chain
+                Spellcast(chain+1);
+            }            
         }
     }
 
@@ -992,9 +997,12 @@ public class GameBoard : MonoBehaviour
 
         postGame = true;
         defeated = true;
+        casting = false;
+        hpBar.hpNum.gameObject.SetActive(false);
         if (timer != null) timer.StopTimer();
 
         Destroy(piece);
+        piece = null;
 
         // pieceBoard.SetActive(false);
         winTextObj.SetActive(true);
