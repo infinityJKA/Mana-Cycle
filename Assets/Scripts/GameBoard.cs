@@ -159,6 +159,11 @@ public class GameBoard : MonoBehaviour
         // if in solo mode, add solo additional inputs
         if (Storage.gamemode == Storage.GameMode.Solo) inputScripts = soloInputScripts;
 
+        if (playerSide == 0) {
+            Debug.Log("stopping bgm");
+            SoundManager.Instance.UnloadBGM();
+        }
+
         // get sfx as regular dict
         serializedSoundDict = sfxObject.GetComponent<SFXDict>().sfxDictionary;
         sfx = serializedSoundDict.asDictionary();
@@ -189,7 +194,6 @@ public class GameBoard : MonoBehaviour
             // hp number is used as score, starts as 0
             maxHp = level.scoreGoal;
             hp = 0;
-            SoundManager.Instance.LoadBGM(level.battleMusic);
             if (enemyBoard != null) { enemyBoard.gameObject.SetActive(false); enemyBoard.pointer.SetActive(false); } 
             if (objectiveList != null) objectiveList.gameObject.SetActive(true);
 
@@ -198,7 +202,6 @@ public class GameBoard : MonoBehaviour
             // (Later, this may depend on the character/mode)
             maxHp = 2000;
             hp = maxHp;
-            SoundManager.Instance.LoadBGM(multiBattleMusic);
             if (enemyBoard != null) enemyBoard.gameObject.SetActive(true);
             if (objectiveList != null) objectiveList.gameObject.SetActive(false);
         }
@@ -248,6 +251,10 @@ public class GameBoard : MonoBehaviour
     public void InitializeCycle(ManaCycle cycle)
     {
         if (!enabled) return;
+
+        if (playerSide == 0) {
+            SoundManager.Instance.SetBGM(singlePlayer ? level.battleMusic : multiBattleMusic);
+        }
 
         cycleInitialized = true;
         this.cycle = cycle;
@@ -456,7 +463,7 @@ public class GameBoard : MonoBehaviour
                         // If it did move down, adjust numbers.
                         // reset to 0 if row fallen to is below the last.
                         // otherwise, increment
-                        if (piece.GetRow() > lastRowFall) {
+                        if (piece != null && piece.GetRow() > lastRowFall) {
                             lastRowFall = piece.GetRow();
                             rowFallCount = 0;
                         } else {
@@ -560,6 +567,7 @@ public class GameBoard : MonoBehaviour
     // Place a piece on the grid, moving its Tiles into the board array and removing the Piece.
     public void PlaceTilesOnBoard()
     {
+        if (piece != null) return;
         lastPlaceTime = Time.time;
         piece.PlaceTilesOnBoard(ref board);
 
