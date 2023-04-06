@@ -25,6 +25,8 @@ public class PostGameMenu : MonoBehaviour
     public TMPro.TextMeshProUGUI rematchTextGUI;
 
     [SerializeField] private AudioClip postGameMusic;
+    [SerializeField] private AudioClip moveSFX;
+    [SerializeField] private AudioClip selectSFX;
 
     // Start is called before the first frame update
     void Start()
@@ -117,6 +119,7 @@ public class PostGameMenu : MonoBehaviour
         currentSelection -= amount;
         currentSelection = Utils.mod(currentSelection, MenuItems.Count);
         EventSystem.current.SetSelectedGameObject(MenuItems[currentSelection]);
+        SoundManager.Instance.PlaySound(moveSFX, pitch : 0.75f);
     }
 
     public void SelectOption()
@@ -124,6 +127,7 @@ public class PostGameMenu : MonoBehaviour
         if (Storage.convoEndedThisInput) return;
         // Debug.Log(MenuItems[currentSelection]);
         MenuItems[currentSelection].GetComponent<Button>().onClick.Invoke();
+        SoundManager.Instance.PlaySound(selectSFX);
     }
 
     public void SelectRematchButton()
