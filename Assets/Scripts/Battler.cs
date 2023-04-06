@@ -8,6 +8,8 @@ public class Battler : ScriptableObject {
 
     [SerializeField] public Sprite sprite;
 
+    [SerializeField] public Vector2 portraitOffset;
+
     [SerializeField] public PieceRng pieceRng;
 
     [SerializeField] public AudioClip voiceSFX;
