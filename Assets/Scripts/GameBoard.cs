@@ -159,11 +159,6 @@ public class GameBoard : MonoBehaviour
         // if in solo mode, add solo additional inputs
         if (Storage.gamemode == Storage.GameMode.Solo) inputScripts = soloInputScripts;
 
-        if (playerSide == 0) {
-            Debug.Log("stopping bgm");
-            SoundManager.Instance.UnloadBGM();
-        }
-
         // get sfx as regular dict
         serializedSoundDict = sfxObject.GetComponent<SFXDict>().sfxDictionary;
         sfx = serializedSoundDict.asDictionary();
@@ -188,6 +183,12 @@ public class GameBoard : MonoBehaviour
             midLevelConvos = new List<MidLevelConversation>(level.midLevelConversations);
         } else {
             midLevelConvos = new List<MidLevelConversation>();
+        }
+
+        if (playerSide == 0) {
+            Debug.Log("stopping bgm");
+            // SoundManager.Instance.UnloadBGM();
+            SoundManager.Instance.SetBGM(singlePlayer ? level.battleMusic : multiBattleMusic);
         }
 
         if (singlePlayer) {
@@ -251,10 +252,6 @@ public class GameBoard : MonoBehaviour
     public void InitializeCycle(ManaCycle cycle)
     {
         if (!enabled) return;
-
-        if (playerSide == 0) {
-            SoundManager.Instance.SetBGM(singlePlayer ? level.battleMusic : multiBattleMusic);
-        }
 
         cycleInitialized = true;
         this.cycle = cycle;
