@@ -67,7 +67,7 @@ public class CountdownHandler : MonoBehaviour
                     countDownText.text = "GO!";
                     cycleActivated = true;
                     SoundManager.Instance.PlaySound(goSFX);
-                    SoundManager.Instance.musicSource.Play();
+                    SoundManager.Instance.UnpauseBGM();
                 }
 
                 // if not reached 0 yet, tick; update text and play sound

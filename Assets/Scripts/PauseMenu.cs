@@ -28,7 +28,7 @@ public class PauseMenu : MonoBehaviour
         { 
             // game paused
             Time.timeScale = 0f; 
-            SoundManager.Instance.musicSource.Pause();
+            SoundManager.Instance.PauseBGM();
 
             // when in solo mode, hide css button. when in multi, hide solo button.
             // only remove extra button if it still exists  
@@ -61,7 +61,7 @@ public class PauseMenu : MonoBehaviour
             // game unpaused
             Time.timeScale = 1f;
             PauseUI.SetActive(false);
-            SoundManager.Instance.musicSource.Play();
+            SoundManager.Instance.UnpauseBGM();
         }
     }
 
@@ -75,7 +75,7 @@ public class PauseMenu : MonoBehaviour
     public void SelectOption()
     {
         // Debug.Log(pauseMenuItems[currentSelection]);
-        if (paused) SoundManager.Instance.musicSource.Play();
+        if (paused) SoundManager.Instance.UnpauseBGM();
         pauseMenuItems[currentSelection].GetComponent<Button>().onClick.Invoke();
     }
 }

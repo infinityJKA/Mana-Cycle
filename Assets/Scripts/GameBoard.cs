@@ -186,7 +186,7 @@ public class GameBoard : MonoBehaviour
             // hp number is used as score, starts as 0
             maxHp = level.scoreGoal;
             hp = 0;
-            SoundManager.Instance.musicSource.clip = level.battleMusic;
+            SoundManager.Instance.LoadBGM(level.battleMusic);
             if (enemyBoard != null) { enemyBoard.gameObject.SetActive(false); enemyBoard.pointer.SetActive(false); } 
             if (objectiveList != null) objectiveList.gameObject.SetActive(true);
 
@@ -195,7 +195,7 @@ public class GameBoard : MonoBehaviour
             // (Later, this may depend on the character/mode)
             maxHp = 2000;
             hp = maxHp;
-            SoundManager.Instance.musicSource.clip = multiBattleMusic;
+            SoundManager.Instance.LoadBGM(multiBattleMusic);
             if (enemyBoard != null) enemyBoard.gameObject.SetActive(true);
             if (objectiveList != null) objectiveList.gameObject.SetActive(false);
         }
@@ -990,7 +990,7 @@ public class GameBoard : MonoBehaviour
         if (level != null) {
             winMenu.AppearAfterDelay(this);
             PlaySFX("lose");
-            SoundManager.Instance.musicSource.Pause();
+            SoundManager.Instance.PauseBGM();
         }
 
         StartCoroutine(CheckMidConvoAfterDelay());
@@ -1011,7 +1011,7 @@ public class GameBoard : MonoBehaviour
 
         StartCoroutine(CheckMidConvoAfterDelay());
 
-        SoundManager.Instance.musicSource.Pause();
+        SoundManager.Instance.PauseBGM();
         PlaySFX("win");
     }
 
