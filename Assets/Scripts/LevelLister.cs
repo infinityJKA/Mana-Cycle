@@ -57,6 +57,7 @@ public class LevelLister : MonoBehaviour
 
         // last level selected when in this window.
         if (Storage.lastLevelSelectedIndex == -1) Storage.lastLevelSelectedIndex = GetNextLevel();
+        else selection = Storage.lastLevelSelectedIndex;
         Storage.lastLevelSelectedIndex = selection;
 
         RefreshList();
