@@ -77,7 +77,7 @@ public class ConvoSpeaker : MonoBehaviour {
             t += Time.unscaledDeltaTime;
 
             portrait.rectTransform.anchoredPosition = Vector2.Lerp(startOffset, targetOffset, t/fadeTime) * animDistance;
-            portrait.color = Color.Lerp(Color.clear, Color.white, t/fadeTime);
+            portrait.color = Color.Lerp(startColor, targetColor, t/fadeTime);
 
             yield return null;
         }
