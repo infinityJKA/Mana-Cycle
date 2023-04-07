@@ -100,7 +100,7 @@ public class Controller : MonoBehaviour
                 }
             }
             // random number so ai moves at random intervals
-            if (((int) UnityEngine.Random.Range(0f,110f) == 0) && !board.isDefeated()){
+            if (((int) UnityEngine.Random.Range(0f,90f) == 0) && !board.isDefeated()){
                 
                 // rotate peice to target rot
                 if ((int) board.getPiece().getRot() > this.targetRot){
