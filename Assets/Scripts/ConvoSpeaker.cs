@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,8 @@ public class ConvoSpeaker : MonoBehaviour {
     [SerializeField] private GameObject nameObj;
     /** Text GUI for speaker's name */
     [SerializeField] private TMPro.TextMeshProUGUI nameGUI;
+    /** Canvas group for the speaker name box */
+    [SerializeField] private CanvasGroup nameGroup;
 
     private static float fadeTime = 0.4f;
     private static float animDistance = 200f;
@@ -78,6 +81,7 @@ public class ConvoSpeaker : MonoBehaviour {
 
             portrait.rectTransform.anchoredPosition = Vector2.Lerp(startOffset, targetOffset, t/fadeTime) * animDistance;
             portrait.color = Color.Lerp(startColor, targetColor, t/fadeTime);
+            nameGroup.alpha = Mathf.Lerp(startColor.a, targetColor.a, t/fadeTime);
 
             yield return null;
         }
