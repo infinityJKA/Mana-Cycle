@@ -525,7 +525,9 @@ public class GameBoard : MonoBehaviour
 
         // If the piece is already in an invalid position, player has topped out
         if (!ValidPlacement()) {
-            hp = 0;
+            // set hp to 0 if not in endless
+            if (!(level != null && level.time == -1)) hp = 0;
+            
             piece.gameObject.SetActive(false);
             Defeat();
         }
