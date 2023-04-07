@@ -138,7 +138,7 @@ public class LevelLister : MonoBehaviour
             else{
                 Level level = levelsList[i];
 
-                bool cleared = PlayerPrefs.GetInt(level.GetInstanceID()+"_Cleared", 0) == 1;
+                bool cleared = PlayerPrefs.GetInt(level.levelName+"_Cleared", 0) == 1;
 
                 if (i == selectedLevelIndex && level.RequirementsMet()) newText += " <color=#FFFFFF>";
 
@@ -171,9 +171,9 @@ public class LevelLister : MonoBehaviour
         Level selectedLevel = levelsList[selectedLevelIndex];
         descriptionText.text = selectedLevel.description;
 
-        bool selectedCleared = PlayerPrefs.GetInt(selectedLevel.GetInstanceID()+"_Cleared", 0) == 1;
+        bool selectedCleared = PlayerPrefs.GetInt(selectedLevel.levelName+"_Cleared", 0) == 1;
         highScoreBG.SetActive(selectedCleared);
-        highScoreText.text = "High Score: "+PlayerPrefs.GetInt(selectedLevel.GetInstanceID()+"_HighScore", 0);
+        highScoreText.text = "High Score: "+PlayerPrefs.GetInt(selectedLevel.levelName+"_HighScore", 0);
 
         if (selectedLevel.time != -1)
         {
@@ -199,7 +199,7 @@ public class LevelLister : MonoBehaviour
     {
         for (int i = 0; i < levelsList.Length; i++)
         {
-            if (!(PlayerPrefs.GetInt(levelsList[i].GetInstanceID()+"_Cleared", 0) == 1)) return i;
+            if (!(PlayerPrefs.GetInt(levelsList[i].levelName+"_Cleared", 0) == 1)) return i;
         }
         // if all levels are cleared, start at 0
         return 0;
