@@ -186,7 +186,7 @@ public class GameBoard : MonoBehaviour
         }
 
         if (playerSide == 0) {
-            Debug.Log("stopping bgm");
+            // Debug.Log("stopping bgm");
             // SoundManager.Instance.UnloadBGM();
             SoundManager.Instance.SetBGM(singlePlayer ? level.battleMusic : multiBattleMusic);
         }
@@ -215,8 +215,8 @@ public class GameBoard : MonoBehaviour
 
         shake = GetComponent<Shake>();
 
-        // if any value in storage is null, it means we loaded straight to ManaCycle without going to CharSelect first. use default serialized values for battlers
-        if (Storage.battler1 != null)
+        // if any value in storage is null (and not solo), it means we loaded straight to ManaCycle without going to CharSelect first. use default serialized values for battlers
+        if (Storage.battler1 != null && (Storage.gamemode != Storage.GameMode.Solo))
         {
             if (playerSide == 0)
             {
