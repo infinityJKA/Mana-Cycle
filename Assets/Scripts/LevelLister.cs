@@ -81,7 +81,7 @@ public class LevelLister : MonoBehaviour
                 selectedLevelIndex--;
                 Storage.lastLevelSelectedIndex = selectedLevelIndex;
                 RefreshList();
-                SoundManager.Instance.PlaySound(moveSFX, pitch : 1.1f);
+                SoundManager.Instance.PlaySound(moveSFX, pitch : 1.18f);
             }
 
             if (Input.GetKeyDown(inputScript.Down))
@@ -89,7 +89,7 @@ public class LevelLister : MonoBehaviour
                 selectedLevelIndex++;
                 Storage.lastLevelSelectedIndex = selectedLevelIndex;
                 RefreshList();
-                SoundManager.Instance.PlaySound(moveSFX);
+                SoundManager.Instance.PlaySound(moveSFX, pitch : 1.06f);
             }
 
             // pause - go back to main menu

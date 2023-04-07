@@ -77,6 +77,7 @@ MonoBehaviour:
   portrait: {fileID: 6890043389614842849}
   nameObj: {fileID: 2453605080919229020}
   nameGUI: {fileID: 2453605081463943109}
+  nameGroup: {fileID: 1740776354693012998}
   animating: 0
 --- !u!1 &2453605079939200190
 GameObject:
@@ -440,6 +441,7 @@ GameObject:
   - component: {fileID: 2453605080863906574}
   - component: {fileID: 2453605080863906568}
   - component: {fileID: 2453605080863906575}
+  - component: {fileID: 6830514702104739883}
   m_Layer: 5
   m_Name: SpeakerNameBox1
   m_TagString: Untagged
@@ -506,6 +508,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 0.5
+--- !u!225 &6830514702104739883
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2453605080863906573}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2453605080919229020
 GameObject:
   m_ObjectHideFlags: 0
@@ -517,6 +531,7 @@ GameObject:
   - component: {fileID: 2453605080919229021}
   - component: {fileID: 2453605080919229023}
   - component: {fileID: 2453605080919229022}
+  - component: {fileID: 1740776354693012998}
   m_Layer: 5
   m_Name: SpeakerNameBox2
   m_TagString: Untagged
@@ -583,6 +598,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 0.5
+--- !u!225 &1740776354693012998
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2453605080919229020}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2453605081079221888
 GameObject:
   m_ObjectHideFlags: 0
@@ -971,6 +998,7 @@ MonoBehaviour:
   portrait: {fileID: 109072651460473285}
   nameObj: {fileID: 2453605080863906573}
   nameGUI: {fileID: 2453605080419741154}
+  nameGroup: {fileID: 6830514702104739883}
   animating: 0
 --- !u!1 &5231814708553510487
 GameObject:
