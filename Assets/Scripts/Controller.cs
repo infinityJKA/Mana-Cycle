@@ -118,11 +118,14 @@ public class Controller : MonoBehaviour
                     else if (board.getPiece().GetCol() + colAdjust < this.targetCol){
                         board.MoveRight();
                     }
-                    else{
-                        // we are at target, so quickdrop
-                        board.setFallTimeMult(0.1f);
-                    }
+
                 }
+            }
+
+            if (targetCol == board.getPiece().GetCol() && targetRot == (int) board.getPiece().getRot())
+            {
+                // we are at target, so quickdrop
+                board.setFallTimeMult(0.1f);
             }
         }
 
