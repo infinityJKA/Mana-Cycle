@@ -56,7 +56,7 @@ public class PostGameMenu : MonoBehaviour
 
                 if (Storage.gamemode == Storage.GameMode.Solo)
                 {
-                    int levelID = Storage.level.GetInstanceID();
+                    string levelID = Storage.level.levelName;
 
                     // if not endless mode and is winner, level is cleared
                     bool clearedBefore = PlayerPrefs.GetInt(levelID+"_Cleared", 0) == 1;
