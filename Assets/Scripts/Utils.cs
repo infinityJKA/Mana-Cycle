@@ -44,6 +44,8 @@ public class Utils : MonoBehaviour // please keep this as MonoBehavior to preven
             case KeyCode.Comma: return ",";
             case KeyCode.Slash: return "/";
             case KeyCode.Delete: return "DEL";
+            // temp fix for char select text wrapping
+            case KeyCode.Backspace: return "Back Space";
             default: return keyCode.ToString();
         }
     }
