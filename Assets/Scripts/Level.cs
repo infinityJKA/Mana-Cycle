@@ -45,7 +45,7 @@ public class Level : ScriptableObject {
 
     public bool RequirementsMet()
     {
-        if (levelRequirement != null) return PlayerPrefs.GetInt(levelRequirement.GetInstanceID()+"_Cleared", 0) == 1;
+        if (levelRequirement != null) return PlayerPrefs.GetInt(levelRequirement.levelName+"_Cleared", 0) == 1;
         else return true;
     }
 }
