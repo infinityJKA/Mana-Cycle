@@ -22,6 +22,7 @@ public class Controller : MonoBehaviour
     private int lowestHeight;
     private int[] orderedHeights;
     private List<int> lowestCols = new List<int>();
+    private double nextMoveTimer = 0d;
 
     // Start is called before the first frame update
     void Start()
@@ -99,14 +100,18 @@ public class Controller : MonoBehaviour
                     board.Spellcast();
                 }
             }
-            // random number so ai moves at random intervals
-            if (((int) UnityEngine.Random.Range(0f,90f) == 0) && !board.isDefeated()){
+            // ai moves at timed intervals
+            if ((nextMoveTimer - Time.time <= 0) && !board.isDefeated()){
+
+                // set timer for next move. get col height so ai speeds up when closer to topout
+                nextMoveTimer = Time.time + Math.Max(UnityEngine.Random.Range(0.6f,1f) - (double) board.getColHeight(FindLowestCols()[0])/20, 0.2f);
+                Debug.Log(nextMoveTimer - Time.time);
                 
                 // rotate peice to target rot
                 if ((int) board.getPiece().getRot() > this.targetRot){
-                    // Debug.Log(board.getPiece().getRot());
+                    Debug.Log(board.getPiece().getRot());
                 }
-                else if ((int) board.getPiece().getRot() < this.targetRot){
+                else if ((int) board.getPiece().getRot() != this.targetRot){
                     board.RotateLeft();
                 }
                 else{
