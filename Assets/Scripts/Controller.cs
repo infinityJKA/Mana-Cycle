@@ -105,11 +105,11 @@ public class Controller : MonoBehaviour
 
                 // set timer for next move. get col height so ai speeds up when closer to topout
                 nextMoveTimer = Time.time + Math.Max(UnityEngine.Random.Range(0.6f,1f) - (double) board.getColHeight(FindLowestCols()[0])/20, 0.2f);
-                Debug.Log(nextMoveTimer - Time.time);
+            
                 
                 // rotate peice to target rot
                 if ((int) board.getPiece().getRot() > this.targetRot){
-                    Debug.Log(board.getPiece().getRot());
+                    // Debug.Log(board.getPiece().getRot());
                 }
                 else if ((int) board.getPiece().getRot() != this.targetRot){
                     board.RotateLeft();
