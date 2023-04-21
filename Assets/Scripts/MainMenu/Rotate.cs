@@ -1,24 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-// used to make the gears spin
-public class Rotate : MonoBehaviour
-{
-    // axis to rotate around
-    public Vector3 axis;
-    // Speed in rotations/sec
-    public float speed;
+namespace MainMenu {
 
-    // Start is called before the first frame update
-    void Start()
+    /// <summary>
+    /// Script used to make an object spin around an axis. Used on the gear in the 3dmenu.
+    /// </summary>
+    public class Rotate : MonoBehaviour
     {
-        
-    }
+        /// <summary> Axis to rotate around </summary> 
+        public Vector3 axis;
+        /// <summary> Speed in rotations/sec </summary>
+        public float speed;
 
-    // Update is called once per frame
-    void Update()
-    {
-        transform.Rotate(axis, speed * 360 * Time.deltaTime);
+        // Start is called before the first frame update
+        void Start()
+        {
+            
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            transform.Rotate(axis, speed * 360 * Time.deltaTime);
+        }
     }
 }
