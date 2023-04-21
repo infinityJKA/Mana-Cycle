@@ -7,15 +7,15 @@ using UnityEngine;
 public class Storage
 {
     // battlers selected by players
-    public static Battler battler1;
-    public static Battler battler2;
+    public static Battle.Battler battler1;
+    public static Battle.Battler battler2;
     
     // player/cpu state selected by players
     public static bool isPlayer1;
     public static bool isPlayer2;
 
     /** level that the player selected */
-    public static Level level;
+    public static SoloMode.Level level;
 
     /** last index selected in level select list. -1 will select next level that is not cleared, starts off as this */
     public static int lastLevelSelectedIndex = -1;
