@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 using System;
 using UnityEngine.UI;
 
-
 public class TransitionScript : MonoBehaviour
 {
     [SerializeField] private GameObject wipeObj;
@@ -69,7 +68,7 @@ public class TransitionScript : MonoBehaviour
         {
             wipeImg.fillOrigin = (int) Image.OriginHorizontal.Left;
         }
-       
+    
         inTime = iT;
         outTime = oT;
         timePassed = 0;
