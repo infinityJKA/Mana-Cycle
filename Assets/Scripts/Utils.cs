@@ -35,6 +35,13 @@ public class Utils : MonoBehaviour // please keep this as MonoBehavior to preven
     }
 
     public static string KeySymbol(KeyCode keyCode) {
+        // number keys are named "Alpha", "Alpha", ect.
+        if (keyCode.ToString().Contains("Alpha"))
+        {
+            return keyCode.ToString()[keyCode.ToString().Length - 1].ToString();
+        }
+        Debug.Log(keyCode.ToString());
+
         switch(keyCode) {
             case KeyCode.LeftArrow: return "←";
             case KeyCode.RightArrow: return "→";
