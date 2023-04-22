@@ -25,7 +25,6 @@ namespace MainMenu {
             Event e = Event.current;
             if (e.isKey && Input.GetKeyDown(e.keyCode))
             {
-                Debug.Log("Detected key code: " + e.keyCode);
 
                 // don't let user assign the same key to multiple binds
                 if ((keyList[currentIndex] == e.keyCode) || (!keyList.Contains(e.keyCode)))
@@ -38,7 +37,7 @@ namespace MainMenu {
                 else
                 {
                     // epic bind failure
-                    Debug.Log("lol. lmao");
+
                 }
 
                 refreshText();
@@ -51,7 +50,6 @@ namespace MainMenu {
         public void StartRebind(InputScript inputScript)
         {
             EventSystem.current.SetSelectedGameObject(null);
-            Debug.Log("rebind start");
             inputs = inputScript;
             keyList = new KeyCode[] {inputs.Up, inputs.Left, inputs.Down, inputs.Right, inputs.RotateLeft, inputs.RotateRight, inputs.Cast, inputs.Pause};
             // set window visibility
