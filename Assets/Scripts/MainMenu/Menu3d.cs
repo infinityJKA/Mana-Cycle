@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System;
 
 namespace MainMenu {
     /// <summary>
@@ -26,10 +27,12 @@ namespace MainMenu {
         // p1 input script so that R to submit works in menu
         [SerializeField] private InputScript[] inputScripts;
 
+        [SerializeField] private TMPro.TextMeshProUGUI tipText;
+
         // Start is called before the first frame update
         void Start()
         {
-
+            UpdateTip();
         }
 
         // Update is called once per frame
@@ -81,6 +84,11 @@ namespace MainMenu {
         public void SelectSolo()
         {
             TransitionHandler.WipeToScene("SoloMenu");
+        }
+
+        public void UpdateTip()
+        {
+            tipText.text = String.Format("[Arrow Keys] to move cursor\n[{0}] to select", inputScripts[0].Cast);
         }
     }
 }
