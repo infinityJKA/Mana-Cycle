@@ -227,8 +227,17 @@ namespace SoloMode {
             string newTabText = "";
             for (int i = 0; i < tabs.Length; i++)
             {
+                // color tab if selected
+                if (selectedTabIndex == i)
+                {
+                    newTabText += "<color=#FFFFFF>";
+                }
+                else
+                {
+                    newTabText += "<color=#10FF10>";
+                }
                 SoloMenuTab currentTab = tabs[i];
-                newTabText += currentTab.tabName + "   ";
+                newTabText += currentTab.tabName + "   " + "</color>";
             }
 
             tabText.text = newTabText;
