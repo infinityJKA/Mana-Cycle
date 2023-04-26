@@ -235,7 +235,12 @@ namespace SoloMode {
             tabText.text = newTabText;
 
             // update target tab scroll pos
-            targetTabPosition = tabOffset + Vector2.left * (tabs[selectedTabIndex].tabName.Length + 3) * tabScrollAmount;
+            float newTabPos = 0;
+            for (int i = 0; i < selectedTabIndex; i++)
+            {
+                newTabPos += tabs[i].tabName.Length * tabScrollAmount;
+            }
+            targetTabPosition = tabOffset + Vector2.left * (selectedTabIndex) * newTabPos;
         }
 
         public void SetFocus(bool f){
