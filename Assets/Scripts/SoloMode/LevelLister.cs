@@ -80,7 +80,7 @@ namespace SoloMode {
             Storage.lastLevelSelectedIndex = selectedLevelIndex[0];
 
             listOffset = listText.rectTransform.anchoredPosition;
-            tabOffset = tabText.rectTransform.anchoredPosition;
+            tabOffset = tabText.rectTransform.offsetMin;
             levelScrollAmount = listText.fontSize;
             tabScrollAmount = tabText.fontSize;
 
@@ -150,8 +150,8 @@ namespace SoloMode {
             listText.rectTransform.anchoredPosition = 
             Vector2.SmoothDamp(listText.rectTransform.anchoredPosition, targetListPosition, ref vel, 0.1f);
 
-            tabText.rectTransform.anchoredPosition = 
-            Vector2.SmoothDamp(tabText.rectTransform.anchoredPosition, targetTabPosition, ref vel2, 0.1f);
+            tabText.rectTransform.offsetMin = 
+            Vector2.SmoothDamp(tabText.rectTransform.offsetMin, targetTabPosition, ref vel2, 0.1f);
         }
 
 
@@ -222,7 +222,6 @@ namespace SoloMode {
 
             // update the targeted level scroll position
             targetListPosition = listOffset + Vector2.up * (flavorLineCount+selectedLevelIndex[selectedTabIndex]) * levelScrollAmount;
-            // targetListPosition = new Vector2(listTransform.position.x, selectedLevelIndex*(levelScrollAmount)*Screen.height + yOffset*Screen.height);
 
             // make tab list string
             string newTabText = "";
@@ -238,9 +237,10 @@ namespace SoloMode {
             float newTabPos = 0;
             for (int i = 0; i < selectedTabIndex; i++)
             {
-                newTabPos += tabs[i].tabName.Length * tabScrollAmount;
+                newTabPos += (tabs[i].tabName.Length+3) * tabScrollAmount;
             }
-            targetTabPosition = tabOffset + Vector2.left * (selectedTabIndex) * newTabPos;
+            targetTabPosition = tabOffset + Vector2.left * newTabPos;
+            Debug.Log("TABPOS: " + targetTabPosition);
         }
 
         public void SetFocus(bool f){
