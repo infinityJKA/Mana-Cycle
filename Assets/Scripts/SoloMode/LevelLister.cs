@@ -14,11 +14,12 @@ namespace SoloMode {
         [SerializeField] private ConvoHandler convoHandler;
 
         /** List of levels to select */
-        [SerializeField] private Level[] levelsList;
+        private Level[] levelsList;
 
         // List level object caches
         /** list text component where the lines are written out */
         [SerializeField] private TMPro.TextMeshProUGUI listText;
+        [SerializeField] private TMPro.TextMeshProUGUI tabText;
 
         // self explanatory
         [SerializeField] private TMPro.TextMeshProUGUI descriptionText;
@@ -32,18 +33,23 @@ namespace SoloMode {
 
         /** Initial offset of the list, saved on start from anchored position */
         private Vector2 listOffset;
+        private Vector2 tabOffset;
         /** amount to scroll by for each line. set to font size on start */
-        private float scrollAmount;
+        private float levelScrollAmount;
+        private float tabScrollAmount;
 
         /** Index of current level selected */
-        private int selectedLevelIndex;
+        private int[] selectedLevelIndex;
+        private int selectedTabIndex;
         /** Descent between lines in the level list */
         // private float decLine;
 
         /** current targeted scroll position */
-        private Vector2 targetPosition;
+        private Vector2 targetListPosition;
+        private Vector2 targetTabPosition;
         /** current scroll velocity */
         private Vector2 vel = Vector2.zero;
+        private Vector2 vel2 = Vector2.zero;
 
         /** If the level list is currently focused, instead of dialogue */
         private bool focused; 
@@ -57,19 +63,26 @@ namespace SoloMode {
         [SerializeField] GameObject upArrow;
         [SerializeField] GameObject downArrow;
 
+        [SerializeField] SoloMenuTab[] tabs;
+
         // Start is called before the first frame update
         void Start()
         {
+            selectedLevelIndex = new int[tabs.Length];
+            selectedTabIndex = 0;
+            levelsList = tabs[selectedTabIndex].levelsList;
             focused = true;
             // decLine = (listText.font.faceInfo.descentLine);
 
             // last level selected when in this window.
             if (Storage.lastLevelSelectedIndex == -1) Storage.lastLevelSelectedIndex = GetNextLevel();
-            else selectedLevelIndex = Storage.lastLevelSelectedIndex;
-            Storage.lastLevelSelectedIndex = selectedLevelIndex;
+            else selectedLevelIndex[0] = Storage.lastLevelSelectedIndex;
+            Storage.lastLevelSelectedIndex = selectedLevelIndex[0];
 
             listOffset = listText.rectTransform.anchoredPosition;
-            scrollAmount = listText.fontSize;
+            tabOffset = tabText.rectTransform.anchoredPosition;
+            levelScrollAmount = listText.fontSize;
+            tabScrollAmount = tabText.fontSize;
 
             RefreshList();
         }
@@ -83,18 +96,30 @@ namespace SoloMode {
 
                 if (Input.GetKeyDown(inputScript.Up))
                 {
-                    selectedLevelIndex--;
-                    Storage.lastLevelSelectedIndex = selectedLevelIndex;
+                    selectedLevelIndex[selectedTabIndex]--;
+                    Storage.lastLevelSelectedIndex = selectedLevelIndex[0];
                     RefreshList();
                     SoundManager.Instance.PlaySound(moveSFX, pitch : 1.18f);
                 }
 
                 if (Input.GetKeyDown(inputScript.Down))
                 {
-                    selectedLevelIndex++;
-                    Storage.lastLevelSelectedIndex = selectedLevelIndex;
+                    selectedLevelIndex[selectedTabIndex]++;
+                    Storage.lastLevelSelectedIndex = selectedLevelIndex[0];
                     RefreshList();
                     SoundManager.Instance.PlaySound(moveSFX, pitch : 1.06f);
+                }
+
+                if (Input.GetKeyDown(inputScript.Right))
+                {
+                    selectedTabIndex++;
+                    RefreshList();
+                }
+
+                if (Input.GetKeyDown(inputScript.Left))
+                {
+                    selectedTabIndex--;
+                    RefreshList();
                 }
 
                 // pause - go back to main menu
@@ -106,15 +131,15 @@ namespace SoloMode {
                 // cast - open selected level
                 if (Input.GetKeyDown(inputScript.Cast))
                 {
-                    if (!levelsList[selectedLevelIndex].RequirementsMet()) 
+                    if (!levelsList[selectedLevelIndex[selectedTabIndex]].RequirementsMet()) 
                     {
                         SoundManager.Instance.PlaySound(errorSFX);
                         return;
                     }
                     
-                    Storage.level = levelsList[selectedLevelIndex]; 
+                    Storage.level = levelsList[selectedLevelIndex[selectedTabIndex]]; 
                     Storage.gamemode = Storage.GameMode.Solo;
-                    convoHandler.StartLevel(levelsList[selectedLevelIndex]);
+                    convoHandler.StartLevel(levelsList[selectedLevelIndex[selectedTabIndex]]);
                     focused = false;
                     Storage.levelSelectedThisInput = true;
                     SoundManager.Instance.PlaySound(selectSFX);
@@ -123,15 +148,20 @@ namespace SoloMode {
 
             // smoothly update displayed y position of level list
             listText.rectTransform.anchoredPosition = 
-            Vector2.SmoothDamp(listText.rectTransform.anchoredPosition, targetPosition, ref vel, 0.1f);
+            Vector2.SmoothDamp(listText.rectTransform.anchoredPosition, targetListPosition, ref vel, 0.1f);
+
+            tabText.rectTransform.anchoredPosition = 
+            Vector2.SmoothDamp(tabText.rectTransform.anchoredPosition, targetTabPosition, ref vel2, 0.1f);
         }
 
 
         private static int flavorLineCount = 30;
         void RefreshList()
         {
-            selectedLevelIndex = Math.Clamp(selectedLevelIndex, 0, levelsList.Length-1);
-            
+            selectedTabIndex = Math.Clamp(selectedTabIndex, 0, tabs.Length-1);
+            levelsList = tabs[selectedTabIndex].levelsList;
+            selectedLevelIndex[selectedTabIndex] = Math.Clamp(selectedLevelIndex[selectedTabIndex], 0, levelsList.Length-1);
+
             string newText = "";
             // add and subtract for extra lines at the start and end of list
             for (int i = -flavorLineCount; i < levelsList.Length + flavorLineCount; i++)
@@ -145,7 +175,7 @@ namespace SoloMode {
 
                     bool cleared = PlayerPrefs.GetInt(level.levelName+"_Cleared", 0) == 1;
 
-                    if (i == selectedLevelIndex && level.RequirementsMet()) newText += " <color=#FFFFFF>";
+                    if (i == selectedLevelIndex[selectedTabIndex] && level.RequirementsMet()) newText += " <color=#FFFFFF>";
 
                     else if (!level.RequirementsMet()) newText += "<color=#015706>";
 
@@ -153,7 +183,7 @@ namespace SoloMode {
 
                     newText += level.levelName;
 
-                    if (i == selectedLevelIndex) newText += " <";
+                    if (i == selectedLevelIndex[selectedTabIndex]) newText += " <";
                     newText += " </color>";
 
                     // clear check
@@ -173,7 +203,7 @@ namespace SoloMode {
             listText.text = newText;
 
             // display the description and time of the selected level
-            Level selectedLevel = levelsList[selectedLevelIndex];
+            Level selectedLevel = levelsList[selectedLevelIndex[selectedTabIndex]];
             descriptionText.text = selectedLevel.description;
 
             bool selectedCleared = PlayerPrefs.GetInt(selectedLevel.levelName+"_Cleared", 0) == 1;
@@ -190,9 +220,22 @@ namespace SoloMode {
             }
             
 
-            // update the targeted scroll position
-            targetPosition = listOffset + Vector2.up * (flavorLineCount+selectedLevelIndex) * scrollAmount;
-            // targetPosition = new Vector2(listTransform.position.x, selectedLevelIndex*(scrollAmount)*Screen.height + yOffset*Screen.height);
+            // update the targeted level scroll position
+            targetListPosition = listOffset + Vector2.up * (flavorLineCount+selectedLevelIndex[selectedTabIndex]) * levelScrollAmount;
+            // targetListPosition = new Vector2(listTransform.position.x, selectedLevelIndex*(levelScrollAmount)*Screen.height + yOffset*Screen.height);
+
+            // make tab list string
+            string newTabText = "";
+            for (int i = 0; i < tabs.Length; i++)
+            {
+                SoloMenuTab currentTab = tabs[i];
+                newTabText += currentTab.tabName + "   ";
+            }
+
+            tabText.text = newTabText;
+
+            // update target tab scroll pos
+            targetTabPosition = tabOffset + Vector2.left * (tabs[selectedTabIndex].tabName.Length + 3) * tabScrollAmount;
         }
 
         public void SetFocus(bool f){
