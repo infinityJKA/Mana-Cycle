@@ -101,6 +101,7 @@ namespace SoloMode {
                 if (Input.GetKeyDown(inputScript.Up))
                 {
                     selectedLevelIndex[selectedTabIndex]--;
+                    ClampSelections();
                     StoreSelections();
                     RefreshList();
                     SoundManager.Instance.PlaySound(moveSFX, pitch : 1.18f);
@@ -109,6 +110,7 @@ namespace SoloMode {
                 if (Input.GetKeyDown(inputScript.Down))
                 {
                     selectedLevelIndex[selectedTabIndex]++;
+                    ClampSelections();
                     StoreSelections();
                     RefreshList();
                     SoundManager.Instance.PlaySound(moveSFX, pitch : 1.06f);
@@ -117,6 +119,7 @@ namespace SoloMode {
                 if (Input.GetKeyDown(inputScript.Right))
                 {
                     selectedTabIndex++;
+                    ClampSelections();
                     StoreSelections();
                     RefreshList();
                 }
@@ -124,6 +127,7 @@ namespace SoloMode {
                 if (Input.GetKeyDown(inputScript.Left))
                 {
                     selectedTabIndex--;
+                    ClampSelections();
                     StoreSelections();
                     RefreshList();
                 }
@@ -166,14 +170,17 @@ namespace SoloMode {
             Storage.lastLevelSelectedIndex = selectedLevelIndex[selectedTabIndex];
         }
 
-
-        private static int flavorLineCount = 30;
-        void RefreshList()
+        private void ClampSelections()
         {
             selectedTabIndex = Math.Clamp(selectedTabIndex, 0, tabs.Length-1);
             levelsList = tabs[selectedTabIndex].levelsList;
             selectedLevelIndex[selectedTabIndex] = Math.Clamp(selectedLevelIndex[selectedTabIndex], 0, levelsList.Length-1);
+        }
 
+
+        private static int flavorLineCount = 30;
+        void RefreshList()
+        {
             string newText = "";
             // add and subtract for extra lines at the start and end of list
             for (int i = -flavorLineCount; i < levelsList.Length + flavorLineCount; i++)
