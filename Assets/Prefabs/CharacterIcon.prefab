@@ -35,8 +35,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 63.936, y: -215.85}
-  m_SizeDelta: {x: 710.058, y: 883.511}
+  m_AnchoredPosition: {x: 62.155, y: -235.442}
+  m_SizeDelta: {x: 706.496, y: 922.696}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2806597150396673089
 CanvasRenderer:
@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 8080916469890630724}
   - component: {fileID: 735431679309870368}
   - component: {fileID: 139984596298607071}
+  - component: {fileID: 2647383539624076135}
   m_Layer: 5
   m_Name: CharacterIcon
   m_TagString: Untagged
@@ -136,7 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: e7f532da2f1b44ad9aaf48d174941ccd, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -168,3 +169,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &2647383539624076135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7264203811073235287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec71be4fdea4f40deb745e1b4fcfab1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battler: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+  background: {fileID: 735431679309870368}
+  portrait: {fileID: 2099512970512882382}
