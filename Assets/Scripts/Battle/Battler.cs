@@ -21,6 +21,7 @@ namespace Battle {
 
     public enum PieceRng {
         CurrentColorWeighted,
-        PureRandom
+        PureRandom,
+        Bag
     }
 }
