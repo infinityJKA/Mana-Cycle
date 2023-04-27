@@ -19,6 +19,7 @@ public class Storage
 
     /** last index selected in level select list. -1 will select next level that is not cleared, starts off as this */
     public static int lastLevelSelectedIndex = -1;
+    public static int lastTabSelectedIndex = -1;
 
     /** current gamemode selected by player */
     public static GameMode gamemode;
