@@ -222,6 +222,7 @@ GameObject:
   - component: {fileID: 339325234147284398}
   - component: {fileID: 864536467160746753}
   - component: {fileID: 3807177247297531161}
+  - component: {fileID: 5349231826878265137}
   m_Layer: 5
   m_Name: SelectedCharacter
   m_TagString: Untagged
@@ -289,6 +290,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5349231826878265137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5714248975515387141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5017f386dffc44b94b083ba9b3c0532b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlayer1: 1
+  inputScript: {fileID: 11400000, guid: dcf90322a3a964ef4949ecaf7bdc3740, type: 2}
+  portrait: {fileID: 5246849515977571416}
+  nameText: {fileID: 1961763888878954578}
 --- !u!1 &8662925798054580617
 GameObject:
   m_ObjectHideFlags: 0

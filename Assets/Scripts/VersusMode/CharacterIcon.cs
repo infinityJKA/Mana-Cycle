@@ -3,12 +3,15 @@ using UnityEngine.UI;
 
 using UnityEditor;
 
+using Battle;
+
 namespace VersusMode {
     ///<summary>Controls a character icon in the character select grid. </summary>
 
     public class CharacterIcon : MonoBehaviour {
         //<summary>Currently displayed battler.</summary>
-        [SerializeField] private Battle.Battler battler;
+        [SerializeField] private Battler _battler;
+        public Battler battler {get {return _battler;}}
 
         //<summary>Icon background where gradient material is set</summary>
         [SerializeField] private Image background;
@@ -23,11 +26,14 @@ namespace VersusMode {
         ///<summary>Whether or not p1/p2 is currently hovered over.</summary>
         private bool p1hovered, p2hovered, cpuHovered;
 
+        ///<summary>Selectable, used to find adjacent icons to select</summary>
+        public Selectable selectable {get; private set;}
+
         ///<summary>Set Whether or not p1/p2 is currently hovered over.</summary>
-        ///<param name="isP1">true for p1, false for p2</param>
+        ///<param name="isPlayer1">true for p1, false for p2</param>
         ///<param name="hovered">true if the player's cursor is here, false if not</param>
-        public void SetHovered(bool isP1, bool hovered) {
-            if (isP1) {
+        public void SetSelected(bool isPlayer1, bool hovered) {
+            if (isPlayer1) {
                 p1hovered = hovered;
             } else {
                 p2hovered = hovered;
@@ -35,8 +41,8 @@ namespace VersusMode {
             RefreshCursorImage();
         }
 
-        ///<summary>Same as SetHovered but only for the cup cursor</summary>
-        public void SetCUPHovered(bool hovered) {
+        ///<summary>Same as SetHovered but only for the cpu cursor</summary>
+        public void SetCPUHovered(bool hovered) {
             cpuHovered = hovered;
             RefreshCursorImage();
         }
@@ -58,8 +64,14 @@ namespace VersusMode {
 
         ///<summary>updates images and gradients in editor</summary>
         private void OnValidate() {
-            background.material = battler.gradientMat;
-            portrait.sprite = battler.sprite;
+            if (_battler != null) {
+                background.material = _battler.gradientMat;
+                portrait.sprite = _battler.sprite;
+                selectable = GetComponent<Selectable>();
+            } else {
+                Debug.LogError("Battler is null on "+gameObject.name+"!");
+                Debug.Log(_battler);
+            }
         }
     }
 }
