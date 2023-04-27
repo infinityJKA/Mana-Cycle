@@ -1,8 +1,8 @@
 using UnityEngine;
 
 namespace VersusMode {
-    public class CharacterSelector : MonoBehaviour {
-        [SerializeField] private CharSelectCursor p1cursor;
-        [SerializeField] private CharSelectCursor p2cursor;
+    public class CharSelectMenu : MonoBehaviour {
+        [SerializeField] private CharSelector p1cursor;
+        [SerializeField] private CharSelector p2cursor;
     }
 }
