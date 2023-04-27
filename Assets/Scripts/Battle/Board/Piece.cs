@@ -26,6 +26,9 @@ namespace Battle.Board {
         // This piece's rotation, direction that the top tile is facing. Start out facing up.
         [SerializeField] private Orientation orientation = Orientation.up;
 
+        private int bagPullAmount = -1;
+        private List<ManaColor> currentBag;
+
         // Orientation is the way that the "top" tile is facing
         public enum Orientation
         {
@@ -90,11 +93,51 @@ namespace Battle.Board {
                 top.SetColor(RandomColor(), board);
                 right.SetColor(RandomColor(), board);
             }
+
+            else if (rng == PieceRng.Bag)
+            {
+                // select color from randomized bag
+                // keep track of how many times a color has been pulled for reshuffle
+                center.SetColor(pullColor(), board);
+                top.SetColor(pullColor(), board);
+                right.SetColor(pullColor(), board);
+
+            }
         }
 
         private ManaColor RandomColor()
         {
             return (ManaColor)Random.Range(0, ManaCycle.cycleUniqueColors);
+        }
+
+        private List<ManaColor> GenerateColorBag()
+        {
+            // generate the next piece colors with 2x bag, where x is unique cycle colors
+            // create the unsorted list with 2 of each color
+            List<ManaColor> newBag = new List<ManaColor>();
+            for (int i = 0; i < ManaCycle.cycleUniqueColors; i++)
+            {
+                newBag.Add( (ManaColor) i);
+                newBag.Add( (ManaColor) i);
+            }
+            // Debug.Log(string.Join(",",newBag));
+
+            Utils.Shuffle(newBag);
+            return newBag;
+        }
+
+        // pull the next color from bag
+        private ManaColor pullColor()
+        {
+            // if end of bag (or first pull), reshuffle
+            if (bagPullAmount == -1 || bagPullAmount > currentBag.Count )
+            {
+                currentBag = GenerateColorBag();
+                bagPullAmount = 0;
+            }
+            ManaColor pulledColor = currentBag[bagPullAmount];
+            bagPullAmount++;
+            return pulledColor;
         }
 
         private ManaColor ColorWeightedRandom(GameBoard board)
