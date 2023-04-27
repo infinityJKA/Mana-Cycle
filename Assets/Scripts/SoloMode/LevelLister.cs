@@ -74,10 +74,14 @@ namespace SoloMode {
             focused = true;
             // decLine = (listText.font.faceInfo.descentLine);
 
-            // last level selected when in this window.
+            // last level and tab selected when in this window.
+            if (Storage.lastTabSelectedIndex == -1) Storage.lastLevelSelectedIndex = 0;
+            else selectedTabIndex = Storage.lastTabSelectedIndex;
+
             if (Storage.lastLevelSelectedIndex == -1) Storage.lastLevelSelectedIndex = GetNextLevel();
-            else selectedLevelIndex[0] = Storage.lastLevelSelectedIndex;
-            Storage.lastLevelSelectedIndex = selectedLevelIndex[0];
+            else selectedLevelIndex[selectedTabIndex] = Storage.lastLevelSelectedIndex;
+
+            Storage.lastLevelSelectedIndex = selectedLevelIndex[selectedTabIndex];
 
             listOffset = listText.rectTransform.anchoredPosition;
             tabOffset = tabText.rectTransform.offsetMin;
@@ -97,7 +101,7 @@ namespace SoloMode {
                 if (Input.GetKeyDown(inputScript.Up))
                 {
                     selectedLevelIndex[selectedTabIndex]--;
-                    Storage.lastLevelSelectedIndex = selectedLevelIndex[0];
+                    StoreSelections();
                     RefreshList();
                     SoundManager.Instance.PlaySound(moveSFX, pitch : 1.18f);
                 }
@@ -105,7 +109,7 @@ namespace SoloMode {
                 if (Input.GetKeyDown(inputScript.Down))
                 {
                     selectedLevelIndex[selectedTabIndex]++;
-                    Storage.lastLevelSelectedIndex = selectedLevelIndex[0];
+                    StoreSelections();
                     RefreshList();
                     SoundManager.Instance.PlaySound(moveSFX, pitch : 1.06f);
                 }
@@ -113,12 +117,14 @@ namespace SoloMode {
                 if (Input.GetKeyDown(inputScript.Right))
                 {
                     selectedTabIndex++;
+                    StoreSelections();
                     RefreshList();
                 }
 
                 if (Input.GetKeyDown(inputScript.Left))
                 {
                     selectedTabIndex--;
+                    StoreSelections();
                     RefreshList();
                 }
 
@@ -152,6 +158,12 @@ namespace SoloMode {
 
             tabText.rectTransform.offsetMin = 
             Vector2.SmoothDamp(tabText.rectTransform.offsetMin, targetTabPosition, ref vel2, 0.1f);
+        }
+
+        private void StoreSelections()
+        {
+            Storage.lastTabSelectedIndex = selectedTabIndex;
+            Storage.lastLevelSelectedIndex = selectedLevelIndex[selectedTabIndex];
         }
 
 
