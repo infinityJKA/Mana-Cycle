@@ -5,6 +5,7 @@ using System;
 using UnityEngine.UI;
 
 namespace VersusMode {
+    ///<summary>USED ONLY IN OLD CHARSELECT controls the timer for that menu </summary>
     public class TimerManagerScript : MonoBehaviour
     {
         [SerializeField] private CharSelectScript p1Selector;

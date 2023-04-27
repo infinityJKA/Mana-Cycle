@@ -9,6 +9,7 @@ using Battle;
 using Sound;
 
 namespace VersusMode {
+    ///<summary>THIS IS FOR THE OLD CHARSELECT MENU don't use in new versusmenu </summary>
     public class CharSelectScript : MonoBehaviour
     {
         [SerializeField] private InputScript[] inputScripts;
