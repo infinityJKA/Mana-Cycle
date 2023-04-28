@@ -40,7 +40,6 @@ public class Utils : MonoBehaviour
         {
             return keyCode.ToString()[keyCode.ToString().Length - 1].ToString();
         }
-        Debug.Log(keyCode.ToString());
 
         switch(keyCode) {
             case KeyCode.LeftArrow: return "←";

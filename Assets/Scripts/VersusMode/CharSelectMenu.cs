@@ -6,7 +6,7 @@ namespace VersusMode {
         ///<summary>Selectors for both players</summary>
         [SerializeField] private CharSelector p1Selector, p2Selector;
         ///<summary>The grid of characters to select with the selectorss defined in this object</summary>
-        [SerializeField] private CharSelectGrid grid;
+        [SerializeField] private Transform grid;
 
         private TransitionScript transitionHandler;
         private double timer;
@@ -16,9 +16,7 @@ namespace VersusMode {
         // Start is called before the first frame update
         void Start()
         {
-            transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
-
-            Selectable firstSelection = grid.transform.GetChild(0).GetComponent<Selectable>();
+            Selectable firstSelection = grid.GetChild(0).GetComponent<Selectable>();
 
             p1Selector.SetSelection(firstSelection);
             p2Selector.SetSelection(firstSelection);
@@ -68,8 +66,17 @@ namespace VersusMode {
                 Storage.level = null;
                 Storage.gamemode = Storage.GameMode.Versus;
 
+                if (!transitionHandler) {
+                    Debug.LogError("Transition handler not found in scene!");
+                    return;
+                }
+
                 transitionHandler.WipeToScene("ManaCycle");
             }
+        }
+        
+        void OnValidate() {
+            transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
         }
     }
 }

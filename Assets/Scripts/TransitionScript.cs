@@ -53,13 +53,13 @@ public class TransitionScript : MonoBehaviour
     }
 
     // inverting direction of transition is WIP
-    public void WipeToScene(string scene, float iT=0.5f, float oT=0.5f, bool i=false)
+    public void WipeToScene(string scene, float inTime=0.5f, float outTime=0.5f, bool reverse=false)
     {
 
         // dont start a transition if one is already in progress
         if (transitionState == "in") return;
 
-        inverted = i;
+        inverted = reverse;
         if (!inverted)
         {
             wipeImg.fillOrigin = (int) Image.OriginHorizontal.Right;
@@ -68,9 +68,9 @@ public class TransitionScript : MonoBehaviour
         {
             wipeImg.fillOrigin = (int) Image.OriginHorizontal.Left;
         }
-    
-        inTime = iT;
-        outTime = oT;
+
+        TransitionScript.inTime = inTime;
+        TransitionScript.outTime = outTime;
         timePassed = 0;
         transitionState = "in";
         gotoScene = scene;
