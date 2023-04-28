@@ -15,10 +15,15 @@ using Sound;
 namespace Battle.Board {
     public class GameBoard : MonoBehaviour
     {
+
+
+        // Everything else
         // If this board is in single player mode */
         [SerializeField] public bool singlePlayer;
         // The battler selected for this board.
         [SerializeField] private Battler battler;
+        public Battler Battler {get {return battler;}}
+
         // True if the player controls this board. */
         [SerializeField] private bool playerControlled;
         /** 0 for left side, 1 for right side */
@@ -105,8 +110,8 @@ namespace Battle.Board {
         /** Amount of times the player has cleared the cycle. Used in daamge formula */
         private int cycleLevel = 0;
 
-        /** Cached pause menu, so this board can pause the game */
-        private Pause.PauseMenu pauseMenu;
+        /** Set to false when piece falling is paused; game will not try to make the current piece fall, if there even is one */
+        public bool doPieceFalling = true;
 
         /** If this board has had Defeat() called on it and in post game */
         private bool defeated;
@@ -120,6 +125,8 @@ namespace Battle.Board {
 
         private bool cycleInitialized;
         private bool postGame = false;
+
+        private Pause.PauseMenu pauseMenu;
         private PostGameMenu winMenu;
 
         /** Prefab for damage shoots, spawned when dealing damage. */
@@ -158,8 +165,8 @@ namespace Battle.Board {
 
         public AudioClip multiBattleMusic;
 
-        // used for testing portrait offsets
-        // private Vector2 initialPos;
+        // MANAGERS
+        [SerializeField] public AbilityManager abilityManager;
 
         // Start is called before the first frame update
         void Start()
@@ -256,6 +263,129 @@ namespace Battle.Board {
             }
         }
 
+        void Update()
+        {
+            // temporarily in update() to find the correct values quicker, keeping in case needed again in the future
+            // portrait.GetComponent<RectTransform>().anchoredPosition = initialPos + battler.portraitOffset;
+            // wait for cycle to initialize (after countdown) to run game logic
+            if (!cycleInitialized) return;
+
+            PointerReposition();
+
+            // -------- CONTROLS ----------------
+            foreach (InputScript inputScript in inputScripts) {
+                if (Input.GetKeyDown(inputScript.Pause) && !postGame && !Storage.convoEndedThisInput)
+                {
+                    pauseMenu.TogglePause();
+                    PlaySFX("pause");
+                }
+                Storage.convoEndedThisInput = false;
+
+                // control the pause menu if paused
+                if (pauseMenu.paused && !postGame)
+                {
+                    if (Input.GetKeyDown(inputScript.Up)) {
+                        pauseMenu.MoveCursor(1);
+                        PlaySFX("move", pitch : 0.8f);
+                    } else if (Input.GetKeyDown(inputScript.Down)) {
+                        pauseMenu.MoveCursor(-1);
+                        PlaySFX("move", pitch : 0.75f);
+                    }
+
+                    if (Input.GetKeyDown(inputScript.Cast)){
+                        pauseMenu.SelectOption();
+                    }           
+                }
+                
+
+                // same with post game menu, if timer is not running
+                else if (postGame && !winMenu.timerRunning)
+                {
+                    if (Input.GetKeyDown(inputScript.Up)) {
+                        winMenu.MoveCursor(1);
+                    } else if (Input.GetKeyDown(inputScript.Down)) {
+                        winMenu.MoveCursor(-1);
+                    }
+
+                    if (Input.GetKeyDown(inputScript.Cast)){
+                        winMenu.SelectOption();
+                    }
+                }
+                
+                // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
+                else if (!convoPaused && !postGame) {
+                    pieceSpawned = false;
+
+                    if (playerControlled && piece != null){
+                        if (Input.GetKey(inputScript.Down)){
+                            this.fallTimeMult = 0.1f;
+                        }
+                        else{
+                            this.fallTimeMult = 1f;
+                        }
+                    }
+                }
+
+                // -------- PIECE FALL/PLACE ----------------
+                if (!defeated && doPieceFalling)
+                {
+                    // Get the time that has passed since the previous piece fall.
+                    // If it is greater than fall time (or fallTime/10 if holding down),
+                    // move the piece one down.
+                    // (Final fall time has to be greater than 0.05)
+                    double finalFallTime = fallTime*this.fallTimeMult;
+                    if (finalFallTime < 0.05){
+                        finalFallTime = 0.05;
+                    }
+
+                    if(Time.time - previousFallTime > finalFallTime){
+
+                        // Try to move the piece down.
+                        bool movedDown = MovePiece(0, 1);
+
+                        if (!movedDown) {
+                            // If it can't be moved down,
+                            // also check for sliding buffer, and place if beyond that
+                            // don't use slide time if down held
+                            // if (!Input.GetKey(inputScript.Down)) {
+                            
+                            // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
+                
+                                if (!Input.GetKey(inputScript.Down)) {
+                                    finalFallTime += slideTime;
+                                }
+
+
+                            // true if time is up for the extra slide buffer
+                            bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
+                            // if exxtended time is up and still can't move down, place
+                            if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
+                            {
+                                PlacePiece();
+                            }
+                        } else {
+                            // If it did move down, adjust numbers.
+                            // reset to 0 if row fallen to is below the last.
+                            // otherwise, increment
+                            if (piece != null && piece.GetRow() > lastRowFall) {
+                                lastRowFall = piece.GetRow();
+                                rowFallCount = 0;
+                            } else {
+                                rowFallCount++;
+                                // if row fall count exceeds 3, auto place
+                                if (rowFallCount > 3) {
+                                    PlacePiece();
+                                }
+                            }
+
+                            // if it did move, reset fall time
+                            previousFallTime = Time.time;  
+                        }
+                    }    
+                } 
+            }
+        }
+
         // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
         public void InitializeCycle(ManaCycle cycle)
         {
@@ -326,6 +456,10 @@ namespace Battle.Board {
             }
         }
 
+        public void UseAbility(){
+            abilityManager.UseAbility();
+        }
+
         public bool isPlayerControlled(){
             return this.playerControlled;
         }
@@ -361,133 +495,9 @@ namespace Battle.Board {
         // If it falls to this row more than 3 times, it will auto-place.
         private int rowFallCount = 0;
 
-        // Update is called once per frame
+        private void PlacePiece() {
+            
 
-        void Update()
-        {
-            // temporarily in update() to find the correct values quicker, keeping in case needed again in the future
-            // portrait.GetComponent<RectTransform>().anchoredPosition = initialPos + battler.portraitOffset;
-            // wait for cycle to initialize (after countdown) to run game logic
-            if (!cycleInitialized) return;
-
-            PointerReposition();
-
-            foreach (InputScript inputScript in inputScripts) {
-                if (Input.GetKeyDown(inputScript.Pause) && !postGame && !Storage.convoEndedThisInput)
-                {
-                    pauseMenu.TogglePause();
-                    PlaySFX("pause");
-                }
-                Storage.convoEndedThisInput = false;
-
-                // control the pause menu if paused
-                if (pauseMenu.paused && !postGame)
-                {
-                    if (Input.GetKeyDown(inputScript.Up)) {
-                        pauseMenu.MoveCursor(1);
-                        PlaySFX("move", pitch : 0.8f);
-                    } else if (Input.GetKeyDown(inputScript.Down)) {
-                        pauseMenu.MoveCursor(-1);
-                        PlaySFX("move", pitch : 0.75f);
-                    }
-
-                    if (Input.GetKeyDown(inputScript.Cast)){
-                        pauseMenu.SelectOption();
-                    }           
-                }
-                
-
-                // same with post game menu, if timer is not running
-                else if (postGame && !winMenu.timerRunning)
-                {
-                    if (Input.GetKeyDown(inputScript.Up)) {
-                        winMenu.MoveCursor(1);
-                    } else if (Input.GetKeyDown(inputScript.Down)) {
-                        winMenu.MoveCursor(-1);
-                    }
-
-                    if (Input.GetKeyDown(inputScript.Cast)){
-                        winMenu.SelectOption();
-                    }
-                }
-                
-                // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
-                else if (!convoPaused && !postGame) {
-                    pieceSpawned = false;
-
-                    // don't do fall if piece is destroyed (no falling piece until approximately 0.2s later)
-                    if (piece == null) return;
-
-                    if (playerControlled){
-                        if (Input.GetKey(inputScript.Down)){
-                            this.fallTimeMult = 0.1f;
-                        }
-                        else{
-                            this.fallTimeMult = 1f;
-                        }
-                    }
-                }
-
-                if (!defeated)
-                {
-                    // Get the time that has passed since the previous piece fall.
-                    // If it is greater than fall time (or fallTime/10 if holding down),
-                    // move the piece one down.
-                    // (Final fall time has to be greater than 0.05)
-                    double finalFallTime = fallTime*this.fallTimeMult;
-                    if (finalFallTime < 0.05){
-                        finalFallTime = 0.05;
-                    }
-
-                    if(Time.time - previousFallTime > finalFallTime){
-
-                        // Try to move the piece down.
-                        bool movedDown = MovePiece(0, 1);
-
-                        if (!movedDown) {
-                            // If it can't be moved down,
-                            // also check for sliding buffer, and place if beyond that
-                            // don't use slide time if down held
-                            // if (!Input.GetKey(inputScript.Down)) {
-                            
-                            // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
-                
-                                if (!Input.GetKey(inputScript.Down)) {
-                                    finalFallTime += slideTime;
-                                }
-
-
-                            // true if time is up for the extra slide buffer
-                            bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
-                            // if exxtended time is up and still can't move down, place
-                            if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
-                            {
-                                Place();
-                            }
-                        } else {
-                            // If it did move down, adjust numbers.
-                            // reset to 0 if row fallen to is below the last.
-                            // otherwise, increment
-                            if (piece != null && piece.GetRow() > lastRowFall) {
-                                lastRowFall = piece.GetRow();
-                                rowFallCount = 0;
-                            } else {
-                                rowFallCount++;
-                                // if row fall count exceeds 3, auto place
-                                if (rowFallCount > 3) {
-                                    Place();
-                                }
-                            }
-
-                            // if it did move, reset fall time
-                            previousFallTime = Time.time;  
-                        }
-                    }    
-                } 
-            }
-        }
-
-        private void Place() {
             // Place the piece
             PlaceTilesOnBoard();
 
@@ -505,6 +515,21 @@ namespace Battle.Board {
             // Spawn a new piece & reset fall delay & row
             SpawnPiece();
             previousFallTime = Time.time;
+        }
+        
+        /// <summary>
+        /// Destroys the current piece and spawns the passed piece in its place.
+        /// </summary>
+        public void ReplacePiece(Piece nextPiece) {
+            Destroy(piece);
+            piece = nextPiece;
+            SpawnPiece();
+
+            nextPiece.transform.SetParent(pieceBoard.transform, false);
+            nextPiece.MoveTo(3,4);
+
+            lastRowFall = piece.GetRow();
+            rowFallCount = 0;
         }
 
         // Update the pointer's cycle position.
@@ -576,25 +601,16 @@ namespace Battle.Board {
         {
             if (piece == null) return;
             lastPlaceTime = Time.time;
-            piece.PlaceTilesOnBoard(ref board);
+            piece.PlaceTilesOnBoard(ref board, pieceBoard.transform);
 
-            // Move the displayed tiles into the board parent
-            piece.GetCenter().transform.SetParent(pieceBoard.transform, true);
-            piece.GetCenter().transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-
-            piece.GetTop().transform.SetParent(pieceBoard.transform, true);
-            piece.GetTop().transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-
-            piece.GetRight().transform.SetParent(pieceBoard.transform, true);
-            piece.GetRight().transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-
-            // Destroy the piece containing the tiles, leaving only the tiles that were just taken out of the piece
+            // After tile objects are moved out, destroy the piece object as it is no longer needed
             Destroy(piece);
 
-            bool tileFell = true;
+            if (!postGame) PlaySFX("place");
+
             // Keep looping until none of the piece's tiles fall
             // (No other tiles need to be checked as tiles underneath them won't move, only tiles above)
-            if (!postGame) PlaySFX("place");
+            bool tileFell = true;
             while (tileFell) {
                 tileFell = false;
                 
@@ -722,7 +738,7 @@ namespace Battle.Board {
         /** Updated list of recognized blobs */
         private List<Blob> blobs;
         /** Total amount of mana in current blob list */
-        private int manaCleared;
+        private int totalBlobMana;
 
 
         /** Update the blob list this board has recognized. Should be called every time the board changes. */
@@ -730,10 +746,10 @@ namespace Battle.Board {
         public void RefreshBlobs() {
             tilesInBlobs = new bool[height, width];
             FindBlobs();
-            manaCleared = TotalMana(blobs);
+            totalBlobMana = TotalMana(blobs);
         }
 
-        // Check the board for blobs of 4 or more of the given color, and clear them from the board, earning points/dealing damage.
+        // Check the board for blobs of 3 or more of the given color, and clear them from the board, earning points/dealing damage.
         private void Spellcast(int chain)
         {
             RefreshBlobs();
@@ -767,7 +783,7 @@ namespace Battle.Board {
                     // update: called on every place, so no longer needed here
                     // RefreshBlobs(color);
 
-                    while (manaCleared > 0) {
+                    while (totalBlobMana > 0) {
                         // If this is cascading off the same color more than once, short delay between
                         if (cascade > 0) {
                             yield return new WaitForSeconds(0.5f);
@@ -787,7 +803,7 @@ namespace Battle.Board {
                         int damagePerMana = 10 + 3*cycleLevel;
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.
-                        int damage = (int)( (manaCleared * damagePerMana) * chain * cascade );
+                        int damage = (int)( (totalBlobMana * damagePerMana) * chain * cascade );
 
                         // Get the average of all tile positions; this is where shoot particle is spawned
                         Vector3 averagePos = Vector3.zero;
@@ -796,13 +812,14 @@ namespace Battle.Board {
                                 averagePos += board[pos.y, pos.x].transform.position;
                             }
                         }
-                        averagePos /= manaCleared;
+                        averagePos /= totalBlobMana;
 
                         // Send the damage over. Will counter incoming damage first.
                         DealDamage(damage, averagePos, (int)CurrentColor(), chain);
 
                         totalSpellcasts++;
-                        totalManaCleared += manaCleared;
+                        totalManaCleared += totalBlobMana;
+                        abilityManager.GainMana(totalBlobMana);
 
                         highestCombo = Math.Max(highestCombo, chain);
 
@@ -816,8 +833,6 @@ namespace Battle.Board {
 
                         // Do gravity everywhere
                         AllTileGravity();
-
-
 
                         // Check for cascaded blobs
                         RefreshBlobs();
