@@ -27,7 +27,7 @@ namespace MainMenu {
             {
 
                 // don't let user assign the same key to multiple binds
-                if ((keyList[currentIndex] == e.keyCode) || (!keyList.Contains(e.keyCode)))
+                if ((!keyList.Contains(e.keyCode)))
                 {
                     // epic bind succsess 
                     keyList[currentIndex] = e.keyCode;
@@ -51,7 +51,8 @@ namespace MainMenu {
         {
             EventSystem.current.SetSelectedGameObject(null);
             inputs = inputScript;
-            keyList = new KeyCode[] {inputs.Up, inputs.Left, inputs.Down, inputs.Right, inputs.RotateLeft, inputs.RotateRight, inputs.Cast, inputs.Pause};
+            // keyList = new KeyCode[] {inputs.Up, inputs.Left, inputs.Down, inputs.Right, inputs.RotateLeft, inputs.RotateRight, inputs.Cast, inputs.Pause};
+            keyList = new KeyCode[8];
             // set window visibility
             gameObject.SetActive(true);
             settingsWindow.SetActive(false);
