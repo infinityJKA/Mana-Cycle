@@ -17,7 +17,7 @@ namespace Battle.Board {
     {
         // If this board is in single player mode */
         [SerializeField] public bool singlePlayer;
-        // The battler selected for this board. Each one has different effects.
+        // The battler selected for this board.
         [SerializeField] private Battler battler;
         // True if the player controls this board. */
         [SerializeField] private bool playerControlled;
