@@ -87,7 +87,7 @@ namespace VersusMode {
                 }
 
                 if (Input.GetKeyDown(inputScript.Pause)){
-                    transitionHandler.WipeToScene("3dMenu", reverse: true);
+                    transitionHandler.WipeToScene("MainMenu", reverse: true);
                 }
             }
 

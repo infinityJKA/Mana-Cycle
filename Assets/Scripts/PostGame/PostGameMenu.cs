@@ -145,7 +145,7 @@ namespace PostGame {
         {
             setMenuSong();
             Time.timeScale = 1f;
-            transitionHandler.WipeToScene("3dMenu", reverse: true);
+            transitionHandler.WipeToScene("MainMenu", reverse: true);
         }
 
         public void SelectBackToCSS()
