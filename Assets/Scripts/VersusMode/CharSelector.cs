@@ -60,7 +60,7 @@ namespace VersusMode {
                         Debug.LogError("Transition handler not found in scene!");
                         return;
                     }
-                    transitionHandler.WipeToScene("3dMenu", reverse: true);
+                    transitionHandler.WipeToScene("MainMenu", reverse: true);
                 }
             }
         }
