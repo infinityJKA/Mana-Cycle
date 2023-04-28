@@ -77,7 +77,7 @@ namespace PostGame {
                         
                         // if first clear, immediately exit back to solomenu; otherwise, open menu
                         if (!clearedBefore && cleared) {
-                            transitionHandler.WipeToScene("SoloMenu", i:true);
+                            transitionHandler.WipeToScene("SoloMenu", reverse:true);
                             setMenuSong();
                         } else {
                             SoundManager.Instance.SetBGM(cleared ? winMusic : defeatMusic);
@@ -145,21 +145,21 @@ namespace PostGame {
         {
             setMenuSong();
             Time.timeScale = 1f;
-            transitionHandler.WipeToScene("3dMenu", i: true);
+            transitionHandler.WipeToScene("3dMenu", reverse: true);
         }
 
         public void SelectBackToCSS()
         {
             setMenuSong();
             Time.timeScale = 1f;
-            transitionHandler.WipeToScene("CharSelect", i: true);
+            transitionHandler.WipeToScene("CharSelect", reverse: true);
         }
 
         public void SelectBackToSolo()
         {
             setMenuSong();
             Time.timeScale = 1f;
-            transitionHandler.WipeToScene("SoloMenu", i: true);
+            transitionHandler.WipeToScene("SoloMenu", reverse: true);
         }
 
         public void setMenuSong(){

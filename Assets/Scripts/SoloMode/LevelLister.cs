@@ -135,7 +135,7 @@ namespace SoloMode {
                 // pause - go back to main menu
                 if (Input.GetKeyDown(inputScript.Pause))
                 {
-                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("3dMenu", i : true);
+                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("3dMenu", reverse : true);
                 }
 
                 // cast - open selected level
