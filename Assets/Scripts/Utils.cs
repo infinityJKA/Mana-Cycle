@@ -49,6 +49,7 @@ public class Utils : MonoBehaviour
             case KeyCode.Period: return ".";
             case KeyCode.Comma: return ",";
             case KeyCode.Slash: return "/";
+            case KeyCode.None: return "-";
             case KeyCode.Delete: return "DEL";
             // temp fix for char select text wrapping
             case KeyCode.Backspace: return "Back Space";
