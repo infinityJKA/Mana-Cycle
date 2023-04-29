@@ -167,6 +167,10 @@ namespace Battle.Board {
 
         public AudioClip multiBattleMusic;
 
+        // particle effect system gameobject
+        [SerializeField] private GameObject castParticleObject;
+        [SerializeField] private Transform castParticleParent;
+
         // MANAGERS
         [SerializeField] public AbilityManager abilityManager;
 
@@ -640,6 +644,21 @@ namespace Battle.Board {
         // Clear the tile at the given index, destroying the Tile gameObject.
         public void ClearTile(int col, int row)
         {
+            // play clearing particles before clearing
+            // instantiate particle system to have multiple bursts at once
+            GameObject tileParticles = Instantiate(castParticleObject, castParticleParent, false);
+
+            // set particle color based on tile
+            var particleSystemMain = tileParticles.transform.GetChild(0).GetComponent<ParticleSystem>().main;
+            particleSystemMain.startColor = cycle.GetManaColors()[(int) tiles[row,col].GetManaColor()];
+            // move to tile position and play burst
+            // offset the x pos by 1 or -1 depending on side, idk why its offset like that /shrug
+            tileParticles.transform.GetChild(0).transform.localPosition = new Vector3(tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.x+(playerSide==0 ? 1 : -1), tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.y);
+            // Debug.Log(tileParticles + "at " + tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition);
+            // Debug.Log("actually at " + tileParticles.GetComponent<Transform>().position);
+            tileParticles.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+
+            // clear tile
             if (tiles[row, col]) {
                 Destroy(tiles[row, col].gameObject);
                 tiles[row, col] = null;
