@@ -11,8 +11,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[DisallowMultipleComponent]
-[ExecuteAlways]
+// [DisallowMultipleComponent]
+// [ExecuteAlways]
 public class Outline : MonoBehaviour {
   private static HashSet<Mesh> registeredMeshes = new HashSet<Mesh>();
 
