@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 
 using Battle.Cycle;
+using Sound;
 
 namespace Battle.Board {
     /// <summary>
@@ -15,6 +16,7 @@ namespace Battle.Board {
 
         // image for Infinity's Iron Sword
         [SerializeField] public Image ironSwordImage;
+        [SerializeField] private AudioClip ironSwordSFX;
         
         private Vector3 OrientedDirection()
         {
@@ -75,6 +77,7 @@ namespace Battle.Board {
                 case Battler.ActiveAbilityEffect.IronSword:
                     Debug.Log("Iron Sword effect");
                     IronSwordDestroyTileBelow(board);
+                    SoundManager.Instance.PlaySound(ironSwordSFX);
                     break;
                 default:
                     Debug.Log("default single piece fall");

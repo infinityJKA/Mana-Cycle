@@ -1,5 +1,9 @@
 using System;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+using Sound;
 
 namespace Battle.Board {
     /// <summary>
@@ -25,7 +29,7 @@ namespace Battle.Board {
         void Start()
         {
             mana = 0;
-            // mana = board.Battler.activeAbilityMana; // for easy debug
+            mana = board.Battler.activeAbilityMana; // for easy debug
             RefreshManaBar();
         }
 
