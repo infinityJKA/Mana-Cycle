@@ -8,26 +8,28 @@ namespace Battle.Board {
     {
         // Theoretically, these should stay the same as this piece's gameobject position, but I don't trust floats.
         // Column position of this piece on the grid.
-        [SerializeField] private int col = 0;
+        [SerializeField] protected int col = 0;
         // Row position of this piece on the grid.
-        [SerializeField] private int row = 0;
+        [SerializeField] protected int row = 0;
 
         // Think of each piece as an L on your left hand. Top is pointer finger and right is thumb.
         // Tile in center
-        [SerializeField] private Tile center; 
+        [SerializeField] protected Tile center; 
         // Tile on top (unrotated)
-        [SerializeField] private Tile top;
+        [SerializeField] protected Tile top;
         // Tile on right (unrotated)
-        [SerializeField] private Tile right;
+        [SerializeField] protected Tile right;
         
         // Rotation center - holds all the tile objects. Centered on tile for correct visual rotation.
-        [SerializeField] private Transform rotationCenter;
+        [SerializeField] protected Transform rotationCenter;
 
         // This piece's rotation, direction that the top tile is facing. Start out facing up.
-        [SerializeField] private Orientation orientation = Orientation.up;
+        [SerializeField] protected Orientation orientation = Orientation.up;
 
-        private int bagPullAmount = -1;
-        private List<ManaColor> currentBag;
+        // TODO: Move these out of the piece class... otherwise, each piece uses a different bag
+        // needed to make it static for now, so both players will use the same bag until this is fixed
+        private static int bagPullAmount = -1;
+        private static List<ManaColor> currentBag;
 
         // Orientation is the way that the "top" tile is facing
         public enum Orientation
@@ -70,7 +72,7 @@ namespace Battle.Board {
         // }
 
         // Randomize the color of the tiles of this piece.
-        public void Randomize(GameBoard board)
+        public virtual void Randomize(GameBoard board)
         {
             PieceRng rng = board.GetPieceRng();
 
@@ -105,12 +107,12 @@ namespace Battle.Board {
             }
         }
 
-        private ManaColor RandomColor()
+        protected static ManaColor RandomColor()
         {
             return (ManaColor)Random.Range(0, ManaCycle.cycleUniqueColors);
         }
 
-        private List<ManaColor> GenerateColorBag()
+        protected static List<ManaColor> GenerateColorBag()
         {
             // generate the next piece colors with 2x bag, where x is unique cycle colors
             // create the unsorted list with 2 of each color
@@ -127,7 +129,7 @@ namespace Battle.Board {
         }
 
         // pull the next color from bag
-        private ManaColor pullColor()
+        protected static ManaColor pullColor()
         {
             // if end of bag (or first pull), reshuffle
             if (bagPullAmount == -1 || bagPullAmount > currentBag.Count )
@@ -140,7 +142,7 @@ namespace Battle.Board {
             return pulledColor;
         }
 
-        private ManaColor ColorWeightedRandom(GameBoard board)
+        protected static ManaColor ColorWeightedRandom(GameBoard board)
         {
             if (Random.value < 0.15)
             {
@@ -206,7 +208,7 @@ namespace Battle.Board {
         }
 
         // Update the roation of this object's rotation center, after orientation changes.
-        public void UpdateOrientation()
+        public virtual void UpdateOrientation()
         {
             rotationCenter.rotation = Quaternion.LookRotation(Vector3.forward, OrientedDirection());
 
@@ -218,7 +220,7 @@ namespace Battle.Board {
         }
 
         // Iteration of all coordinates this piece currently occupies. Returns Vector2Ints of (col, row).
-        public IEnumerator<Vector2Int> GetEnumerator()
+        public virtual IEnumerator<Vector2Int> GetEnumerator()
         {
             // Center
             yield return new Vector2Int(col, row);
@@ -242,7 +244,7 @@ namespace Battle.Board {
         }
 
         // Place this tile's pieces onto the passed board.
-        public void PlaceTilesOnBoard(ref Tile[,] board)
+        public virtual void PlaceTilesOnBoard(ref Tile[,] board, Transform pieceBoard)
         {
             // Place center tile
             board[row, col] = center;
@@ -267,6 +269,25 @@ namespace Battle.Board {
                     board[row+1, col] = right;
                     break;
             }
+
+            // Change parent of tiles
+            center.transform.SetParent(pieceBoard, true);
+            center.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+
+            top.transform.SetParent(pieceBoard, true);
+            top.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+
+            right.transform.SetParent(pieceBoard, true);
+            right.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+        }
+
+        /// <summary>
+        /// Called when this piece is placed
+        /// (used in actie abilities)
+        /// </summary>
+        public virtual void OnPlace(GameBoard board)
+        {  
+            // see SinglePiece.cs for implementation
         }
 
         // Accessors
