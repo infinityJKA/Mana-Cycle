@@ -132,7 +132,7 @@ namespace Battle.Board {
         protected static ManaColor pullColor()
         {
             // if end of bag (or first pull), reshuffle
-            if (bagPullAmount == -1 || bagPullAmount > currentBag.Count )
+            if (bagPullAmount < 0 || bagPullAmount >= currentBag.Count )
             {
                 currentBag = GenerateColorBag();
                 bagPullAmount = 0;
