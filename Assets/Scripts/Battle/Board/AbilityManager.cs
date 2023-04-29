@@ -24,8 +24,8 @@ namespace Battle.Board {
 
         void Start()
         {
-            // mana = 0;
-            mana = board.Battler.activeAbilityMana;
+            mana = 0;
+            // mana = board.Battler.activeAbilityMana; // for easy debug
             RefreshManaBar();
         }
 

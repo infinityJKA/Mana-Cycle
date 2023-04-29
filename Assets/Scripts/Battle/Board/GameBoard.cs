@@ -459,7 +459,7 @@ namespace Battle.Board {
         }
 
         public void UseAbility(){
-            abilityManager.UseAbility();
+            if (abilityManager.enabled) abilityManager.UseAbility();
         }
 
         public bool isPlayerControlled(){
@@ -650,6 +650,17 @@ namespace Battle.Board {
         // shootSpawnPos is where the shoot particle is spawned
         public void DealDamage(int damage, Vector3 shootSpawnPos, int color, int chain)
         {
+            
+            if (postGame) {
+                // just add score if postgame and singleplayer
+                if (singlePlayer)
+                {
+                    hp += damage;   
+                }
+                // otherwise if versus, nothing will happen, other player is already dead so dont damage
+                return;
+            }
+
             // Spawn a new damageShoot
             GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
             DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
@@ -825,7 +836,7 @@ namespace Battle.Board {
 
                         totalSpellcasts++;
                         totalManaCleared += totalBlobMana;
-                        abilityManager.GainMana(totalBlobMana);
+                        if (abilityManager.enabled) abilityManager.GainMana(totalBlobMana);
 
                         highestCombo = Math.Max(highestCombo, chain);
 
@@ -1034,6 +1045,9 @@ namespace Battle.Board {
             casting = false;
             hpBar.hpNum.gameObject.SetActive(false);
             if (timer != null) timer.StopTimer();
+            foreach (var incoming in hpBar.DamageQueue) {
+                incoming.SetDamage(0);
+            }
 
             Destroy(piece);
             piece = null;
@@ -1062,6 +1076,9 @@ namespace Battle.Board {
             postGame = true;
             won = true;
             if (timer != null) timer.StopTimer();
+            foreach (var incoming in hpBar.DamageQueue) {
+                incoming.SetDamage(0);
+            }
 
             winTextObj.SetActive(true);
             winText.text = "WIN";
