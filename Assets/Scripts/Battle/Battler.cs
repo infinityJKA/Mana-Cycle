@@ -13,6 +13,18 @@ namespace Battle {
 
         /// <summary>Description this battler's passive ability</summary>
         [SerializeField] public String passiveAbilityDesc;
+
+        /// <summary>Effect of the active ability</summary>
+        [SerializeField] public ActiveAbilityEffect activeAbilityEffect;
+        public enum ActiveAbilityEffect
+        {
+            None,
+            IronSword,
+            Whirlpool,
+            PyroBomb,
+            TimeFreeze
+        }
+            
         /// <summary>Name of this character's active ability</summary>
         [SerializeField] public String activeAbilityName;
         /// <summary>Describes this battler's active ability</summary>
