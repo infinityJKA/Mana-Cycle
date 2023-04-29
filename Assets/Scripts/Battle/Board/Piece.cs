@@ -291,11 +291,8 @@ namespace Battle.Board {
         }
 
         public virtual void DestroyTiles() {
-            Debug.Log("destroying tiles?");
             Destroy(center.gameObject);
-            top.enabled = false;
             Destroy(top.gameObject);
-            right.enabled = false;
             Destroy(right.gameObject);
         }
 
