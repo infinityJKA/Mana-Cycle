@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3878394946360508906
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8077393446918744886}
+  - component: {fileID: 7621293637999683756}
+  m_Layer: 0
+  m_Name: BoardSoundEffects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8077393446918744886
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3878394946360508906}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 487.0938, y: 204.37314, z: 239.29839}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7621293637999683756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3878394946360508906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f2376e9864e5674ab6536ed2955fef0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxDictionary:
+    dict:
+    - key: place
+      value: {fileID: 8300000, guid: 44c46015aec6e034cb2f133d1a308455, type: 3}
+    - key: rotate
+      value: {fileID: 8300000, guid: 5350ac1151c0d07459a7aa692b9e88da, type: 3}
+    - key: cast1
+      value: {fileID: 8300000, guid: 1b70ac3b51c23c642b932ec76b4dbc2f, type: 3}
+    - key: damageTaken
+      value: {fileID: 8300000, guid: e85ded2982dd1174390ff4532abb42d4, type: 3}
+    - key: pause
+      value: {fileID: 8300000, guid: 416d728737d939149a9525d726eb4fc3, type: 3}
+    - key: move
+      value: {fileID: 8300000, guid: c8560f0958fd7b140a2aebd97f95efbb, type: 3}
+    - key: failedCast
+      value: {fileID: 8300000, guid: eecb1f7f73821c64b86f064f177d06cd, type: 3}
+    - key: cycle
+      value: {fileID: 8300000, guid: dac2af201c7e5ec44a17f73add3b409f, type: 3}
+    - key: win
+      value: {fileID: 8300000, guid: 957b9167500ea4f4bbe4671cd1637746, type: 3}
+    - key: startupCast
+      value: {fileID: 8300000, guid: 468be777a3f91454b9f2da1dd079a13e, type: 3}
+    - key: lose
+      value: {fileID: 8300000, guid: 359d7fd8670a5bf40867258346022cca, type: 3}

@@ -302,7 +302,6 @@ namespace Battle.Board {
                         pauseMenu.SelectOption();
                     }           
                 }
-                
 
                 // same with post game menu, if timer is not running
                 else if (postGame && !winMenu.timerRunning)
