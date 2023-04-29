@@ -68,6 +68,10 @@ namespace Battle.Board {
             center.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
         }
 
+        public override void DestroyTiles() {
+            Destroy(center);
+        }
+
         public override void OnPlace(GameBoard board) 
         {
             switch(mode)
@@ -88,12 +92,14 @@ namespace Battle.Board {
         {
             row++;
             if (row >= GameBoard.height) {
-                Destroy(gameObject);
-            };
+                Destroy(board.tiles[row-1, col].gameObject);
+                return;
+            }
             // When iron sword falls, clear tile below, or destroy when at bottom
+            Tile swordTile = board.tiles[row-1, col];
             board.ClearTile(col, row);
             board.TileGravity(col, row-1);
-            board.DealDamage(board.damagePerMana, transform.position, 0, 0);
+            board.DealDamage(board.damagePerMana, swordTile.transform.position, 0, 0);
         }
 
         public void MakeIronSword(GameBoard board)

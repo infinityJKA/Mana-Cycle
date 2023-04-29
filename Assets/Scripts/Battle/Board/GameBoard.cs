@@ -521,14 +521,17 @@ namespace Battle.Board {
         /// Destroys the current piece and spawns the passed piece in its place.
         /// </summary>
         public void ReplacePiece(Piece nextPiece) {
+            piece.DestroyTiles();
             Destroy(piece);
-            piece = nextPiece;
+
 
             nextPiece.transform.SetParent(pieceBoard.transform, false);
             nextPiece.MoveTo(3,4);
 
-            lastRowFall = piece.GetRow();
+            lastRowFall = nextPiece.GetRow();
             rowFallCount = 0;
+
+            piece = nextPiece;
         }
 
         // Update the pointer's cycle position.
@@ -637,8 +640,10 @@ namespace Battle.Board {
         // Clear the tile at the given index, destroying the Tile gameObject.
         public void ClearTile(int col, int row)
         {
-            Destroy(tiles[row, col].gameObject);
-            tiles[row, col] = null;
+            if (tiles[row, col]) {
+                Destroy(tiles[row, col].gameObject);
+                tiles[row, col] = null;
+            }
         }
 
         // Deal damage to the other player(s(?))
