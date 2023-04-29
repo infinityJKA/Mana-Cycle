@@ -56,8 +56,10 @@ namespace SoloMode {
 
         // menu sfx
         [SerializeField] private AudioClip moveSFX;
+        [SerializeField] private AudioClip swapTabSFX;
         [SerializeField] private AudioClip selectSFX;
         [SerializeField] private AudioClip errorSFX;
+        
 
         // currently unused references
         [SerializeField] GameObject upArrow;
@@ -122,6 +124,7 @@ namespace SoloMode {
                     ClampSelections();
                     StoreSelections();
                     RefreshList();
+                    SoundManager.Instance.PlaySound(swapTabSFX, pitch : 1.56f);
                 }
 
                 if (Input.GetKeyDown(inputScript.Left))
@@ -130,6 +133,7 @@ namespace SoloMode {
                     ClampSelections();
                     StoreSelections();
                     RefreshList();
+                    SoundManager.Instance.PlaySound(swapTabSFX, pitch : 1.68f);
                 }
 
                 // pause - go back to main menu
