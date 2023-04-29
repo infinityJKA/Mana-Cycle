@@ -48,7 +48,7 @@ namespace Battle.Board {
                 Debug.Log("use active ability");
                 abilityActive = true;
 
-                if (board.Battler.activeAbilityName == "Iron Sword") IronSword();
+                if (board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.IronSword) IronSword();
             }
         }
 

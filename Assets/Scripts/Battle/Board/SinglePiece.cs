@@ -11,11 +11,7 @@ namespace Battle.Board {
     /// </summary>
     public class SinglePiece : Piece
     {
-        public SinglePieceMode mode;
-        public enum SinglePieceMode {
-            SingleMana,
-            IronSword
-        }
+        public Battler.ActiveAbilityEffect effect;
 
         // image for Infinity's Iron Sword
         [SerializeField] public Image ironSwordImage;
@@ -74,9 +70,9 @@ namespace Battle.Board {
 
         public override void OnPlace(GameBoard board) 
         {
-            switch(mode)
+            switch(effect)
             {
-                case SinglePieceMode.IronSword:
+                case Battler.ActiveAbilityEffect.IronSword:
                     Debug.Log("Iron Sword effect");
                     IronSwordDestroyTileBelow(board);
                     break;
@@ -104,7 +100,7 @@ namespace Battle.Board {
 
         public void MakeIronSword(GameBoard board)
         {
-            mode = SinglePieceMode.IronSword;
+            effect = Battler.ActiveAbilityEffect.IronSword;
             center.imageObject.SetActive(false);
             ironSwordImage.gameObject.SetActive(true);
             center.onFallAnimComplete = () => IronSwordDestroyTileBelow(board);
