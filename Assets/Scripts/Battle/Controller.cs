@@ -50,18 +50,19 @@ namespace Battle {
                     }
 
                     if (Input.GetKeyDown(inputScript.RotateLeft)){
-                        // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
                         board.RotateRight();
                     }
 
                     if (Input.GetKeyDown(inputScript.Left)){
-                        // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
                         board.MoveLeft();
                     }
 
                     if (Input.GetKeyDown(inputScript.Right)){
-                        // Debug.Log( "rot:" + ((int) board.getPiece().getRot()) +  "col:" + ((int) board.getPiece().GetCol()));
                         board.MoveRight();
+                    }
+
+                    if (Input.GetKeyDown(inputScript.Up)){
+                        board.UseAbility();
                     }
 
                     if (Input.GetKeyDown(inputScript.Cast)){

@@ -103,12 +103,14 @@ namespace Battle.Board {
         private bool casting = false;
 
         /** Board containing all tiles that have been placed and their colors. NONE is an empty space (from ManaColor enum). */
-        private Tile[,] board;
+        public Tile[,] tiles;
         /** Piece that is currently being dropped. */
         private Piece piece;
 
         /** Amount of times the player has cleared the cycle. Used in daamge formula */
         private int cycleLevel = 0;
+        // Amount of boost this board gets from each cycle clear
+        public int boostPerCycleClear {get; private set;} = 3;
 
         /** Set to false when piece falling is paused; game will not try to make the current piece fall, if there even is one */
         public bool doPieceFalling = true;
@@ -403,7 +405,7 @@ namespace Battle.Board {
             pointer.transform.SetParent(cycle.transform.parent);
             PointerReposition();
 
-            board = new Tile[height, width];
+            tiles = new Tile[height, width];
             SpawnPiece();
 
             CheckMidLevelConversations();
@@ -496,8 +498,6 @@ namespace Battle.Board {
         private int rowFallCount = 0;
 
         private void PlacePiece() {
-            
-
             // Place the piece
             PlaceTilesOnBoard();
 
@@ -523,7 +523,6 @@ namespace Battle.Board {
         public void ReplacePiece(Piece nextPiece) {
             Destroy(piece);
             piece = nextPiece;
-            SpawnPiece();
 
             nextPiece.transform.SetParent(pieceBoard.transform, false);
             nextPiece.MoveTo(3,4);
@@ -590,7 +589,7 @@ namespace Battle.Board {
                 if (tile.x < 0 || tile.x >= width || tile.y < 0 || tile.y >= height) return false;
 
                 // Return false here if the grid position's value is not null, so another tile is there
-                if (board[tile.y, tile.x] != null) return false;
+                if (tiles[tile.y, tile.x] != null) return false;
             }
             // No tiles overlapped, return true
             return true;
@@ -601,7 +600,9 @@ namespace Battle.Board {
         {
             if (piece == null) return;
             lastPlaceTime = Time.time;
-            piece.PlaceTilesOnBoard(ref board, pieceBoard.transform);
+            piece.PlaceTilesOnBoard(ref tiles, pieceBoard.transform);
+
+            piece.OnPlace(this);
 
             // After tile objects are moved out, destroy the piece object as it is no longer needed
             Destroy(piece);
@@ -618,7 +619,7 @@ namespace Battle.Board {
                 foreach (Vector2Int tile in piece)
                 {
                     // Only do gravity if this tile is still here and hasn't fallen to gravity yet
-                    if (board[tile.y, tile.x] != null)
+                    if (tiles[tile.y, tile.x] != null)
                     {
                         // If a tile fell, set tileFell to true and the loop will go again after this
                         if (TileGravity(tile.x, tile.y))
@@ -636,8 +637,8 @@ namespace Battle.Board {
         // Clear the tile at the given index, destroying the Tile gameObject.
         public void ClearTile(int col, int row)
         {
-            Destroy(board[row, col].gameObject);
-            board[row, col] = null;
+            Destroy(tiles[row, col].gameObject);
+            tiles[row, col] = null;
         }
 
         // Deal damage to the other player(s(?))
@@ -800,7 +801,7 @@ namespace Battle.Board {
                         if (cascade > 1) cascadePopup.Flash(cascade.ToString());
 
                         // DMG per mana, starts at 10, increases by 3 per cycle level
-                        int damagePerMana = 10 + 3*cycleLevel;
+                        
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.
                         int damage = (int)( (totalBlobMana * damagePerMana) * chain * cascade );
@@ -809,7 +810,7 @@ namespace Battle.Board {
                         Vector3 averagePos = Vector3.zero;
                         foreach (Blob blob in blobs) {
                             foreach (Vector2Int pos in blob.tiles) {
-                                averagePos += board[pos.y, pos.x].transform.position;
+                                averagePos += tiles[pos.y, pos.x].transform.position;
                             }
                         }
                         averagePos /= totalBlobMana;
@@ -857,6 +858,8 @@ namespace Battle.Board {
             }
         }
 
+        public int damagePerMana {get {return 10 + cycleLevel * boostPerCycleClear;}}
+
         IEnumerator CheckMidConvoAfterDelay() {
             yield return new WaitForSeconds(0.4f);
             CheckMidLevelConversations();
@@ -876,7 +879,7 @@ namespace Battle.Board {
                 for (int c = 0; c < width; c++)
                 {
                     // Check if indexed tile exists and is correct color, and is not in a blob
-                    if (board[r, c] != null && board[r, c].GetManaColor() == color && !tilesInBlobs[r, c])
+                    if (tiles[r, c] != null && tiles[r, c].GetManaColor() == color && !tilesInBlobs[r, c])
                     {
                         Blob blob = CheckBlob(c, r, color);
                         if (blob.tiles.Count >= minBlobSize) blobs.Add(blob);
@@ -918,10 +921,10 @@ namespace Battle.Board {
             if (tilesInBlobs[r, c]) return;
 
             // Don't add if there is not a tile here
-            if (board[r, c] == null) return;
+            if (tiles[r, c] == null) return;
 
             // Don't add if the tile is the incorrect color
-            if (board[r, c].GetManaColor() != color) return;
+            if (tiles[r, c].GetManaColor() != color) return;
 
             // Add the tile to the blob and fill in its spot on the tilesInBlobs matrix
             blob.tiles.Add(new Vector2Int(c, r));
@@ -940,30 +943,31 @@ namespace Battle.Board {
         public bool TileGravity(int c, int r)
         {
             // If there isn't a tile here, it can't fall, because it isnt a tile...
-            if (board[r, c] == null) return false;
+            if (tiles[r, c] == null) return false;
 
             // For each tile, check down until there is no longer an empty tile
             for (int rFall = r+1; rFall <= height; rFall++)
             {
                 // Once a non-empty is found, or reached the bottom move the tile to right above it
-                if (rFall == height || board[rFall, c] != null)
+                if (rFall == height || tiles[rFall, c] != null)
                 {
                     // only fall if tile is in a different position than before
                     if (rFall-1 != r) {
-                        board[rFall-1, c] = board[r, c];
+                        tiles[rFall-1, c] = tiles[r, c];
                         // I am subtracting half of width and height again here, because it only works tht way,
                         // i don't know enough about transforms to know why. bandaid solution moment.
-                        board[rFall-1, c].transform.localPosition = new Vector3(
+                        tiles[rFall-1, c].transform.localPosition = new Vector3(
                             c - GameBoard.width/2f + 0.5f, 
                             -rFall + 1 + GameBoard.physicalHeight/2f - 0.5f + GameBoard.height - GameBoard.physicalHeight, 
                         0);
 
-                        board[rFall-1, c].AnimateMovement(
+                        
+                        tiles[rFall-1, c].AnimateMovement(
                             new Vector2(0, (rFall-1)-r),
                             new Vector2(0, 0)
                         );
 
-                        board[r, c] = null;
+                        tiles[r, c] = null;
                         return true;
                     }
                     break;
@@ -991,9 +995,9 @@ namespace Battle.Board {
         public bool CheckColor(int r, int c, ManaColor color)
         {
             // return false if there is no tile at the index
-            if (board[r,c] == null) return false;
+            if (tiles[r,c] == null) return false;
             // if there is a tile, return true if it is the given color.
-            return board[r,c].GetManaColor() == color;
+            return tiles[r,c].GetManaColor() == color;
         }
 
         public ManaColor CurrentColor()
@@ -1093,16 +1097,16 @@ namespace Battle.Board {
 
         public Tile[,] getBoard()
         {
-            return this.board;
+            return this.tiles;
         }
 
         public int getColHeight(int col)
         {
             int l = 0;
             // loop through the given col, bottom to top.
-            for (int i = board.GetLength(0)-1; i > 0; i--){
+            for (int i = tiles.GetLength(0)-1; i > 0; i--){
                 // we have reached an empty tile aka top of the stack
-                if (board[i,col] == null){
+                if (tiles[i,col] == null){
                     l = height - i;
                     break;
                 }

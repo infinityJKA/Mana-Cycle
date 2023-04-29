@@ -63,6 +63,7 @@ GameObject:
   - component: {fileID: 109460369072555598}
   - component: {fileID: 109460369072555584}
   - component: {fileID: 2738482425047349209}
+  - component: {fileID: 7561198744834971609}
   - component: {fileID: 1653424862917905127}
   - component: {fileID: 3933151752034113109}
   m_Layer: 5
@@ -135,6 +136,7 @@ MonoBehaviour:
   fallTime: 0.8
   slideTime: 0.4
   winTextObj: {fileID: 2225117465364027543}
+  doPieceFalling: 1
   damageShootPrefab: {fileID: 7061708752994457915, guid: f06a653b035c546668c3141a11501e75, type: 3}
   level: {fileID: 0}
   objectiveList: {fileID: 0}
@@ -143,6 +145,22 @@ MonoBehaviour:
   convoPaused: 0
   sfxObject: {fileID: 0}
   multiBattleMusic: {fileID: 0}
+  abilityManager: {fileID: 7561198744834971609}
+--- !u!114 &7561198744834971609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109460369072555597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cd65d4d2fad4a6cb779303fa4270b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manaDisp: {fileID: 7165777715501705125}
+  singlePiecePrefab: {fileID: 9030524263075610063, guid: 04baa513f5c9f4f3594a331fffe01759, type: 3}
+  abilityActive: 0
 --- !u!114 &1653424862917905127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1394,8 +1412,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -60, y: 0}
-  m_SizeDelta: {x: 50, y: 400}
+  m_AnchoredPosition: {x: -50, y: 0}
+  m_SizeDelta: {x: 40, y: 360}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &3082346530162969752
 CanvasRenderer:
