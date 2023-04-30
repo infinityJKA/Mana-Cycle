@@ -650,14 +650,17 @@ namespace Battle.Board {
             GameObject tileParticles = Instantiate(castParticleObject, castParticleParent, false);
 
             // set particle color based on tile
-            var particleSystemMain = tileParticles.transform.GetChild(0).GetComponent<ParticleSystem>().main;
+            var particleSystemMain = tileParticles.GetComponent<ParticleSystem>().main;
             particleSystemMain.startColor = cycle.GetManaColors()[(int) tiles[row,col].GetManaColor()];
+
             // move to tile position and play burst
             // offset the x pos by 1 or -1 depending on side, idk why its offset like that /shrug
-            tileParticles.transform.GetChild(0).transform.localPosition = new Vector3(tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.x+(playerSide==0 ? 2 : -2), tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.y);
+            // tileParticles.transform.localPosition = new Vector3(tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.x+(playerSide==0 ? 2 : -2), tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.y);
+            tileParticles.transform.position = tiles[row,col].transform.position;
+
             // Debug.Log(tileParticles + "at " + tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition);
             // Debug.Log("actually at " + tileParticles.GetComponent<Transform>().position);
-            tileParticles.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+            tileParticles.GetComponent<ParticleSystem>().Play();
 
             // clear tile
             if (tiles[row, col]) {
