@@ -17,6 +17,8 @@ namespace Battle.Board {
         // image for Infinity's Iron Sword
         [SerializeField] public Image ironSwordImage;
         [SerializeField] private AudioClip ironSwordSFX;
+
+        public override bool IsRotatable {get {return false;}}
         
         private Vector3 OrientedDirection()
         {

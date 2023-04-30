@@ -40,6 +40,8 @@ namespace Battle.Board {
             right
         }
 
+        public virtual bool IsRotatable {get {return true;}}
+
         // void Update()
         // {
             // Vector3 targetDirection = OrientedDirection();
