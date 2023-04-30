@@ -416,6 +416,7 @@ namespace Battle.Board {
 
 
         public void RotateLeft(){
+            if (!piece.IsRotatable) return;
             piece.RotateLeft();
             if(!ValidPlacement()){
                 // try nudging left, then right, then up. If none work, undo the rotation
@@ -426,6 +427,7 @@ namespace Battle.Board {
         }
 
         public void RotateRight(){
+            if (!piece.IsRotatable) return;
             piece.RotateRight();
             if(!ValidPlacement()){
                 // try nudging right, then left, then up. If none work, undo the rotation
