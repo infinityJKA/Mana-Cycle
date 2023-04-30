@@ -167,9 +167,10 @@ namespace Battle.Board {
 
         public AudioClip multiBattleMusic;
 
-        // particle effect system gameobject
-        [SerializeField] private GameObject castParticleObject;
-        [SerializeField] private Transform castParticleParent;
+        // Transform where particles are drawn to
+        [SerializeField] private Transform particleParent;
+        // Particle system for when a tile is cleared
+        [SerializeField] private GameObject clearParticleSystem;
 
         // MANAGERS
         [SerializeField] public AbilityManager abilityManager;
@@ -647,20 +648,22 @@ namespace Battle.Board {
         {
             // play clearing particles before clearing
             // instantiate particle system to have multiple bursts at once
-            GameObject tileParticles = Instantiate(castParticleObject, castParticleParent, false);
+            GameObject tileParticleSystem = Instantiate(clearParticleSystem, particleParent, false);
 
             // set particle color based on tile
-            var particleSystemMain = tileParticles.GetComponent<ParticleSystem>().main;
+            var particleSystem = tileParticleSystem.GetComponent<ParticleSystem>();
+            var particleSystemMain = particleSystem.main;
             particleSystemMain.startColor = cycle.GetManaColors()[(int) tiles[row,col].GetManaColor()];
 
             // move to tile position and play burst
             // offset the x pos by 1 or -1 depending on side, idk why its offset like that /shrug
             // tileParticles.transform.localPosition = new Vector3(tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.x+(playerSide==0 ? 2 : -2), tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.y);
-            tileParticles.transform.position = tiles[row,col].transform.position;
+            tileParticleSystem.transform.position = tiles[row,col].transform.position;
 
             // Debug.Log(tileParticles + "at " + tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition);
             // Debug.Log("actually at " + tileParticles.GetComponent<Transform>().position);
-            tileParticles.GetComponent<ParticleSystem>().Play();
+            particleSystem.Play();
+            // particle system will automatically remove itself from the parent when animation is done, via ParticleSystem script
 
             // clear tile
             if (tiles[row, col]) {
