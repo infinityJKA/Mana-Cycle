@@ -12,8 +12,8 @@ namespace Battle.ControlsDisplaySystem {
             down.SetKeyCode(inputScript.Down);
             right.SetKeyCode(inputScript.Right);
             up.SetKeyCode(inputScript.Up);
-            rotateLeft.SetKeyCode(inputScript.RotateLeft);
-            rotateRight.SetKeyCode(inputScript.RotateRight);
+            rotateLeft.SetKeyCode(inputScript.RotateCCW);
+            rotateRight.SetKeyCode(inputScript.RotateCW);
             spellcast.SetKeyCode(inputScript.Cast);
         }
     }
