@@ -182,8 +182,8 @@ namespace ConvoSystem {
                 formattedText = formattedText.Replace("{cycle0}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(0)]);
                 formattedText = formattedText.Replace("{cycle1}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(1)]);
                 formattedText = formattedText.Replace("{cycle2}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(2)]);
-                formattedText = formattedText.Replace("{rotateccw}", board.inputScripts[0].RotateLeft.ToString());
-                formattedText = formattedText.Replace("{rotatecw}", board.inputScripts[0].RotateRight.ToString());
+                formattedText = formattedText.Replace("{rotateccw}", board.inputScripts[0].RotateCCW.ToString());
+                formattedText = formattedText.Replace("{rotatecw}", board.inputScripts[0].RotateCW.ToString());
                 formattedText = formattedText.Replace("{spellcast}", board.inputScripts[0].Cast.ToString());
             }
 

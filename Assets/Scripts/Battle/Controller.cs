@@ -45,11 +45,11 @@ namespace Battle {
 
             if (board.isPlayerControlled() && !board.isDefeated()){
                 foreach (InputScript inputScript in inputScripts) {
-                    if (Input.GetKeyDown(inputScript.RotateRight)){
+                    if (Input.GetKeyDown(inputScript.RotateCW)){
                         board.RotateLeft();
                     }
 
-                    if (Input.GetKeyDown(inputScript.RotateLeft)){
+                    if (Input.GetKeyDown(inputScript.RotateCCW)){
                         board.RotateRight();
                     }
 
