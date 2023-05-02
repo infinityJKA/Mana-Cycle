@@ -36,7 +36,7 @@ namespace SoloMode {
         private Vector2 tabOffset;
         /** amount to scroll by for each line. set to font size on start */
         private float levelScrollAmount;
-        private float tabScrollAmount;
+        public float tabScrollAmount;
 
         /** Index of current level selected */
         private int[] selectedLevelIndex;
@@ -67,6 +67,9 @@ namespace SoloMode {
 
         [SerializeField] SoloMenuTab[] tabs;
 
+
+        private static int tabWhitespacing = 4;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -88,7 +91,10 @@ namespace SoloMode {
             listOffset = listText.rectTransform.anchoredPosition;
             tabOffset = tabText.rectTransform.offsetMin;
             levelScrollAmount = listText.fontSize;
-            tabScrollAmount = tabText.fontSize;
+
+            // idk how to get char width. public field guess&check for now
+            // tab scroll amount is number of px per character
+            // tabScrollAmount = tabText.textInfo.characterInfo[1].xAdvance; 
 
             RefreshList();
         }
@@ -250,17 +256,14 @@ namespace SoloMode {
             string newTabText = "";
             for (int i = 0; i < tabs.Length; i++)
             {
-                // color tab if selected
-                if (selectedTabIndex == i)
-                {
-                    newTabText += "<color=#FFFFFF>";
-                }
-                else
-                {
-                    newTabText += "<color=#10FF10>";
-                }
+                // most readable code in ohio
+                newTabText += (selectedTabIndex == i) ? "<color=white>" : "<color=#10FF10>";
+                newTabText += (selectedTabIndex == i && selectedTabIndex > 0) ? "< " : "  ";
+
                 SoloMenuTab currentTab = tabs[i];
-                newTabText += currentTab.tabName + "   " + "</color>";
+                newTabText += currentTab.tabName;
+
+                newTabText += (selectedTabIndex == i && selectedTabIndex < tabs.Length-1) ? " ></color>" : "  </color>";
             }
 
             tabText.text = newTabText;
@@ -269,7 +272,7 @@ namespace SoloMode {
             float newTabPos = 0;
             for (int i = 0; i < selectedTabIndex; i++)
             {
-                newTabPos += (tabs[i].tabName.Length+3) * tabScrollAmount;
+                newTabPos += (tabs[i].tabName.Length+tabWhitespacing) * tabScrollAmount;
             }
             targetTabPosition = tabOffset + Vector2.left * newTabPos;
             Debug.Log("TABPOS: " + targetTabPosition);
