@@ -43,8 +43,9 @@ namespace Battle {
     }
 
     public enum PieceRng {
-        CurrentColorWeighted,
-        PureRandom,
-        Bag
+        Bag, // default
+        CurrentColorWeighted, // Infinity
+        PieceSameColorWeighted, // Aqua,
+        PureRandom, // trainbot
     }
 }

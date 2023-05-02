@@ -172,8 +172,16 @@ namespace Battle.Board {
         // Particle system for when a tile is cleared
         [SerializeField] private GameObject clearParticleSystem;
 
+        // In party mode, this is the timer before the user takes direct uncounterable damage from all trash tiles
+        // Timer starts when a trash tile is added, and will stop running when no trash tiles tick when timer is up
+        private float trashDamageTimer;
+        private static float trashDamageTimerDuration = 5f;
+        private static int damagePerTrash = 5;
+
         // MANAGERS
         [SerializeField] public AbilityManager abilityManager;
+
+        [SerializeField] public RngManager rngManager;
 
         // Start is called before the first frame update
         void Start()
@@ -388,7 +396,35 @@ namespace Battle.Board {
                             previousFallTime = Time.time;  
                         }
                     }    
-                } 
+                }
+
+                // TRASH DAMAGE TIMER
+                // if above 0, tick down
+                if (trashDamageTimer > 0) {
+                    trashDamageTimer -= Time.deltaTime;
+
+                    // if reached 0, check for tiles.
+                    
+                    if (trashDamageTimer <= 0) {
+                        int trashDamage = 0;
+                        for (int r=0; r<height; r++) {
+                            for (int c=0; c<width; c++) {
+                                if (tiles[r, c] && tiles[r, c].trashTile) {
+                                    trashDamage += damagePerTrash;
+                                }
+                            }
+                        }
+
+                        // if there are tiles, damage and reset the timer.
+                        // if no tiles, set timer to 0 (not running)
+                        if (trashDamage > 0) {
+                            TakeDamage(trashDamage);
+                            trashDamageTimer = trashDamageTimerDuration;
+                        } else {
+                            trashDamageTimer = 0;
+                        }
+                    }
+                }
             }
         }
 
@@ -468,6 +504,39 @@ namespace Battle.Board {
             if (abilityManager.enabled) abilityManager.UseAbility();
         }
 
+        public ManaColor PullColorFromBag() {
+            return rngManager.PullColorFromBag();
+        }
+
+
+        // Adds a trash tile to this board in a random column.
+        public void AddTrashTile() {
+            /// Add a new trash piece with a random color
+            SinglePiece trashPiece = Instantiate(abilityManager.singlePiecePrefab).GetComponent<SinglePiece>();
+            trashPiece.GetCenter().SetColor(Piece.RandomColor(), this);
+            trashPiece.GetCenter().MakeTrashTile(this);
+
+            // Send it to a random color and drop it
+            int column = (int)Random.Range(0, 8);
+            trashPiece.transform.SetParent(pieceBoard.transform, false);
+            trashPiece.MoveTo(column, 3);
+            trashPiece.PlaceTilesOnBoard(ref tiles, pieceBoard.transform);
+            Destroy(trashPiece);
+            trashPiece.OnPlace(this);
+            TileGravity(trashPiece.GetCol(), trashPiece.GetRow());
+            RefreshBlobs();
+
+            // may replace with trash sfx later
+            PlaySFX("place");
+            
+            // start trash damage timer only if at 0 (not running)
+            if (trashDamageTimer == 0) {
+                trashDamageTimer = trashDamageTimerDuration;
+            }
+        }
+
+
+
         public bool isPlayerControlled(){
             return this.playerControlled;
         }
@@ -527,13 +596,15 @@ namespace Battle.Board {
         /// Destroys the current piece and spawns the passed piece in its place.
         /// </summary>
         public void ReplacePiece(Piece nextPiece) {
+            // destroy the piece currently being dropped
             piece.DestroyTiles();
             Destroy(piece);
 
-
+            // parent the new piece and set it to the drop location
             nextPiece.transform.SetParent(pieceBoard.transform, false);
             nextPiece.MoveTo(3,4);
 
+            // reset row fall data (used in sliding)
             lastRowFall = nextPiece.GetRow();
             rowFallCount = 0;
 
@@ -746,25 +817,29 @@ namespace Battle.Board {
             // dequeue the closest damage
             int dmg = hpBar.DamageQueue[5].dmg;
             if (dmg > 0) {
-                // shake the board and portrait when damaged
-                shake.StartShake();
-                portrait.GetComponent<Shake>().StartShake();
-                // flash portrait red
-                portrait.GetComponent<ColorFlash>().Flash();
-
-                PlaySFX("damageTaken");
-
-                // subtract from hp
-                hp -= dmg;
-
-                // If this player is out of HP, run defeat
-                if (hp <= 0) Defeat();
-
-                CheckMidLevelConversations();
+                TakeDamage(dmg);
             }
 
             // advance queue
             hpBar.AdvanceDamageQueue();
+        }
+
+        public void TakeDamage(int damage) {
+            // shake the board and portrait when damaged
+            shake.StartShake();
+            portrait.GetComponent<Shake>().StartShake();
+            // flash portrait red
+            portrait.GetComponent<ColorFlash>().Flash();
+
+            PlaySFX("damageTaken");
+
+            // subtract from hp
+            hp -= damage;
+
+            // If this player is out of HP, run defeat
+            if (hp <= 0) Defeat();
+
+            CheckMidLevelConversations();
         }
 
 

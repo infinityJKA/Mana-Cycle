@@ -12,7 +12,7 @@ namespace Battle.Board {
         // Mana color enum value for this tile
         public ManaColor color { get; private set; }
         // Seperate image object attached to this
-        public GameObject imageObject;
+        public Image image;
         // Target position of this element
         private Vector3 targetPosition;
         // Initial movement speed of this object when movmenet animated - distance in tiles per sec
@@ -22,15 +22,18 @@ namespace Battle.Board {
         public float acceleration = 10; 
         // If this piece is currently moving
         private bool moving = false;
-
         public Action onFallAnimComplete;
+
+
+        // If this is a trash tile - which damages in set intervals
+        public bool trashTile { get; private set; }
 
         public void SetColor(ManaColor color, GameBoard board)
         {
             // Get image and set color from the list in this scene's cycle
             this.color = color;
-            imageObject.GetComponent<Image>().color = board.cycle.GetManaColors()[ ((int)color) ];
-            if (board.cycle.usingSprites) imageObject.GetComponent<Image>().sprite = board.cycle.manaSprites[ ((int)color) ];
+            image.color = board.cycle.GetManaColors()[ ((int)color) ];
+            if (board.cycle.usingSprites) image.sprite = board.cycle.manaSprites[ ((int)color) ];
         }
 
         public ManaColor GetManaColor()
@@ -38,8 +41,13 @@ namespace Battle.Board {
             return color;
         }
 
+        public void SetVisualColor(Color color)
+        {
+            image.color = color;
+        }
+
         public void AnimateMovement(Vector2 from, Vector2 to) {
-            imageObject.transform.localPosition = from;
+            image.transform.localPosition = from;
             targetPosition = to;
             speed = initialSpeed;
             moving = true;
@@ -47,14 +55,19 @@ namespace Battle.Board {
 
         private void Update() {
             if (moving) {
-                if ((imageObject.transform.localPosition - targetPosition).sqrMagnitude < 0.005f) {
+                if ((image.transform.localPosition - targetPosition).sqrMagnitude < 0.005f) {
                     moving = false;
                     if (onFallAnimComplete != null) onFallAnimComplete();
                 } else {
-                    imageObject.transform.localPosition = Vector2.MoveTowards(imageObject.transform.localPosition, targetPosition, speed*Time.deltaTime);
+                    image.transform.localPosition = Vector2.MoveTowards(image.transform.localPosition, targetPosition, speed*Time.deltaTime);
                     speed += acceleration*Time.deltaTime;
                 }
             }
+        }
+
+        public void MakeTrashTile(GameBoard board) {
+            trashTile = true;
+            SetVisualColor(Color.Lerp(Color.gray, image.color, 0.5f));
         }
     }
 }
