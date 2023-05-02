@@ -24,6 +24,8 @@ namespace MainMenu {
 
         [SerializeField] private GameObject HTPButton, SettingsButton;
 
+        [SerializeField] private GameObject VersusWindow, VersusButton, VersusFirstSelected;
+
         // p1 input script so that R to submit works in menu
         [SerializeField] private InputScript[] inputScripts;
 
@@ -47,6 +49,24 @@ namespace MainMenu {
 
         public void SelectVersus()
         {
+            VersusWindow.SetActive(true);
+            MainWindow.SetActive(false);
+            EventSystem.current.SetSelectedGameObject(VersusFirstSelected);
+        }
+
+        public void CloseVersus()
+        {
+            VersusWindow.SetActive(false);
+            MainWindow.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(VersusButton);
+        }
+
+        public void GoToCharSelect(int setup){
+            switch(setup){
+                case 1: Storage.isPlayer1 = true; Storage.isPlayer2 = false; break;
+                case 2: Storage.isPlayer1 = false; Storage.isPlayer2 = false; break;
+                default: Storage.isPlayer1 = true; Storage.isPlayer2 = true; break;
+            }
             TransitionHandler.WipeToScene("CharSelect");
         }
 

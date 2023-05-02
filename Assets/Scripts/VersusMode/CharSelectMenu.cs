@@ -59,9 +59,8 @@ namespace VersusMode {
                 Storage.battler1 = p1Selector.selectedBattler;
                 Storage.battler2 = p2Selector.selectedBattler;
 
-                // TODO: make player/cpu state depend on gamemode
-                Storage.isPlayer1 = true;
-                Storage.isPlayer2 = true;
+                // if (Storage.isPlayer1 == null) Storage.isPlayer1 = true;
+                // if (Storage.isPlayer2 == null) Storage.isPlayer2 = true;
 
                 Storage.level = null;
                 Storage.gamemode = Storage.GameMode.Versus;
