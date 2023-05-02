@@ -26,6 +26,8 @@ namespace MainMenu {
 
         [SerializeField] private GameObject VersusWindow, VersusButton, VersusFirstSelected;
 
+        [SerializeField] private TMPro.TextMeshProUGUI versusDescription;
+
         // p1 input script so that R to submit works in menu
         [SerializeField] private InputScript[] inputScripts;
 
@@ -59,6 +61,11 @@ namespace MainMenu {
             VersusWindow.SetActive(false);
             MainWindow.SetActive(true);
             EventSystem.current.SetSelectedGameObject(VersusButton);
+        }
+
+        public void setVersusDescription(string newText)
+        {
+            versusDescription.text = newText;
         }
 
         public void GoToCharSelect(int setup){
