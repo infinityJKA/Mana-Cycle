@@ -64,6 +64,7 @@ GameObject:
   - component: {fileID: 109460369072555584}
   - component: {fileID: 2738482425047349209}
   - component: {fileID: 7561198744834971609}
+  - component: {fileID: 4174570119449310702}
   - component: {fileID: 1653424862917905127}
   - component: {fileID: 3933151752034113109}
   m_Layer: 5
@@ -148,6 +149,7 @@ MonoBehaviour:
   particleParent: {fileID: 4920481684090110958}
   clearParticleSystem: {fileID: 8444103318734970022, guid: 25402455859d44a83abb5c7f5c764f7d, type: 3}
   abilityManager: {fileID: 7561198744834971609}
+  rngManager: {fileID: 4174570119449310702}
 --- !u!114 &7561198744834971609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,6 +165,18 @@ MonoBehaviour:
   manaDisp: {fileID: 7165777715501705125}
   singlePiecePrefab: {fileID: 9030524263075610063, guid: 04baa513f5c9f4f3594a331fffe01759, type: 3}
   abilityActive: 0
+--- !u!114 &4174570119449310702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109460369072555597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c252ec6ff564fdd835986ebc490be6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1653424862917905127
 MonoBehaviour:
   m_ObjectHideFlags: 0

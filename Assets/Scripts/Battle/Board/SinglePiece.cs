@@ -17,33 +17,12 @@ namespace Battle.Board {
         // image for Infinity's Iron Sword
         [SerializeField] public Image ironSwordImage;
         [SerializeField] private AudioClip ironSwordSFX;
-
         public override bool IsRotatable {get {return false;}}
+
         
         private Vector3 OrientedDirection()
         {
             return Vector3.up;
-        }
-
-        // Randomize the color of the tiles of this piece.
-        public override void Randomize(GameBoard board)
-        {
-            PieceRng rng = board.GetPieceRng();
-
-            if (rng == PieceRng.CurrentColorWeighted)
-            {
-                center.SetColor(ColorWeightedRandom(board), board);
-            }
-
-            else if (rng == PieceRng.PureRandom)
-            {
-                center.SetColor(RandomColor(), board);
-            }
-
-            else if (rng == PieceRng.Bag)
-            {
-                center.SetColor(pullColor(), board);
-            }
         }
             
         public override void UpdateOrientation()
@@ -106,7 +85,7 @@ namespace Battle.Board {
         public void MakeIronSword(GameBoard board)
         {
             effect = Battler.ActiveAbilityEffect.IronSword;
-            center.imageObject.SetActive(false);
+            center.image.gameObject.SetActive(false);
             ironSwordImage.gameObject.SetActive(true);
             center.onFallAnimComplete = () => IronSwordDestroyTileBelow(board);
         }

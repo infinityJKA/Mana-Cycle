@@ -52,7 +52,12 @@ namespace Battle.Board {
                 Debug.Log("use active ability");
                 abilityActive = true;
 
-                if (board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.IronSword) IronSword();
+                switch (board.Battler.activeAbilityEffect)
+                {
+                    case Battler.ActiveAbilityEffect.IronSword: IronSword(); break;
+                    case Battler.ActiveAbilityEffect.Whirlpool: Whirlpool(); break;
+                    default: break;
+                }
             }
         }
 
@@ -68,6 +73,13 @@ namespace Battle.Board {
 
         void OnValidate() {
             board = GetComponent<GameBoard>();
+        }
+
+        /// <summary>
+        /// Sends 3 trash tiles to your opponent's board.
+        /// </summary>
+        private void Whirlpool() {
+            for (int i=0; i<3; i++) board.enemyBoard.AddTrashTile();
         }
     }
 }

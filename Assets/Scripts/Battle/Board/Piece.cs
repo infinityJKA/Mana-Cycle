@@ -26,10 +26,6 @@ namespace Battle.Board {
         // This piece's rotation, direction that the top tile is facing. Start out facing up.
         [SerializeField] protected Orientation orientation = Orientation.up;
 
-        // TODO: Move these out of the piece class... otherwise, each piece uses a different bag
-        // needed to make it static for now, so both players will use the same bag until this is fixed
-        private static int bagPullAmount = -1;
-        private static List<ManaColor> currentBag;
 
         // Orientation is the way that the "top" tile is facing
         public enum Orientation
@@ -88,11 +84,25 @@ namespace Battle.Board {
                 right.SetColor(ColorWeightedRandom(board), board);
             }
 
+            if (rng == PieceRng.PieceSameColorWeighted)
+            {
+                center.SetColor(RandomColor(), board);
+
+                // for top and right, 40% chance to mirror the center color
+                if (Random.value < 0.4f) {
+                    top.SetColor(center.color, board);
+                } else {
+                    top.SetColor(RandomColor(), board);
+                }
+                if (Random.value < 0.4f) {
+                    right.SetColor(center.color, board);
+                } else {
+                    right.SetColor(RandomColor(), board);
+                }
+            }
+
             else if (rng == PieceRng.PureRandom)
             {
-                // Randomly choose color from color enum length
-                // Color has a 15% chance to boe current color, and 85% chance to be random color (including current).
-                // color = (Random.value < 0.2) ? board.CurrentColor() : (ManaColor)Random.Range(0,5); <-- will be infinity's rng pattern
                 center.SetColor(RandomColor(), board);
                 top.SetColor(RandomColor(), board);
                 right.SetColor(RandomColor(), board);
@@ -100,53 +110,22 @@ namespace Battle.Board {
 
             else if (rng == PieceRng.Bag)
             {
-                // select color from randomized bag
-                // keep track of how many times a color has been pulled for reshuffle
-                center.SetColor(pullColor(), board);
-                top.SetColor(pullColor(), board);
-                right.SetColor(pullColor(), board);
+                // pull color from randomized bag
+                center.SetColor(board.PullColorFromBag(), board);
+                top.SetColor(board.PullColorFromBag(), board);
+                right.SetColor(board.PullColorFromBag(), board);
 
             }
         }
 
-        protected static ManaColor RandomColor()
+        public static ManaColor RandomColor()
         {
             return (ManaColor)Random.Range(0, ManaCycle.cycleUniqueColors);
         }
 
-        protected static List<ManaColor> GenerateColorBag()
-        {
-            // generate the next piece colors with 2x bag, where x is unique cycle colors
-            // create the unsorted list with 2 of each color
-            List<ManaColor> newBag = new List<ManaColor>();
-            for (int i = 0; i < ManaCycle.cycleUniqueColors; i++)
-            {
-                newBag.Add( (ManaColor) i);
-                newBag.Add( (ManaColor) i);
-            }
-            // Debug.Log(string.Join(",",newBag));
-
-            Utils.Shuffle(newBag);
-            return newBag;
-        }
-
-        // pull the next color from bag
-        protected static ManaColor pullColor()
-        {
-            // if end of bag (or first pull), reshuffle
-            if (bagPullAmount < 0 || bagPullAmount >= currentBag.Count )
-            {
-                currentBag = GenerateColorBag();
-                bagPullAmount = 0;
-            }
-            ManaColor pulledColor = currentBag[bagPullAmount];
-            bagPullAmount++;
-            return pulledColor;
-        }
-
         protected static ManaColor ColorWeightedRandom(GameBoard board)
         {
-            if (Random.value < 0.15)
+            if (Random.value < 0.15f)
             {
                 return board.CurrentColor();
             } else {
