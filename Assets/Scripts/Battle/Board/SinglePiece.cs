@@ -17,6 +17,9 @@ namespace Battle.Board {
         // image for Infinity's Iron Sword
         [SerializeField] public Image ironSwordImage;
         [SerializeField] private AudioClip ironSwordSFX;
+
+        [SerializeField] private Sprite pyroBombSprite;
+
         public override bool IsRotatable {get {return false;}}
 
         
@@ -57,8 +60,12 @@ namespace Battle.Board {
             {
                 case Battler.ActiveAbilityEffect.IronSword:
                     Debug.Log("Iron Sword effect");
-                    IronSwordDestroyTileBelow(board);
                     SoundManager.Instance.PlaySound(ironSwordSFX);
+                    IronSwordDestroyTileBelow(board);
+                    break;
+                case Battler.ActiveAbilityEffect.PyroBomb:
+                    Debug.Log("Pyro Bomb effect");
+                    PyroBombExplode(board);
                     break;
                 default:
                     Debug.Log("default single piece fall");
@@ -66,9 +73,17 @@ namespace Battle.Board {
             }
         }
 
+        public void MakeIronSword(GameBoard board)
+        {
+            effect = Battler.ActiveAbilityEffect.IronSword;
+            center.image.gameObject.SetActive(false);
+            ironSwordImage.gameObject.SetActive(true);
+            center.onFallAnimComplete = () => IronSwordDestroyTileBelow(board);
+        }
+
         // Destroy the tile below this tile and deal damage
         // Return true if the tile should try to fall again
-        public void IronSwordDestroyTileBelow(GameBoard board)
+        private void IronSwordDestroyTileBelow(GameBoard board)
         {
             row++;
             if (row >= GameBoard.height) {
@@ -82,12 +97,29 @@ namespace Battle.Board {
             board.DealDamage(board.damagePerMana, swordTile.transform.position, 0, 0);
         }
 
-        public void MakeIronSword(GameBoard board)
+
+        public void MakePyroBomb(GameBoard board)
         {
-            effect = Battler.ActiveAbilityEffect.IronSword;
-            center.image.gameObject.SetActive(false);
-            ironSwordImage.gameObject.SetActive(true);
-            center.onFallAnimComplete = () => IronSwordDestroyTileBelow(board);
+            effect = Battler.ActiveAbilityEffect.PyroBomb;
+            center.image.sprite = pyroBombSprite;
+        }
+
+        private void PyroBombExplode(GameBoard board) {
+            Debug.Log("pyro bomb explosion");
+            // Destroy tiles in a 3x3 grid (including this piece's bomb tile, which is in the center)
+            // exclude this tile initial count
+
+            int manaCleared = -1;
+            Debug.Log(row+", "+col);
+            for (int r = row-1; r <= row+1; r++) {
+                for (int c = col-1; c <= col+1; c++) {
+                    Debug.Log(r+", "+c);
+                    if (board.ClearTile(c, r)) manaCleared++;
+                }
+            }
+            board.AllTileGravity();
+
+            board.DealDamage(board.damagePerMana*manaCleared, center.transform.position, 0, 0);
         }
     }
 }

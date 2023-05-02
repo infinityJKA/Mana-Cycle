@@ -56,6 +56,7 @@ namespace Battle.Board {
                 {
                     case Battler.ActiveAbilityEffect.IronSword: IronSword(); break;
                     case Battler.ActiveAbilityEffect.Whirlpool: Whirlpool(); break;
+                    case Battler.ActiveAbilityEffect.PyroBomb: PyroBomb(); break;
                     default: break;
                 }
             }
@@ -80,6 +81,21 @@ namespace Battle.Board {
         /// </summary>
         private void Whirlpool() {
             for (int i=0; i<3; i++) board.enemyBoard.AddTrashTile();
+        }
+
+        /// <summary>
+        /// Replaces current piece and the next 2 in the preview with bombs.
+        /// </summary>
+        private void PyroBomb() {
+            board.ReplacePiece(MakePyroBomb());
+            board.piecePreview.ReplaceNextPiece(MakePyroBomb());
+            board.piecePreview.ReplaceListPiece(MakePyroBomb(), PiecePreview.previewLength-1);
+        }
+
+        private SinglePiece MakePyroBomb() {
+            SinglePiece pyroBombPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            pyroBombPiece.MakePyroBomb(board);
+            return pyroBombPiece;
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Battle.Board {
         [SerializeField] public HealthBar hpBar;
 
         /** Stores the piece preview for this board */
-        [SerializeField] private PiecePreview piecePreview;
+        [SerializeField] public PiecePreview piecePreview;
 
         /** Cycle pointer game object that belongs to this board */
         [SerializeField] public GameObject pointer;
@@ -715,8 +715,12 @@ namespace Battle.Board {
         }
 
         // Clear the tile at the given index, destroying the Tile gameObject.
-        public void ClearTile(int col, int row)
+        // Returns true if a tile was cleared.
+        public bool ClearTile(int col, int row)
         {
+            if (row < 0 || row >= height || col < 0 || col >= width) return false;
+            if (!tiles[row, col]) return false;
+
             // play clearing particles before clearing
             // instantiate particle system to have multiple bursts at once
             GameObject tileParticleSystem = Instantiate(clearParticleSystem, particleParent, false);
@@ -737,10 +741,10 @@ namespace Battle.Board {
             // particle system will automatically remove itself from the parent when animation is done, via ParticleSystem script
 
             // clear tile
-            if (tiles[row, col]) {
-                Destroy(tiles[row, col].gameObject);
-                tiles[row, col] = null;
-            }
+            Destroy(tiles[row, col].gameObject);
+            tiles[row, col] = null;
+
+            return true;
         }
 
         // Deal damage to the other player(s(?))
