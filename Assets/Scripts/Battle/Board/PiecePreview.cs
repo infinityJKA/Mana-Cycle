@@ -5,15 +5,19 @@ using UnityEngine;
 namespace Battle.Board {
     public class PiecePreview : MonoBehaviour
     {
+        // List of pieces below the next piece box
         [SerializeField] private Transform previewListTransform;
         // Next piece box where the next piece is stored above this piece preview
         [SerializeField] private Transform nextPieceTransform;
+
         // The board this piece preview is for
         [SerializeField] private GameBoard board;
         // Piece prefab, containing an object with Tile gameobject children
         [SerializeField] private Piece piecePrefab;
+        [SerializeField] private SinglePiece singlePiecePrefab;
+
         // Length of the preview list
-        [SerializeField] private int previewLength = 4;
+        [SerializeField] public static int previewLength = 2;
 
         public void Setup(GameBoard board)
         {
@@ -53,6 +57,23 @@ namespace Battle.Board {
             // Randomize the piece's tiles' colors
             newPiece.Randomize(board);
             return newPiece;
+        }
+
+        public void ReplaceNextPiece(Piece newPiece)
+        {
+            Destroy(nextPieceTransform.GetChild(0).gameObject);
+            newPiece.transform.SetParent(nextPieceTransform);
+            newPiece.transform.localPosition = nextPieceTransform.GetChild(0).transform.localPosition;
+            newPiece.transform.localScale = nextPieceTransform.GetChild(0).transform.localScale;
+        }
+
+        public void ReplaceListPiece(Piece newPiece, int index)
+        {
+            Destroy(previewListTransform.GetChild(index).gameObject);
+            newPiece.transform.SetParent(previewListTransform);
+            newPiece.transform.localPosition = previewListTransform.GetChild(index).transform.localPosition;
+            newPiece.transform.localScale = previewListTransform.GetChild(index).transform.localScale;
+            newPiece.transform.SetSiblingIndex(PiecePreview.previewLength-index-1);
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Battle.Board {
 
         private void Update() {
             if (moving) {
-                if ((image.transform.localPosition - targetPosition).sqrMagnitude < 0.005f) {
+                if (image.transform.localPosition == targetPosition) {
                     moving = false;
                     if (onFallAnimComplete != null) onFallAnimComplete();
                 } else {
@@ -67,7 +67,7 @@ namespace Battle.Board {
 
         public void MakeTrashTile(GameBoard board) {
             trashTile = true;
-            SetVisualColor(Color.Lerp(Color.gray, image.color, 0.5f));
+            SetVisualColor(Color.Lerp(Color.black, image.color, 0.7f));
         }
     }
 }
