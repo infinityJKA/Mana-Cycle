@@ -418,7 +418,7 @@ namespace Battle.Board {
                         // if there are tiles, damage and reset the timer.
                         // if no tiles, set timer to 0 (not running)
                         if (trashDamage > 0) {
-                            TakeDamage(trashDamage);
+                            TakeDamage(trashDamage, 0.333f);
                             trashDamageTimer = trashDamageTimerDuration;
                         } else {
                             trashDamageTimer = 0;
@@ -528,7 +528,7 @@ namespace Battle.Board {
 
             // may replace with trash sfx later
             PlaySFX("place");
-            
+
             // start trash damage timer only if at 0 (not running)
             if (trashDamageTimer == 0) {
                 trashDamageTimer = trashDamageTimerDuration;
@@ -824,22 +824,27 @@ namespace Battle.Board {
             hpBar.AdvanceDamageQueue();
         }
 
-        public void TakeDamage(int damage) {
+        public void TakeDamage(int damage, float intensity) {
             // shake the board and portrait when damaged
-            shake.StartShake();
-            portrait.GetComponent<Shake>().StartShake();
+            shake.StartShake(intensity);
+            portrait.GetComponent<Shake>().StartShake(intensity);
             // flash portrait red
-            portrait.GetComponent<ColorFlash>().Flash();
+            portrait.GetComponent<ColorFlash>().Flash(intensity);
 
             PlaySFX("damageTaken");
 
             // subtract from hp
             hp -= damage;
+            hpBar.Refresh();
 
             // If this player is out of HP, run defeat
             if (hp <= 0) Defeat();
 
             CheckMidLevelConversations();
+        }
+
+        public void TakeDamage(int damage) {
+            TakeDamage(damage, 1f);
         }
 
 

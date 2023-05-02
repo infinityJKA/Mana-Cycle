@@ -17,6 +17,9 @@ namespace Animation {
         private float duration = 0.7f;
         /** Amount of flash time remaining **/
         private float time = 0f;
+        
+        // Current intensity
+        private float intensity;
 
 
         void Start() {
@@ -36,14 +39,20 @@ namespace Animation {
             }
         }
 
-        public void Flash(Color color, float duration) {
+        public void Flash(Color color, float duration, float intensity) {
+            this.intensity = intensity;
             this.flashColor = color;
-            this.duration = duration;
+            this.duration = duration*intensity;
             this.time = duration;
         }
 
+        public void Flash(float intensity) {
+            this.intensity = intensity;
+            this.time = duration*intensity;
+        }
+
         public void Flash() {
-            this.time = duration;
+            Flash(1f);
         }
     }
 }

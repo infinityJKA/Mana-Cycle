@@ -89,7 +89,7 @@ namespace Battle.Board {
                 center.SetColor(RandomColor(), board);
 
                 // for top and right, 40% chance to mirror the center color
-                if (Random.value < 0.4f) {
+                if (Random.value < 0.333f) {
                     top.SetColor(center.color, board);
                 } else {
                     top.SetColor(RandomColor(), board);
