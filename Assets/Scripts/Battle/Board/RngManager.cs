@@ -43,9 +43,7 @@ namespace Battle.Board {
         public ManaColor GetCenterMatch()
         {
             CenterMatchCallCount += 1;
-
             return ManaCycle.cycle[(CenterMatchCallCount-1) % ManaCycle.cycle.Count];
-            
         }
     }
 }
