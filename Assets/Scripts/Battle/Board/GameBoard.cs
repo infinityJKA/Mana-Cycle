@@ -508,6 +508,10 @@ namespace Battle.Board {
             return rngManager.PullColorFromBag();
         }
 
+        public ManaColor GetCenterMatch() {
+            return rngManager.GetCenterMatch();
+        }
+
 
         // Adds a trash tile to this board in a random column.
         public void AddTrashTile() {

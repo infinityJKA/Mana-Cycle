@@ -116,6 +116,15 @@ namespace Battle.Board {
                 right.SetColor(board.PullColorFromBag(), board);
 
             }
+
+            else if (rng == PieceRng.CenterMatchesCycle)
+            {
+                // center matches cycle order, others are random
+                Debug.Log("Hellooooooo");
+                center.SetColor(board.GetCenterMatch(), board);
+                top.SetColor(RandomColor(), board);
+                right.SetColor(RandomColor(), board);
+            }
         }
 
         public static ManaColor RandomColor()

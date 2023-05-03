@@ -24,7 +24,7 @@ namespace Battle.Cycle {
         [SerializeField] private List<GameBoard> boards;
 
         // List of all colors in the cycle
-        private List<ManaColor> cycle;
+        public static List<ManaColor> cycle;
 
         // List of all cycleColor objects that represent the colors
         private List<Image> cycleObjects;

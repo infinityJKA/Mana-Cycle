@@ -47,5 +47,6 @@ namespace Battle {
         CurrentColorWeighted, // Infinity
         PieceSameColorWeighted, // Aqua,
         PureRandom, // trainbot
+        CenterMatchesCycle,
     }
 }

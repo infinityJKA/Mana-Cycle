@@ -6,6 +6,7 @@ using Battle.Cycle;
 namespace Battle.Board {    
     public class RngManager : MonoBehaviour {
         private List<ManaColor> bag;
+        private int CenterMatchCallCount = 0;
 
         void Start() {
             bag = new List<ManaColor>();
@@ -35,6 +36,16 @@ namespace Battle.Board {
             ManaColor pulledColor = bag[0];
             bag.RemoveAt(0);
             return pulledColor;
+        }
+    
+
+        // returns the cycle colors in order, increasing each time called
+        public ManaColor GetCenterMatch()
+        {
+            CenterMatchCallCount += 1;
+
+            return ManaCycle.cycle[(CenterMatchCallCount-1) % ManaCycle.cycle.Count];
+            
         }
     }
 }
