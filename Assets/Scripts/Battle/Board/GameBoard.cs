@@ -55,7 +55,7 @@ namespace Battle.Board {
         /** Stores the board's cycle level indicator */
         [SerializeField] private CycleMultiplier cycleLevelDisplay;
         /** Stores the image for the portrait */
-        [SerializeField] private Image portrait;
+        [SerializeField] public Image portrait;
 
         /** Chain popup object */
         [SerializeField] private Popup chainPopup;
@@ -221,7 +221,7 @@ namespace Battle.Board {
                 SoundManager.Instance.SetBGM(singlePlayer ? level.battleMusic : multiBattleMusic);
             }
 
-            if (singlePlayer) {
+            if (singlePlayer && !Storage.level.aiBattle) {
                 // hp number is used as score, starts as 0
                 maxHp = level.scoreGoal;
                 hp = 0;
@@ -261,8 +261,18 @@ namespace Battle.Board {
             }
             else
             {
-                // if in solo mode, use battler serialized in level asset
-                if (Storage.gamemode == Storage.GameMode.Solo) battler = level.battler;
+                // if in solo mode, use battler and op serialized in level asset
+                if (Storage.gamemode == Storage.GameMode.Solo && playerControlled)
+                {
+                    battler = level.battler;
+                    // set opp in ai battles
+                    if (Storage.level.aiBattle)
+                    {
+                        enemyBoard.battler = Storage.level.opponent;
+                        enemyBoard.portrait.sprite = Storage.level.opponent.sprite;
+                    }
+                }
+
             }
             portrait.sprite = battler.sprite;
             // initialPos = portrait.GetComponent<RectTransform>().anchoredPosition;
@@ -273,7 +283,7 @@ namespace Battle.Board {
 
             hpBar.Setup(this);
 
-            if (singlePlayer) {
+            if (singlePlayer && !Storage.level.aiBattle) {
                 objectiveList.InitializeObjectiveListItems(this);
             }
         }
@@ -288,54 +298,58 @@ namespace Battle.Board {
             PointerReposition();
 
             // -------- CONTROLS ----------------
+            // if (inputScripts == null) return;
             foreach (InputScript inputScript in inputScripts) {
-                if (Input.GetKeyDown(inputScript.Pause) && !postGame && !Storage.convoEndedThisInput)
+                if (inputScript != null)
                 {
-                    pauseMenu.TogglePause();
-                    PlaySFX("pause");
-                }
-                Storage.convoEndedThisInput = false;
-
-                // control the pause menu if paused
-                if (pauseMenu.paused && !postGame)
-                {
-                    if (Input.GetKeyDown(inputScript.Up)) {
-                        pauseMenu.MoveCursor(1);
-                        PlaySFX("move", pitch : 0.8f);
-                    } else if (Input.GetKeyDown(inputScript.Down)) {
-                        pauseMenu.MoveCursor(-1);
-                        PlaySFX("move", pitch : 0.75f);
+                    if (Input.GetKeyDown(inputScript.Pause) && !postGame && !Storage.convoEndedThisInput)
+                    {
+                        pauseMenu.TogglePause();
+                        PlaySFX("pause");
                     }
+                    Storage.convoEndedThisInput = false;
 
-                    if (Input.GetKeyDown(inputScript.Cast)){
-                        pauseMenu.SelectOption();
-                    }           
-                }
-
-                // same with post game menu, if timer is not running
-                else if (postGame && !winMenu.timerRunning)
-                {
-                    if (Input.GetKeyDown(inputScript.Up)) {
-                        winMenu.MoveCursor(1);
-                    } else if (Input.GetKeyDown(inputScript.Down)) {
-                        winMenu.MoveCursor(-1);
-                    }
-
-                    if (Input.GetKeyDown(inputScript.Cast)){
-                        winMenu.SelectOption();
-                    }
-                }
-                
-                // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
-                else if (!convoPaused && !postGame) {
-                    pieceSpawned = false;
-
-                    if (playerControlled && piece != null){
-                        if (Input.GetKey(inputScript.Down)){
-                            this.fallTimeMult = 0.1f;
+                    // control the pause menu if paused
+                    if (pauseMenu.paused && !postGame)
+                    {
+                        if (Input.GetKeyDown(inputScript.Up)) {
+                            pauseMenu.MoveCursor(1);
+                            PlaySFX("move", pitch : 0.8f);
+                        } else if (Input.GetKeyDown(inputScript.Down)) {
+                            pauseMenu.MoveCursor(-1);
+                            PlaySFX("move", pitch : 0.75f);
                         }
-                        else{
-                            this.fallTimeMult = 1f;
+
+                        if (Input.GetKeyDown(inputScript.Cast)){
+                            pauseMenu.SelectOption();
+                        }           
+                    }
+
+                    // same with post game menu, if timer is not running
+                    else if (postGame && !winMenu.timerRunning)
+                    {
+                        if (Input.GetKeyDown(inputScript.Up)) {
+                            winMenu.MoveCursor(1);
+                        } else if (Input.GetKeyDown(inputScript.Down)) {
+                            winMenu.MoveCursor(-1);
+                        }
+
+                        if (Input.GetKeyDown(inputScript.Cast)){
+                            winMenu.SelectOption();
+                        }
+                    }
+                    
+                    // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
+                    else if (!convoPaused && !postGame) {
+                        pieceSpawned = false;
+
+                        if (playerControlled && piece != null){
+                            if (Input.GetKey(inputScript.Down)){
+                                this.fallTimeMult = 0.1f;
+                            }
+                            else{
+                                this.fallTimeMult = 1f;
+                            }
                         }
                     }
                 }
@@ -365,7 +379,7 @@ namespace Battle.Board {
                             
                             // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
                 
-                                if (!Input.GetKey(inputScript.Down)) {
+                                if (playerControlled && !Input.GetKey(inputScript.Down)) {
                                     finalFallTime += slideTime;
                                 }
 
@@ -753,7 +767,7 @@ namespace Battle.Board {
             
             if (postGame) {
                 // just add score if postgame and singleplayer
-                if (singlePlayer)
+                if (singlePlayer && !Storage.level.aiBattle)
                 {
                     hp += damage;   
                 }
@@ -774,7 +788,7 @@ namespace Battle.Board {
 
             // Send it to the appropriate location
             // if singleplayer, add damage to score, send towards hp bar
-            if (singlePlayer) {
+            if (singlePlayer && !Storage.level.aiBattle) {
                 shoot.target = this;
                 shoot.countering = false;
                 shoot.destination = hpBar.hpNum.transform.position;

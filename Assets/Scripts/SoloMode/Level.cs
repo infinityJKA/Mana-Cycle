@@ -6,6 +6,7 @@ using UnityEditor;
 #endif
 
 using ConvoSystem;
+using Battle;
 
 namespace SoloMode {
     [CreateAssetMenu(fileName = "Level", menuName = "ManaCycle/Levels")]
@@ -43,6 +44,11 @@ namespace SoloMode {
 
         // Win on timer 0
         public bool survivalWin = false;
+
+        // arcade mode / ai battle
+        public bool aiBattle = false;
+
+        public Battle.Battler opponent;
 
         // Battle music
         public AudioClip battleMusic;
