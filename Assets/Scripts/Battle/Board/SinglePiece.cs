@@ -22,6 +22,8 @@ namespace Battle.Board {
 
         public override bool IsRotatable {get {return false;}}
 
+        [SerializeField] private GameObject goldMineObject;
+
         
         private Vector3 OrientedDirection()
         {
@@ -120,6 +122,24 @@ namespace Battle.Board {
             board.AllTileGravity();
 
             board.DealDamage(board.damagePerMana*manaCleared, center.transform.position, 0, 0);
+        }
+
+
+        public void MakeGoldMine(GameBoard board) {
+            Debug.Log("gold mine piece creation");
+
+            effect = Battler.ActiveAbilityEffect.GoldMine;
+
+            // make piece semi transparent
+            center.image.color = new Color(1, 1, 1, 0.4f);
+
+            // instantiate the crystal object and move it away from the camera, but not beyond the board
+            GameObject goldMineCrystal = Instantiate(
+                goldMineObject, 
+                center.image.transform.position + Vector3.forward*2, 
+                Quaternion.identity, 
+                center.image.transform
+            );
         }
     }
 }
