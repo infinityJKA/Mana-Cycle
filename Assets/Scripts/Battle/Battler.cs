@@ -22,7 +22,8 @@ namespace Battle {
             IronSword,
             Whirlpool,
             PyroBomb,
-            TimeFreeze
+            TimeFreeze,
+            GoldMine
         }
             
         /// <summary>Name of this character's active ability</summary>

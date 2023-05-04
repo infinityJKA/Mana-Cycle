@@ -623,12 +623,7 @@ namespace Battle.Board {
             Transform manaColor = cycle.transform.GetChild(cyclePosition);
             // Debug.Log(cycle.transform.GetChild(cyclePosition));
 
-            pointer.transform.position = new Vector3(
-                // Move left or right based on if this is the player or not
-                manaColor.transform.position.x + ((playerSide == 0) ? -50 : 50),
-                manaColor.transform.position.y,
-                0
-            );
+            pointer.transform.position = manaColor.transform.position + Vector3.right * 50f * ((playerSide == 0) ? -1 : 1);
         }
 
         // Create a new piece and spawn it at the top of the board. Replaces the current piece field.

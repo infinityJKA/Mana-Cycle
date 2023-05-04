@@ -57,6 +57,7 @@ namespace Battle.Board {
                     case Battler.ActiveAbilityEffect.IronSword: IronSword(); break;
                     case Battler.ActiveAbilityEffect.Whirlpool: Whirlpool(); break;
                     case Battler.ActiveAbilityEffect.PyroBomb: PyroBomb(); break;
+                    case Battler.ActiveAbilityEffect.GoldMine: GoldMine(); break;
                     default: break;
                 }
             }
@@ -96,6 +97,15 @@ namespace Battle.Board {
             SinglePiece pyroBombPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
             pyroBombPiece.MakePyroBomb(board);
             return pyroBombPiece;
+        }
+
+        /// <summary>
+        /// Replaces the current piece with a gold mine crystal.
+        /// </summary>
+        private void GoldMine() {
+            SinglePiece goldMinePiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            goldMinePiece.MakeGoldMine(board);
+            board.ReplacePiece(goldMinePiece);
         }
     }
 }
