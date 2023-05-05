@@ -99,8 +99,8 @@ namespace Battle {
                         move = (int) UnityEngine.Random.Range(0f, 7f);
                     }
                 
-                    // don't try to spellcast if there are no blobs
-                    if (move == 0 && board.GetBlobCount()>0){
+                    // don't try to spellcast if there are no blobs or already casting
+                    if (move == 0 && board.GetBlobCount()>0 && !board.GetCasting()){
                         board.Spellcast();
                     }
                 }
