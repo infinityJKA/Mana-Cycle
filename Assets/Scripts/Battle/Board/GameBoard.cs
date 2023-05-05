@@ -1293,6 +1293,10 @@ namespace Battle.Board {
             return playerSide;
         }
 
+        public bool GetCasting(){
+            return casting;
+        }
+
         // Used in singleplayer, add points to "score" (hp)
         public void AddScore(int score) {
             hp += score;
