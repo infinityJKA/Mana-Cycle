@@ -764,7 +764,8 @@ namespace Battle.Board {
             Destroy(tiles[row, col].gameObject);
             tiles[row, col] = null;
 
-            return pointMultiplier;
+            // point multiplier should not be negative & lower damage
+            return Math.Max(pointMultiplier, 0f);
         }
 
         // Deal damage to the other player(s(?))

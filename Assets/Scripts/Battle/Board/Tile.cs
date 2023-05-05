@@ -83,6 +83,7 @@ namespace Battle.Board {
 
         public void MakeTrashTile(GameBoard board) {
             trashTile = true;
+            pointMultiplier -= 1.00f;
             SetVisualColor(Color.Lerp(Color.black, image.color, 0.7f));
         }
     }

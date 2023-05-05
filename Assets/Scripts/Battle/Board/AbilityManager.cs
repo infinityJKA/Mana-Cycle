@@ -1,9 +1,6 @@
 using System;
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
-using Sound;
+using UnityEngine.UI;
 
 namespace Battle.Board {
     /// <summary>
@@ -13,8 +10,10 @@ namespace Battle.Board {
         // cached GameBoard
         private GameBoard board;
 
+        /// <summary>Background image for the mana (MP) bar </summary>
+        [SerializeField] public RectTransform manaBar; 
         /// <summary>Fill image for the mana (MP) bar </summary>
-        [SerializeField] public UnityEngine.UI.Image manaDisp;
+        [SerializeField] public Image manaDisp;
         
         [SerializeField] public GameObject singlePiecePrefab;
 
@@ -30,6 +29,10 @@ namespace Battle.Board {
         {
             mana = 0;
             mana = board.Battler.activeAbilityMana; // for easy debug
+
+            // set height based on mana required - 50 is the reference
+            manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, manaBar.sizeDelta.y * board.Battler.activeAbilityMana/50f);
+
             RefreshManaBar();
         }
 
