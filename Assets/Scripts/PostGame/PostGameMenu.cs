@@ -64,7 +64,7 @@ namespace PostGame {
 
                         // if not endless mode and is winner, level is cleared
                         bool clearedBefore = PlayerPrefs.GetInt(levelID+"_Cleared", 0) == 1;
-                        bool cleared = board.isWinner() || (Storage.level.time == -1 && Storage.level.scoreGoal == 0);
+                        bool cleared = board.IsWinner() || (Storage.level.time == -1 && Storage.level.scoreGoal == 0);
                         if (cleared) PlayerPrefs.SetInt(levelID+"_Cleared", 1);
 
                         // set highscore if level was cleared

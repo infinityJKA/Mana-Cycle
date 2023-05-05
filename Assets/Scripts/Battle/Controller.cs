@@ -43,7 +43,7 @@ namespace Battle {
             // stop movement while paused, post game or dialogue
             if (board.isPaused() || board.isPostGame() || board.convoPaused) return;
 
-            if (board.isPlayerControlled() && !board.isDefeated()){
+            if (board.IsPlayerControlled() && !board.IsDefeated()){
                 foreach (InputScript inputScript in inputScripts) {
                     if (Input.GetKeyDown(inputScript.RotateCW)){
                         board.RotateLeft();
@@ -72,7 +72,7 @@ namespace Battle {
             }
             else{
                 // AI movement
-                if (board.isPieceSpawned()){
+                if (board.IsPieceSpawned()){
                     // this block runs when a new pieces is spawned
                     // find cols with the least height and randomly choose between them
                     // TODO factor in making blobs in some way. likely by looping through each possible column and checking blob size / dmg
@@ -89,7 +89,7 @@ namespace Battle {
                         targetRot = (int) UnityEngine.Random.Range(0f, 4f);
                     }
                     
-                    board.setFallTimeMult(1f);
+                    board.SetFallTimeMult(1f);
 
                     // random number to choose when to cast
                     if (board.getColHeight(FindNthLowestCols(0)[0]) > GameBoard.height/2){
@@ -105,7 +105,7 @@ namespace Battle {
                     }
                 }
                 // ai moves at timed intervals
-                if ((nextMoveTimer - Time.time <= 0) && !board.isDefeated()){
+                if ((nextMoveTimer - Time.time <= 0) && !board.IsDefeated()){
 
                     // set timer for next move. get highest col height so ai speeds up when closer to topout
                     nextMoveTimer = Time.time + Math.Max(UnityEngine.Random.Range(0.6f,1f) - (double) board.getColHeight(FindNthLowestCols(GameBoard.width-1)[0])/15, 0.05f);
@@ -113,29 +113,29 @@ namespace Battle {
                 
                     
                     // rotate peice to target rot
-                    if ((int) board.getPiece().getRot() > this.targetRot){
+                    if ((int) board.GetPiece().getRot() > this.targetRot){
                         // Debug.Log(board.getPiece().getRot());
                     }
-                    else if ((int) board.getPiece().getRot() != this.targetRot){
+                    else if ((int) board.GetPiece().getRot() != this.targetRot){
                         board.RotateLeft();
                     }
                     else{
 
                         // move the piece to our target col, only if rot is met
-                        if (board.getPiece().GetCol() + colAdjust > this.targetCol){
+                        if (board.GetPiece().GetCol() + colAdjust > this.targetCol){
                             board.MoveLeft();
                         }
-                        else if (board.getPiece().GetCol() + colAdjust < this.targetCol){
+                        else if (board.GetPiece().GetCol() + colAdjust < this.targetCol){
                             board.MoveRight();
                         }
 
                     }
                 }
 
-                if (targetCol == board.getPiece().GetCol() && targetRot == (int) board.getPiece().getRot())
+                if (targetCol == board.GetPiece().GetCol() && targetRot == (int) board.GetPiece().getRot())
                 {
                     // we are at target, so quickdrop
-                    board.setFallTimeMult(0.1f);
+                    board.SetFallTimeMult(0.1f);
                 }
             }
 

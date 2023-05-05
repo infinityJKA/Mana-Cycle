@@ -24,9 +24,9 @@ namespace SoloMode {
                 case ObjectiveCondition.SpellcastTotal: return board.GetTotalSpellcasts() >= value;
                 case ObjectiveCondition.TopCombo: return board.GetHighestCombo() >= value;
                 case ObjectiveCondition.BlobCount: return board.GetBlobCount() >= value;
-                case ObjectiveCondition.Survive: return board.timer.TimeUp() || board.isWinner();
-                case ObjectiveCondition.Defeated: return value == 0 ? !board.isDefeated() : board.isDefeated();
-                case ObjectiveCondition.Won: return value == 0 ? !board.wonAndNotCasting() : board.wonAndNotCasting();
+                case ObjectiveCondition.Survive: return board.timer.TimeUp() || board.IsWinner();
+                case ObjectiveCondition.Defeated: return value == 0 ? !board.IsDefeated() : board.IsDefeated();
+                case ObjectiveCondition.Won: return value == 0 ? !board.WonAndNotCasting() : board.WonAndNotCasting();
                 default: return false;
             }
         }
