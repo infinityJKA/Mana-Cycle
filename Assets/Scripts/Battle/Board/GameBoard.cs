@@ -453,9 +453,11 @@ namespace Battle.Board {
             piecePreview.Setup(this);
 
             cyclePosition = 0;
-            if (playerSide == 0 || !enemyBoard.singlePlayer) pointer.SetActive(true);
-            else pointer.SetActive(false);
-            if (singlePlayer) enemyBoard.pointer.SetActive(false);
+
+            // hide enemy pointer if in single player and not ai battle
+            if (playerSide == 0 && singlePlayer && !Storage.level.aiBattle) enemyBoard.pointer.SetActive(false);
+            else enemyBoard.pointer.SetActive(true);
+            // if (singlePlayer && !Storage.level.aiBattle) enemyBoard.pointer.SetActive(false);
             pointer.transform.SetParent(cycle.transform.parent);
             PointerReposition();
 
