@@ -1289,6 +1289,10 @@ namespace Battle.Board {
             return level;
         }
 
+        public int GetPlayerSide(){
+            return playerSide;
+        }
+
         // Used in singleplayer, add points to "score" (hp)
         public void AddScore(int score) {
             hp += score;
