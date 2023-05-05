@@ -51,7 +51,7 @@ namespace Battle {
 
                 else { 
                     // if singleplayer, add to "score" (hp bar)
-                    if (target.singlePlayer) {
+                    if (target.singlePlayer && !Storage.level.aiBattle) {
                         target.AddScore(damage);
                     } 
                     // else deal damage to target
