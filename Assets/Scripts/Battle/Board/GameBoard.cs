@@ -555,32 +555,32 @@ namespace Battle.Board {
 
 
 
-        public bool isPlayerControlled(){
+        public bool IsPlayerControlled(){
             return this.playerControlled;
         }
 
-        public bool isDefeated(){
+        public bool IsDefeated(){
             return this.defeated;
         }
 
-        public bool isWinner() {
+        public bool IsWinner() {
             return this.won;
         }
 
         // used by mid-level convo, to wait for spellcast to be done before convo.
-        public bool wonAndNotCasting() {
+        public bool WonAndNotCasting() {
             return this.won && !this.casting;
         }
 
-        public bool isPieceSpawned(){
+        public bool IsPieceSpawned(){
             return this.pieceSpawned;
         }
 
-        public Piece getPiece(){
+        public Piece GetPiece(){
             return this.piece;
         }
 
-        public void setFallTimeMult(float m){
+        public void SetFallTimeMult(float m){
             this.fallTimeMult = m;
         }
 
@@ -727,12 +727,17 @@ namespace Battle.Board {
             StartCoroutine(CheckMidConvoAfterDelay());
         }
 
-        // Clear the tile at the given index, destroying the Tile gameObject.
-        // Returns true if a tile was cleared.
-        public bool ClearTile(int col, int row)
+        /// <summary>
+        /// Clear the tile at the given index, destroying the Tile gameObject.
+        /// Returns the point multiplier of the tile cleared.
+        /// </summary>
+        /// <param name="col">tile column</param>
+        /// <param name="row">tile row</param>
+        /// <returns></returns>
+        public float ClearTile(int col, int row)
         {
-            if (row < 0 || row >= height || col < 0 || col >= width) return false;
-            if (!tiles[row, col]) return false;
+            if (row < 0 || row >= height || col < 0 || col >= width) return 0;
+            if (!tiles[row, col]) return 0;
 
             // play clearing particles before clearing
             // instantiate particle system to have multiple bursts at once
@@ -753,11 +758,13 @@ namespace Battle.Board {
             particleSystem.Play();
             // particle system will automatically remove itself from the parent when animation is done, via ParticleSystem script
 
+            float pointMultiplier = tiles[row, col].pointMultiplier;
+
             // clear tile
             Destroy(tiles[row, col].gameObject);
             tiles[row, col] = null;
 
-            return true;
+            return pointMultiplier;
         }
 
         // Deal damage to the other player(s(?))
@@ -868,12 +875,6 @@ namespace Battle.Board {
         // Temporary, Only used for finding blobs within a single search, not used outside of search
         private static bool[,] tilesInBlobs;
 
-        struct Blob
-        {
-            public ManaColor color;
-            public List<Vector2Int> tiles;
-        }
-
         private static int minBlobSize = 3;
         /** Updated list of recognized blobs */
         private List<Blob> blobs;
@@ -939,12 +940,6 @@ namespace Battle.Board {
                         cascade += 1;
                         if (cascade > 1) cascadePopup.Flash(cascade.ToString());
 
-                        // DMG per mana, starts at 10, increases by 3 per cycle level
-                        
-                        // Deal damage for the amount of mana cleared.
-                        // DMG is scaled by chain and cascade.
-                        int damage = (int)( (totalBlobMana * damagePerMana) * chain * cascade );
-
                         // Get the average of all tile positions; this is where shoot particle is spawned
                         Vector3 averagePos = Vector3.zero;
                         foreach (Blob blob in blobs) {
@@ -954,22 +949,31 @@ namespace Battle.Board {
                         }
                         averagePos /= totalBlobMana;
 
-                        // Send the damage over. Will counter incoming damage first.
-                        DealDamage(damage, averagePos, (int)CurrentColor(), chain);
-
                         totalSpellcasts++;
                         totalManaCleared += totalBlobMana;
                         if (abilityManager.enabled) abilityManager.GainMana(totalBlobMana);
 
                         highestCombo = Math.Max(highestCombo, chain);
 
+                        float totalPointMult = 0;
                         // Clear all blob-contained tiles from the board.
                         foreach (Blob blob in blobs) {
+                            // run onclear first to check for point multiplier increases (geo gold mine)
                             foreach (Vector2Int pos in blob.tiles) {
-                                ClearTile(pos.x, pos.y);
+                                tiles[pos.y, pos.x].BeforeClear(blob);
+                            }
+                            // then remove the tiles from the board and 
+                            foreach (Vector2Int pos in blob.tiles) {
+                                totalPointMult += ClearTile(pos.x, pos.y);
                             }
                         }
                         PlaySFX("cast1", pitch : 1f + chain*0.1f);
+
+                        // Deal damage for the amount of mana cleared.
+                        // DMG is scaled by chain and cascade.
+                        int damage = (int)( (totalPointMult * damagePerMana) * chain * cascade );
+                        // Send the damage over. Will counter incoming damage first.
+                        DealDamage(damage, averagePos, (int)CurrentColor(), chain);
 
                         // Do gravity everywhere
                         AllTileGravity();
@@ -1062,8 +1066,10 @@ namespace Battle.Board {
             // Don't add if there is not a tile here
             if (tiles[r, c] == null) return;
 
-            // Don't add if the tile is the incorrect color
-            if (tiles[r, c].GetManaColor() != color) return;
+            // Don't add if the tile is the incorrect color & this or target tile is not multicolor
+            if (tiles[r, c].GetManaColor() != color 
+            && color != ManaColor.Multicolor
+            && tiles[r, c].GetManaColor() != ManaColor.Multicolor) return;
 
             // Add the tile to the blob and fill in its spot on the tilesInBlobs matrix
             blob.tiles.Add(new Vector2Int(c, r));
@@ -1309,5 +1315,11 @@ namespace Battle.Board {
         {
             SoundManager.Instance.PlaySound(sfx[value], pitch : pitch);
         }
+    }
+
+    public struct Blob
+    {
+        public ManaColor color;
+        public List<Vector2Int> tiles;
     }
 }

@@ -111,17 +111,17 @@ namespace Battle.Board {
             // Destroy tiles in a 3x3 grid (including this piece's bomb tile, which is in the center)
             // exclude this tile initial count
 
-            int manaCleared = -1;
+            float totalPointMult = 0;
             Debug.Log(row+", "+col);
             for (int r = row-1; r <= row+1; r++) {
                 for (int c = col-1; c <= col+1; c++) {
                     Debug.Log(r+", "+c);
-                    if (board.ClearTile(c, r)) manaCleared++;
+                    totalPointMult += board.ClearTile(c, r);
                 }
             }
             board.AllTileGravity();
 
-            board.DealDamage(board.damagePerMana*manaCleared, center.transform.position, 0, 0);
+            board.DealDamage((int)(board.damagePerMana*totalPointMult), center.transform.position, 0, 0);
         }
 
 
@@ -130,16 +130,30 @@ namespace Battle.Board {
 
             effect = Battler.ActiveAbilityEffect.GoldMine;
 
-            // make piece semi transparent
-            center.image.color = new Color(1, 1, 1, 0.4f);
+            // Tile color mirrors the center color of the current piece it is replacing
+            center.SetColor(ManaColor.Multicolor, board);
+            // make tile semi transparent
+            center.image.color = new Color(1, 1, 1, 0.5f);
+
+            // This tile's point mult should be 0, unless another mana somehow buffs it
+            center.pointMultiplier -= 1.00f;
+
+            // Before this tile is cleared, add a +100% point multiplier to all connected mana
+            // (Don't buff this mana, it should stay at 0)
+            center.beforeClear = (blob) => {
+                foreach (var tilePos in blob.tiles) {
+                    if (tilePos.y == row && tilePos.x == col) return;
+                    board.tiles[tilePos.y, tilePos.x].pointMultiplier += 1.00f;
+                }
+            };
 
             // instantiate the crystal object and move it away from the camera, but not beyond the board
-            GameObject goldMineCrystal = Instantiate(
+            Instantiate(
                 goldMineObject, 
                 center.image.transform.position + Vector3.forward*2, 
                 Quaternion.identity, 
                 center.image.transform
-            );
+            ); 
         }
     }
 }
