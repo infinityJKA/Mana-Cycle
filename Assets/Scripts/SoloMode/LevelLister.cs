@@ -80,7 +80,7 @@ namespace SoloMode {
             // decLine = (listText.font.faceInfo.descentLine);
 
             // last level and tab selected when in this window.
-            if (Storage.lastTabSelectedIndex == -1) Storage.lastLevelSelectedIndex = 0;
+            if (Storage.lastTabSelectedIndex == -1) Storage.lastTabSelectedIndex = 0;
             else selectedTabIndex = Storage.lastTabSelectedIndex;
 
             if (Storage.lastLevelSelectedIndex == -1) Storage.lastLevelSelectedIndex = GetNextLevel();
@@ -96,6 +96,7 @@ namespace SoloMode {
             // tab scroll amount is number of px per character
             // tabScrollAmount = tabText.textInfo.characterInfo[1].xAdvance; 
 
+            ClampSelections();
             RefreshList();
         }
 
@@ -156,7 +157,8 @@ namespace SoloMode {
                         SoundManager.Instance.PlaySound(errorSFX);
                         return;
                     }
-                    
+
+                    StoreSelections();
                     Storage.level = levelsList[selectedLevelIndex[selectedTabIndex]]; 
                     Storage.gamemode = Storage.GameMode.Solo;
                     convoHandler.StartLevel(levelsList[selectedLevelIndex[selectedTabIndex]]);
