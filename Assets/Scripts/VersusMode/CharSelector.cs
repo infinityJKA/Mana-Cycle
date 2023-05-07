@@ -13,8 +13,9 @@ namespace VersusMode {
         [SerializeField] private bool isPlayer1;
 
         ///<summary>Input script used to move the cursor and select character</summary>
-        // TODO update this for p1 based on if in solo or versus mode
         [SerializeField] private InputScript inputScript;
+        // set as the inputScript when in solo mode
+        [SerializeField] private InputScript soloInputScript;
 
         [SerializeField] private Image portrait;
         [SerializeField] private TMPro.TextMeshProUGUI nameText;
@@ -66,9 +67,14 @@ namespace VersusMode {
             centerPosition = abilityInfoCanvasGroup.transform.localPosition;
             RefreshLockVisuals();
 
-            // hide p2 elements in in solo mode
+            
             if (Storage.gamemode == Storage.GameMode.Solo)
             {
+                // set solo mode inputs 
+                // TODO change tip text depending on inputs
+                inputScript = soloInputScript;
+
+                // hide p2 elements in in solo mode
                 if (!isPlayer1)
                 {
                     tipText.SetActive(false);
