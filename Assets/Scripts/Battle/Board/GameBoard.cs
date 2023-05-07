@@ -270,6 +270,8 @@ namespace Battle.Board {
                     {
                         enemyBoard.battler = Storage.level.opponent;
                         enemyBoard.portrait.sprite = Storage.level.opponent.sprite;
+                        if (playerSide == 0) enemyBoard.SetPlayerControlled(false);
+                        
                     }
                 }
 
@@ -559,6 +561,10 @@ namespace Battle.Board {
 
         public bool IsPlayerControlled(){
             return this.playerControlled;
+        }
+
+        public void SetPlayerControlled(bool p){
+            playerControlled = p;
         }
 
         public bool IsDefeated(){
