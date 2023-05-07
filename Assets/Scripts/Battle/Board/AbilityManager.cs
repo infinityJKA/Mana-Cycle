@@ -45,7 +45,6 @@ namespace Battle.Board {
         {
             mana = Math.Min(mana+count, board.Battler.activeAbilityMana);
             RefreshManaBar();
-            Debug.Log("gained "+count+" mana");
         }
 
         public void UseAbility() {
