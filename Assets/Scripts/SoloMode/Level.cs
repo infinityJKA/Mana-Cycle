@@ -33,7 +33,11 @@ namespace SoloMode {
         /** Falling delay of pieces in this level. **/
         [SerializeField] public float fallTime = 0.8f;
 
-        [SerializeField] public Battle.Battler battler;
+        // the actual char you play as in the level, chosen by char select or automatically
+        [System.NonSerialized] public Battle.Battler battler;
+
+        // the battlers to choose from in charselect. if only one, they get auto picked like old system
+        [SerializeField] public Battle.Battler[] availableBattlers;
 
         /** List of additional objectives that must be met to clear the stage **/
         [SerializeField] public List<Objective> objectives;

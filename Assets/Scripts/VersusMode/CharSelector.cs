@@ -13,6 +13,7 @@ namespace VersusMode {
         [SerializeField] private bool isPlayer1;
 
         ///<summary>Input script used to move the cursor and select character</summary>
+        // TODO update this for p1 based on if in solo or versus mode
         [SerializeField] private InputScript inputScript;
 
         [SerializeField] private Image portrait;
@@ -26,6 +27,8 @@ namespace VersusMode {
         [SerializeField] private CanvasGroup abilityInfoCanvasGroup;
         ///<summary>Text field within the ability description object that displays passive&active ability</summary>
         [SerializeField] private TMPro.TextMeshProUGUI abilityText;
+        // tip text in the corner, p2 tip text gets hidden in solo
+        [SerializeField] private GameObject tipText;
         /// Fade in/out speed for the ability info box
         [SerializeField] private float fadeSpeed;
         /// Displacement of the ability info when fading in/out
@@ -55,9 +58,19 @@ namespace VersusMode {
 
         private Vector2 centerPosition;
         void Start() {
+            // TEMP FOR TESTING !! ,`:)
+            // Storage.gamemode = Storage.GameMode.Solo;
             abilityInfoCanvasGroup.alpha = 0;
             centerPosition = abilityInfoCanvasGroup.transform.localPosition;
             RefreshLockVisuals();
+
+            // hide p2 elements in in solo mode
+            if (Storage.gamemode == Storage.GameMode.Solo && !isPlayer1)
+            {
+                tipText.SetActive(false);
+                gameObject.SetActive(false);
+            }
+            // TODO hide battler portraits based on level available battlers
         }
 
         void Update() {
