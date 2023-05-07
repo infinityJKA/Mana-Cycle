@@ -35,7 +35,7 @@ namespace VersusMode {
         public void SetSelected(bool isPlayer1, bool hovered) {
             if (isPlayer1) {
                 p1hovered = hovered;
-            } else {
+            } else if (Storage.gamemode != Storage.GameMode.Solo) {
                 p2hovered = hovered;
             }
             RefreshCursorImage();

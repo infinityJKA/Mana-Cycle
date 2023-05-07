@@ -25,8 +25,8 @@ namespace VersusMode {
         // Update is called once per frame
         void Update()
         {
-            // check if players are locked in
-            if (p1Selector.lockedIn && p2Selector.lockedIn)
+            // check if players are locked in, or p1 is locked in solo
+            if (p1Selector.lockedIn && (p2Selector.lockedIn || Storage.gamemode == Storage.GameMode.Solo))
             {
                 // both players are ready'd
                 if (!countdownStarted)
@@ -56,14 +56,23 @@ namespace VersusMode {
                 timer = 0;
                 countdownStarted = false;
 
-                Storage.battler1 = p1Selector.selectedBattler;
-                Storage.battler2 = p2Selector.selectedBattler;
+                
 
                 // if (Storage.isPlayer1 == null) Storage.isPlayer1 = true;
                 // if (Storage.isPlayer2 == null) Storage.isPlayer2 = true;
 
-                Storage.level = null;
-                Storage.gamemode = Storage.GameMode.Versus;
+                if (Storage.gamemode != Storage.GameMode.Solo)
+                {
+                    Storage.battler1 = p1Selector.selectedBattler;
+                    Storage.battler2 = p2Selector.selectedBattler;
+                    Storage.level = null;
+                    Storage.gamemode = Storage.GameMode.Versus;
+                }
+                else 
+                {
+                    Storage.level.battler = p1Selector.selectedBattler;
+                }
+
 
                 if (!transitionHandler) {
                     Debug.LogError("Transition handler not found in scene!");
