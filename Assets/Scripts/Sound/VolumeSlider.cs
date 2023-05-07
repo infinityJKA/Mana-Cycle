@@ -14,7 +14,7 @@ namespace Sound {
         {
             // soundmanager is dontdestroyonload, so we need to re-find it on scene reload. otherwise it will detach from slider serialization
             soundManager = GameObject.Find("SoundManager").GetComponent<SoundManager>();
-            Debug.Log(soundManager);
+            // Debug.Log(soundManager);
 
             // set slider positions
             if (PlayerPrefs.HasKey(valueKey))

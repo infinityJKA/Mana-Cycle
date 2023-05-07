@@ -37,7 +37,7 @@ namespace Battle.Board {
 
         public override IEnumerator<Vector2Int> GetEnumerator()
         {
-            Debug.Log("using SinglePiece iterator");
+            // Debug.Log("using SinglePiece iterator");
             // Return the only tile, the center tile
             yield return new Vector2Int(col, row);
         }
@@ -112,10 +112,10 @@ namespace Battle.Board {
             // exclude this tile initial count
 
             float totalPointMult = 0;
-            Debug.Log(row+", "+col);
+            // Debug.Log(row+", "+col);
             for (int r = row-1; r <= row+1; r++) {
                 for (int c = col-1; c <= col+1; c++) {
-                    Debug.Log(r+", "+c);
+                    // Debug.Log(r+", "+c);
                     totalPointMult += board.ClearTile(c, r);
                 }
             }
