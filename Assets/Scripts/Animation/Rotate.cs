@@ -21,7 +21,7 @@ namespace Animation {
         // Update is called once per frame
         void Update()
         {
-            transform.Rotate(axis, speed * 360 * Time.deltaTime);
+            transform.Rotate(axis, speed * 360 * Time.unscaledDeltaTime);
         }
     }
 }
