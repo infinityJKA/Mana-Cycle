@@ -89,7 +89,7 @@ namespace Battle.Board {
         {
             row++;
             if (row >= GameBoard.height) {
-                Destroy(board.tiles[row-1, col].gameObject);
+                board.ClearTile(col, row-1, doParticleEffects: false);
                 return;
             }
             // When iron sword falls, clear tile below, or destroy when at bottom
