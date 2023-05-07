@@ -149,7 +149,7 @@ namespace ConvoSystem {
                 Storage.level = level;
 
                 // if multiple chars can be chosen from, go to char select
-                if (Storage.level.availableBattlers.Length > 1)
+                if (Storage.level.availableBattlers.Count > 1)
                 {
                     GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("CharSelect");
                 }

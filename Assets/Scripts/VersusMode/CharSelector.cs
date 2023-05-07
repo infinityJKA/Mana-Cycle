@@ -27,12 +27,14 @@ namespace VersusMode {
         [SerializeField] private CanvasGroup abilityInfoCanvasGroup;
         ///<summary>Text field within the ability description object that displays passive&active ability</summary>
         [SerializeField] private TMPro.TextMeshProUGUI abilityText;
-        // tip text in the corner, p2 tip text gets hidden in solo
+        /// tip text in the corner, p2 tip text gets hidden in solo
         [SerializeField] private GameObject tipText;
         /// Fade in/out speed for the ability info box
         [SerializeField] private float fadeSpeed;
         /// Displacement of the ability info when fading in/out
         [SerializeField] private Vector2 fadeDisplacement;
+        /// character grid gameobject used to hide unavailable battlers
+        [SerializeField] private GameObject battlerGrid;
 
         ///<summary>If the ability info screen is currently being displayed</summary>
         private bool abilityInfoDisplayed = false;
@@ -65,12 +67,26 @@ namespace VersusMode {
             RefreshLockVisuals();
 
             // hide p2 elements in in solo mode
-            if (Storage.gamemode == Storage.GameMode.Solo && !isPlayer1)
+            if (Storage.gamemode == Storage.GameMode.Solo)
             {
-                tipText.SetActive(false);
-                gameObject.SetActive(false);
+                if (!isPlayer1)
+                {
+                    tipText.SetActive(false);
+                    gameObject.SetActive(false);
+                    return;
+                }
+
+                // loop through battlers and hide battler portraits based on level available battlers
+                for (int i = 0; i < battlerGrid.transform.childCount; i++)
+                {
+                    GameObject portrait = battlerGrid.transform.GetChild(i).gameObject;
+                    // Debug.Log(portrait.name);
+                    if (!Storage.level.availableBattlers.Contains(portrait.GetComponent<CharacterIcon>().battler)){
+                        portrait.SetActive(false);
+                    }
+                }
             }
-            // TODO hide battler portraits based on level available battlers
+
         }
 
         void Update() {
