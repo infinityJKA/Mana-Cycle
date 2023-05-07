@@ -277,7 +277,7 @@ namespace SoloMode {
                 newTabPos += (tabs[i].tabName.Length+tabWhitespacing) * tabScrollAmount;
             }
             targetTabPosition = tabOffset + Vector2.left * newTabPos;
-            Debug.Log("TABPOS: " + targetTabPosition);
+            // Debug.Log("TABPOS: " + targetTabPosition);
         }
 
         public void SetFocus(bool f){
