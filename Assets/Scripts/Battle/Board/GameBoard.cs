@@ -741,30 +741,32 @@ namespace Battle.Board {
         /// </summary>
         /// <param name="col">tile column</param>
         /// <param name="row">tile row</param>
-        /// <returns></returns>
-        public float ClearTile(int col, int row)
+        /// <returns>point multiplier of the cleared tile</returns>
+        public float ClearTile(int col, int row, bool doParticleEffects)
         {
             if (row < 0 || row >= height || col < 0 || col >= width) return 0;
             if (!tiles[row, col]) return 0;
 
-            // play clearing particles before clearing
-            // instantiate particle system to have multiple bursts at once
-            GameObject tileParticleSystem = Instantiate(clearParticleSystem, particleParent, false);
+            if (doParticleEffects) {
+                // play clearing particles before clearing
+                // instantiate particle system to have multiple bursts at once
+                GameObject tileParticleSystem = Instantiate(clearParticleSystem, particleParent, false);
 
-            // set particle color based on tile
-            var particleSystem = tileParticleSystem.GetComponent<ParticleSystem>();
-            var particleSystemMain = particleSystem.main;
-            particleSystemMain.startColor = cycle.GetManaColors()[(int) tiles[row,col].GetManaColor()];
+                // set particle color based on tile
+                var particleSystem = tileParticleSystem.GetComponent<ParticleSystem>();
+                var particleSystemMain = particleSystem.main;
+                particleSystemMain.startColor = cycle.GetManaColors()[(int) tiles[row,col].GetManaColor()];
 
-            // move to tile position and play burst
-            // offset the x pos by 1 or -1 depending on side, idk why its offset like that /shrug
-            // tileParticles.transform.localPosition = new Vector3(tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.x+(playerSide==0 ? 2 : -2), tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.y);
-            tileParticleSystem.transform.position = tiles[row,col].transform.position;
+                // move to tile position and play burst
+                // offset the x pos by 1 or -1 depending on side, idk why its offset like that /shrug
+                // tileParticles.transform.localPosition = new Vector3(tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.x+(playerSide==0 ? 2 : -2), tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.y);
+                tileParticleSystem.transform.position = tiles[row,col].transform.position;
 
-            // Debug.Log(tileParticles + "at " + tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition);
-            // Debug.Log("actually at " + tileParticles.GetComponent<Transform>().position);
-            particleSystem.Play();
-            // particle system will automatically remove itself from the parent when animation is done, via ParticleSystem script
+                // Debug.Log(tileParticles + "at " + tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition);
+                // Debug.Log("actually at " + tileParticles.GetComponent<Transform>().position);
+                particleSystem.Play();
+                // particle system will automatically remove itself from the parent when animation is done, via ParticleSystem script
+            }
 
             float pointMultiplier = tiles[row, col].pointMultiplier;
 
@@ -774,6 +776,10 @@ namespace Battle.Board {
 
             // point multiplier should not be negative & lower damage
             return Math.Max(pointMultiplier, 0f);
+        }
+
+        public float ClearTile(int col, int row) {
+            return ClearTile(col, row, true);
         }
 
         // Deal damage to the other player(s(?))
