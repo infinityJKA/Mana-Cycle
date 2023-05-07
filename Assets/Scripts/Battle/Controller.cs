@@ -108,7 +108,7 @@ namespace Battle {
                 if ((nextMoveTimer - Time.time <= 0) && !board.IsDefeated()){
 
                     // set timer for next move. get highest col height so ai speeds up when closer to topout
-                    nextMoveTimer = Time.time + Math.Max(UnityEngine.Random.Range(0.6f,1f) - (double) board.getColHeight(FindNthLowestCols(GameBoard.width-1)[0])/15, 0.05f);
+                    nextMoveTimer = Time.time + Math.Max(UnityEngine.Random.Range(0.5f,0.8f) - (double) board.getColHeight(FindNthLowestCols(GameBoard.width-1)[0])/15, 0.05f);
                     // if (board.GetPlayerSide() == 0) Debug.Log(nextMoveTimer - Time.time);
                 
                     
