@@ -127,7 +127,7 @@ namespace VersusMode {
                         Debug.LogError("Transition handler not found in scene!");
                         return;
                     }
-                    transitionHandler.WipeToScene("MainMenu", reverse: true);
+                    transitionHandler.WipeToScene((Storage.gamemode != Storage.GameMode.Solo) ? "MainMenu" : "SoloMenu", reverse: true);
                 }
             }
 
