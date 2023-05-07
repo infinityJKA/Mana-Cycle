@@ -131,9 +131,9 @@ namespace Battle.Board {
             effect = Battler.ActiveAbilityEffect.GoldMine;
 
             // Tile color mirrors the center color of the current piece it is replacing
-            center.SetColor(ManaColor.Multicolor, board);
+            center.SetColor(board.GetPiece().GetCenter().color, board);
             // make tile semi transparent
-            center.image.color = new Color(1, 1, 1, 0.5f);
+            center.image.color = new Color(center.image.color.r, center.image.color.g, center.image.color.b, 0.5f);
 
             // This tile's point mult should be 0, unless another mana somehow buffs it
             center.pointMultiplier -= 1.00f;
@@ -148,12 +148,16 @@ namespace Battle.Board {
             };
 
             // instantiate the crystal object and move it away from the camera, but not beyond the board
-            Instantiate(
+            GameObject crystal = Instantiate(
                 goldMineObject, 
                 center.image.transform.position + Vector3.forward*2, 
                 Quaternion.identity, 
                 center.image.transform
             ); 
+
+            // make gold mine crystal mesh material a blend between gold and mana color
+            Material mat = crystal.GetComponent<MeshRenderer>().material;
+            mat.color = Color.Lerp(mat.color, center.image.color, 0.75f);
         }
     }
 }
