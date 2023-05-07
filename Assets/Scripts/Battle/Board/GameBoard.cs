@@ -714,7 +714,7 @@ namespace Battle.Board {
                 foreach (Vector2Int tile in piece)
                 {
                     // Only do gravity if this tile is still here and hasn't fallen to gravity yet
-                    if (tiles[tile.y, tile.x] != null)
+                    if (!(tile.y >= height) && tiles[tile.y, tile.x] != null)
                     {
                         // If a tile fell, set tileFell to true and the loop will go again after this
                         if (TileGravity(tile.x, tile.y))
