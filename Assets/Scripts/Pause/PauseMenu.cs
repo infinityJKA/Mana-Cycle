@@ -16,6 +16,9 @@ namespace Pause {
         [SerializeField] private GameObject PauseUI;
         [SerializeField] private List<GameObject> pauseMenuItems;
         private int currentSelection = 0;
+
+        // Player 1 - used to hide and show meshes when this menu is shown/hidden
+        [SerializeField] Battle.Board.GameBoard board;
         
         // Start is called before the first frame update
         void Start()
@@ -57,13 +60,14 @@ namespace Pause {
                 EventSystem.current.SetSelectedGameObject(pauseMenuItems[currentSelection]);
 
                 PauseUI.SetActive(true);
-
             }
             else 
             {
                 // game unpaused
                 Time.timeScale = 1f;
+
                 PauseUI.SetActive(false);
+
                 SoundManager.Instance.UnpauseBGM();
             }
         }

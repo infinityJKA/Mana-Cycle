@@ -157,7 +157,7 @@ namespace Battle.Board {
 
             // make gold mine crystal mesh material a blend between gold and mana color
             // Instantiate a new copy of material so that color is independent
-            Material mat = Instantiate(Resources.Load("Material") as Material);
+            Material mat = Instantiate(crystal.GetComponent<MeshRenderer>().material);
             crystal.GetComponent<MeshRenderer>().material = mat;
             mat.color = Color.Lerp(mat.color, center.image.color, 0.75f);
         }

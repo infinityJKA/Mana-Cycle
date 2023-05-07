@@ -557,7 +557,7 @@ namespace Battle.Board {
             }
         }
 
-
+        // Hides all 
 
         public bool IsPlayerControlled(){
             return this.playerControlled;
@@ -1141,6 +1141,21 @@ namespace Battle.Board {
                 for (int r = height-2; r >= 0; r--)
                 {
                     TileGravity(c, r);
+                }
+            }
+        }
+
+        // Perform an action on all tiles.
+        public void ForEachTile(Action<Tile> action)
+        {
+            // Loop over columns (left to right)
+            for (int c = 0; c < width; c++)
+            {
+                // Loop over rows (BOTTOM to top)
+                // Skip bottom tiles, as those cannot fall
+                for (int r = height-2; r >= 0; r--)
+                {
+                    action(tiles[r, c]);
                 }
             }
         }
