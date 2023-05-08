@@ -14,12 +14,35 @@ namespace VersusMode {
 
         ///<summary>Input script used to move the cursor and select character</summary>
         [SerializeField] private InputScript inputScript;
+        // set as the inputScript when in solo mode
+        [SerializeField] private InputScript soloInputScript;
 
         [SerializeField] private Image portrait;
         [SerializeField] private TMPro.TextMeshProUGUI nameText;
 
         ///<summary>SFX played when interacting with menu</summary>
-        [SerializeField] private AudioClip switchSFX, noswitchSFX, selectSFX, unselectSFX;
+        [SerializeField] private AudioClip switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX;
+
+
+        ///<summary>Canvas group for the ability info box</summary>
+        [SerializeField] private CanvasGroup abilityInfoCanvasGroup;
+        ///<summary>Text field within the ability description object that displays passive&active ability</summary>
+        [SerializeField] private TMPro.TextMeshProUGUI abilityText;
+        /// tip text in the corner, p2 tip text gets hidden in solo
+        [SerializeField] private GameObject tipText;
+        /// Fade in/out speed for the ability info box
+        [SerializeField] private float fadeSpeed;
+        /// Displacement of the ability info when fading in/out
+        [SerializeField] private Vector2 fadeDisplacement;
+        /// character grid gameobject used to hide unavailable battlers
+        [SerializeField] private GameObject battlerGrid;
+
+        ///<summary>If the ability info screen is currently being displayed</summary>
+        private bool abilityInfoDisplayed = false;
+        ///<summary>If the ability info box is currently animating in OR out</summary>
+        private bool animating;
+        ///<summary>Current percentage that the ability menu is faded in/out
+        private float fadeAmount = 0;
 
         ///<summary> Currently selected icon's Selectable component </summary>
         private CharacterIcon selectedIcon;
@@ -27,17 +50,67 @@ namespace VersusMode {
         ///<summary>True when the player has locked in their choice
         public bool lockedIn {get; private set;}
 
+
         // cached on validate
         private TransitionScript transitionHandler;
 
+
+        // properties
         public Battle.Battler selectedBattler { get { return selectedIcon.battler; }}
 
+
+        private Vector2 centerPosition;
         void Start() {
+            // TEMP FOR TESTING !! ,`:)
+            // Storage.gamemode = Storage.GameMode.Solo;
+            abilityInfoCanvasGroup.alpha = 0;
+            centerPosition = abilityInfoCanvasGroup.transform.localPosition;
             RefreshLockVisuals();
+
             
+            if (Storage.gamemode == Storage.GameMode.Solo)
+            {
+                // set solo mode inputs 
+                // TODO change tip text depending on inputs
+                inputScript = soloInputScript;
+
+                // hide p2 elements in in solo mode
+                if (!isPlayer1)
+                {
+                    tipText.SetActive(false);
+                    gameObject.SetActive(false);
+                    return;
+                }
+
+                // loop through battlers and hide battler portraits based on level available battlers
+                for (int i = 0; i < battlerGrid.transform.childCount; i++)
+                {
+                    GameObject portrait = battlerGrid.transform.GetChild(i).gameObject;
+                    // Debug.Log(portrait.name);
+                    if (!Storage.level.availableBattlers.Contains(portrait.GetComponent<CharacterIcon>().battler)){
+                        portrait.SetActive(false);
+                    }
+                }
+            }
+
         }
 
         void Update() {
+            if (animating) {
+                // fade the ability window in/out according to state
+                float target = abilityInfoDisplayed ? 1 : 0;
+                fadeAmount = Mathf.MoveTowards(fadeAmount, target, fadeSpeed*Time.deltaTime);
+                if (fadeAmount == target) animating = false;
+
+                abilityInfoCanvasGroup.alpha = fadeAmount;
+
+                if (animating) {
+                    abilityInfoCanvasGroup.transform.localPosition = centerPosition + (1-fadeAmount)*fadeDisplacement*(isPlayer1?1:-1);
+                } else {
+                    abilityInfoCanvasGroup.transform.localPosition = centerPosition;
+                }
+            }
+
             // Move cursor if not locked in
             if (!lockedIn) 
             {
@@ -60,9 +133,16 @@ namespace VersusMode {
                         Debug.LogError("Transition handler not found in scene!");
                         return;
                     }
-                    transitionHandler.WipeToScene("MainMenu", reverse: true);
+                    transitionHandler.WipeToScene((Storage.gamemode != Storage.GameMode.Solo) ? "MainMenu" : "SoloMenu", reverse: true);
                 }
             }
+
+            // show/hide ability info when rotate CCW is pressed
+            if (Input.GetKeyDown(inputScript.RotateCCW))
+            {
+                ToggleAbilityInfo();
+            }
+
         }
 
         void ToggleLock()
@@ -81,6 +161,12 @@ namespace VersusMode {
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
                 nameText.fontStyle = TMPro.FontStyles.Normal;
             }
+        }
+
+        void ToggleAbilityInfo() {
+            abilityInfoDisplayed = !abilityInfoDisplayed;
+            animating = true;
+            SoundManager.Instance.PlaySound(abilityInfoDisplayed ? infoOpenSFX : infoCloseSFX);
         }
 
         public void SetSelection(Selectable newSelection) {
@@ -104,6 +190,15 @@ namespace VersusMode {
 
             portrait.sprite = selectedBattler.sprite;
             nameText.text = selectedBattler.displayName;
+
+            if (selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
+                abilityText.text = "No special abilities";
+            } else {
+                abilityText.text = selectedBattler.passiveAbilityDesc 
+                + "\n\n" 
+                + "<b>"+selectedBattler.activeAbilityName+"</b>: "
+                + selectedBattler.activeAbilityDesc;
+            }
         }
 
         void OnValidate() {

@@ -91,8 +91,8 @@ namespace MainMenu {
                 case 1: inputs.Left = k; break;
                 case 2: inputs.Down = k; break;
                 case 3: inputs.Right = k; break;
-                case 4: inputs.RotateLeft = k; break;
-                case 5: inputs.RotateRight = k; break;
+                case 4: inputs.RotateCCW = k; break;
+                case 5: inputs.RotateCW = k; break;
                 case 6: inputs.Cast = k; break;
                 case 7: inputs.Pause = k; break;
                 default: break;

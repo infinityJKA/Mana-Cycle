@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MainMenu {
+namespace Animation {
 
     /// <summary>
     /// Script used to make an object spin around an axis. Used on the gear in the 3dmenu.
@@ -21,7 +21,7 @@ namespace MainMenu {
         // Update is called once per frame
         void Update()
         {
-            transform.Rotate(axis, speed * 360 * Time.deltaTime);
+            transform.Rotate(axis, speed * 360 * Time.unscaledDeltaTime);
         }
     }
 }

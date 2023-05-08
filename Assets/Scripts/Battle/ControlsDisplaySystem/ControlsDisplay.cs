@@ -13,7 +13,7 @@ namespace Battle.ControlsDisplaySystem {
         {
             keyText = gameObject.GetComponent<TMPro.TextMeshProUGUI>();
 
-            KeyCode[] keyList = new KeyCode[] {inputs.Up, inputs.Left, inputs.Down, inputs.Right, inputs.RotateLeft, inputs.RotateRight, inputs.Cast, inputs.Pause};
+            KeyCode[] keyList = new KeyCode[] {inputs.Up, inputs.Left, inputs.Down, inputs.Right, inputs.RotateCCW, inputs.RotateCW, inputs.Cast, inputs.Pause};
 
             keyText.text = "";
             foreach (KeyCode keyCode in keyList)

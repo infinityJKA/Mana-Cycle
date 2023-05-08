@@ -24,6 +24,11 @@ namespace Battle.Board {
         public IncomingDamage[] DamageQueue { get { return damageQueue; } } // (public getter for private setter)
         private float newIncomingPos;
 
+        // Shield object to enable while this battler has any shield
+        public GameObject shieldObject;
+        // The number displaying the shield hp amount
+        public TMPro.TextMeshProUGUI shieldNumText;
+
         // Start is called before the first frame update
         void Start()
         {   
