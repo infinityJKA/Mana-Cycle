@@ -899,24 +899,37 @@ namespace Battle.Board {
 
         /** Update the blob list this board has recognized. Should be called every time the board changes. */
 
-        public void RefreshBlobs() {
+        public void RefreshBlobs(ManaColor color) {
             tilesInBlobs = new bool[height, width];
-            FindBlobs();
+            FindBlobs(color);
             totalBlobMana = TotalMana(blobs);
         }
 
+        public void RefreshBlobs() {
+            RefreshBlobs(CurrentColor());
+        }
+
         // Check the board for blobs of 3 or more of the given color, and clear them from the board, earning points/dealing damage.
-        private void Spellcast(int chain)
+        private void Spellcast(int chain, bool refreshBlobs)
         {
-            RefreshBlobs();
+            if (refreshBlobs) RefreshBlobs();
 
             // If there were no blobs, do not deal damage, and do not move forward in cycle, 
             // end spellcast if active
             // also end if defeated, combo shouldn't extend while dead
             if (defeated || blobs.Count == 0) {
-                casting = false;
-                RefreshObjectives();
-                StartCoroutine(CheckMidConvoAfterDelay());
+                // Check for foresight icon, consuming it and skipping to next color if possible.
+                if (abilityManager.ForesightCheck()) {
+                    RefreshBlobs( cycle.GetColor( (cyclePosition+1) % ManaCycle.cycleLength ) );
+                    if (totalBlobMana > 0) {
+                        AdvanceCycle();
+                        Spellcast(chain);
+                    }
+                } else {
+                    casting = false;
+                    RefreshObjectives();
+                    StartCoroutine(CheckMidConvoAfterDelay());
+                }
                 return;
             };
 
@@ -944,7 +957,7 @@ namespace Battle.Board {
                         if (cascade > 0) {
                             yield return new WaitForSeconds(0.5f);
 
-                            if (defeated) 
+                            if (defeated)
 
                             // recalculte blobs in case they changed
                             RefreshBlobs();
@@ -1000,20 +1013,27 @@ namespace Battle.Board {
                         StartCoroutine(CheckMidConvoAfterDelay());
                     }
 
-                    // move to next in cycle position
-                    cyclePosition += 1;
-                    if (cyclePosition >= ManaCycle.cycleLength) {
-                        cyclePosition = 0;
-                        cycleLevel++;
-                        cycleLevelDisplay.Set(cycleLevel);
-                        PlaySFX("cycle");
-                    }
-                    PointerReposition();
-
-                    // Spellcast for the new next color to check for chain
+                    // Spellcast for the new next color and check for chain
+                    AdvanceCycle();
                     Spellcast(chain+1);
                 }            
             }
+        }
+
+        private void Spellcast(int chain) {
+            Spellcast(chain, true);
+        }
+
+        private void AdvanceCycle() {
+            // move to next in cycle position
+            cyclePosition += 1;
+            if (cyclePosition >= ManaCycle.cycleLength) {
+                cyclePosition = 0;
+                cycleLevel++;
+                cycleLevelDisplay.Set(cycleLevel);
+                PlaySFX("cycle");
+            }
+            PointerReposition();
         }
 
         public int damagePerMana {get {return 10 + cycleLevel * boostPerCycleClear;}}
@@ -1024,11 +1044,9 @@ namespace Battle.Board {
         }
 
         // Updates list of all blobs of mana that were cleared.
-        private void FindBlobs()
+        private void FindBlobs(ManaColor color)
         {
             blobs.Clear();
-
-            var color = CurrentColor();
 
             // Loop over rows (top to bottom)
             for (int r = 0; r < height; r++)
