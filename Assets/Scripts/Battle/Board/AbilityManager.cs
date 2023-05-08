@@ -36,14 +36,16 @@ namespace Battle.Board {
             mana = 0;
             mana = board.Battler.activeAbilityMana; // for easy debug
 
-            // set height based on mana required - 50 is the reference
-            manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, manaBar.sizeDelta.y * board.Battler.activeAbilityMana/50f);
-
             RefreshManaBar();
         }
 
+        public void InitManaBar() {
+            // set height based on mana required for battler - 50 is the reference
+            manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, manaBar.sizeDelta.y * board.Battler.activeAbilityMana/50f);
+        }
+
         public void RefreshManaBar()
-        {            
+        {        
             manaDisp.fillAmount = 1f * mana / board.Battler.activeAbilityMana;
         }
 
