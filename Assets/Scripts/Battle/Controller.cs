@@ -112,26 +112,26 @@ namespace Battle {
                 
                     
                     // rotate peice to target rot
-                    if ((int) board.getPiece().getRot() > this.targetRot){
+                    if ((int) board.GetPiece().getRot() > this.targetRot){
                         // Debug.Log(board.getPiece().getRot());
                     }
-                    else if ((int) board.getPiece().getRot() != this.targetRot){
+                    else if ((int) board.GetPiece().getRot() != this.targetRot){
                         board.RotateLeft();
                     }
                     else{
 
                         // move the piece to our target col, only if rot is met
-                        if (board.getPiece().GetCol() + colAdjust > this.targetCol){
+                        if (board.GetPiece().GetCol() + colAdjust > this.targetCol){
                             board.MoveLeft();
                         }
-                        else if (board.getPiece().GetCol() + colAdjust < this.targetCol){
+                        else if (board.GetPiece().GetCol() + colAdjust < this.targetCol){
                             board.MoveRight();
                         }
 
                     }
                 }
 
-                if (targetCol == board.getPiece().GetCol() && targetRot == (int) board.getPiece().getRot())
+                if (targetCol == board.GetPiece().GetCol() && targetRot == (int) board.GetPiece().getRot())
                 {
                     // we are at target, so quickdrop
                     board.setFallTimeMult(0.1f);
