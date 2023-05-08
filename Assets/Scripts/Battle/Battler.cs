@@ -11,6 +11,14 @@ namespace Battle {
         /// <summary>Offset of the portrait in the battle view</summary>
         [SerializeField] public Vector2 portraitOffset;
 
+        /// <summary>Effect of the passive ability (if it's not a piece RNG</summary>
+        [SerializeField] public PassiveAbilityEffect passiveAbilityEffect;
+        public enum PassiveAbilityEffect
+        {
+            None,
+            Shields, // summon shields if damage bar is empty
+        }
+
         /// <summary>Description this battler's passive ability</summary>
         [SerializeField] public String passiveAbilityDesc;
 
@@ -46,8 +54,8 @@ namespace Battle {
     public enum PieceRng {
         Bag, // default
         CurrentColorWeighted, // Infinity
-        PieceSameColorWeighted, // Aqua,
-        PureRandom, // trainbot
-        CenterMatchesCycle,
+        PieceSameColorWeighted, // Aqua
+        CenterMatchesCycle, // Psychic
+        PureRandom, // Trainbot
     }
 }
