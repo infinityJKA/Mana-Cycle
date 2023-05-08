@@ -15,8 +15,8 @@ public class InputScript : ScriptableObject
     public KeyCode Right;
     public KeyCode Down;
     public KeyCode Up;
-    public KeyCode RotateLeft;
-    public KeyCode RotateRight;
+    public KeyCode RotateCCW;
+    public KeyCode RotateCW;
     public KeyCode Cast;
     public KeyCode Pause;
 
@@ -28,8 +28,8 @@ public class InputScript : ScriptableObject
         Right = defaults.Right;
         Down = defaults.Down;
         Up = defaults.Up;
-        RotateLeft = defaults.RotateLeft;
-        RotateRight = defaults.RotateRight;
+        RotateCCW = defaults.RotateCCW;
+        RotateCW = defaults.RotateCW;
         Cast = defaults.Cast;
         Pause = defaults.Pause;
 

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Battle.Board {
     /// <summary>
@@ -9,10 +10,18 @@ namespace Battle.Board {
         // cached GameBoard
         private GameBoard board;
 
+        /// <summary>Background image for the mana (MP) bar </summary>
+        [SerializeField] public RectTransform manaBar; 
         /// <summary>Fill image for the mana (MP) bar </summary>
-        [SerializeField] public UnityEngine.UI.Image manaDisp;
+        [SerializeField] public Image manaDisp;
         
         [SerializeField] public GameObject singlePiecePrefab;
+
+        // Symbol list that appears near the cycle, used by Psychic's Foresight
+        [SerializeField] public Transform symbolList;
+
+        // Psychic's foresight icon prefab
+        [SerializeField] public GameObject foresightIconPrefab;
 
         /// <summary>Current amount of mana the player has generated</summary>
         public int mana {get; private set;}
@@ -25,12 +34,18 @@ namespace Battle.Board {
         void Start()
         {
             mana = 0;
-            // mana = board.Battler.activeAbilityMana; // for easy debug
+            mana = board.Battler.activeAbilityMana; // for easy debug
+
             RefreshManaBar();
         }
 
+        public void InitManaBar() {
+            // set height based on mana required for battler - 50 is the reference
+            manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, manaBar.sizeDelta.y * board.Battler.activeAbilityMana/50f);
+        }
+
         public void RefreshManaBar()
-        {            
+        {        
             manaDisp.fillAmount = 1f * mana / board.Battler.activeAbilityMana;
         }
 
@@ -38,7 +53,6 @@ namespace Battle.Board {
         {
             mana = Math.Min(mana+count, board.Battler.activeAbilityMana);
             RefreshManaBar();
-            Debug.Log("gained "+count+" mana");
         }
 
         public void UseAbility() {
@@ -48,7 +62,15 @@ namespace Battle.Board {
                 Debug.Log("use active ability");
                 abilityActive = true;
 
-                if (board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.IronSword) IronSword();
+                switch (board.Battler.activeAbilityEffect)
+                {
+                    case Battler.ActiveAbilityEffect.IronSword: IronSword(); break;
+                    case Battler.ActiveAbilityEffect.Whirlpool: Whirlpool(); break;
+                    case Battler.ActiveAbilityEffect.PyroBomb: PyroBomb(); break;
+                    case Battler.ActiveAbilityEffect.Foresight: Foresight(); break;
+                    case Battler.ActiveAbilityEffect.GoldMine: GoldMine(); break;
+                    default: break;
+                }
             }
         }
 
@@ -64,6 +86,54 @@ namespace Battle.Board {
 
         void OnValidate() {
             board = GetComponent<GameBoard>();
+        }
+
+        /// <summary>
+        /// Sends 3 trash tiles to your opponent's board.
+        /// </summary>
+        private void Whirlpool() {
+            for (int i=0; i<3; i++) board.enemyBoard.AddTrashTile();
+        }
+
+        /// <summary>
+        /// Replaces current piece and the next 2 in the preview with bombs.
+        /// </summary>
+        private void PyroBomb() {
+            board.ReplacePiece(MakePyroBomb());
+            board.piecePreview.ReplaceNextPiece(MakePyroBomb());
+            board.piecePreview.ReplaceListPiece(MakePyroBomb(), PiecePreview.previewLength-1);
+        }
+
+        private SinglePiece MakePyroBomb() {
+            SinglePiece pyroBombPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            pyroBombPiece.MakePyroBomb(board);
+            return pyroBombPiece;
+        }
+
+        /// <summary>
+        /// Gain a foresight symbol, allowing to skip the next unclearable color during a chain.
+        /// </summary>
+        private void Foresight() {
+            Instantiate(foresightIconPrefab, symbolList);
+        }
+
+        // If this is Psychic and there is a foresight icon available, consume it and return true
+        public bool ForesightCheck() {
+            if (board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Foresight && symbolList.childCount > 0) {
+                // TODO: add particle effects or some kinda effect on clear
+                Destroy(symbolList.GetChild(0).gameObject);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Replaces the current piece with a gold mine crystal.
+        /// </summary>
+        private void GoldMine() {
+            SinglePiece goldMinePiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            goldMinePiece.MakeGoldMine(board);
+            board.ReplacePiece(goldMinePiece);
         }
     }
 }

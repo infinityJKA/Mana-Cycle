@@ -12,7 +12,7 @@ namespace Battle.Board {
         // Mana color enum value for this tile
         public ManaColor color { get; private set; }
         // Seperate image object attached to this
-        public GameObject imageObject;
+        public Image image;
         // Target position of this element
         private Vector3 targetPosition;
         // Initial movement speed of this object when movmenet animated - distance in tiles per sec
@@ -23,14 +23,24 @@ namespace Battle.Board {
         // If this piece is currently moving
         private bool moving = false;
 
+        // Point multiplier when this tile is cleared. May be modified by abilities.
+        public float pointMultiplier = 1f;
+
+        // Runs when this tile's fall animation is completed.
         public Action onFallAnimComplete;
+
+        // Runs right before this tile is cleared. If part of a blob, that blob is passed.
+        public Action<Blob> beforeClear;
+
+        // If this is a trash tile - which damages in set intervals
+        public bool trashTile { get; private set; }
 
         public void SetColor(ManaColor color, GameBoard board)
         {
-            // Get image and set color from the list in this scene's cycle
             this.color = color;
-            imageObject.GetComponent<Image>().color = board.cycle.GetManaColors()[ ((int)color) ];
-            if (board.cycle.usingSprites) imageObject.GetComponent<Image>().sprite = board.cycle.manaSprites[ ((int)color) ];
+            // Get image and set color from the list in this scene's cycle
+            image.color = board.cycle.GetManaColors()[ ((int)color) ];
+            if (board.cycle.usingSprites) image.sprite = board.cycle.manaSprites[ ((int)color) ];
         }
 
         public ManaColor GetManaColor()
@@ -38,8 +48,13 @@ namespace Battle.Board {
             return color;
         }
 
+        public void SetVisualColor(Color color)
+        {
+            image.color = color;
+        }
+
         public void AnimateMovement(Vector2 from, Vector2 to) {
-            imageObject.transform.localPosition = from;
+            image.transform.localPosition = from;
             targetPosition = to;
             speed = initialSpeed;
             moving = true;
@@ -47,14 +62,29 @@ namespace Battle.Board {
 
         private void Update() {
             if (moving) {
-                if ((imageObject.transform.localPosition - targetPosition).sqrMagnitude < 0.005f) {
+                if (image.transform.localPosition == targetPosition) {
                     moving = false;
                     if (onFallAnimComplete != null) onFallAnimComplete();
                 } else {
-                    imageObject.transform.localPosition = Vector2.MoveTowards(imageObject.transform.localPosition, targetPosition, speed*Time.deltaTime);
+                    image.transform.localPosition = Vector2.MoveTowards(image.transform.localPosition, targetPosition, speed*Time.deltaTime);
                     speed += acceleration*Time.deltaTime;
                 }
             }
+        }
+
+        /// <summary>
+        /// Runs the stored beforeClear method.
+        /// Is run before the tiles are damage calculated and removed from the board.
+        /// </summary>
+        /// <param name="blob">the blob this is in, or null if not in a blob</param>
+        public void BeforeClear(Blob blob) {
+            if (beforeClear != null) beforeClear(blob);
+        }
+
+        public void MakeTrashTile(GameBoard board) {
+            trashTile = true;
+            pointMultiplier -= 1.00f;
+            SetVisualColor(Color.Lerp(Color.black, image.color, 0.7f));
         }
     }
 }

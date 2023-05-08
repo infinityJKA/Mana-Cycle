@@ -57,12 +57,12 @@ namespace Battle {
                 if(player1.level.time != -1){
                     textbox.text = "0:00";
                     if (!player1.level.survivalWin){
-                        if (!player1.isDefeated()) player1.Defeat();
+                        if (!player1.IsDefeated()) player1.Defeat();
                     }
                     else if(player1.level.time != -1){
-                        if (!player1.isDefeated()) {
+                        if (!player1.IsDefeated()) {
                             player1.RefreshObjectives();
-                            if (!player1.isWinner()) player1.Defeat();
+                            if (!player1.IsWinner()) player1.Defeat();
                         }
                     }
                 }

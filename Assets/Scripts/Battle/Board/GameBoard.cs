@@ -47,7 +47,7 @@ namespace Battle.Board {
         [SerializeField] public HealthBar hpBar;
 
         /** Stores the piece preview for this board */
-        [SerializeField] private PiecePreview piecePreview;
+        [SerializeField] public PiecePreview piecePreview;
 
         /** Cycle pointer game object that belongs to this board */
         [SerializeField] public GameObject pointer;
@@ -55,7 +55,7 @@ namespace Battle.Board {
         /** Stores the board's cycle level indicator */
         [SerializeField] private CycleMultiplier cycleLevelDisplay;
         /** Stores the image for the portrait */
-        [SerializeField] private Image portrait;
+        [SerializeField] public Image portrait;
 
         /** Chain popup object */
         [SerializeField] private Popup chainPopup;
@@ -83,6 +83,10 @@ namespace Battle.Board {
         public int maxHp { get; private set; }
         /** Amount of HP this player has remaining. */
         public int hp { get; private set; }
+
+        /// Amount of shield this battler has. As of rn Pyro is the only character to gain shield
+        public int shield {get; private set;} = 0;
+        public int maxShield {get; private set;} = 200;
 
         /** Stores the ManaCycle in this scene. (on start) */
         public ManaCycle cycle { get; private set; }
@@ -167,8 +171,21 @@ namespace Battle.Board {
 
         public AudioClip multiBattleMusic;
 
+        // Transform where particles are drawn to
+        [SerializeField] private Transform particleParent;
+        // Particle system for when a tile is cleared
+        [SerializeField] private GameObject clearParticleSystem;
+
+        // In party mode, this is the timer before the user takes direct uncounterable damage from all trash tiles
+        // Timer starts when a trash tile is added, and will stop running when no trash tiles tick when timer is up
+        private float trashDamageTimer;
+        private static float trashDamageTimerDuration = 5f;
+        private static int damagePerTrash = 5;
+
         // MANAGERS
         [SerializeField] public AbilityManager abilityManager;
+
+        [SerializeField] public RngManager rngManager;
 
         // Start is called before the first frame update
         void Start()
@@ -208,7 +225,7 @@ namespace Battle.Board {
                 SoundManager.Instance.SetBGM(singlePlayer ? level.battleMusic : multiBattleMusic);
             }
 
-            if (singlePlayer) {
+            if (singlePlayer && !Storage.level.aiBattle) {
                 // hp number is used as score, starts as 0
                 maxHp = level.scoreGoal;
                 hp = 0;
@@ -248,9 +265,24 @@ namespace Battle.Board {
             }
             else
             {
-                // if in solo mode, use battler serialized in level asset
-                if (Storage.gamemode == Storage.GameMode.Solo) battler = level.battler;
+                // if in solo mode, use battler and op serialized in level asset
+                if (Storage.gamemode == Storage.GameMode.Solo && playerControlled)
+                {
+                    battler = level.battler;
+                    // set opp in ai battles
+                    if (Storage.level.aiBattle)
+                    {
+                        enemyBoard.battler = Storage.level.opponent;
+                        enemyBoard.portrait.sprite = Storage.level.opponent.sprite;
+                        if (playerSide == 0) enemyBoard.SetPlayerControlled(false);
+                        
+                    }
+                }
             }
+            abilityManager.InitManaBar();
+
+            SetShield(0);
+
             portrait.sprite = battler.sprite;
             // initialPos = portrait.GetComponent<RectTransform>().anchoredPosition;
             portrait.GetComponent<RectTransform>().anchoredPosition = portrait.GetComponent<RectTransform>().anchoredPosition + battler.portraitOffset;
@@ -260,7 +292,7 @@ namespace Battle.Board {
 
             hpBar.Setup(this);
 
-            if (singlePlayer) {
+            if (singlePlayer && !Storage.level.aiBattle) {
                 objectiveList.InitializeObjectiveListItems(this);
             }
         }
@@ -275,55 +307,58 @@ namespace Battle.Board {
             PointerReposition();
 
             // -------- CONTROLS ----------------
+            // if (inputScripts == null) return;
             foreach (InputScript inputScript in inputScripts) {
-                if (Input.GetKeyDown(inputScript.Pause) && !postGame && !Storage.convoEndedThisInput)
+                if (inputScript != null)
                 {
-                    pauseMenu.TogglePause();
-                    PlaySFX("pause");
-                }
-                Storage.convoEndedThisInput = false;
-
-                // control the pause menu if paused
-                if (pauseMenu.paused && !postGame)
-                {
-                    if (Input.GetKeyDown(inputScript.Up)) {
-                        pauseMenu.MoveCursor(1);
-                        PlaySFX("move", pitch : 0.8f);
-                    } else if (Input.GetKeyDown(inputScript.Down)) {
-                        pauseMenu.MoveCursor(-1);
-                        PlaySFX("move", pitch : 0.75f);
+                    if (Input.GetKeyDown(inputScript.Pause) && !postGame && !Storage.convoEndedThisInput)
+                    {
+                        pauseMenu.TogglePause();
+                        PlaySFX("pause");
                     }
+                    Storage.convoEndedThisInput = false;
 
-                    if (Input.GetKeyDown(inputScript.Cast)){
-                        pauseMenu.SelectOption();
-                    }           
-                }
-                
-
-                // same with post game menu, if timer is not running
-                else if (postGame && !winMenu.timerRunning)
-                {
-                    if (Input.GetKeyDown(inputScript.Up)) {
-                        winMenu.MoveCursor(1);
-                    } else if (Input.GetKeyDown(inputScript.Down)) {
-                        winMenu.MoveCursor(-1);
-                    }
-
-                    if (Input.GetKeyDown(inputScript.Cast)){
-                        winMenu.SelectOption();
-                    }
-                }
-                
-                // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
-                else if (!convoPaused && !postGame) {
-                    pieceSpawned = false;
-
-                    if (playerControlled && piece != null){
-                        if (Input.GetKey(inputScript.Down)){
-                            this.fallTimeMult = 0.1f;
+                    // control the pause menu if paused
+                    if (pauseMenu.paused && !postGame)
+                    {
+                        if (Input.GetKeyDown(inputScript.Up)) {
+                            pauseMenu.MoveCursor(1);
+                            PlaySFX("move", pitch : 0.8f);
+                        } else if (Input.GetKeyDown(inputScript.Down)) {
+                            pauseMenu.MoveCursor(-1);
+                            PlaySFX("move", pitch : 0.75f);
                         }
-                        else{
-                            this.fallTimeMult = 1f;
+
+                        if (Input.GetKeyDown(inputScript.Cast)){
+                            pauseMenu.SelectOption();
+                        }           
+                    }
+
+                    // same with post game menu, if timer is not running
+                    else if (postGame && !winMenu.timerRunning)
+                    {
+                        if (Input.GetKeyDown(inputScript.Up)) {
+                            winMenu.MoveCursor(1);
+                        } else if (Input.GetKeyDown(inputScript.Down)) {
+                            winMenu.MoveCursor(-1);
+                        }
+
+                        if (Input.GetKeyDown(inputScript.Cast)){
+                            winMenu.SelectOption();
+                        }
+                    }
+                    
+                    // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
+                    else if (!convoPaused && !postGame) {
+                        pieceSpawned = false;
+
+                        if (playerControlled && piece != null){
+                            if (Input.GetKey(inputScript.Down)){
+                                this.fallTimeMult = 0.1f;
+                            }
+                            else{
+                                this.fallTimeMult = 1f;
+                            }
                         }
                     }
                 }
@@ -353,7 +388,7 @@ namespace Battle.Board {
                             
                             // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
                 
-                                if (!Input.GetKey(inputScript.Down)) {
+                                if (playerControlled && !Input.GetKey(inputScript.Down)) {
                                     finalFallTime += slideTime;
                                 }
 
@@ -384,7 +419,35 @@ namespace Battle.Board {
                             previousFallTime = Time.time;  
                         }
                     }    
-                } 
+                }
+
+                // TRASH DAMAGE TIMER
+                // if above 0, tick down
+                if (trashDamageTimer > 0) {
+                    trashDamageTimer -= Time.deltaTime;
+
+                    // if reached 0, check for tiles.
+                    
+                    if (trashDamageTimer <= 0) {
+                        int trashDamage = 0;
+                        for (int r=0; r<height; r++) {
+                            for (int c=0; c<width; c++) {
+                                if (tiles[r, c] && tiles[r, c].trashTile) {
+                                    trashDamage += damagePerTrash;
+                                }
+                            }
+                        }
+
+                        // if there are tiles, damage and reset the timer.
+                        // if no tiles, set timer to 0 (not running)
+                        if (trashDamage > 0) {
+                            TakeDamage(trashDamage, 0.333f);
+                            trashDamageTimer = trashDamageTimerDuration;
+                        } else {
+                            trashDamageTimer = 0;
+                        }
+                    }
+                }
             }
         }
 
@@ -399,9 +462,11 @@ namespace Battle.Board {
             piecePreview.Setup(this);
 
             cyclePosition = 0;
-            if (playerSide == 0 || !enemyBoard.singlePlayer) pointer.SetActive(true);
-            else pointer.SetActive(false);
-            if (singlePlayer) enemyBoard.pointer.SetActive(false);
+
+            // hide enemy pointer if in single player and not ai battle
+            if (playerSide == 0 && singlePlayer && !Storage.level.aiBattle) enemyBoard.pointer.SetActive(false);
+            else enemyBoard.pointer.SetActive(true);
+            // if (singlePlayer && !Storage.level.aiBattle) enemyBoard.pointer.SetActive(false);
             pointer.transform.SetParent(cycle.transform.parent);
             PointerReposition();
 
@@ -413,6 +478,7 @@ namespace Battle.Board {
 
 
         public void RotateLeft(){
+            if (!piece.IsRotatable) return;
             piece.RotateLeft();
             if(!ValidPlacement()){
                 // try nudging left, then right, then up. If none work, undo the rotation
@@ -423,6 +489,7 @@ namespace Battle.Board {
         }
 
         public void RotateRight(){
+            if (!piece.IsRotatable) return;
             piece.RotateRight();
             if(!ValidPlacement()){
                 // try nudging right, then left, then up. If none work, undo the rotation
@@ -462,24 +529,65 @@ namespace Battle.Board {
             if (abilityManager.enabled) abilityManager.UseAbility();
         }
 
-        public bool isPlayerControlled(){
+        public ManaColor PullColorFromBag() {
+            return rngManager.PullColorFromBag();
+        }
+
+        public ManaColor GetCenterMatch() {
+            return rngManager.GetCenterMatch();
+        }
+
+
+        // Adds a trash tile to this board in a random column.
+        public void AddTrashTile() {
+            /// Add a new trash piece with a random color
+            SinglePiece trashPiece = Instantiate(abilityManager.singlePiecePrefab).GetComponent<SinglePiece>();
+            trashPiece.GetCenter().SetColor(Piece.RandomColor(), this);
+            trashPiece.GetCenter().MakeTrashTile(this);
+
+            // Send it to a random color and drop it
+            int column = (int)Random.Range(0, 8);
+            trashPiece.transform.SetParent(pieceBoard.transform, false);
+            trashPiece.MoveTo(column, 3);
+            trashPiece.PlaceTilesOnBoard(ref tiles, pieceBoard.transform);
+            Destroy(trashPiece);
+            trashPiece.OnPlace(this);
+            TileGravity(trashPiece.GetCol(), trashPiece.GetRow());
+            RefreshBlobs();
+
+            // may replace with trash sfx later
+            PlaySFX("place");
+
+            // start trash damage timer only if at 0 (not running)
+            if (trashDamageTimer == 0) {
+                trashDamageTimer = trashDamageTimerDuration;
+            }
+        }
+
+        // Hides all 
+
+        public bool IsPlayerControlled(){
             return this.playerControlled;
         }
 
-        public bool isDefeated(){
+        public void SetPlayerControlled(bool p){
+            playerControlled = p;
+        }
+
+        public bool IsDefeated(){
             return this.defeated;
         }
 
-        public bool isWinner() {
+        public bool IsWinner() {
             return this.won;
         }
 
         // used by mid-level convo, to wait for spellcast to be done before convo.
-        public bool wonAndNotCasting() {
+        public bool WonAndNotCasting() {
             return this.won && !this.casting;
         }
 
-        public bool isPieceSpawned(){
+        public bool IsPieceSpawned(){
             return this.pieceSpawned;
         }
 
@@ -487,7 +595,7 @@ namespace Battle.Board {
             return this.piece;
         }
 
-        public void setFallTimeMult(float m){
+        public void SetFallTimeMult(float m){
             this.fallTimeMult = m;
         }
 
@@ -521,13 +629,15 @@ namespace Battle.Board {
         /// Destroys the current piece and spawns the passed piece in its place.
         /// </summary>
         public void ReplacePiece(Piece nextPiece) {
+            // destroy the piece currently being dropped
             piece.DestroyTiles();
             Destroy(piece);
 
-
+            // parent the new piece and set it to the drop location
             nextPiece.transform.SetParent(pieceBoard.transform, false);
             nextPiece.MoveTo(3,4);
 
+            // reset row fall data (used in sliding)
             lastRowFall = nextPiece.GetRow();
             rowFallCount = 0;
 
@@ -542,12 +652,7 @@ namespace Battle.Board {
             Transform manaColor = cycle.transform.GetChild(cyclePosition);
             // Debug.Log(cycle.transform.GetChild(cyclePosition));
 
-            pointer.transform.position = new Vector3(
-                // Move left or right based on if this is the player or not
-                manaColor.transform.position.x + ((playerSide == 0) ? -50 : 50),
-                manaColor.transform.position.y,
-                0
-            );
+            pointer.transform.position = manaColor.transform.position + Vector3.right * 50f * ((playerSide == 0) ? -1 : 1);
         }
 
         // Create a new piece and spawn it at the top of the board. Replaces the current piece field.
@@ -622,7 +727,7 @@ namespace Battle.Board {
                 foreach (Vector2Int tile in piece)
                 {
                     // Only do gravity if this tile is still here and hasn't fallen to gravity yet
-                    if (tiles[tile.y, tile.x] != null)
+                    if (!(tile.y >= height) && tiles[tile.y, tile.x] != null)
                     {
                         // If a tile fell, set tileFell to true and the loop will go again after this
                         if (TileGravity(tile.x, tile.y))
@@ -637,13 +742,51 @@ namespace Battle.Board {
             StartCoroutine(CheckMidConvoAfterDelay());
         }
 
-        // Clear the tile at the given index, destroying the Tile gameObject.
-        public void ClearTile(int col, int row)
+        /// <summary>
+        /// Clear the tile at the given index, destroying the Tile gameObject.
+        /// Returns the point multiplier of the tile cleared.
+        /// </summary>
+        /// <param name="col">tile column</param>
+        /// <param name="row">tile row</param>
+        /// <returns>point multiplier of the cleared tile</returns>
+        public float ClearTile(int col, int row, bool doParticleEffects)
         {
-            if (tiles[row, col]) {
-                Destroy(tiles[row, col].gameObject);
-                tiles[row, col] = null;
+            if (row < 0 || row >= height || col < 0 || col >= width) return 0;
+            if (!tiles[row, col]) return 0;
+
+            if (doParticleEffects) {
+                // play clearing particles before clearing
+                // instantiate particle system to have multiple bursts at once
+                GameObject tileParticleSystem = Instantiate(clearParticleSystem, particleParent, false);
+
+                // set particle color based on tile
+                var particleSystem = tileParticleSystem.GetComponent<ParticleSystem>();
+                var particleSystemMain = particleSystem.main;
+                particleSystemMain.startColor = cycle.GetManaColors()[(int) tiles[row,col].GetManaColor()];
+
+                // move to tile position and play burst
+                // offset the x pos by 1 or -1 depending on side, idk why its offset like that /shrug
+                // tileParticles.transform.localPosition = new Vector3(tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.x+(playerSide==0 ? 2 : -2), tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.y);
+                tileParticleSystem.transform.position = tiles[row,col].transform.position;
+
+                // Debug.Log(tileParticles + "at " + tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition);
+                // Debug.Log("actually at " + tileParticles.GetComponent<Transform>().position);
+                particleSystem.Play();
+                // particle system will automatically remove itself from the parent when animation is done, via ParticleSystem script
             }
+
+            float pointMultiplier = tiles[row, col].pointMultiplier;
+
+            // clear tile
+            Destroy(tiles[row, col].gameObject);
+            tiles[row, col] = null;
+
+            // point multiplier should not be negative & lower damage
+            return Math.Max(pointMultiplier, 0f);
+        }
+
+        public float ClearTile(int col, int row) {
+            return ClearTile(col, row, true);
         }
 
         // Deal damage to the other player(s(?))
@@ -653,7 +796,7 @@ namespace Battle.Board {
             
             if (postGame) {
                 // just add score if postgame and singleplayer
-                if (singlePlayer)
+                if (singlePlayer && !Storage.level.aiBattle)
                 {
                     hp += damage;   
                 }
@@ -674,9 +817,9 @@ namespace Battle.Board {
 
             // Send it to the appropriate location
             // if singleplayer, add damage to score, send towards hp bar
-            if (singlePlayer) {
+            if (singlePlayer && !Storage.level.aiBattle) {
                 shoot.target = this;
-                shoot.countering = false;
+                shoot.mode = DamageShoot.Mode.Heal;
                 shoot.destination = hpBar.hpNum.transform.position;
             } 
 
@@ -692,15 +835,31 @@ namespace Battle.Board {
                 {
                     if (hpBar.DamageQueue[i].dmg > 0) {
                         shoot.target = this;
-                        shoot.countering = true;
+                        shoot.mode = DamageShoot.Mode.Countering;
                         shoot.destination = hpBar.DamageQueue[i].transform.position;
                         return;
                     }
                 }
 
-                // if no incoming damage was found, send straight to opponent
+                // If the damage bar is empty and this fighter can make shields, make a shield if below max shield
+                if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields && shield < maxShield) {
+                    shoot.target = this;
+                    shoot.mode = DamageShoot.Mode.Shielding;
+                    shoot.destination = hpBar.shieldObject.transform.position;
+                    return; 
+                }
+
+                //After shields, try to damage opponent's shield
+                if (enemyBoard.shield > 0) {
+                    shoot.target = enemyBoard;
+                    shoot.mode = DamageShoot.Mode.AttackingEnemyShield;
+                    shoot.destination = enemyBoard.hpBar.shieldObject.transform.position;
+                    return;
+                }
+
+                // if no incoming damage/enemy shield was found, send straight to opponent
                 shoot.target = enemyBoard;
-                shoot.countering = false;
+                shoot.mode = DamageShoot.Mode.Attacking;
                 shoot.destination = enemyBoard.hpBar.DamageQueue[0].transform.position;
             }
         }
@@ -720,64 +879,117 @@ namespace Battle.Board {
             // dequeue the closest damage
             int dmg = hpBar.DamageQueue[5].dmg;
             if (dmg > 0) {
-                // shake the board and portrait when damaged
-                shake.StartShake();
-                portrait.GetComponent<Shake>().StartShake();
-                // flash portrait red
-                portrait.GetComponent<ColorFlash>().Flash();
-
-                PlaySFX("damageTaken");
-
-                // subtract from hp
-                hp -= dmg;
-
-                // If this player is out of HP, run defeat
-                if (hp <= 0) Defeat();
-
-                CheckMidLevelConversations();
+                TakeDamage(dmg);
             }
 
             // advance queue
             hpBar.AdvanceDamageQueue();
         }
 
+        public void TakeDamage(int damage, float intensity) {
+            // shake the board and portrait when damaged
+            shake.StartShake(intensity);
+            portrait.GetComponent<Shake>().StartShake(intensity);
+            // flash portrait red
+            portrait.GetComponent<ColorFlash>().Flash(intensity);
+
+            PlaySFX("damageTaken");
+
+            // subtract from hp
+            hp -= damage;
+            hpBar.Refresh();
+
+            // If this player is out of HP, run defeat
+            if (hp <= 0) Defeat();
+
+            CheckMidLevelConversations();
+        }
+
+        public void TakeDamage(int damage) {
+            TakeDamage(damage, 1f);
+        }
+
+        public void UpdateShield() {
+            hpBar.shieldNumText.text = shield+"";
+            hpBar.shieldObject.SetActive( shield > 0 );
+        }
+
+        public void SetShield(int shield) {
+            this.shield = shield;
+            UpdateShield();
+        }
+
+        // Add shield to this board. Returns any leftover unaddable shield due to maximum reached.
+        public int AddShield(int addShield) {
+            shield += addShield;
+            if (shield > maxShield) {
+                int overflow = shield - maxShield;
+                shield = maxShield;
+                UpdateShield();
+                return overflow;
+            } else {
+                UpdateShield();
+                return 0;
+            }
+        }
+
+        // Deal damage to the shield. If overdamaged, return overflow
+        public int DamageShield(int damage) {
+            shield -= damage;
+            if (shield < 0) {
+                int overflow = -shield;
+                shield = 0;
+                UpdateShield();
+                return overflow;
+            } else {
+                UpdateShield();
+                return 0;
+            }
+        }
 
         // Temporary, Only used for finding blobs within a single search, not used outside of search
         private static bool[,] tilesInBlobs;
 
-        public struct Blob
-        {
-            public ManaColor color;
-            public List<Vector2Int> tiles;
-        }
-
         private static int minBlobSize = 3;
         /** Updated list of recognized blobs */
-        public List<Blob> blobs {get; private set;}
+        private List<Blob> blobs;
         /** Total amount of mana in current blob list */
         private int totalBlobMana;
 
 
         /** Update the blob list this board has recognized. Should be called every time the board changes. */
 
-        public void RefreshBlobs() {
+        public void RefreshBlobs(ManaColor color) {
             tilesInBlobs = new bool[height, width];
-            FindBlobs();
+            FindBlobs(color);
             totalBlobMana = TotalMana(blobs);
         }
 
+        public void RefreshBlobs() {
+            RefreshBlobs(CurrentColor());
+        }
+
         // Check the board for blobs of 3 or more of the given color, and clear them from the board, earning points/dealing damage.
-        private void Spellcast(int chain)
+        private void Spellcast(int chain, bool refreshBlobs)
         {
-            RefreshBlobs();
+            if (refreshBlobs) RefreshBlobs();
 
             // If there were no blobs, do not deal damage, and do not move forward in cycle, 
             // end spellcast if active
             // also end if defeated, combo shouldn't extend while dead
             if (defeated || blobs.Count == 0) {
-                casting = false;
-                RefreshObjectives();
-                StartCoroutine(CheckMidConvoAfterDelay());
+                // Check for foresight icon, consuming it and skipping to next color if possible.
+                if (abilityManager.ForesightCheck()) {
+                    RefreshBlobs( cycle.GetColor( (cyclePosition+1) % ManaCycle.cycleLength ) );
+                    if (totalBlobMana > 0) {
+                        AdvanceCycle();
+                        Spellcast(chain);
+                    }
+                } else {
+                    casting = false;
+                    RefreshObjectives();
+                    StartCoroutine(CheckMidConvoAfterDelay());
+                }
                 return;
             };
 
@@ -805,7 +1017,7 @@ namespace Battle.Board {
                         if (cascade > 0) {
                             yield return new WaitForSeconds(0.5f);
 
-                            if (defeated) 
+                            if (defeated)
 
                             // recalculte blobs in case they changed
                             RefreshBlobs();
@@ -816,12 +1028,6 @@ namespace Battle.Board {
                         cascade += 1;
                         if (cascade > 1) cascadePopup.Flash(cascade.ToString());
 
-                        // DMG per mana, starts at 10, increases by 3 per cycle level
-                        
-                        // Deal damage for the amount of mana cleared.
-                        // DMG is scaled by chain and cascade.
-                        int damage = (int)( (totalBlobMana * damagePerMana) * chain * cascade );
-
                         // Get the average of all tile positions; this is where shoot particle is spawned
                         Vector3 averagePos = Vector3.zero;
                         foreach (Blob blob in blobs) {
@@ -831,22 +1037,31 @@ namespace Battle.Board {
                         }
                         averagePos /= totalBlobMana;
 
-                        // Send the damage over. Will counter incoming damage first.
-                        DealDamage(damage, averagePos, (int)CurrentColor(), chain);
-
                         totalSpellcasts++;
                         totalManaCleared += totalBlobMana;
                         if (abilityManager.enabled) abilityManager.GainMana(totalBlobMana);
 
                         highestCombo = Math.Max(highestCombo, chain);
 
+                        float totalPointMult = 0;
                         // Clear all blob-contained tiles from the board.
                         foreach (Blob blob in blobs) {
+                            // run onclear first to check for point multiplier increases (geo gold mine)
                             foreach (Vector2Int pos in blob.tiles) {
-                                ClearTile(pos.x, pos.y);
+                                tiles[pos.y, pos.x].BeforeClear(blob);
+                            }
+                            // then remove the tiles from the board and 
+                            foreach (Vector2Int pos in blob.tiles) {
+                                totalPointMult += ClearTile(pos.x, pos.y);
                             }
                         }
                         PlaySFX("cast1", pitch : 1f + chain*0.1f);
+
+                        // Deal damage for the amount of mana cleared.
+                        // DMG is scaled by chain and cascade.
+                        int damage = (int)( (totalPointMult * damagePerMana) * chain * cascade );
+                        // Send the damage over. Will counter incoming damage first.
+                        DealDamage(damage, averagePos, (int)CurrentColor(), chain);
 
                         // Do gravity everywhere
                         AllTileGravity();
@@ -858,23 +1073,30 @@ namespace Battle.Board {
                         StartCoroutine(CheckMidConvoAfterDelay());
                     }
 
-                    // move to next in cycle position
-                    cyclePosition += 1;
-                    if (cyclePosition >= ManaCycle.cycleLength) {
-                        cyclePosition = 0;
-                        cycleLevel++;
-                        cycleLevelDisplay.Set(cycleLevel);
-                        PlaySFX("cycle");
-                    }
-                    PointerReposition();
-
-                    // Spellcast for the new next color to check for chain
+                    // Spellcast for the new next color and check for chain
+                    AdvanceCycle();
                     Spellcast(chain+1);
                 }            
             }
         }
 
-        public int damagePerMana {get {return 10 + cycleLevel * boostPerCycleClear;}}
+        private void Spellcast(int chain) {
+            Spellcast(chain, true);
+        }
+
+        private void AdvanceCycle() {
+            // move to next in cycle position
+            cyclePosition += 1;
+            if (cyclePosition >= ManaCycle.cycleLength) {
+                cyclePosition = 0;
+                cycleLevel++;
+                cycleLevelDisplay.Set(cycleLevel);
+                PlaySFX("cycle");
+            }
+            PointerReposition();
+        }
+
+        public int damagePerMana {get {return 10 + cycleLevel*boostPerCycleClear;}}
 
         IEnumerator CheckMidConvoAfterDelay() {
             yield return new WaitForSeconds(0.4f);
@@ -882,11 +1104,9 @@ namespace Battle.Board {
         }
 
         // Updates list of all blobs of mana that were cleared.
-        private void FindBlobs()
+        private void FindBlobs(ManaColor color)
         {
             blobs.Clear();
-
-            var color = CurrentColor();
 
             // Loop over rows (top to bottom)
             for (int r = 0; r < height; r++)
@@ -939,8 +1159,10 @@ namespace Battle.Board {
             // Don't add if there is not a tile here
             if (tiles[r, c] == null) return;
 
-            // Don't add if the tile is the incorrect color
-            if (tiles[r, c].GetManaColor() != color) return;
+            // Don't add if the tile is the incorrect color & this or target tile is not multicolor
+            if (tiles[r, c].GetManaColor() != color 
+            && color != ManaColor.Multicolor
+            && tiles[r, c].GetManaColor() != ManaColor.Multicolor) return;
 
             // Add the tile to the blob and fill in its spot on the tilesInBlobs matrix
             blob.tiles.Add(new Vector2Int(c, r));
@@ -1003,6 +1225,21 @@ namespace Battle.Board {
                 for (int r = height-2; r >= 0; r--)
                 {
                     TileGravity(c, r);
+                }
+            }
+        }
+
+        // Perform an action on all tiles.
+        public void ForEachTile(Action<Tile> action)
+        {
+            // Loop over columns (left to right)
+            for (int c = 0; c < width; c++)
+            {
+                // Loop over rows (BOTTOM to top)
+                // Skip bottom tiles, as those cannot fall
+                for (int r = height-2; r >= 0; r--)
+                {
+                    action(tiles[r, c]);
                 }
             }
         }
@@ -1166,6 +1403,14 @@ namespace Battle.Board {
             return level;
         }
 
+        public int GetPlayerSide(){
+            return playerSide;
+        }
+
+        public bool GetCasting(){
+            return casting;
+        }
+
         // Used in singleplayer, add points to "score" (hp)
         public void AddScore(int score) {
             hp += score;
@@ -1178,5 +1423,11 @@ namespace Battle.Board {
         {
             SoundManager.Instance.PlaySound(sfx[value], pitch : pitch);
         }
+    }
+
+    public struct Blob
+    {
+        public ManaColor color;
+        public List<Vector2Int> tiles;
     }
 }

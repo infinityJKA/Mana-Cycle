@@ -14,7 +14,7 @@ namespace Battle.Board {
         // update - update animation
         void Update() {
             // Animates the text component's position towards this object's position
-            textComponent.transform.position = Vector2.MoveTowards(textComponent.transform.position, transform.position, speed * Screen.width * Time.deltaTime);
+            textComponent.transform.position = Vector3.MoveTowards(textComponent.transform.position, transform.position, speed * Screen.width * Time.deltaTime);
         }
 
         public void SetDamage(int damage)

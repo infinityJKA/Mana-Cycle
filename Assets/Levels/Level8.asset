@@ -21,7 +21,8 @@ MonoBehaviour:
   cycleLength: 7
   cycleUniqueColors: 5
   fallTime: 0.6
-  battler: {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
+  availableBattlers:
+  - {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
   objectives:
   - condition: 3
     value: 15
@@ -29,4 +30,6 @@ MonoBehaviour:
     value: 100
   levelRequirement: {fileID: 11400000, guid: 38ddd560ba35cd9498f07726988cecef, type: 2}
   survivalWin: 0
+  aiBattle: 0
+  opponent: {fileID: 0}
   battleMusic: {fileID: 8300000, guid: ca5ef368f30309149bba5ce89bfdbfbf, type: 3}

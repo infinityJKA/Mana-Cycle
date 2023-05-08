@@ -23,6 +23,8 @@ namespace Animation {
         
         /** If currently shaking. */
         private bool shaking;
+        // Current shake intensity multiplier
+        private float intensity;
 
         // Update is called once per frame
         void Update()
@@ -31,7 +33,7 @@ namespace Animation {
                 shakeTime -= Time.deltaTime;
 
                 if (shakeTime > 0) {
-                    currentMagnitude = magnitude * (shakeTime / shakeDuration);
+                    currentMagnitude = magnitude * (shakeTime / shakeDuration) * intensity;
                     transform.position = center + shakeDirection * Mathf.Sin(shakeTime * 2*Mathf.PI * frequency) * currentMagnitude;
                 } else {
                     transform.position = center;
@@ -40,11 +42,16 @@ namespace Animation {
             }
         }
 
-        public void StartShake() {
+        public void StartShake(float intensity) {
+            this.intensity = intensity;
             center = transform.position;
-            shakeDuration = duration;
-            shakeTime = duration;
+            shakeDuration = duration*intensity;
+            shakeTime = duration*intensity;;
             shaking = true;
+        }
+
+        public void StartShake() {
+            StartShake(1);
         }
 
         public void StopShake() {

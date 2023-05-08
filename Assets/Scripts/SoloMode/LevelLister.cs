@@ -36,7 +36,7 @@ namespace SoloMode {
         private Vector2 tabOffset;
         /** amount to scroll by for each line. set to font size on start */
         private float levelScrollAmount;
-        private float tabScrollAmount;
+        public float tabScrollAmount;
 
         /** Index of current level selected */
         private int[] selectedLevelIndex;
@@ -56,14 +56,19 @@ namespace SoloMode {
 
         // menu sfx
         [SerializeField] private AudioClip moveSFX;
+        [SerializeField] private AudioClip swapTabSFX;
         [SerializeField] private AudioClip selectSFX;
         [SerializeField] private AudioClip errorSFX;
+        
 
         // currently unused references
         [SerializeField] GameObject upArrow;
         [SerializeField] GameObject downArrow;
 
         [SerializeField] SoloMenuTab[] tabs;
+
+
+        private static int tabWhitespacing = 4;
 
         // Start is called before the first frame update
         void Start()
@@ -75,7 +80,7 @@ namespace SoloMode {
             // decLine = (listText.font.faceInfo.descentLine);
 
             // last level and tab selected when in this window.
-            if (Storage.lastTabSelectedIndex == -1) Storage.lastLevelSelectedIndex = 0;
+            if (Storage.lastTabSelectedIndex == -1) Storage.lastTabSelectedIndex = 0;
             else selectedTabIndex = Storage.lastTabSelectedIndex;
 
             if (Storage.lastLevelSelectedIndex == -1) Storage.lastLevelSelectedIndex = GetNextLevel();
@@ -86,8 +91,12 @@ namespace SoloMode {
             listOffset = listText.rectTransform.anchoredPosition;
             tabOffset = tabText.rectTransform.offsetMin;
             levelScrollAmount = listText.fontSize;
-            tabScrollAmount = tabText.fontSize;
 
+            // idk how to get char width. public field guess&check for now
+            // tab scroll amount is number of px per character
+            // tabScrollAmount = tabText.textInfo.characterInfo[1].xAdvance; 
+
+            ClampSelections();
             RefreshList();
         }
 
@@ -122,6 +131,7 @@ namespace SoloMode {
                     ClampSelections();
                     StoreSelections();
                     RefreshList();
+                    SoundManager.Instance.PlaySound(swapTabSFX, pitch : 1.56f);
                 }
 
                 if (Input.GetKeyDown(inputScript.Left))
@@ -130,6 +140,7 @@ namespace SoloMode {
                     ClampSelections();
                     StoreSelections();
                     RefreshList();
+                    SoundManager.Instance.PlaySound(swapTabSFX, pitch : 1.68f);
                 }
 
                 // pause - go back to main menu
@@ -146,7 +157,8 @@ namespace SoloMode {
                         SoundManager.Instance.PlaySound(errorSFX);
                         return;
                     }
-                    
+
+                    StoreSelections();
                     Storage.level = levelsList[selectedLevelIndex[selectedTabIndex]]; 
                     Storage.gamemode = Storage.GameMode.Solo;
                     convoHandler.StartLevel(levelsList[selectedLevelIndex[selectedTabIndex]]);
@@ -246,17 +258,14 @@ namespace SoloMode {
             string newTabText = "";
             for (int i = 0; i < tabs.Length; i++)
             {
-                // color tab if selected
-                if (selectedTabIndex == i)
-                {
-                    newTabText += "<color=#FFFFFF>";
-                }
-                else
-                {
-                    newTabText += "<color=#10FF10>";
-                }
+                // most readable code in ohio
+                newTabText += (selectedTabIndex == i) ? "<color=white>" : "<color=#10FF10>";
+                newTabText += (selectedTabIndex == i && selectedTabIndex > 0) ? "< " : "  ";
+
                 SoloMenuTab currentTab = tabs[i];
-                newTabText += currentTab.tabName + "   " + "</color>";
+                newTabText += currentTab.tabName;
+
+                newTabText += (selectedTabIndex == i && selectedTabIndex < tabs.Length-1) ? " ></color>" : "  </color>";
             }
 
             tabText.text = newTabText;
@@ -265,10 +274,10 @@ namespace SoloMode {
             float newTabPos = 0;
             for (int i = 0; i < selectedTabIndex; i++)
             {
-                newTabPos += (tabs[i].tabName.Length+3) * tabScrollAmount;
+                newTabPos += (tabs[i].tabName.Length+tabWhitespacing) * tabScrollAmount;
             }
             targetTabPosition = tabOffset + Vector2.left * newTabPos;
-            Debug.Log("TABPOS: " + targetTabPosition);
+            // Debug.Log("TABPOS: " + targetTabPosition);
         }
 
         public void SetFocus(bool f){

@@ -56,4 +56,13 @@ public class Utils : MonoBehaviour
             default: return keyCode.ToString();
         }
     }
+
+    public static string KeySymbols(KeyCode up, KeyCode left, KeyCode down, KeyCode right) {
+        if (up == KeyCode.UpArrow && left == KeyCode.LeftArrow && down == KeyCode.DownArrow && right == KeyCode.RightArrow)
+        {
+            return "Arrows";
+        } else {
+            return KeySymbol(up)+KeySymbol(left)+KeySymbol(down)+KeySymbol(right);
+        }
+    }
 }

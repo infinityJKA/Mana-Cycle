@@ -143,11 +143,23 @@ namespace ConvoSystem {
                 obj.SetActive(true);
             }
             
-            // once the end of the convo is reached, transition to manacycle scene where the level will begin
+            // once the end of the convo is reached, transition to manacycle or char select scene
             if (level != null)
             {
                 Storage.level = level;
-                GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("ManaCycle");
+
+                // if multiple chars can be chosen from, go to char select
+                if (Storage.level.availableBattlers.Count > 1)
+                {
+                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("CharSelect");
+                }
+                // if only one available char, set battler and go to manacycle
+                else 
+                {
+                    Storage.level.battler = Storage.level.availableBattlers[0];
+                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("ManaCycle");
+                }
+                
             }
             else
             {
@@ -182,8 +194,8 @@ namespace ConvoSystem {
                 formattedText = formattedText.Replace("{cycle0}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(0)]);
                 formattedText = formattedText.Replace("{cycle1}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(1)]);
                 formattedText = formattedText.Replace("{cycle2}", board.cycle.manaColorStrings[(int)board.cycle.GetColor(2)]);
-                formattedText = formattedText.Replace("{rotateccw}", board.inputScripts[0].RotateLeft.ToString());
-                formattedText = formattedText.Replace("{rotatecw}", board.inputScripts[0].RotateRight.ToString());
+                formattedText = formattedText.Replace("{rotateccw}", board.inputScripts[0].RotateCCW.ToString());
+                formattedText = formattedText.Replace("{rotatecw}", board.inputScripts[0].RotateCW.ToString());
                 formattedText = formattedText.Replace("{spellcast}", board.inputScripts[0].Cast.ToString());
             }
 
