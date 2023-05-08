@@ -84,6 +84,10 @@ namespace Battle.Board {
         /** Amount of HP this player has remaining. */
         public int hp { get; private set; }
 
+        /// Amount of shield this battler has. As of rn Pyro is the only character to gain shield
+        public int shield {get; private set;} = 0;
+        public int maxShield {get; private set;} = 200;
+
         /** Stores the ManaCycle in this scene. (on start) */
         public ManaCycle cycle { get; private set; }
 
@@ -276,6 +280,8 @@ namespace Battle.Board {
                 }
             }
             abilityManager.InitManaBar();
+
+            SetShield(0);
 
             portrait.sprite = battler.sprite;
             // initialPos = portrait.GetComponent<RectTransform>().anchoredPosition;
@@ -813,7 +819,7 @@ namespace Battle.Board {
             // if singleplayer, add damage to score, send towards hp bar
             if (singlePlayer && !Storage.level.aiBattle) {
                 shoot.target = this;
-                shoot.countering = false;
+                shoot.mode = DamageShoot.Mode.Heal;
                 shoot.destination = hpBar.hpNum.transform.position;
             } 
 
@@ -829,15 +835,31 @@ namespace Battle.Board {
                 {
                     if (hpBar.DamageQueue[i].dmg > 0) {
                         shoot.target = this;
-                        shoot.countering = true;
+                        shoot.mode = DamageShoot.Mode.Countering;
                         shoot.destination = hpBar.DamageQueue[i].transform.position;
                         return;
                     }
                 }
 
-                // if no incoming damage was found, send straight to opponent
+                // If the damage bar is empty and this fighter can make shields, make a shield if below max shield
+                if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields && shield < maxShield) {
+                    shoot.target = this;
+                    shoot.mode = DamageShoot.Mode.Shielding;
+                    shoot.destination = hpBar.shieldObject.transform.position;
+                    return; 
+                }
+
+                //After shields, try to damage opponent's shield
+                if (enemyBoard.shield > 0) {
+                    shoot.target = enemyBoard;
+                    shoot.mode = DamageShoot.Mode.AttackingEnemyShield;
+                    shoot.destination = enemyBoard.hpBar.shieldObject.transform.position;
+                    return;
+                }
+
+                // if no incoming damage/enemy shield was found, send straight to opponent
                 shoot.target = enemyBoard;
-                shoot.countering = false;
+                shoot.mode = DamageShoot.Mode.Attacking;
                 shoot.destination = enemyBoard.hpBar.DamageQueue[0].transform.position;
             }
         }
@@ -887,6 +909,43 @@ namespace Battle.Board {
             TakeDamage(damage, 1f);
         }
 
+        public void UpdateShield() {
+            hpBar.shieldNumText.text = shield+"";
+            hpBar.shieldObject.SetActive( shield > 0 );
+        }
+
+        public void SetShield(int shield) {
+            this.shield = shield;
+            UpdateShield();
+        }
+
+        // Add shield to this board. Returns any leftover unaddable shield due to maximum reached.
+        public int AddShield(int addShield) {
+            shield += addShield;
+            if (shield > maxShield) {
+                int overflow = shield - maxShield;
+                shield = maxShield;
+                UpdateShield();
+                return overflow;
+            } else {
+                UpdateShield();
+                return 0;
+            }
+        }
+
+        // Deal damage to the shield. If overdamaged, return overflow
+        public int DamageShield(int damage) {
+            shield -= damage;
+            if (shield < 0) {
+                int overflow = -shield;
+                shield = 0;
+                UpdateShield();
+                return overflow;
+            } else {
+                UpdateShield();
+                return 0;
+            }
+        }
 
         // Temporary, Only used for finding blobs within a single search, not used outside of search
         private static bool[,] tilesInBlobs;
@@ -1037,7 +1096,7 @@ namespace Battle.Board {
             PointerReposition();
         }
 
-        public int damagePerMana {get {return 10 + cycleLevel * boostPerCycleClear;}}
+        public int damagePerMana {get {return 10 + cycleLevel*boostPerCycleClear;}}
 
         IEnumerator CheckMidConvoAfterDelay() {
             yield return new WaitForSeconds(0.4f);
