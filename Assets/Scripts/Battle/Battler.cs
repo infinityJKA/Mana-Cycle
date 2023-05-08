@@ -22,7 +22,7 @@ namespace Battle {
             IronSword,
             Whirlpool,
             PyroBomb,
-            TimeFreeze,
+            Foresight,
             GoldMine
         }
             

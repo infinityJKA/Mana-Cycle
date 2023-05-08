@@ -17,6 +17,12 @@ namespace Battle.Board {
         
         [SerializeField] public GameObject singlePiecePrefab;
 
+        // Symbol list that appears near the cycle, used by Psychic's Foresight
+        [SerializeField] public Transform symbolList;
+
+        // Psychic's foresight icon prefab
+        [SerializeField] public GameObject foresightIconPrefab;
+
         /// <summary>Current amount of mana the player has generated</summary>
         public int mana {get; private set;}
 
@@ -59,6 +65,7 @@ namespace Battle.Board {
                     case Battler.ActiveAbilityEffect.IronSword: IronSword(); break;
                     case Battler.ActiveAbilityEffect.Whirlpool: Whirlpool(); break;
                     case Battler.ActiveAbilityEffect.PyroBomb: PyroBomb(); break;
+                    case Battler.ActiveAbilityEffect.Foresight: Foresight(); break;
                     case Battler.ActiveAbilityEffect.GoldMine: GoldMine(); break;
                     default: break;
                 }
@@ -99,6 +106,23 @@ namespace Battle.Board {
             SinglePiece pyroBombPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
             pyroBombPiece.MakePyroBomb(board);
             return pyroBombPiece;
+        }
+
+        /// <summary>
+        /// Gain a foresight symbol, allowing to skip the next unclearable color during a chain.
+        /// </summary>
+        private void Foresight() {
+            Instantiate(foresightIconPrefab, symbolList);
+        }
+
+        // If this is Psychic and there is a foresight icon available, consume it and return true
+        public bool ForesightCheck() {
+            if (board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Foresight && symbolList.childCount > 0) {
+                // TODO: add particle effects or some kinda effect on clear
+                Destroy(symbolList.GetChild(0));
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
