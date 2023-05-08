@@ -483,7 +483,7 @@ namespace Battle.Board {
             return this.pieceSpawned;
         }
 
-        public Piece getPiece(){
+        public Piece GetPiece(){
             return this.piece;
         }
 
@@ -745,7 +745,7 @@ namespace Battle.Board {
         // Temporary, Only used for finding blobs within a single search, not used outside of search
         private static bool[,] tilesInBlobs;
 
-        struct Blob
+        public struct Blob
         {
             public ManaColor color;
             public List<Vector2Int> tiles;
@@ -753,7 +753,7 @@ namespace Battle.Board {
 
         private static int minBlobSize = 3;
         /** Updated list of recognized blobs */
-        private List<Blob> blobs;
+        public List<Blob> blobs {get; private set;}
         /** Total amount of mana in current blob list */
         private int totalBlobMana;
 
