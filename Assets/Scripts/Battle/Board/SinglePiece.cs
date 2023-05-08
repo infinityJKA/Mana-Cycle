@@ -130,8 +130,11 @@ namespace Battle.Board {
 
             effect = Battler.ActiveAbilityEffect.GoldMine;
 
-            // Tile color mirrors the center color of the current piece it is replacing
-            center.SetColor(board.GetPiece().GetCenter().color, board);
+            // // (Old) Tile color mirrors the center color of the current piece it is replacing
+            // center.SetColor(board.GetPiece().GetCenter().color, board);
+
+            // (New) tile is always multicolor
+            center.SetColor(ManaColor.Multicolor, board);
             // make tile semi transparent
             center.image.color = new Color(center.image.color.r, center.image.color.g, center.image.color.b, 0.5f);
 

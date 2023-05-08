@@ -274,8 +274,9 @@ namespace Battle.Board {
                         
                     }
                 }
-
             }
+            abilityManager.InitManaBar();
+
             portrait.sprite = battler.sprite;
             // initialPos = portrait.GetComponent<RectTransform>().anchoredPosition;
             portrait.GetComponent<RectTransform>().anchoredPosition = portrait.GetComponent<RectTransform>().anchoredPosition + battler.portraitOffset;
