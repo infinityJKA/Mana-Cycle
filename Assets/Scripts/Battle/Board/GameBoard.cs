@@ -952,9 +952,15 @@ namespace Battle.Board {
 
         private static int minBlobSize = 3;
         /** Updated list of recognized blobs */
-        private List<Blob> blobs;
+        public List<Blob> blobs;
         /** Total amount of mana in current blob list */
         private int totalBlobMana;
+
+        public struct Blob
+        {
+            public ManaColor color;
+            public List<Vector2Int> tiles;
+        }
 
 
         /** Update the blob list this board has recognized. Should be called every time the board changes. */
@@ -1423,11 +1429,5 @@ namespace Battle.Board {
         {
             SoundManager.Instance.PlaySound(sfx[value], pitch : pitch);
         }
-    }
-
-    public struct Blob
-    {
-        public ManaColor color;
-        public List<Vector2Int> tiles;
     }
 }
