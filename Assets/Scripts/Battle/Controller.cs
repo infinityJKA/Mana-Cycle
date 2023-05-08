@@ -78,6 +78,10 @@ namespace Battle {
                     // TODO factor in making blobs in some way. likely by looping through each possible column and checking blob size / dmg
                     targetCol = FindNthLowestCols(0)[ (int) (UnityEngine.Random.Range(0f, FindNthLowestCols(0).Count)) ];
 
+                    // var bestPlacement = VirtualBoard.GetBestPlacement(board);
+                    // targetCol = bestPlacement.column;
+                    // targetRot = bestPlacement.rotation;
+
                     if (targetCol == 7){
                         // piece can only reach edges in specific rotations.
                         targetRot = 2;

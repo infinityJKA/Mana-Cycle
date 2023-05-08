@@ -30,7 +30,7 @@ namespace Battle.Board {
         public Action onFallAnimComplete;
 
         // Runs right before this tile is cleared. If part of a blob, that blob is passed.
-        public Action<Blob> beforeClear;
+        public Action<GameBoard.Blob> beforeClear;
 
         // If this is a trash tile - which damages in set intervals
         public bool trashTile { get; private set; }
@@ -77,7 +77,7 @@ namespace Battle.Board {
         /// Is run before the tiles are damage calculated and removed from the board.
         /// </summary>
         /// <param name="blob">the blob this is in, or null if not in a blob</param>
-        public void BeforeClear(Blob blob) {
+        public void BeforeClear(GameBoard.Blob blob) {
             if (beforeClear != null) beforeClear(blob);
         }
 
