@@ -119,7 +119,7 @@ namespace Battle.Board {
         public bool ForesightCheck() {
             if (board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Foresight && symbolList.childCount > 0) {
                 // TODO: add particle effects or some kinda effect on clear
-                Destroy(symbolList.GetChild(0));
+                Destroy(symbolList.GetChild(0).gameObject);
                 return true;
             }
             return false;
