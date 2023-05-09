@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 #if (UNITY_EDITOR)
 using UnityEditor;
@@ -46,6 +47,11 @@ namespace SoloMode {
         could be expanded in the future to include things like high score requirements **/
         [SerializeField] public Level levelRequirement; 
 
+        // node structure of levels used in arcade mode to make a series of levels played back-to-back
+        [SerializeField] public Level nextSeriesLevel = null;
+        // automatically set by level
+        [NonSerialized] public Level lastSeriesLevel;
+
         // Win on timer 0
         public bool survivalWin = false;
 
@@ -56,6 +62,12 @@ namespace SoloMode {
 
         // Battle music
         public AudioClip battleMusic;
+
+        public void Awake()
+        {
+            // set LastSeriesLevel
+            if (nextSeriesLevel != null) nextSeriesLevel.lastSeriesLevel = this;
+        }
 
         public bool RequirementsMet()
         {
