@@ -74,9 +74,17 @@ namespace PostGame {
                         }
 
                         Time.timeScale = 1f;
+
+                        // if doing level series, go to next level
+                        if (Storage.level.nextSeriesLevel != null)
+                        {
+                            Storage.level.nextSeriesLevel.battler = Storage.level.battler;
+                            Storage.level = Storage.level.nextSeriesLevel;
+                            transitionHandler.WipeToScene("ManaCycle");
+                        }
                         
                         // if first clear, immediately exit back to solomenu; otherwise, open menu
-                        if (!clearedBefore && cleared) {
+                        else if (!clearedBefore && cleared) {
                             transitionHandler.WipeToScene("SoloMenu", reverse:true);
                             setMenuSong();
                         } else {
