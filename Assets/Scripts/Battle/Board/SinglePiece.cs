@@ -17,6 +17,7 @@ namespace Battle.Board {
         // image for Infinity's Iron Sword
         [SerializeField] public Image ironSwordImage;
         [SerializeField] private AudioClip ironSwordSFX;
+        [SerializeField] private AudioClip pyroBombSFX;
 
         [SerializeField] private Sprite pyroBombSprite;
 
@@ -108,6 +109,8 @@ namespace Battle.Board {
 
         private void PyroBombExplode(GameBoard board) {
             Debug.Log("pyro bomb explosion");
+            SoundManager.Instance.PlaySound(pyroBombSFX);
+            
             // Destroy tiles in a 3x3 grid (including this piece's bomb tile, which is in the center)
             // exclude this tile initial count
 

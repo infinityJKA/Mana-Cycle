@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Sound; 
+
 namespace Battle.Board {
     /// <summary>
     /// Handles the mana bar and abilities for the GameBoard. Party/solo mode only
@@ -22,6 +24,8 @@ namespace Battle.Board {
 
         // Psychic's foresight icon prefab
         [SerializeField] public GameObject foresightIconPrefab;
+
+        [SerializeField] private AudioClip manaFillSFX;
 
         /// <summary>Current amount of mana the player has generated</summary>
         public int mana {get; private set;}
@@ -51,7 +55,10 @@ namespace Battle.Board {
 
         public void GainMana(int count)
         {
+            if (mana >= board.Battler.activeAbilityMana) return;
+
             mana = Math.Min(mana+count, board.Battler.activeAbilityMana);
+            if (mana >= board.Battler.activeAbilityMana) SoundManager.Instance.PlaySound(manaFillSFX);
             RefreshManaBar();
         }
 
