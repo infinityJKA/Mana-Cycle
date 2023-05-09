@@ -26,6 +26,7 @@ namespace Battle.Board {
         [SerializeField] public GameObject foresightIconPrefab;
 
         [SerializeField] private AudioClip manaFillSFX;
+        [SerializeField] private AudioClip foresightSFX;
 
         /// <summary>Current amount of mana the player has generated</summary>
         public int mana {get; private set;}
@@ -121,6 +122,7 @@ namespace Battle.Board {
         /// Gain a foresight symbol, allowing to skip the next unclearable color during a chain.
         /// </summary>
         private void Foresight() {
+            SoundManager.Instance.PlaySound(foresightSFX);
             Instantiate(foresightIconPrefab, symbolList);
         }
 
