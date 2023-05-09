@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Jobs;
+using UnityEngine.Jobs;
+using Unity.Collections;
 
 using Battle.Board;
 
@@ -10,7 +13,7 @@ namespace Battle {
     public class Controller : MonoBehaviour
     {
         // the board being controlled by this script
-        [SerializeField] private Board.GameBoard board;
+        [SerializeField] public Board.GameBoard board;
         [SerializeField] private InputScript[] inputScripts;
         [SerializeField] private InputScript[] soloInputScripts;
 
@@ -26,6 +29,14 @@ namespace Battle {
         private int[] orderedHeights;
         private List<int> lowestCols = new List<int>();
         private double nextMoveTimer = 0d;
+
+        // vars for new AI
+        // currently running best placement job
+        // BestPlacementJob job;
+        // Schedule handle for the best
+        JobHandle jobHandle;
+        // Stores the best placement results
+        public NativeArray<int> bestPlacement;
 
         // Start is called before the first frame update
         void Start()
@@ -75,12 +86,8 @@ namespace Battle {
                 if (board.IsPieceSpawned()){
                     // this block runs when a new pieces is spawned
                     // find cols with the least height and randomly choose between them
-                    // TODO factor in making blobs in some way. likely by looping through each possible column and checking blob size / dmg
+                    // // TODO factor in making blobs in some way. likely by looping through each possible column and checking blob size / dmg
                     targetCol = FindNthLowestCols(0)[ (int) (UnityEngine.Random.Range(0f, FindNthLowestCols(0).Count)) ];
-
-                    // var bestPlacement = VirtualBoard.GetBestPlacement(board);
-                    // targetCol = bestPlacement.column;
-                    // targetRot = bestPlacement.rotation;
 
                     if (targetCol == 7){
                         // piece can only reach edges in specific rotations.
@@ -92,6 +99,8 @@ namespace Battle {
                     else{
                         targetRot = (int) UnityEngine.Random.Range(0f, 4f);
                     }
+
+                    // new AI: will read from the current job's variables
                     
                     board.SetFallTimeMult(1f);
 
@@ -107,7 +116,15 @@ namespace Battle {
                     if (move == 0 && board.GetBlobCount()>0 && !board.GetCasting()){
                         board.Spellcast();
                     }
+
+                    // Schedule all 32 placements to be tested
+                    // 8 is the batch count; amount of calculations per frame
+                    // so if my understanding is right, this should be done in 4 frames
+                    // bestPlacement = new NativeArray<int>(3, Allocator.TempJob);
+                    // job = new BestPlacementJob(board, bestPlacement);
+                    // jobHandle = job.Schedule(32, 1);
                 }
+
                 // ai moves at timed intervals
                 if ((nextMoveTimer - Time.time <= 0) && !board.IsDefeated()){
 
@@ -144,6 +161,20 @@ namespace Battle {
             }
 
         } // close Update()
+
+        // Sometime later in the frame, read the best position that the job has generated
+        // private void LateUpdate()
+        // {
+        //     jobHandle.Complete(); 
+
+        //     targetCol = bestPlacement[0];
+        //     targetRot = bestPlacement[1];
+        //     bestPlacement.Dispose();
+        //     job.boardTiles.Dispose();
+        //     // job.virtualTiles.Dispose();
+
+        //     Debug.Log("Saved best placement: "+targetCol+", "+targetRot);
+        // }
 
         /// <summary>
         /// returns a list of the Nth lowest column numbers, where n=0 returns 1st lowest, n=1 returns the 2nd lowest, so on
