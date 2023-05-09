@@ -74,28 +74,37 @@ namespace PostGame {
                         }
 
                         Time.timeScale = 1f;
-
-                        // if doing level series, go to next level
-                        if (Storage.level.nextSeriesLevel != null)
-                        {
-                            Storage.level.nextSeriesLevel.battler = Storage.level.battler;
-                            Storage.level = Storage.level.nextSeriesLevel;
-                            transitionHandler.WipeToScene("ManaCycle");
-                        }
                         
-                        // if first clear, immediately exit back to solomenu; otherwise, open menu
-                        else if (!clearedBefore && cleared) {
+                        // if first clear (and not in series), immediately exit back to solomenu; otherwise, open menu
+                        if (!clearedBefore && cleared && Storage.level.nextSeriesLevel == null) {
                             transitionHandler.WipeToScene("SoloMenu", reverse:true);
                             setMenuSong();
-                        } else {
+                        } 
+                        else
+                        {
                             SoundManager.Instance.SetBGM(cleared ? winMusic : defeatMusic);
                             MenuUI.SetActive(true);
                             Time.timeScale = 0f;
-                            // when in solo mode, disable css button
+                            // when in solo mode, disable css button and series continue
                             MenuItems[1].SetActive(false);
                             MenuItems.RemoveAt(1);
 
+
                             rematchTextGUI.text = "Retry";
+
+                            // if in level series, diable char select butotn
+                            if (Storage.level.nextSeriesLevel != null && cleared)
+                            {
+                                MenuItems[1].SetActive(false);
+                                MenuItems.RemoveAt(1);
+                                rematchTextGUI.text = "Replay";
+                            }
+                            else 
+                            {
+                                // disable continue button
+                                MenuItems[2].SetActive(false);
+                                MenuItems.RemoveAt(2);
+                            }
                         }
                     }
                     else
@@ -172,6 +181,14 @@ namespace PostGame {
 
         public void setMenuSong(){
             SoundManager.Instance.SetBGM(SoundManager.Instance.mainMenuMusic);
+        }
+
+        public void SelectContinue()
+        {
+            Time.timeScale = 1f;
+            Storage.level.nextSeriesLevel.battler = Storage.level.battler;
+            Storage.level = Storage.level.nextSeriesLevel;
+            transitionHandler.WipeToScene("ManaCycle");
         }
 
 
