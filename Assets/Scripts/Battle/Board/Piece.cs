@@ -203,9 +203,9 @@ namespace Battle.Board {
 
             // make the inner tiles face opposite rotation, so animation stays correct
             // var opposite = UndoOrientedDirection();
-            center.GetComponent<RectTransform>().rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-            top.GetComponent<RectTransform>().rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-            right.GetComponent<RectTransform>().rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+            center.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+            top.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+            right.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
         }
 
         // Iteration of all coordinates this piece currently occupies. Returns Vector2Ints of (col, row).

@@ -6,7 +6,9 @@ using Unity.Collections;
 using Battle.Cycle;
 using System.Collections.Generic;
 
-namespace Battle.Board {
+using Battle.Board;
+
+namespace Battle.AI {
     public struct BestPlacementJob : IJob
     {
         // ---- Inputs
@@ -37,13 +39,23 @@ namespace Battle.Board {
 
         public int manaGain;
 
+        // The highest row (lowest value) on the board that was found during the latest calculation
+        public int boardHighestRow;
+
         public BestPlacementJob(GameBoard board, NativeArray<int> bestPlacement, int preferredColumn = -1) {
             this.bestPlacement = bestPlacement;
 
             // copy down the state of the board's tiles' colors
             boardTiles = new NativeArray<ManaColor>(GameBoard.height*GameBoard.width, Allocator.Persistent);
+            boardHighestRow = 18;
             for (int r = 0; r < GameBoard.height; r++) {
                 for (int c = 0; c < GameBoard.width; c++) {
+                    if (board.tiles[r, c]) {
+                        boardTiles[r*GameBoard.width + c] = board.tiles[r, c].color;
+                        boardHighestRow = Math.Min(boardHighestRow, r);
+                    } else {
+                        boardTiles[r*GameBoard.width + c] = ManaColor.None;
+                    }
                     boardTiles[r*GameBoard.width + c] = board.tiles[r, c] ? board.tiles[r, c].color : ManaColor.None;
                 }
             }
@@ -174,6 +186,8 @@ namespace Battle.Board {
             }
 
             virtualTiles.Dispose();
+
+            
         }
 
         // Place a tile into the passed virtual tile list.
