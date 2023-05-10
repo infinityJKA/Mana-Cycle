@@ -126,8 +126,9 @@ namespace Battle.Board {
 
         private float fallTimeMult;
 
-        /** True for one frame when new piece spawns */
-        private bool pieceSpawned;
+        // Used by this board's AI controller to check when a new piece has spawned. 
+        // Set to false by the AI controller when acted upon
+        public bool pieceSpawned;
 
         private bool cycleInitialized;
         private bool postGame = false;
@@ -350,8 +351,6 @@ namespace Battle.Board {
                     
                     // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
                     else if (!convoPaused && !postGame) {
-                        pieceSpawned = false;
-
                         if (playerControlled && piece != null){
                             if (Input.GetKey(inputScript.Down)){
                                 this.fallTimeMult = 0.1f;
@@ -585,10 +584,6 @@ namespace Battle.Board {
         // used by mid-level convo, to wait for spellcast to be done before convo.
         public bool WonAndNotCasting() {
             return this.won && !this.casting;
-        }
-
-        public bool IsPieceSpawned(){
-            return this.pieceSpawned;
         }
 
         public Piece GetPiece(){

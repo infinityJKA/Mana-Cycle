@@ -9,12 +9,23 @@ namespace Battle.AI {
     public class AIController : MonoBehaviour {
         [SerializeField] public Board.GameBoard board;
 
+        // AI difficulty params
+        // Move delay - approximate delay between piece movements, lower is faster
+        public float moveDelay = 0.5f;
+        // Accuracy - how often the AI chooses "best" mana netting position instead of just lowest column, as a percentage
+        [Range(0, 1)]
+        public float accuracy = 1.0f;
+        // Multiplier for how likely the AI is to spellcast, as opposed to the standard of 1.0.
+        // 1.0 is considered the "best" value, above or below should be worse
+        public float castChanceMultiplier = 1.0f;
+
         // Movement
         private int move;
         private int targetCol;
         private int targetRot;
         private int colAdjust;
-        private double nextMoveTimer = 0d;
+
+        private float nextMoveTimer;
 
         // Column detection (unused)
         // private Tile[,] boardLayout;
@@ -22,7 +33,6 @@ namespace Battle.AI {
         // private int lowestHeight;
         // private int[] orderedHeights;
         // private List<int> lowestCols = new List<int>();
-
 
         // Placement calculation
         // currently running best placement job
@@ -46,7 +56,8 @@ namespace Battle.AI {
             if (board.IsPlayerControlled() || !board.isInitialized() || board.isPaused() || board.isPostGame() || board.convoPaused) return;
 
             // Will be run the frame a piece is spawned
-            if (board.IsPieceSpawned()){
+            if (board.pieceSpawned){
+                board.pieceSpawned = false;
                 MakePlacementDecision();
             }
 
@@ -54,7 +65,7 @@ namespace Battle.AI {
             if ((nextMoveTimer - Time.time <= 0) && !board.IsDefeated()){
                 // set timer for next move. //// get highest col height so ai speeds up when closer to topout
                 // nextMoveTimer = Time.time + Math.Max(UnityEngine.Random.Range(0.5f,0.8f) - (double) board.getColHeight(FindNthLowestCols(GameBoard.width-1)[0])/15, 0.05f);
-                nextMoveTimer = Time.time + UnityEngine.Random.Range(0.5f,0.8f);
+                nextMoveTimer = Time.time + UnityEngine.Random.Range(moveDelay*0.8f, moveDelay*1.25f);
                 
                 // rotate piece to target rot
                 if ((int) board.GetPiece().getRot() > this.targetRot){
@@ -73,14 +84,16 @@ namespace Battle.AI {
                         board.MoveRight();
                     }
 
+                    // if at target column, quickfall
+                    else {
+                        if (targetCol == board.GetPiece().GetCol() && targetRot == (int) board.GetPiece().getRot())
+                        {
+                            // we are at target, so quickdrop
+                            board.SetFallTimeMult(0.1f);
+                        }
+                    }
                 }
-            }
-
-            if (targetCol == board.GetPiece().GetCol() && targetRot == (int) board.GetPiece().getRot())
-            {
-                // we are at target, so quickdrop
-                board.SetFallTimeMult(0.1f);
-            }
+            }     
         }
 
 
@@ -112,7 +125,7 @@ namespace Battle.AI {
             if (!placementJobRunning) {
                 // Schedule the job that calcualtes the tile position to run later after this frame
                 bestPlacement = new NativeArray<int>(4, Allocator.TempJob);
-                job = new BestPlacementJob(board, bestPlacement);
+                job = new BestPlacementJob(board, bestPlacement, accuracy);
                 placementJobRunning = true;
                 jobHandle = job.Schedule();
             }
@@ -127,11 +140,11 @@ namespace Battle.AI {
                 placementJobRunning = false;
                 targetCol = bestPlacement[0];
                 targetRot = bestPlacement[1];
-                // Debug.Log("col="+targetCol+", rot="+targetRot+" - manaGain="+bestPlacement[2]+", highestRow="+bestPlacement[3]);
+                Debug.Log("col="+targetCol+", rot="+targetRot+" - manaGain="+bestPlacement[2]+", highestRow="+bestPlacement[3]);
                 boardHighestRow = job.boardHighestRow;
-                Debug.Log("boardHighestRow="+boardHighestRow);
                 bestPlacement.Dispose();
                 job.boardTiles.Dispose();
+                job.accuracyRng.Dispose();
             }
         }
 
@@ -141,34 +154,34 @@ namespace Battle.AI {
             // board.getColHeight(FindNthLowestCols(0)[0]) > GameBoard.height/2 && board.GetBlobCount()>0 && !board.GetCasting()
             
             // do not cast at all if there are no blobs, or if already casting
-            if (board.GetBlobCount() <= 0 || !board.GetCasting()) return false;
+            if (board.GetBlobCount() <= 0 || board.GetCasting()) return false;
 
             // Note: All these chances stack on top of each other, affecting overall cast chance
 
             int incomingDamage = board.hpBar.TotalIncomingDamage();
-            // Incoming damage will kill: Cast now
-            if (incomingDamage > board.hp) return true;
+            // Incoming damage will kill: 100% chance, guaranteed unless cast chance multiplier < 1.0
+            if (incomingDamage > board.hp && Random.value < 1.0f*castChanceMultiplier) return true;
 
             // Incoming damage greater than 600: 40% chance
-            if (incomingDamage > 600 && Random.value < 0.4f) return true;
+            if (incomingDamage > 600 && Random.value < 0.4f*castChanceMultiplier) return true;
 
             // Incoming damage greater than 0: 8% chance
-            if (incomingDamage > 0 && Random.value < 0.08f) return true;
+            if (incomingDamage > 0 && Random.value < 0.08f*castChanceMultiplier) return true;
 
             
             int rowsFromTop = boardHighestRow + GameBoard.height - GameBoard.physicalHeight;
             // Chance is based on height from top of physical board
-            // <4 from top: Cast immediately
-            if (rowsFromTop < 4) return true;
+            // <4 from top: 125% chance, guaranteed unless cast chance multiplier < 0.8
+            if (rowsFromTop < 4 && Random.value < 1.25f*castChanceMultiplier) return true;
 
             // <8 from top: 35% chance
-            if (rowsFromTop < 8 && Random.value < 0.35f) return true;
+            if (rowsFromTop < 8 && Random.value < 0.35f*castChanceMultiplier) return true;
 
             // <12 from top: 10% chance
-            if (rowsFromTop < 12 && Random.value < 0.1f) return true;
+            if (rowsFromTop < 12 && Random.value < 0.1f*castChanceMultiplier) return true;
 
             // Persistent 4% chance
-            if (Random.value < 0.04f) return true;
+            if (Random.value < 0.04f*castChanceMultiplier) return true;
 
 
             // if no random checks landed, don't cast
