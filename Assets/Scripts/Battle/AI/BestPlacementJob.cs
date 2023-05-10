@@ -16,15 +16,20 @@ namespace Battle.AI {
         // Coordinate system works like this: array[row * width + col]
         public NativeArray<ManaColor> boardTiles;
 
-        // // Minimum and maximum column.
-        // // If the AI cannot reach a column when moving left/right,
-        // // it will restrict itself from trying to go to that column until the next clear
-        // public int minCol, maxCol;
+        // A percentage of how "accurate" the determined placement should be.
+        public float accuracy;
         
         // public NativeArray<VirtualTile> virtualTiles;
 
         // inner
+        // On constructor, decides if accuracy check decides this should target the lowest column 
+        // instead of a more mana-netting placement
+        public bool accuracyLowestCol;
+
         int rngConstant;
+
+        // list of bools, used to determine which possible placements the AI will "see" and act upon
+        public NativeArray<bool> accuracyRng;
 
         ManaColor center, top, right;
         int tileIndex;
@@ -34,7 +39,7 @@ namespace Battle.AI {
 
         // ---- Outputs
         // Has 3 variables for the best placement position found.
-        // [bestCol, bestRot, bestManaGain]
+        // [bestCol, bestRot, bestManaGain, highestRow]
         public NativeArray<int> bestPlacement;
 
         public int manaGain;
@@ -42,8 +47,12 @@ namespace Battle.AI {
         // The highest row (lowest value) on the board that was found during the latest calculation
         public int boardHighestRow;
 
-        public BestPlacementJob(GameBoard board, NativeArray<int> bestPlacement, int preferredColumn = -1) {
+        public BestPlacementJob(GameBoard board, NativeArray<int> bestPlacement, float accuracy) {
             this.bestPlacement = bestPlacement;
+            this.accuracy = accuracy;
+
+            // Random accuracy check that decides if the AI will aim for the lowest column as opposed to a mana-netting placement
+            this.accuracyLowestCol = UnityEngine.Random.value < (1 - accuracy);
 
             // copy down the state of the board's tiles' colors
             boardTiles = new NativeArray<ManaColor>(GameBoard.height*GameBoard.width, Allocator.Persistent);
@@ -73,24 +82,26 @@ namespace Battle.AI {
             // purpose is to mox in some of the other best placements from the other side of the board
             // that might also earn the max 3 mana gain instead of all left/right
             rngConstant = UnityEngine.Random.Range(0, 32);
+
+            // set accuracy rng - each index represents a possible placement that the AI will or will not see
+            accuracyRng = new NativeArray<bool>(32, Allocator.TempJob);
+            for (int i=0; i<32; i++) {
+                accuracyRng[i] = (UnityEngine.Random.value < accuracy);
+            }
         }
 
-
-        // Tries one of the piece placements.
-        // Broken up intoa  seperate job for each to allow CPU workers to do other stuff during the calculation
+        /// <summary>
+        /// Tries one of the piece placements.
+        /// Broken up intoa  seperate job for each to allow CPU workers to do other stuff during the calculation
+        /// </summry>
         public void Execute() {
             var cols = HighestAndLowestColumns();
             var difference = cols.Item2 - cols.Item1;
 
-            // If the highest and lowest columns are more than 5 rows apart, target the lowest column
-            if (difference > 5) {
-                int col = cols.Item2;
-                
-                int rng = rngConstant%4;
-                for (int i = rng; i < rng+4; i++) {
-                    int rot = i%4;
-                    SimulatePlacement(col, rot);
-                }
+            // If the highest and lowest columns are more than 5 rows apart or highest row is above row 6, 
+            // target the lowest column
+            if (difference > 5 || boardHighestRow > 6) {
+                PlaceInColumn(cols.Item2);
             } 
             
             // if top and bottom cols are 5 or less apart, safe enough to check all columns for best placement
@@ -101,9 +112,36 @@ namespace Battle.AI {
                     SimulatePlacement(col, rot);
                 }
             }
+
+            // If no placements were found (bestPlacementRow is 0 which is impossible),
+            // target the lowest column with a random rotation, ignore accuracy check
+            if (bestPlacement[3] == 0) {
+                Debug.Log("no placements recognized - defaulting to lowest col");
+                accuracy = 1.0f;
+                SimulatePlacement(cols.Item2, rngConstant%4, true);
+
+                // if somehow there still isn't a placement, probably a rotation issue; flip the piece around
+                if (bestPlacement[3] == 0) SimulatePlacement(cols.Item2, (rngConstant%4) + 2, true);
+            }
         }
 
-        void SimulatePlacement(int col, int rot) {
+        void PlaceInColumn(int col) {    
+            int rng = rngConstant%4;
+            for (int i = rng; i < rng+4; i++) {
+                int rot = i%4;
+                SimulatePlacement(col, rot);
+            }
+        }
+
+        /// <summary>
+        /// Simulates placing the virtual piece at the designated location and orientation.
+        /// </summary>
+        /// <param name="col">column of the piece's center</param>
+        /// <param name="rot">rotation of the piece. 0=up 1=right 2=down 3=left</param>
+        void SimulatePlacement(int col, int rot, bool ignoreAccuracy = false) {
+            // If accuracy check for this placement failed, ai did not "see" this placement possibility
+            if ( !ignoreAccuracy && !accuracyRng[(col*8 + rot) % 32] ) return;
+
             // A list of mana colors with their positions as opposed to a full array,
             // since this will only be holding 3 tiles
             var virtualTiles = new NativeArray<VirtualTile>(3, Allocator.Temp);
@@ -186,8 +224,6 @@ namespace Battle.AI {
             }
 
             virtualTiles.Dispose();
-
-            
         }
 
         // Place a tile into the passed virtual tile list.
