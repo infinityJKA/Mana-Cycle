@@ -18,6 +18,9 @@ namespace Battle.AI {
         // Multiplier for how likely the AI is to spellcast, as opposed to the standard of 1.0.
         // 1.0 is considered the "best" value, above or below should be worse
         public float castChanceMultiplier = 1.0f;
+        // If true, AI will not wait until piece is in correct rotation to start moving,
+        // and will not wait until in correct rotation/column to start quickdropping
+        public bool concurrentActions;
 
         // Movement
         private int move;
@@ -68,30 +71,26 @@ namespace Battle.AI {
                 nextMoveTimer = Time.time + UnityEngine.Random.Range(moveDelay*0.8f, moveDelay*1.25f);
                 
                 // rotate piece to target rot
-                if ((int) board.GetPiece().getRot() > this.targetRot){
-                    // Debug.Log(board.getPiece().getRot());
-                }
-                else if ((int) board.GetPiece().getRot() != this.targetRot){
+                bool reachedTargetRot = (int) board.GetPiece().getRot() != this.targetRot;
+                if (reachedTargetRot){
                     board.RotateLeft();
                 }
-                else
+                
+                // move the piece to our target col, only if rot is met (or if concurrent actions is enabled)
+                if (!reachedTargetRot || concurrentActions)
                 {
-                    // move the piece to our target col, only if rot is met
                     if (board.GetPiece().GetCol() + colAdjust > this.targetCol){
                         board.MoveLeft();
                     }
                     else if (board.GetPiece().GetCol() + colAdjust < this.targetCol){
                         board.MoveRight();
                     }
+                }
 
-                    // if at target column, quickfall
-                    else {
-                        if (targetCol == board.GetPiece().GetCol() && targetRot == (int) board.GetPiece().getRot())
-                        {
-                            // we are at target, so quickdrop
-                            board.SetFallTimeMult(0.1f);
-                        }
-                    }
+                // quick-drop when the target rotation and column are met (or if concurrent actions)
+                bool reachedTargetCol = board.GetPiece().GetCol() == this.targetCol;
+                if ((reachedTargetRot && reachedTargetCol) || concurrentActions) {
+                    board.SetFallTimeMult(0.1f);
                 }
             }     
         }
