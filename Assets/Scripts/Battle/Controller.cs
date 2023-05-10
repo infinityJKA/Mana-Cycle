@@ -32,10 +32,16 @@ namespace Battle {
 
         // vars for new AI
         // currently running best placement job
-        // BestPlacementJob job;
+        BestPlacementJob job;
         // Schedule handle for the best
         JobHandle jobHandle;
+        // Whether or not the job is running
+        bool placementJobRunning;
+
         // Stores the best placement results
+        // order: [col, rotation, manaGain, highestTileRow]
+        // will be ordered in priority of max manaGain and then max highestTileRow 
+        // (higher row number means lower on the board)
         public NativeArray<int> bestPlacement;
 
         // Start is called before the first frame update
@@ -87,21 +93,19 @@ namespace Battle {
                     // this block runs when a new pieces is spawned
                     // find cols with the least height and randomly choose between them
                     // // TODO factor in making blobs in some way. likely by looping through each possible column and checking blob size / dmg
-                    targetCol = FindNthLowestCols(0)[ (int) (UnityEngine.Random.Range(0f, FindNthLowestCols(0).Count)) ];
+                    // targetCol = FindNthLowestCols(0)[ (int) (UnityEngine.Random.Range(0f, FindNthLowestCols(0).Count)) ];
 
-                    if (targetCol == 7){
-                        // piece can only reach edges in specific rotations.
-                        targetRot = 2;
-                    }
-                    else if (targetCol == 0){
-                        targetRot = 3;
-                    }
-                    else{
-                        targetRot = (int) UnityEngine.Random.Range(0f, 4f);
-                    }
+                    // if (targetCol == 7){
+                    //     // piece can only reach edges in specific rotations.
+                    //     targetRot = 2;
+                    // }
+                    // else if (targetCol == 0){
+                    //     targetRot = 3;
+                    // }
+                    // else{
+                    //     targetRot = (int) UnityEngine.Random.Range(0f, 4f);
+                    // }
 
-                    // new AI: will read from the current job's variables
-                    
                     board.SetFallTimeMult(1f);
 
                     // random number to choose when to cast
@@ -117,12 +121,14 @@ namespace Battle {
                         board.Spellcast();
                     }
 
-                    // Schedule all 32 placements to be tested
-                    // 8 is the batch count; amount of calculations per frame
-                    // so if my understanding is right, this should be done in 4 frames
-                    // bestPlacement = new NativeArray<int>(3, Allocator.TempJob);
-                    // job = new BestPlacementJob(board, bestPlacement);
-                    // jobHandle = job.Schedule(32, 1);
+                    if (!placementJobRunning) {
+                        // Schedule the job that calcualtes the tile position to run later after this frame
+                        bestPlacement = new NativeArray<int>(4, Allocator.TempJob);
+                        job = new BestPlacementJob(board, bestPlacement);
+                        placementJobRunning = true;
+                        Debug.Log("scheduling job");
+                        jobHandle = job.Schedule();
+                    }
                 }
 
                 // ai moves at timed intervals
@@ -163,18 +169,19 @@ namespace Battle {
         } // close Update()
 
         // Sometime later in the frame, read the best position that the job has generated
-        // private void LateUpdate()
-        // {
-        //     jobHandle.Complete(); 
+        private void LateUpdate()
+        {
+            if (placementJobRunning) {
+                jobHandle.Complete(); 
 
-        //     targetCol = bestPlacement[0];
-        //     targetRot = bestPlacement[1];
-        //     bestPlacement.Dispose();
-        //     job.boardTiles.Dispose();
-        //     // job.virtualTiles.Dispose();
-
-        //     Debug.Log("Saved best placement: "+targetCol+", "+targetRot);
-        // }
+                placementJobRunning = false;
+                targetCol = bestPlacement[0];
+                targetRot = bestPlacement[1];
+                Debug.Log("col="+targetCol+", rot="+targetRot+" - manaGain="+bestPlacement[2]+", highestRow="+bestPlacement[3]);
+                bestPlacement.Dispose();
+                job.boardTiles.Dispose();
+            }
+        }
 
         /// <summary>
         /// returns a list of the Nth lowest column numbers, where n=0 returns 1st lowest, n=1 returns the 2nd lowest, so on
@@ -206,6 +213,5 @@ namespace Battle {
 
             return (lowestCols);
         }
-
     }
 }
