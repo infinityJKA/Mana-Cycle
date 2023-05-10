@@ -128,12 +128,12 @@ namespace Battle.Board {
 
         // If this is Psychic and there is a foresight icon available, consume it and return true
         public bool ForesightCheck() {
-            if (board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Foresight && symbolList.childCount > 0) {
-                // TODO: add particle effects or some kinda effect on clear
-                Destroy(symbolList.GetChild(0).gameObject);
-                return true;
-            }
-            return false;
+            return (board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Foresight && symbolList.childCount > 0);
+        }
+
+        public void UseForesight() {
+            // TODO: some kinda particle effect or other visual effect on foresight symbol consumed
+            Destroy(symbolList.GetChild(0).gameObject);
         }
 
         /// <summary>

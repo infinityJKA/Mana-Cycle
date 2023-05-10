@@ -978,18 +978,26 @@ namespace Battle.Board {
         // Check the board for blobs of 3 or more of the given color, and clear them from the board, earning points/dealing damage.
         private void Spellcast(int chain, bool refreshBlobs)
         {
+            if (defeated) return;
+
             if (refreshBlobs) RefreshBlobs();
 
             // If there were no blobs, do not deal damage, and do not move forward in cycle, 
             // end spellcast if active
             // also end if defeated, combo shouldn't extend while dead
-            if (defeated || blobs.Count == 0) {
+            if (blobs.Count == 0) {
                 // Check for foresight icon, consuming it and skipping to next color if possible.
                 if (abilityManager.ForesightCheck()) {
                     RefreshBlobs( cycle.GetColor( (cyclePosition+1) % ManaCycle.cycleLength ) );
                     if (totalBlobMana > 0) {
+                        abilityManager.UseForesight();
                         AdvanceCycle();
                         Spellcast(chain);
+                    } else {
+                        RefreshBlobs( CurrentColor() );
+                        casting = false;
+                        RefreshObjectives();
+                        StartCoroutine(CheckMidConvoAfterDelay());
                     }
                 } else {
                     casting = false;
@@ -1038,6 +1046,10 @@ namespace Battle.Board {
                         Vector3 averagePos = Vector3.zero;
                         foreach (Blob blob in blobs) {
                             foreach (Vector2Int pos in blob.tiles) {
+                                if (tiles[pos.y, pos.x] == null) {
+                                    Debug.LogWarning("Null tile found in blob: "+pos.y+", "+pos.x);
+                                    continue;
+                                }
                                 averagePos += tiles[pos.y, pos.x].transform.position;
                             }
                         }
