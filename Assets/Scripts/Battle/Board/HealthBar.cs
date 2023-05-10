@@ -11,15 +11,15 @@ namespace Battle.Board {
         private GameBoard board;
 
         [SerializeField] public HpNum hpNum;
-        [SerializeField] public GameObject hpDisp;
-        [SerializeField] private GameObject incomingDmgDisp;
 
         // cached components o' stuff
+        [SerializeField]
         private Image hpImage;
+        [SerializeField]
         private Image incomingDmgImage;
-        private RectTransform hpTransform;
-        private RectTransform incomingDmgTransform;
-        private float hpBarTopY;
+        [SerializeField]
+        private Image shieldImage;
+        
         [SerializeField] private IncomingDamage[] damageQueue;
         public IncomingDamage[] DamageQueue { get { return damageQueue; } } // (public getter for private setter)
         private float newIncomingPos;
@@ -75,25 +75,16 @@ namespace Battle.Board {
 
         public void Refresh()
         {
-            // get image components to edit attributes 
-            hpImage = hpDisp.GetComponent<Image>();
-            incomingDmgImage = incomingDmgDisp.GetComponent<Image>();
-
-            // get rect transform to change positions later
-            hpTransform = hpDisp.GetComponent<RectTransform>();
-            incomingDmgTransform = incomingDmgDisp.GetComponent<RectTransform>();
-
             hpNum.SetHealth(board.hp);
             hpImage.fillAmount = 1f * board.hp / board.maxHp;
 
             // incoming amount cannot be greater than hp fill amount 
             incomingDmgImage.fillAmount = Math.Min(1f * TotalIncomingDamage() / board.maxHp, hpImage.fillAmount);
+            incomingDmgImage.rectTransform.anchoredPosition = new Vector2(incomingDmgImage.rectTransform.anchoredPosition.x, newIncomingPos);
+            float hpBarTopY = (hpImage.fillAmount * hpImage.rectTransform.localScale.y) - hpImage.rectTransform.localScale.y + 1.0f;
+            newIncomingPos = Math.Max(hpBarTopY - incomingDmgImage.fillAmount*incomingDmgImage.rectTransform.localScale.y, 0);
 
-            // set incoming bar y to the top of current hp bar
-            hpBarTopY = (hpImage.fillAmount * hpTransform.localScale.y) - hpTransform.localScale.y + 1.0f;
-
-            newIncomingPos = Math.Max(hpBarTopY - incomingDmgImage.fillAmount*incomingDmgTransform.localScale.y, 0);
-            incomingDmgTransform.anchoredPosition = new Vector2(incomingDmgTransform.anchoredPosition.x, newIncomingPos);
+            shieldImage.fillAmount = Math.Min(1f * board.shield / board.maxHp, hpImage.fillAmount);
         }
 
         public int TotalIncomingDamage()
