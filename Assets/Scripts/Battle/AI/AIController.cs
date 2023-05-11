@@ -68,16 +68,16 @@ namespace Battle.AI {
             if ((nextMoveTimer - Time.time <= 0) && !board.IsDefeated()){
                 // set timer for next move. //// get highest col height so ai speeds up when closer to topout
                 // nextMoveTimer = Time.time + Math.Max(UnityEngine.Random.Range(0.5f,0.8f) - (double) board.getColHeight(FindNthLowestCols(GameBoard.width-1)[0])/15, 0.05f);
-                nextMoveTimer = Time.time + UnityEngine.Random.Range(moveDelay*0.8f, moveDelay*1.25f);
+                nextMoveTimer = Time.time + UnityEngine.Random.Range(moveDelay*0.5f, moveDelay*1.5f);
                 
                 // rotate piece to target rot
-                bool reachedTargetRot = (int) board.GetPiece().getRot() != this.targetRot;
-                if (reachedTargetRot){
+                bool reachedTargetRot = (int)board.GetPiece().getRot() == this.targetRot;
+                if (!reachedTargetRot){
                     board.RotateLeft();
                 }
                 
                 // move the piece to our target col, only if rot is met (or if concurrent actions is enabled)
-                if (!reachedTargetRot || concurrentActions)
+                if (reachedTargetRot || concurrentActions)
                 {
                     if (board.GetPiece().GetCol() + colAdjust > this.targetCol){
                         board.MoveLeft();
@@ -116,6 +116,7 @@ namespace Battle.AI {
             board.SetFallTimeMult(1f);
 
             // Won't try to spellcast if there are no blobs or already casting
+            // Debug.Log("cast chance: "+(CurrentCastChance()*100)+"%");
             if (ShouldCast()){
                 board.Spellcast();
             }
@@ -139,7 +140,7 @@ namespace Battle.AI {
                 placementJobRunning = false;
                 targetCol = bestPlacement[0];
                 targetRot = bestPlacement[1];
-                Debug.Log("col="+targetCol+", rot="+targetRot+" - manaGain="+bestPlacement[2]+", highestRow="+bestPlacement[3]);
+                // Debug.Log("col="+targetCol+", rot="+targetRot+" - manaGain="+bestPlacement[2]+", highestRow="+bestPlacement[3]);
                 boardHighestRow = job.boardHighestRow;
                 bestPlacement.Dispose();
                 job.boardTiles.Dispose();
@@ -159,16 +160,15 @@ namespace Battle.AI {
 
             int incomingDamage = board.hpBar.TotalIncomingDamage();
             // Incoming damage will kill: 100% chance, guaranteed unless cast chance multiplier < 1.0
-            if (incomingDamage > board.hp && Random.value < 1.0f*castChanceMultiplier) return true;
+            if (incomingDamage >= board.hp && Random.value < 1.0f*castChanceMultiplier) return true;
 
             // Incoming damage greater than 600: 40% chance
-            if (incomingDamage > 600 && Random.value < 0.4f*castChanceMultiplier) return true;
+            if (incomingDamage >= 600 && Random.value < 0.4f*castChanceMultiplier) return true;
 
             // Incoming damage greater than 0: 8% chance
             if (incomingDamage > 0 && Random.value < 0.08f*castChanceMultiplier) return true;
 
-            
-            int rowsFromTop = boardHighestRow + GameBoard.height - GameBoard.physicalHeight;
+            int rowsFromTop = boardHighestRow - GameBoard.height + GameBoard.physicalHeight;
             // Chance is based on height from top of physical board
             // <4 from top: 125% chance, guaranteed unless cast chance multiplier < 0.8
             if (rowsFromTop < 4 && Random.value < 1.25f*castChanceMultiplier) return true;
@@ -186,6 +186,48 @@ namespace Battle.AI {
             // if no random checks landed, don't cast
             return false;
         }
+
+        // Gets the current spellcast chance. Only really for debug
+        // float CurrentCastChance() {
+        //     // do not cast at all if there are no blobs, or if already casting
+        //     // if (board.GetBlobCount() <= 0 || board.GetCasting()) return 0;
+        //     // ( Ignores first check, dont care about if the cast will work or not )
+
+        //     float chance = 0f;
+
+        //     void FactorChance(float newChance) {
+        //         chance += (1-chance) * newChance * castChanceMultiplier;
+        //     }
+
+        //     int incomingDamage = board.hpBar.TotalIncomingDamage();
+        //     // Incoming damage will kill: 100% chance, guaranteed unless cast chance multiplier < 1.0
+        //     if (incomingDamage >= board.hp) FactorChance(1f);
+
+        //     // Incoming damage greater than 600: 40% chance
+        //     if (incomingDamage >= 600) FactorChance(0.4f);
+
+        //     // Incoming damage greater than 0: 8% chance
+        //     if (incomingDamage > 0) FactorChance(0.08f);
+
+        //     int rowsFromTop = boardHighestRow - GameBoard.height + GameBoard.physicalHeight;
+
+        //     // Chance is based on height from top of physical board
+        //     // <4 from top: 125% chance, guaranteed unless cast chance multiplier < 0.8
+        //     if (rowsFromTop < 4) FactorChance(1.25f);
+
+        //     // <8 from top: 35% chance
+        //     if (rowsFromTop < 8) FactorChance(0.35f);
+
+        //     // <12 from top: 10% chance
+        //     if (rowsFromTop < 12) FactorChance(0.1f);
+
+        //     // Persistent 4% chance
+        //     FactorChance(0.04f);
+
+
+        //     // if no random checks landed, don't cast
+        //     return chance;
+        // }
 
         /// <summary>
         /// returns a list of the Nth lowest column numbers, where n=0 returns 1st lowest, n=1 returns the 2nd lowest, so on
