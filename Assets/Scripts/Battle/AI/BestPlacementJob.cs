@@ -118,10 +118,12 @@ namespace Battle.AI {
             if (bestPlacement[3] == 0) {
                 Debug.Log("no placements recognized - defaulting to lowest col");
                 accuracy = 1.0f;
-                SimulatePlacement(cols.Item2, rngConstant%4, true);
+                SimulatePlacement(cols.Item2, rngConstant%4, force: true);
 
                 // if somehow there still isn't a placement, probably a rotation issue; flip the piece around
-                if (bestPlacement[3] == 0) SimulatePlacement(cols.Item2, (rngConstant%4) + 2, true);
+                if (bestPlacement[3] == 0) SimulatePlacement(cols.Item2, (rngConstant%4) + 2, force: true);
+
+                if (bestPlacement[3] == 0) Debug.LogWarning("Backup piece placements both failed");
             }
         }
 
@@ -138,9 +140,10 @@ namespace Battle.AI {
         /// </summary>
         /// <param name="col">column of the piece's center</param>
         /// <param name="rot">rotation of the piece. 0=up 1=right 2=down 3=left</param>
-        void SimulatePlacement(int col, int rot, bool ignoreAccuracy = false) {
+        /// <param name="force">if this should try to find a placement regardless of accuracy</param>
+        void SimulatePlacement(int col, int rot, bool force = false) {
             // If accuracy check for this placement failed, ai did not "see" this placement possibility
-            if ( !ignoreAccuracy && !accuracyRng[(col*8 + rot) % 32] ) return;
+            if ( !force && !accuracyRng[(col*8 + rot) % 32] ) return;
 
             // A list of mana colors with their positions as opposed to a full array,
             // since this will only be holding 3 tiles
@@ -199,23 +202,16 @@ namespace Battle.AI {
                 highestRow = Mathf.Min(virtualTiles[v].row, highestRow);
             }
 
-            // // If any of the tiles are above row 6, ignore this placement, too dangerous
-            // if (highestRow < 6) continue;
-
-            if (highestRow >= bestPlacement[3]) {
-                // if highestRow is the same, manaGain is the tiebreaker.
-                // if manaGain is lower, do not consider this placement
-                if (highestRow == bestPlacement[3] && manaGain < bestPlacement[2]) {
-                    return;
-                }
-
+            // New placement must either net more mana, or net the same mana but have a lower highest tile position
+            if (force || manaGain > bestPlacement[2] || (manaGain == bestPlacement[2] && highestRow > bestPlacement[3])) {
                 // If above row 8 and earns 0 mana, do not place here
                 // Should keep it from killing itself more often
-                if (manaGain > 1 || highestRow >= 8) {
+                if (force || manaGain > 0 || highestRow >= 8) {
                     bestPlacement[0] = col;
                     bestPlacement[1] = rot;
                     bestPlacement[2] = manaGain;
                     bestPlacement[3] = highestRow;
+                    Debug.Log("force set");
                 }
 
                 // possible optimization: stop when 3 is reached. not implementing for 2 reasons rn
