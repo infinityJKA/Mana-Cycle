@@ -1,3 +1,4 @@
+// using System;
 using UnityEngine;
 using System.Collections.Generic;
 using Unity.Jobs;
@@ -18,6 +19,9 @@ namespace Battle.AI {
         // Multiplier for how likely the AI is to spellcast, as opposed to the standard of 1.0.
         // 1.0 is considered the "best" value, above or below should be worse
         public float castChanceMultiplier = 1.0f;
+        // Multiplier for how likely the AI is to use their active ability, as opposed to the standard of 1.0.
+        // 1.0 is considered the "best" value, above or below should be worse
+        public float abilityChanceMultiplier = 1.0f;
         // If true, AI will not wait until piece is in correct rotation to start moving,
         // and will not wait until in correct rotation/column to start quickdropping
         public bool concurrentActions;
@@ -26,7 +30,6 @@ namespace Battle.AI {
         private int move;
         private int targetCol;
         private int targetRot;
-        private int colAdjust;
 
         private float nextMoveTimer;
 
@@ -61,6 +64,7 @@ namespace Battle.AI {
             // Will be run the frame a piece is spawned
             if (board.pieceSpawned){
                 board.pieceSpawned = false;
+                board.SetFallTimeMult(1f);
                 MakePlacementDecision();
             }
 
@@ -79,10 +83,10 @@ namespace Battle.AI {
                 // move the piece to our target col, only if rot is met (or if concurrent actions is enabled)
                 if (reachedTargetRot || concurrentActions)
                 {
-                    if (board.GetPiece().GetCol() + colAdjust > this.targetCol){
+                    if (board.GetPiece().GetCol() > this.targetCol){
                         board.MoveLeft();
                     }
-                    else if (board.GetPiece().GetCol() + colAdjust < this.targetCol){
+                    else if (board.GetPiece().GetCol() < this.targetCol){
                         board.MoveRight();
                     }
                 }
@@ -97,37 +101,53 @@ namespace Battle.AI {
 
 
         public void MakePlacementDecision() {
-            // ( OLD AI )
-            // // TODO factor in making blobs in some way. likely by looping through each possible column and checking blob size / dmg
-            // targetCol = FindNthLowestCols(0)[ (int) (UnityEngine.Random.Range(0f, FindNthLowestCols(0).Count)) ];
-
-            // if (targetCol == 7){
-            //     // piece can only reach edges in specific rotations.
-            //     targetRot = 2;
-            // }
-            // else if (targetCol == 0){
-            //     targetRot = 3;
-            // }
-            // else{
-            //     targetRot = (int) UnityEngine.Random.Range(0f, 4f);
-            // }
-
-            // Reset fall mult after old piece was just placed
-            board.SetFallTimeMult(1f);
-
             // Won't try to spellcast if there are no blobs or already casting
             // Debug.Log("cast chance: "+(CurrentCastChance()*100)+"%");
             if (ShouldCast()){
                 board.Spellcast();
             }
 
-            // ( NEW AI )
-            if (!placementJobRunning) {
-                // Schedule the job that calcualtes the tile position to run later after this frame
-                bestPlacement = new NativeArray<int>(4, Allocator.TempJob);
-                job = new BestPlacementJob(board, bestPlacement, accuracy);
-                placementJobRunning = true;
-                jobHandle = job.Schedule();
+            if (ShouldActivateAbility()){
+                board.UseAbility();
+            }
+
+            // Make different placement decisions based on the effect of the tile being dropped.
+            switch (board.GetPiece().effect) {
+                // Iron Sword: targets the tallest column always.
+                case Battler.ActiveAbilityEffect.IronSword:
+                    targetCol = HighestColumn();
+                    targetRot = 0;
+                    break;
+
+                // Pyro: target a random column.
+                // In the future, might make it to where it drops in the position that clears the most tiles
+                case Battler.ActiveAbilityEffect.PyroBomb:
+                    targetCol = Random.Range(0, 8);
+                    targetRot = 0;
+                    break;
+
+                // Geo Crystal: targets the lowest column, which is more likely to hit larger mana chunks maybe.
+                // probably a smarter approach but that would take coding.
+                case Battler.ActiveAbilityEffect.GoldMine:
+                    targetCol = LowestColumn();
+                    targetRot = 0;
+                    break;
+
+                // z?blind: randomly in the center 4 columns
+                // probably doesn't need a great AI but maybe target position witht he most unobscured area
+                case Battler.ActiveAbilityEffect.ZBlind:
+                    targetCol = Random.Range(2, 6);
+                    targetRot = 0;
+                    break;
+
+                // default: AI best placement algorithm
+                default:
+                    // Schedule the job that calcualtes the tile position to run later after this frame
+                    bestPlacement = new NativeArray<int>(4, Allocator.TempJob);
+                    job = new BestPlacementJob(board, bestPlacement, accuracy);
+                    placementJobRunning = true;
+                    jobHandle = job.Schedule();
+                    break;
             }
         }
 
@@ -136,8 +156,8 @@ namespace Battle.AI {
         {
             if (placementJobRunning) {
                 jobHandle.Complete(); 
-
                 placementJobRunning = false;
+
                 targetCol = bestPlacement[0];
                 targetRot = bestPlacement[1];
                 // Debug.Log("col="+targetCol+", rot="+targetRot+" - manaGain="+bestPlacement[2]+", highestRow="+bestPlacement[3]);
@@ -149,7 +169,7 @@ namespace Battle.AI {
         }
 
         // Decides if this AI should spellcast now or not.
-        // Called when a tile is spawned.
+        // Called when a piece is spawned.
         bool ShouldCast() {
             // board.getColHeight(FindNthLowestCols(0)[0]) > GameBoard.height/2 && board.GetBlobCount()>0 && !board.GetCasting()
             
@@ -187,77 +207,116 @@ namespace Battle.AI {
             return false;
         }
 
-        // Gets the current spellcast chance. Only really for debug
-        // float CurrentCastChance() {
-        //     // do not cast at all if there are no blobs, or if already casting
-        //     // if (board.GetBlobCount() <= 0 || board.GetCasting()) return 0;
-        //     // ( Ignores first check, dont care about if the cast will work or not )
+        // Decides when the AI should activate its ability.
+        // Called when a piece is spawned.
+        bool ShouldActivateAbility() {
+            // don't try to use if not enough mana.
+            if (board.abilityManager.mana < board.Battler.activeAbilityMana) return false;
 
-        //     float chance = 0f;
+            int rowsFromTop = boardHighestRow - GameBoard.height + GameBoard.physicalHeight;
+            switch (board.Battler.activeAbilityEffect) {
+                // iron sword: more likely the higher the highest row is
+                case Battler.ActiveAbilityEffect.IronSword:
+                    // <4 from top: 150% chance, guaranteed unless ability chance multiplier < 0.667
+                    if (rowsFromTop < 4 && Random.value < 1.5f*abilityChanceMultiplier) return true;
 
-        //     void FactorChance(float newChance) {
-        //         chance += (1-chance) * newChance * castChanceMultiplier;
-        //     }
+                    // <8 from top: 70% chance
+                    if (rowsFromTop < 8 && Random.value < 0.7f*abilityChanceMultiplier) return true;
 
-        //     int incomingDamage = board.hpBar.TotalIncomingDamage();
-        //     // Incoming damage will kill: 100% chance, guaranteed unless cast chance multiplier < 1.0
-        //     if (incomingDamage >= board.hp) FactorChance(1f);
+                    // <12 from top: 20% chance
+                    if (rowsFromTop < 12 && Random.value < 0.2f*abilityChanceMultiplier) return true;
 
-        //     // Incoming damage greater than 600: 40% chance
-        //     if (incomingDamage >= 600) FactorChance(0.4f);
+                    // persistent 4% chance
+                    if (Random.value < 0.04f*abilityChanceMultiplier) return true;
 
-        //     // Incoming damage greater than 0: 8% chance
-        //     if (incomingDamage > 0) FactorChance(0.08f);
+                    return false;
 
-        //     int rowsFromTop = boardHighestRow - GameBoard.height + GameBoard.physicalHeight;
+                // whirlpool: random chance while ready
+                case Battler.ActiveAbilityEffect.Whirlpool:
+                    // 40% chance while ready
+                    return Random.value < 0.35;
 
-        //     // Chance is based on height from top of physical board
-        //     // <4 from top: 125% chance, guaranteed unless cast chance multiplier < 0.8
-        //     if (rowsFromTop < 4) FactorChance(1.25f);
+                // pyro bomb: same numbers as iron sword, for now
+                case Battler.ActiveAbilityEffect.PyroBomb:
+                    
+                    // <4 from top: 150% chance, guaranteed unless ability chance multiplier < 0.667
+                    if (rowsFromTop < 4 && Random.value < 1.5f*abilityChanceMultiplier) return true;
 
-        //     // <8 from top: 35% chance
-        //     if (rowsFromTop < 8) FactorChance(0.35f);
+                    // <8 from top: 70% chance
+                    if (rowsFromTop < 8 && Random.value < 0.7f*abilityChanceMultiplier) return true;
 
-        //     // <12 from top: 10% chance
-        //     if (rowsFromTop < 12) FactorChance(0.1f);
+                    // <12 from top: 20% chance
+                    if (rowsFromTop < 12 && Random.value < 0.2f*abilityChanceMultiplier) return true;
 
-        //     // Persistent 4% chance
-        //     FactorChance(0.04f);
+                    // persistent 4% chance
+                    if (Random.value < 0.04f*abilityChanceMultiplier) return true;
 
+                    return false;
 
-        //     // if no random checks landed, don't cast
-        //     return chance;
-        // }
+                // foresight: random chance while ready
+                case Battler.ActiveAbilityEffect.Foresight:
+                    // 40% chance while ready
+                    return Random.value < 0.5;
 
-        /// <summary>
-        /// returns a list of the Nth lowest column numbers, where n=0 returns 1st lowest, n=1 returns the 2nd lowest, so on
-        /// </summary>
-        // public List<int> FindNthLowestCols(int n){
-        //     // slightly awkward naming convention 
-        //     boardLayout = board.getBoard();
-        //     heights = new int[GameBoard.width];
+                // gold mine: random chance while ready
+                case Battler.ActiveAbilityEffect.GoldMine:
+                    // 40% chance while ready
+                    return Random.value < 0.25;
 
-        //     // loop over cols and create a list with their heights
-        //     for (int c = 0; c < boardLayout.GetLength(1); c++){  
-        //         heights[c] = board.getColHeight(c);
-        //     }
-        //     // Debug.Log(heights.ToString());
+                // z?blind: random chance while ready
+                case Battler.ActiveAbilityEffect.ZBlind:
+                    // 40% chance while ready
+                    return Random.value < 0.35;
 
-        //     // we now have a list of all col's heights, left to right.
-        //     // now add the column numbers of all the lowest columns in a list.
-        //     // first, get the nth lowest height. 
-        //     orderedHeights = new int[heights.Length];
-        //     Array.Copy(heights, 0, orderedHeights, 0, heights.Length);
-        //     Array.Sort(orderedHeights);
-        //     lowestHeight = orderedHeights[n];
-        //     lowestCols = new List<int>();
-        //     for (int i = 0; i < heights.Length; i++){
-        //         if (heights[i] == lowestHeight){
-        //             lowestCols.Add(i);
-        //         }
-        //     }
+                default:
+                    return false;
+            }
+        }
 
-        //     return (lowestCols);
-        // }
+        // Returns index of the highest column.
+        int HighestColumn() {
+            int offset = Random.Range(0, 8);
+
+            int highestRow = 18;
+            int highestCol = -1;
+
+            for (int c = offset; c < GameBoard.width+offset; c++) {
+                int col = c%8;
+                for (int row = GameBoard.height - 1; row >= 0; row--) {
+                    if (!board.tiles[row, + col]) {
+                        if (row < highestRow) {
+                            highestRow = row;
+                            highestCol = col;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            return highestCol;
+        }
+
+        // Returns index of the lowest column.
+        int LowestColumn() {
+            int offset = Random.Range(0, 8);
+
+            int lowestRow = 0;
+            int lowestCol = -1;
+
+            for (int c = offset; c < GameBoard.width+offset; c++) {
+                int col = c%8;
+                for (int row = GameBoard.height - 1; row >= 0; row--) {
+                    if (!board.tiles[row, + col]) {
+                        if (row > lowestRow) {
+                            lowestRow = row;
+                            lowestCol = col;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            return lowestCol;
+        }
     }
 }
