@@ -34,6 +34,9 @@ namespace Battle.AI {
         ManaColor center, top, right;
         int tileIndex;
 
+        // USED IN HIGHEST/LOWEST COLUMN CALCULATIONS oops caps lock
+        (int, int) highLowCols, highLowColHeights;
+
         // stores if the current placement is invalid
         bool invalidPlacement;
 
@@ -88,6 +91,34 @@ namespace Battle.AI {
             for (int i=0; i<32; i++) {
                 accuracyRng[i] = (UnityEngine.Random.value < accuracy);
             }
+
+            // first item is highest column (lowest row value)
+            // second item is lowest column (highest row value)
+            highLowCols = (-1, -1);
+            highLowColHeights = (18, 0);
+
+            // Find the column numbers for the hgihest and lowest columns.
+            // Start with a random offset, to include more randomness
+            int offset = rngConstant%8;
+            for (int c = offset; c < GameBoard.width+offset; c++) {
+                int col = c%8;
+                var height = 0;
+                for (int row = GameBoard.height - 1; row >= 0; row--) {
+                    if (boardTiles[row*GameBoard.width + col] == ManaColor.None) {
+                        height = row;
+                        break;
+                    }
+                }
+
+                if (height < highLowColHeights.Item1) {
+                    highLowCols.Item1 = col;
+                    highLowColHeights.Item1 = height;
+                }
+                if (height > highLowColHeights.Item2) {
+                    highLowCols.Item2 = col;
+                    highLowColHeights.Item2 = height;
+                }
+            }
         }
 
         /// <summary>
@@ -95,13 +126,13 @@ namespace Battle.AI {
         /// Broken up intoa  seperate job for each to allow CPU workers to do other stuff during the calculation
         /// </summry>
         public void Execute() {
-            var cols = HighestAndLowestColumns();
-            var difference = cols.Item2 - cols.Item1;
+            
+            var difference = highLowColHeights.Item2 - highLowColHeights.Item1;
 
             // If the highest and lowest columns are more than 5 rows apart or highest row is above row 6, 
             // target the lowest column
             if (difference > 5 || boardHighestRow > 6) {
-                PlaceInColumn(cols.Item2);
+                PlaceInColumn(highLowCols.Item2);
             } 
             
             // if top and bottom cols are 5 or less apart, safe enough to check all columns for best placement
@@ -116,12 +147,13 @@ namespace Battle.AI {
             // If no placements were found (bestPlacementRow is 0 which is impossible),
             // target the lowest column with a random rotation, ignore accuracy check
             if (bestPlacement[3] == 0) {
-                Debug.Log("no placements recognized - defaulting to lowest col");
+                // Debug.Log("no placements recognized - defaulting to lowest col");
                 accuracy = 1.0f;
-                SimulatePlacement(cols.Item2, rngConstant%4, force: true);
+
+                SimulatePlacement(highLowCols.Item2, rngConstant%4, force: true);
 
                 // if somehow there still isn't a placement, probably a rotation issue; flip the piece around
-                if (bestPlacement[3] == 0) SimulatePlacement(cols.Item2, (rngConstant%4) + 2, force: true);
+                if (bestPlacement[3] == 0) SimulatePlacement(highLowCols.Item2, (rngConstant%4) + 2, force: true);
 
                 if (bestPlacement[3] == 0) Debug.LogWarning("Backup piece placements both failed");
             }
@@ -144,6 +176,9 @@ namespace Battle.AI {
         void SimulatePlacement(int col, int rot, bool force = false) {
             // If accuracy check for this placement failed, ai did not "see" this placement possibility
             if ( !force && !accuracyRng[(col*8 + rot) % 32] ) return;
+
+            if (force) Debug.Log("Trying force placement: "+col+", "+rot);
+            // else Debug.Log("Trying placement: "+col+", "+rot);
 
             // A list of mana colors with their positions as opposed to a full array,
             // since this will only be holding 3 tiles
@@ -203,7 +238,7 @@ namespace Battle.AI {
             }
 
             // New placement must either net more mana, or net the same mana but have a lower highest tile position
-            if (force || manaGain > bestPlacement[2] || (manaGain == bestPlacement[2] && highestRow > bestPlacement[3])) {
+            if (force || highestRow > bestPlacement[3] || (highestRow == bestPlacement[3] && manaGain > bestPlacement[2])) {
                 // If above row 8 and earns 0 mana, do not place here
                 // Should keep it from killing itself more often
                 if (force || manaGain > 0 || highestRow >= 8) {
@@ -211,7 +246,6 @@ namespace Battle.AI {
                     bestPlacement[1] = rot;
                     bestPlacement[2] = manaGain;
                     bestPlacement[3] = highestRow;
-                    Debug.Log("force set");
                 }
 
                 // possible optimization: stop when 3 is reached. not implementing for 2 reasons rn
@@ -321,41 +355,6 @@ namespace Battle.AI {
             public override string ToString() {
                 return "("+row+", "+col+")";
             }
-        }
-
-        // Return the column numbers for the hgihest and lowest columns.
-        // Start with a random offset, to include more randomness
-        (int, int) HighestAndLowestColumns() {
-            // first item is highest column (lowest row value)
-            // second item is lowest column (highest row value)
-            var heights = (18, 0);
-            var columns = (-1, -1);
-
-            int offset = rngConstant%8;
-            for (int c = offset; c < GameBoard.width+offset; c++) {
-                var height = ColumnHeight(c%8);
-
-                if (height < heights.Item1) {
-                    heights.Item1 = height;
-                    columns.Item1 = c;
-                }
-                if (height > heights.Item2) {
-                    heights.Item2 = height;
-                    columns.Item2 = c;
-                }
-            }
-
-            return columns;
-        }
-
-        // Return the row height of the tallest column.
-        int ColumnHeight(int col) {
-            for (int row = GameBoard.height - 1; row >= 0; row--) {
-                if (boardTiles[row*GameBoard.width + col] == ManaColor.None) {
-                    return row;
-                }
-            }
-            return 0;
         }
     }
 }
