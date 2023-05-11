@@ -35,7 +35,7 @@ namespace Battle.AI {
         int tileIndex;
 
         // USED IN HIGHEST/LOWEST COLUMN CALCULATIONS oops caps lock
-        (int, int) highLowCols, highLowColHeights;
+        public (int, int) highLowCols, highLowColHeights;
 
         // stores if the current placement is invalid
         bool invalidPlacement;

@@ -114,7 +114,7 @@ namespace Battle.Board {
         /** Amount of times the player has cleared the cycle. Used in daamge formula */
         private int cycleLevel = 0;
         // Amount of boost this board gets from each cycle clear
-        public int boostPerCycleClear {get; private set;} = 3;
+        public int boostPerCycleClear {get; private set;} = 2;
 
         /** Set to false when piece falling is paused; game will not try to make the current piece fall, if there even is one */
         public bool doPieceFalling = true;
@@ -372,12 +372,12 @@ namespace Battle.Board {
                     double finalFallTime = fallTime*this.fallTimeMult;
 
                     // If not fast-dropping, slow down fall if this is a slow falling tile
-                    if (piece.slowFall && !Input.GetKey(inputScript.Down)) finalFallTime *= 2f;
+                    if (piece.slowFall && fallTimeMult > 0.2f) finalFallTime *= 2f;
 
                     if (finalFallTime < 0.05){
                         finalFallTime = 0.05;
                     }
-                    if (finalFallTime < 0.4 && piece.slowFall && !Input.GetKey(inputScript.Down)) {
+                    if (finalFallTime < 0.4 && piece.slowFall && fallTimeMult > 0.2f) {
                         finalFallTime = 0.4;
                     }
 
@@ -640,6 +640,7 @@ namespace Battle.Board {
         /// Destroys the current piece and spawns the passed piece in its place.
         /// </summary>
         public void ReplacePiece(Piece nextPiece) {
+            pieceSpawned = true;
             // destroy the piece currently being dropped
             piece.DestroyTiles();
             Destroy(piece);
@@ -653,6 +654,15 @@ namespace Battle.Board {
             rowFallCount = 0;
 
             piece = nextPiece;
+
+            // If the piece is already in an invalid position, player has topped out
+            if (!ValidPlacement()) {
+                // set hp to 0 if not in endless
+                if (!(level != null && level.time == -1)) hp = 0;
+                
+                piece.gameObject.SetActive(false);
+                Defeat();
+            }
         }
 
         // Update the pointer's cycle position.
@@ -1081,7 +1091,7 @@ namespace Battle.Board {
                         foreach (Blob blob in blobs) {
                             // run onclear first to check for point multiplier increases (geo gold mine)
                             foreach (Vector2Int pos in blob.tiles) {
-                                tiles[pos.y, pos.x].BeforeClear(blob);
+                                if (tiles[pos.y, pos.x]) tiles[pos.y, pos.x].BeforeClear(blob);
                             }
                             // then remove the tiles from the board and 
                             foreach (Vector2Int pos in blob.tiles) {

@@ -12,7 +12,7 @@ namespace Battle.Cycle {
 
         public void Set(int label)
         {
-            this.label.text = (1 + (0.3f * label)) + "x";
+            this.label.text = (1 + (0.2f * label)) + "x";
             this.GetComponent<Image>().color = cycleLevelColors[ Mathf.Min(label, cycleLevelColors.Length-1)];
         }
     }
