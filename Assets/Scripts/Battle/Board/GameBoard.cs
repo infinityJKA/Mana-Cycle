@@ -372,12 +372,12 @@ namespace Battle.Board {
                     double finalFallTime = fallTime*this.fallTimeMult;
 
                     // If not fast-dropping, slow down fall if this is a slow falling tile
-                    if (piece.slowFall && fallTimeMult > 0.2f) finalFallTime *= 2f;
+                    if (piece && piece.slowFall && fallTimeMult > 0.2f) finalFallTime *= 2f;
 
                     if (finalFallTime < 0.05){
                         finalFallTime = 0.05;
                     }
-                    if (finalFallTime < 0.4 && piece.slowFall && fallTimeMult > 0.2f) {
+                    if (finalFallTime < 0.4 && piece && piece.slowFall && fallTimeMult > 0.2f) {
                         finalFallTime = 0.4;
                     }
 
@@ -1070,13 +1070,18 @@ namespace Battle.Board {
                         // Get the average of all tile positions; this is where shoot particle is spawned
                         Vector3 averagePos = Vector3.zero;
                         foreach (Blob blob in blobs) {
-                            foreach (Vector2Int pos in blob.tiles) {
+                            for (int index = 0; index < blob.tiles.Count; index++) {
+                                var pos = blob.tiles[index];
                                 if (tiles[pos.y, pos.x] == null) {
                                     Debug.LogWarning("Null tile found in blob: "+pos.y+", "+pos.x);
+                                    blob.tiles.RemoveAt(index);
+                                    index--;
+                                    totalBlobMana--;
                                     continue;
                                 }
                                 averagePos += tiles[pos.y, pos.x].transform.position;
                             }
+                            
                         }
                         averagePos /= totalBlobMana;
 
@@ -1102,7 +1107,7 @@ namespace Battle.Board {
 
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.
-                        int damage = (int)( (totalPointMult * damagePerMana) * chain * cascade );
+                        int damage = (int)( (totalPointMult * damagePerMana) * (1 + (chain-1)*0.5f) * cascade );
                         // Send the damage over. Will counter incoming damage first.
                         DealDamage(damage, averagePos, (int)CurrentColor(), chain);
 
@@ -1221,10 +1226,15 @@ namespace Battle.Board {
         // Check the tile at the given index for gravity,
         // pulling it down to the next available empty tile.
         // Returns true if the tile fell at all.
-        public bool TileGravity(int c, int r)
+        public bool TileGravity(int c, int r, bool force = false)
         {
             // If there isn't a tile here, it can't fall, because it isnt a tile...
             if (tiles[r, c] == null) return false;
+
+            // If the tile is an antigravity tile, do not pull it down. (etc. infinity's sword)
+            // only pull downward if forced, e.g. by Infinity's ability itslef pulling it down
+            // as opposed to from an AllTileGravity from a clear
+            if (!tiles[r, c].doGravity && !force) return false;
 
             // For each tile, check down until there is no longer an empty tile
             for (int rFall = r+1; rFall <= height; rFall++)

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.036
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.013952271, g: 0.011046545, b: 0.045810357, a: 0.036}
+  m_IndirectSpecularColor: {r: 0.013946134, g: 0.0110399565, b: 0.045794696, a: 0.036}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1846,9 +1846,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 1918826929}
-  moveDelay: 0.5
+  moveDelay: 0.4
   accuracy: 1
   castChanceMultiplier: 1
+  abilityChanceMultiplier: 1
   concurrentActions: 0
 --- !u!1001 &371667895
 PrefabInstance:
@@ -4509,9 +4510,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 1327112842}
-  moveDelay: 0.5
+  moveDelay: 0.4
   accuracy: 1
   castChanceMultiplier: 1
+  abilityChanceMultiplier: 1
   concurrentActions: 0
 --- !u!1 &1115376197
 GameObject:
@@ -7092,7 +7094,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 1a9e593bfdbc8c44fb272a6e7be1fd94, type: 2}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: playerControlled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: inputGetterPrefab
