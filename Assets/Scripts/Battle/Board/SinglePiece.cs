@@ -13,8 +13,6 @@ namespace Battle.Board {
     /// </summary>
     public class SinglePiece : Piece
     {
-        public Battler.ActiveAbilityEffect effect;
-
         // image for Infinity's Iron Sword
         [SerializeField] public Image ironSwordImage;
         [SerializeField] private AudioClip ironSwordSFX;
@@ -82,6 +80,7 @@ namespace Battle.Board {
         public void MakeIronSword(GameBoard board)
         {
             effect = Battler.ActiveAbilityEffect.IronSword;
+            slowFall = true;
             center.image.gameObject.SetActive(false);
             ironSwordImage.gameObject.SetActive(true);
             center.onFallAnimComplete = () => IronSwordDestroyTileBelow(board);

@@ -35,7 +35,13 @@ namespace Battle.Board {
             right
         }
 
+        // Special ability effect when this tile is placed. Used only by single pieces
+        public Battler.ActiveAbilityEffect effect;
+
         public virtual bool IsRotatable {get {return true;}}
+
+        // If this is a special tile that should fall much slower than other tiles
+        public bool slowFall { get; protected set; }
 
         // void Update()
         // {
