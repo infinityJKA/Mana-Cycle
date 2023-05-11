@@ -81,6 +81,7 @@ namespace Battle.Board {
         {
             effect = Battler.ActiveAbilityEffect.IronSword;
             slowFall = true;
+            center.DontDoGravity();
             center.image.gameObject.SetActive(false);
             ironSwordImage.gameObject.SetActive(true);
             center.onFallAnimComplete = () => IronSwordDestroyTileBelow(board);
@@ -96,10 +97,9 @@ namespace Battle.Board {
                 return;
             }
             // When iron sword falls, clear tile below, or destroy when at bottom
-            Tile swordTile = board.tiles[row-1, col];
+            board.DealDamage(board.damagePerMana*2, center.transform.position, 0, 0);
             board.ClearTile(col, row);
-            board.TileGravity(col, row-1);
-            board.DealDamage(board.damagePerMana, swordTile.transform.position, 0, 0);
+            board.TileGravity(col, row-1, force: true); // makes this piece's tile fall
         }
 
 
@@ -126,7 +126,7 @@ namespace Battle.Board {
             }
             board.AllTileGravity();
 
-            board.DealDamage((int)(board.damagePerMana*totalPointMult), center.transform.position, 0, 0);
+            board.DealDamage((int)(board.damagePerMana*totalPointMult*1.5f), center.transform.position, 0, 0);
         }
 
 
@@ -146,12 +146,12 @@ namespace Battle.Board {
             // This tile's point mult should be 0, unless another mana somehow buffs it
             center.pointMultiplier -= 1.00f;
 
-            // Before this tile is cleared, add a +100% point multiplier to all connected mana
+            // Before this tile is cleared, add a +200% point multiplier to all connected mana
             // (Don't buff this mana, it should stay at 0)
             center.beforeClear = (blob) => {
                 foreach (var tilePos in blob.tiles) {
                     if (tilePos.y == row && tilePos.x == col) return;
-                    board.tiles[tilePos.y, tilePos.x].pointMultiplier += 1.00f;
+                    board.tiles[tilePos.y, tilePos.x].pointMultiplier += 2.00f;
                 }
             };
 

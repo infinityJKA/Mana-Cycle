@@ -116,6 +116,7 @@ namespace Battle.AI {
                 // Iron Sword: targets the tallest column always.
                 case Battler.ActiveAbilityEffect.IronSword:
                     targetCol = HighestColumn();
+                    Debug.Log("Sword target column: "+targetCol);
                     targetRot = 0;
                     break;
 
@@ -217,6 +218,9 @@ namespace Battle.AI {
             switch (board.Battler.activeAbilityEffect) {
                 // iron sword: more likely the higher the highest row is
                 case Battler.ActiveAbilityEffect.IronSword:
+                    // if the highest column is less than 3 tiles high, do not use
+                    if (rowsFromTop > 15) return false;
+
                     // <4 from top: 150% chance, guaranteed unless ability chance multiplier < 0.667
                     if (rowsFromTop < 4 && Random.value < 1.5f*abilityChanceMultiplier) return true;
 
@@ -238,6 +242,8 @@ namespace Battle.AI {
 
                 // pyro bomb: same numbers as iron sword, for now
                 case Battler.ActiveAbilityEffect.PyroBomb:
+                    // if the highest column is less than 3 tiles high, do not use
+                    if (rowsFromTop > 15) return false;
                     
                     // <4 from top: 150% chance, guaranteed unless ability chance multiplier < 0.667
                     if (rowsFromTop < 4 && Random.value < 1.5f*abilityChanceMultiplier) return true;

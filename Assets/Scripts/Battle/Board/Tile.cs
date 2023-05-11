@@ -50,6 +50,9 @@ namespace Battle.Board {
         // Duration left before this tile destroys itself - ticks down if set to above 0
         public float lifespan {get; private set;}
 
+        // If gravity should pull this tile down.
+        public bool doGravity { get; private set; } = true;
+
         public void SetColor(ManaColor color, GameBoard board)
         {
             this.color = color;
@@ -104,6 +107,10 @@ namespace Battle.Board {
 
         public void MakeObscuresColor() {
             obscuresColor = true;
+        }
+
+        public void DontDoGravity() {
+            doGravity = false;
         }
 
         public void Obscure() {

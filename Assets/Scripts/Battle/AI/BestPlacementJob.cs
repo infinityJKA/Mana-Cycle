@@ -83,7 +83,6 @@ namespace Battle.AI {
 
             // randomly offset the starting point
             // purpose is to mox in some of the other best placements from the other side of the board
-            // that might also earn the max 3 mana gain instead of all left/right
             rngConstant = UnityEngine.Random.Range(0, 32);
 
             // set accuracy rng - each index represents a possible placement that the AI will or will not see
@@ -311,31 +310,38 @@ namespace Battle.AI {
         // Place the tile onto the board. Increment mana gain if connected to the same color
         void PlaceTile(NativeArray<VirtualTile> virtualTiles, int row, int col, ManaColor color) 
         {
+            // if the tile ended up in the kill zone, don't place here
+            if ((col == 3 || col == 4) && row <= 4) {
+                invalidPlacement = true;
+                return;
+            }
+
             // add the virtual tile
             virtualTiles[tileIndex] = new VirtualTile(row, col, color);
 
             // check all adjacent board and virtual tiles
-            if (
-                MatchesColor(virtualTiles, row-1, col, color)
-                || MatchesColor(virtualTiles, row+1, col, color)
-                || MatchesColor(virtualTiles, row, col-1, color)
-                || MatchesColor(virtualTiles, row, col+1, color)
-            ) {
-                tileIndex++;
-                manaGain++;
-            } else {
-                tileIndex++;
-            }
+            CheckColorMatch(virtualTiles, row-1, col, color);
+            CheckColorMatch(virtualTiles, row+1, col, color);
+            CheckColorMatch(virtualTiles, row, col-1, color);
+            CheckColorMatch(virtualTiles, row, col+1, color);
+            
+            tileIndex++;
         }
 
         // Check the board's tiles and virutal tiles if the color is matched.
-        bool MatchesColor(NativeArray<VirtualTile> virtualTiles, int row, int col, ManaColor color) {
+        bool CheckColorMatch(NativeArray<VirtualTile> virtualTiles, int row, int col, ManaColor color) {
             if (row < 0 || row >= GameBoard.height || col < 0 || col >= GameBoard.width) return false;
 
-            if (boardTiles[row * GameBoard.width + col] == color) return true;
+            if (boardTiles[row * GameBoard.width + col] == color) {
+                manaGain++;
+                return true;
+            }
 
             for (int i=0; i<tileIndex; i++) {
-                if (virtualTiles[i].row == row && virtualTiles[i].col == col && virtualTiles[i].color == color) return true;
+                if (virtualTiles[i].row == row && virtualTiles[i].col == col && virtualTiles[i].color == color) {
+                    manaGain++;
+                    return true;
+                }
             }
 
             return false;
