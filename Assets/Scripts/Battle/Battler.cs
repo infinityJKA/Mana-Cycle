@@ -31,7 +31,8 @@ namespace Battle {
             Whirlpool,
             PyroBomb,
             Foresight,
-            GoldMine
+            GoldMine,
+            ZBlind
         }
             
         /// <summary>Name of this character's active ability</summary>

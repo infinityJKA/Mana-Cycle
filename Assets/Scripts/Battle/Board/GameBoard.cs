@@ -543,24 +543,33 @@ namespace Battle.Board {
             SinglePiece trashPiece = Instantiate(abilityManager.singlePiecePrefab).GetComponent<SinglePiece>();
             trashPiece.GetCenter().SetColor(Piece.RandomColor(), this);
             trashPiece.GetCenter().MakeTrashTile(this);
-
-            // Send it to a random color and drop it
-            int column = (int)Random.Range(0, 8);
-            trashPiece.transform.SetParent(pieceBoard.transform, false);
-            trashPiece.MoveTo(column, 3);
-            trashPiece.PlaceTilesOnBoard(ref tiles, pieceBoard.transform);
-            Destroy(trashPiece);
-            trashPiece.OnPlace(this);
-            TileGravity(trashPiece.GetCol(), trashPiece.GetRow());
-            RefreshBlobs();
-
-            // may replace with trash sfx later
-            PlaySFX("place");
+            SpawnStandalonePiece(trashPiece);
 
             // start trash damage timer only if at 0 (not running)
             if (trashDamageTimer == 0) {
                 trashDamageTimer = trashDamageTimerDuration;
             }
+        }
+
+        // Add a piece to this board without having the player control or place it (keep their current piece).
+        public void SpawnStandalonePiece(Piece piece, int column) {
+            // Send it to a random color and drop it
+            piece.transform.SetParent(pieceBoard.transform, false);
+            piece.MoveTo(column, 3);
+            piece.PlaceTilesOnBoard(ref tiles, pieceBoard.transform);
+            Destroy(piece);
+            piece.OnPlace(this);
+            foreach (Vector2Int pos in piece) {
+                TileGravity(pos.x, pos.y);
+            }
+            RefreshBlobs();
+            // may replace with trash sfx later
+            PlaySFX("place");
+        }
+
+        // Spawn the standalone piece in a random column
+        public void SpawnStandalonePiece(Piece piece) {
+            SpawnStandalonePiece(piece, (int)Random.Range(0, 8));
         }
 
         // Hides all 
@@ -968,6 +977,10 @@ namespace Battle.Board {
 
         public void RefreshBlobs() {
             RefreshBlobs(CurrentColor());
+
+            // just tucked this in here, since it correlates to the lot of the same things
+            // refreshes zman color obscuring
+            RefreshObscuredTiles();
         }
 
         // Check the board for blobs of 3 or more of the given color, and clear them from the board, earning points/dealing damage.
@@ -1246,13 +1259,28 @@ namespace Battle.Board {
         public void ForEachTile(Action<Tile> action)
         {
             // Loop over columns (left to right)
-            for (int c = 0; c < width; c++)
+            for (int r = 0; r < height; r++)
             {
                 // Loop over rows (BOTTOM to top)
                 // Skip bottom tiles, as those cannot fall
-                for (int r = height-2; r >= 0; r--)
+                for (int c = 0; c < width; c++)
                 {
-                    action(tiles[r, c]);
+                    if (tiles[r, c]) action(tiles[r, c]);
+                }
+            }
+        }
+
+        // Perform an action on all tiles, also passing their indexes.
+        public void ForEachTileWithIndex(Action<Tile, int, int> action)
+        {
+            // Loop over columns (left to right)
+            for (int r = 0; r < height; r++)
+            {
+                // Loop over rows (BOTTOM to top)
+                // Skip bottom tiles, as those cannot fall
+                for (int c = 0; c < width; c++)
+                {
+                    if (tiles[r, c]) action(tiles[r, c], r, c);
                 }
             }
         }
@@ -1435,6 +1463,34 @@ namespace Battle.Board {
         public void PlaySFX(string value, float pitch = 1)
         {
             SoundManager.Instance.PlaySound(sfx[value], pitch : pitch);
+        }
+
+        static int obscureRadius = 3;
+        static int obscureDistance = 4;
+
+        // Recalculates which tiles are obscured by z?men
+        public void RefreshObscuredTiles() {
+            ForEachTile(tile => tile.Unobscure(this));
+
+            
+            ForEachTileWithIndex((tile, r, c) => {
+                if (tile.obscuresColor) {
+                    int obscureCount = 0;
+                    for (int row = Math.Max(0, r-obscureRadius); row <= Math.Min(height-1, r+obscureRadius); row++) {
+                        for (int col = Math.Max(0, c-obscureRadius); col <= Math.Min(width-1, c+obscureRadius); col++) {
+                            // exclude tiles outside obscure distance, creates a curved border
+                            if (Mathf.Abs(r-row) + Mathf.Abs(c-col) > obscureDistance) {
+                                continue;
+                            }
+
+                            if (tiles[row, col]) {
+                                tiles[row, col].Obscure();
+                                obscureCount++;
+                            }
+                        }
+                    }
+                }
+            });
         }
     }
 }

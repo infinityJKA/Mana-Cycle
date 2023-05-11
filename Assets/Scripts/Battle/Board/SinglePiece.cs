@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 
 using Battle.Cycle;
@@ -24,6 +25,8 @@ namespace Battle.Board {
         public override bool IsRotatable {get {return false;}}
 
         [SerializeField] private GameObject goldMineObject;
+
+        [SerializeField] private Sprite zmanSprite;
 
         
         private Vector3 OrientedDirection()
@@ -163,6 +166,13 @@ namespace Battle.Board {
 
             // set material to cycle's corresponding crystal material            
             crystal.GetComponent<MeshRenderer>().material = board.cycle.crystalMaterials[(int)center.color];
+        }
+
+        public void MakeZman(GameBoard board) {
+            center.MakeObscuresColor();
+            center.SetColor(ManaColor.Multicolor, board);
+            center.image.sprite = zmanSprite;
+            center.pointMultiplier -= 1.0f;
         }
     }
 }

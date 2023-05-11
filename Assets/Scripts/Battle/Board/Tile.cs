@@ -35,6 +35,21 @@ namespace Battle.Board {
         // If this is a trash tile - which damages in set intervals
         public bool trashTile { get; private set; }
 
+        // Whether or not this tile obscures mana colors around it. (zman)
+        public bool obscuresColor { get; private set; }
+
+        // Whether or not this tile's color is currently obscured.
+        private bool obscured;
+
+        // Sprite to use when this tile is obscured.
+        [SerializeField] private Sprite obscuredSprite;
+
+        // Sprite color to use while obscured.
+        [SerializeField] private Color obscureColor;
+
+        // Duration left before this tile destroys itself - ticks down if set to above 0
+        public float lifespan {get; private set;}
+
         public void SetColor(ManaColor color, GameBoard board)
         {
             this.color = color;
@@ -85,6 +100,28 @@ namespace Battle.Board {
             trashTile = true;
             pointMultiplier -= 1.00f;
             SetVisualColor(Color.Lerp(Color.black, image.color, 0.7f));
+        }
+
+        public void MakeObscuresColor() {
+            obscuresColor = true;
+        }
+
+        public void Obscure() {
+            // If this itself is an obscuring tile, do not obscure it
+            if (obscuresColor) return;
+
+            if (!obscured) {
+                obscured = true;
+                image.sprite = obscuredSprite;
+                image.color = obscureColor;
+            }
+        }
+
+        public void Unobscure(GameBoard board) {
+            if (obscured) {
+                obscured = false;
+                SetColor(color, board);
+            }
         }
     }
 }
