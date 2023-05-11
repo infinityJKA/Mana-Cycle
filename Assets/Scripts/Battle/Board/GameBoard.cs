@@ -370,8 +370,15 @@ namespace Battle.Board {
                     // move the piece one down.
                     // (Final fall time has to be greater than 0.05)
                     double finalFallTime = fallTime*this.fallTimeMult;
+
+                    // If not fast-dropping, slow down fall if this is a slow falling tile
+                    if (piece.slowFall && !Input.GetKey(inputScript.Down)) finalFallTime *= 2f;
+
                     if (finalFallTime < 0.05){
                         finalFallTime = 0.05;
+                    }
+                    if (finalFallTime < 0.4 && piece.slowFall && !Input.GetKey(inputScript.Down)) {
+                        finalFallTime = 0.4;
                     }
 
                     if(Time.time - previousFallTime > finalFallTime){
