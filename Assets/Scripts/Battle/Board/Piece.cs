@@ -26,7 +26,6 @@ namespace Battle.Board {
         // This piece's rotation, direction that the top tile is facing. Start out facing up.
         [SerializeField] protected Orientation orientation = Orientation.up;
 
-
         // Orientation is the way that the "top" tile is facing
         public enum Orientation
         {

@@ -77,6 +77,7 @@ namespace Battle.Board {
                     case Battler.ActiveAbilityEffect.PyroBomb: PyroBomb(); break;
                     case Battler.ActiveAbilityEffect.Foresight: Foresight(); break;
                     case Battler.ActiveAbilityEffect.GoldMine: GoldMine(); break;
+                    case Battler.ActiveAbilityEffect.ZBlind: ZBlind(); break;
                     default: break;
                 }
             }
@@ -143,6 +144,16 @@ namespace Battle.Board {
             SinglePiece goldMinePiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
             goldMinePiece.MakeGoldMine(board);
             board.ReplacePiece(goldMinePiece);
+        }
+
+        /// <summary>
+        /// Sends a z?man to your opponent's board that obscures the mana color of tiles around it.
+        /// After a short duration the tile destroys itself
+        /// </summary>
+        private void ZBlind() {
+            SinglePiece zmanPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            zmanPiece.MakeZman(board);
+            board.enemyBoard.SpawnStandalonePiece(zmanPiece);
         }
     }
 }
