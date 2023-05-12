@@ -134,13 +134,6 @@ namespace Battle.AI {
                     targetRot = 0;
                     break;
 
-                // z?blind: randomly in the center 4 columns
-                // probably doesn't need a great AI but maybe target position witht he most unobscured area
-                case Battler.ActiveAbilityEffect.ZBlind:
-                    targetCol = Random.Range(2, 6);
-                    targetRot = 0;
-                    break;
-
                 // default: AI best placement algorithm
                 default:
                     // Schedule the job that calcualtes the tile position to run later after this frame
@@ -219,7 +212,7 @@ namespace Battle.AI {
                 // iron sword: more likely the higher the highest row is
                 case Battler.ActiveAbilityEffect.IronSword:
                     // if the highest column is less than 3 tiles high, do not use
-                    if (rowsFromTop > 15) return false;
+                    if (rowsFromTop > 11) return false;
 
                     // <4 from top: 150% chance, guaranteed unless ability chance multiplier < 0.667
                     if (rowsFromTop < 4 && Random.value < 1.5f*abilityChanceMultiplier) return true;
