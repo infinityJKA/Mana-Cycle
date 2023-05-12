@@ -57,7 +57,16 @@ namespace Battle.AI {
             for (int r = 0; r < GameBoard.height; r++) {
                 for (int c = 0; c < GameBoard.width; c++) {
                     if (board.tiles[r, c]) {
-                        boardTiles[r*GameBoard.width + c] = board.tiles[r, c].color;
+                        // If the tile is obscured by zman, AI will be more likely to remember the color based on accuracy
+                        // If not, it knows it's a color, but not what color
+                        // Even the highest accuracy AI will only remember 70% of the colors at a time, 
+                        // just so zman isnt completely useless against high level AI
+                        if (board.tiles[r, c].obscured && UnityEngine.Random.value > accuracy*0.7f) {
+                            boardTiles[r*GameBoard.width + c] = ManaColor.Colorless;
+                        } else {
+                            boardTiles[r*GameBoard.width + c] = board.tiles[r, c].color;
+                        }
+
                         boardHighestRow = Math.Min(boardHighestRow, r);
                     } else {
                         boardTiles[r*GameBoard.width + c] = ManaColor.None;
@@ -239,7 +248,7 @@ namespace Battle.AI {
             // Will check virtual tiles for connected mana and increment manaGAin accordingly
             CheckManaConnections(virtualTiles);
 
-            
+
             int highestRow = 18;
             for (int v=0; v<3; v++) {
                 highestRow = Mathf.Min(virtualTiles[v].row, highestRow);

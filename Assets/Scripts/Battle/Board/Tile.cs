@@ -39,7 +39,7 @@ namespace Battle.Board {
         public bool obscuresColor { get; private set; }
 
         // Whether or not this tile's color is currently obscured.
-        private bool obscured;
+        public bool obscured { get; private set; }
 
         // Sprite to use when this tile is obscured.
         [SerializeField] private Sprite obscuredSprite;
@@ -47,18 +47,21 @@ namespace Battle.Board {
         // Sprite color to use while obscured.
         [SerializeField] private Color obscureColor;
 
+        // Fragile tiles are only cleared when an adjacent blob is cleared.
+        public bool fragile { get; private set; }
+
         // Duration left before this tile destroys itself - ticks down if set to above 0
         public float lifespan {get; private set;}
 
         // If gravity should pull this tile down.
         public bool doGravity { get; private set; } = true;
 
-        public void SetColor(ManaColor color, GameBoard board)
+        public void SetColor(ManaColor color, GameBoard board, bool setColor = true, bool setSprite = true)
         {
             this.color = color;
             // Get image and set color from the list in this scene's cycle
-            image.color = board.cycle.GetManaColors()[ ((int)color) ];
-            if (board.cycle.usingSprites) image.sprite = board.cycle.manaSprites[ ((int)color) ];
+            if (setColor) image.color = board.cycle.GetManaColors()[ ((int)color) ];
+            if (setSprite && board.cycle.usingSprites) image.sprite = board.cycle.manaSprites[ ((int)color) ];
         }
 
         public ManaColor GetManaColor()
@@ -111,6 +114,10 @@ namespace Battle.Board {
 
         public void DontDoGravity() {
             doGravity = false;
+        }
+
+        public void MakeFragile() {
+            fragile = true;
         }
 
         public void Obscure() {
