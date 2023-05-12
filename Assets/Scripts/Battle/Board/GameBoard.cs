@@ -285,10 +285,12 @@ namespace Battle.Board {
             if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shapeshifter)
             {
                 battler = enemyBoard.battler;
-                portrait.color = new Color(1f,0f,0f,0.47f);
+                // maybe experiment with other colors at some point
+                portrait.color = new Color(0.1f,0.1f,0.1f,0.47f);
                 
             }
 
+            portrait.GetComponent<ColorFlash>().SetBaseColor(portrait.color);
             portrait.sprite = battler.sprite;
 
             abilityManager.InitManaBar();

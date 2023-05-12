@@ -54,5 +54,10 @@ namespace Animation {
         public void Flash() {
             Flash(1f);
         }
+
+        public void SetBaseColor(Color b)
+        {
+            this.baseColor = b;
+        }
     }
 }
