@@ -280,11 +280,22 @@ namespace Battle.Board {
                     }
                 }
             }
+
+             portrait.sprite = battler.sprite;
+
+            // setup battler variables for the mirrored, take opponent sprite / abilities
+            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shapeshifter)
+            {
+                battler = enemyBoard.battler;
+                battler.portraitOffset = enemyBoard.battler.portraitOffset;
+                portrait.color = new Color(0f,0f,0f,0.47f);
+            }
+
+
             abilityManager.InitManaBar();
 
             SetShield(0);
 
-            portrait.sprite = battler.sprite;
             // initialPos = portrait.GetComponent<RectTransform>().anchoredPosition;
             portrait.GetComponent<RectTransform>().anchoredPosition = portrait.GetComponent<RectTransform>().anchoredPosition + battler.portraitOffset;
             attackPopup.SetBattler(battler);
