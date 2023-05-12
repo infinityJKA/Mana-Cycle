@@ -273,6 +273,7 @@ namespace Battle.Board {
                     // set opp in ai battles
                     if (Storage.level.aiBattle)
                     {
+                        Storage.battler2 = Storage.level.opponent;
                         enemyBoard.battler = Storage.level.opponent;
                         enemyBoard.portrait.sprite = Storage.level.opponent.sprite;
                         if (playerSide == 0) enemyBoard.SetPlayerControlled(false);
@@ -281,19 +282,9 @@ namespace Battle.Board {
                 }
             }
 
-            // setup battler variables for the mirrored, take opponent sprite / abilities
-            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shapeshifter)
-            {
-                battler = enemyBoard.battler;
-                // maybe experiment with other colors at some point
-                portrait.color = new Color(0.1f,0.1f,0.1f,0.47f);
-                
-            }
-
-            portrait.GetComponent<ColorFlash>().SetBaseColor(portrait.color);
             portrait.sprite = battler.sprite;
 
-            abilityManager.InitManaBar();
+            // abilityManager.InitManaBar();
 
             SetShield(0);
 
@@ -492,6 +483,31 @@ namespace Battle.Board {
             SpawnPiece();
 
             CheckMidLevelConversations();
+
+            // setup battler variables for the mirrored, take opponent sprite / abilities
+            // taken out of start because it relies on enemy board to be properly set up
+            Debug.Log(playerSide + " Ablility: " + battler.passiveAbilityEffect);
+            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shapeshifter)
+            {
+                Debug.Log("Shapeshifter effect activated");
+                battler = enemyBoard.battler;
+                // maybe experiment with other colors at some point
+                portrait.color = new Color(0.1f,0.1f,0.1f,0.47f);
+                
+            }
+            else
+            {
+                portrait.color = new Color(1f,1f,1f,0.47f);
+            }
+
+            if (playerSide == 1) Debug.Log(battler.name);
+
+            portrait.GetComponent<ColorFlash>().SetBaseColor(portrait.color);
+            portrait.sprite = battler.sprite;
+
+
+            abilityManager.InitManaBar();
+            attackPopup.SetBattler(battler);
         }
 
 
