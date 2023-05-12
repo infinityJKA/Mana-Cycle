@@ -111,7 +111,9 @@ namespace PostGame {
                     {
                         MenuUI.SetActive(true);
                         Time.timeScale = 0f;
-                        // when in multi, disable solo button
+                        // when in multi, disable solo button and continue button
+                        MenuItems[2].SetActive(false);
+                        MenuItems.RemoveAt(2);
                         MenuItems[2].SetActive(false);
                         MenuItems.RemoveAt(2);
 
