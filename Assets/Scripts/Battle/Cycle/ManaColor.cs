@@ -7,6 +7,7 @@ namespace Battle.Cycle {
         Yellow,
         Purple,
         Multicolor,
-        None
+        Colorless,
+        None,
     }
 }

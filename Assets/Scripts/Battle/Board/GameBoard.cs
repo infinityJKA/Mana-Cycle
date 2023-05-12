@@ -770,10 +770,12 @@ namespace Battle.Board {
         /// <param name="col">tile column</param>
         /// <param name="row">tile row</param>
         /// <returns>point multiplier of the cleared tile</returns>
-        public float ClearTile(int col, int row, bool doParticleEffects)
+        public float ClearTile(int col, int row, bool doParticleEffects, bool onlyClearFragile = false)
         {
             if (row < 0 || row >= height || col < 0 || col >= width) return 0;
             if (!tiles[row, col]) return 0;
+
+            if (onlyClearFragile && !tiles[row, col].fragile) return 0;
 
             if (doParticleEffects) {
                 // play clearing particles before clearing
@@ -1101,6 +1103,12 @@ namespace Battle.Board {
                             // then remove the tiles from the board and 
                             foreach (Vector2Int pos in blob.tiles) {
                                 totalPointMult += ClearTile(pos.x, pos.y);
+
+                                // clear adjacent fragile tiles
+                                totalPointMult += ClearTile(pos.x - 1, pos.y, true, onlyClearFragile: true);
+                                totalPointMult += ClearTile(pos.x + 1, pos.y, true, onlyClearFragile: true);
+                                totalPointMult += ClearTile(pos.x, pos.y - 1, true, onlyClearFragile: true);
+                                totalPointMult += ClearTile(pos.x, pos.y + 1, true, onlyClearFragile: true);
                             }
                         }
                         PlaySFX("cast1", pitch : 1f + chain*0.1f);
@@ -1114,7 +1122,7 @@ namespace Battle.Board {
                         // Do gravity everywhere
                         AllTileGravity();
 
-                        // Check for cascaded blobs
+                        // Check for cascaded blobs (cascade loop will continue if resulting totalBlobMana > 0)
                         RefreshBlobs();
 
                         RefreshObjectives();

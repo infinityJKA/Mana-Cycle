@@ -82,6 +82,7 @@ namespace Battle.Board {
             effect = Battler.ActiveAbilityEffect.IronSword;
             slowFall = true;
             center.DontDoGravity();
+            center.SetColor(ManaColor.Colorless, board, false, false);
             center.image.gameObject.SetActive(false);
             ironSwordImage.gameObject.SetActive(true);
             center.onFallAnimComplete = () => IronSwordDestroyTileBelow(board);
@@ -106,6 +107,7 @@ namespace Battle.Board {
         public void MakePyroBomb(GameBoard board)
         {
             effect = Battler.ActiveAbilityEffect.PyroBomb;
+            center.SetColor(ManaColor.Colorless, board, false, false);
             center.image.sprite = pyroBombSprite;
         }
 
@@ -169,8 +171,9 @@ namespace Battle.Board {
 
         public void MakeZman(GameBoard board) {
             center.MakeObscuresColor();
-            center.SetColor(ManaColor.Multicolor, board);
+            center.SetColor(ManaColor.Colorless, board, false, false);
             center.image.sprite = zmanSprite;
+            center.MakeFragile();
             center.pointMultiplier -= 1.0f;
         }
     }
