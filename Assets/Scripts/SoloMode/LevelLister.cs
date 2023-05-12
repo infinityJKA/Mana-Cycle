@@ -204,7 +204,7 @@ namespace SoloMode {
                 else{
                     Level level = levelsList[i];
 
-                    bool cleared = PlayerPrefs.GetInt(level.levelName+"_Cleared", 0) == 1;
+                    bool cleared = level.GetCleared();
 
                     if (i == selectedLevelIndex[selectedTabIndex] && level.RequirementsMet()) newText += " <color=#FFFFFF>";
 
