@@ -241,13 +241,14 @@ namespace SoloMode {
             highScoreBG.SetActive(selectedCleared);
             highScoreText.text = "High Score: "+selectedLevel.GetHighScore();
 
-            if (selectedLevel.time != -1)
+            // if level series, show length instead of time
+            if (selectedLevel.nextSeriesLevel == null)
             {
-                timeText.text = "Time: " + Utils.FormatTime(selectedLevel.time);
+                timeText.text = "Time: " + ((selectedLevel.time != -1) ? Utils.FormatTime(selectedLevel.time): "∞");
             }
-            else
+            else 
             {
-                timeText.text = "Time: ∞";
+                timeText.text = (selectedLevel.GetAheadCount() + 1) + " Matches";
             }
             
 
