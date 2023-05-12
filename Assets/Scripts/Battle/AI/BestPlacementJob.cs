@@ -22,10 +22,6 @@ namespace Battle.AI {
         // public NativeArray<VirtualTile> virtualTiles;
 
         // inner
-        // On constructor, decides if accuracy check decides this should target the lowest column 
-        // instead of a more mana-netting placement
-        public bool accuracyLowestCol;
-
         int rngConstant;
 
         // list of bools, used to determine which possible placements the AI will "see" and act upon
@@ -45,6 +41,7 @@ namespace Battle.AI {
         // [bestCol, bestRot, bestManaGain, highestRow]
         public NativeArray<int> bestPlacement;
 
+        // Total amount of net mana the current placement has accumulated
         public int manaGain;
 
         // The highest row (lowest value) on the board that was found during the latest calculation
@@ -53,9 +50,6 @@ namespace Battle.AI {
         public BestPlacementJob(GameBoard board, NativeArray<int> bestPlacement, float accuracy) {
             this.bestPlacement = bestPlacement;
             this.accuracy = accuracy;
-
-            // Random accuracy check that decides if the AI will aim for the lowest column as opposed to a mana-netting placement
-            this.accuracyLowestCol = UnityEngine.Random.value < (1 - accuracy);
 
             // copy down the state of the board's tiles' colors
             boardTiles = new NativeArray<ManaColor>(GameBoard.height*GameBoard.width, Allocator.Persistent);
@@ -155,6 +149,17 @@ namespace Battle.AI {
                 if (bestPlacement[3] == 0) SimulatePlacement(highLowCols.Item2, (rngConstant%4) + 2, force: true);
 
                 if (bestPlacement[3] == 0) Debug.LogWarning("Backup piece placements both failed");
+
+                // if NO placements worked, check all placements that accuracy check skipped earlier,
+                // as it may have skipped all valid placements
+                for (int i=rngConstant; i<rngConstant+32; i++) {
+                    int col = (i/4)%8;
+                    int rot = i%4;
+                    SimulatePlacement(col, rot, inverseAccuracy: true);
+                }
+
+                // when reaching here, there is no possible placements... so AI is dead,
+                // no point in even trying to find a placement anymore
             }
         }
 
@@ -172,9 +177,9 @@ namespace Battle.AI {
         /// <param name="col">column of the piece's center</param>
         /// <param name="rot">rotation of the piece. 0=up 1=right 2=down 3=left</param>
         /// <param name="force">if this should try to find a placement regardless of accuracy</param>
-        void SimulatePlacement(int col, int rot, bool force = false) {
+        void SimulatePlacement(int col, int rot, bool force = false, bool inverseAccuracy = false) {
             // If accuracy check for this placement failed, ai did not "see" this placement possibility
-            if ( !force && !accuracyRng[(col*8 + rot) % 32] ) return;
+            if ( !force && !accuracyRng[(col*8 + rot) % 32] && !inverseAccuracy ) return;
 
             if (force) Debug.Log("Trying force placement: "+col+", "+rot);
             // else Debug.Log("Trying placement: "+col+", "+rot);
@@ -230,7 +235,11 @@ namespace Battle.AI {
                 virtualTiles.Dispose();
                 return;
             }
+ 
+            // Will check virtual tiles for connected mana and increment manaGAin accordingly
+            CheckManaConnections(virtualTiles);
 
+            
             int highestRow = 18;
             for (int v=0; v<3; v++) {
                 highestRow = Mathf.Min(virtualTiles[v].row, highestRow);
@@ -318,18 +327,25 @@ namespace Battle.AI {
 
             // add the virtual tile
             virtualTiles[tileIndex] = new VirtualTile(row, col, color);
-
-            // check all adjacent board and virtual tiles
-            CheckColorMatch(virtualTiles, row-1, col, color);
-            CheckColorMatch(virtualTiles, row+1, col, color);
-            CheckColorMatch(virtualTiles, row, col-1, color);
-            CheckColorMatch(virtualTiles, row, col+1, color);
-            
             tileIndex++;
         }
 
+        /// <summary>
+        /// Checks all tiles to see if they are connected to another board or virtual mana tile.
+        /// For each connected mana tile,  <c>manaGain</c> is incremented by 1.
+        /// </summary>
+        void CheckManaConnections(NativeArray<VirtualTile> virtualTiles) {
+            for (int i=0; i<3; i++) {
+                var tile = virtualTiles[i];
+                CheckColorMatch(virtualTiles, i, tile.row-1, tile.col, tile.color);
+                CheckColorMatch(virtualTiles, i, tile.row+1, tile.col, tile.color);
+                CheckColorMatch(virtualTiles, i, tile.row, tile.col-1, tile.color);
+                CheckColorMatch(virtualTiles, i, tile.row, tile.col+1, tile.color);
+            }
+        }
+
         // Check the board's tiles and virutal tiles if the color is matched.
-        bool CheckColorMatch(NativeArray<VirtualTile> virtualTiles, int row, int col, ManaColor color) {
+        bool CheckColorMatch(NativeArray<VirtualTile> virtualTiles, int index, int row, int col, ManaColor color) {
             if (row < 0 || row >= GameBoard.height || col < 0 || col >= GameBoard.width) return false;
 
             if (boardTiles[row * GameBoard.width + col] == color) {
@@ -337,7 +353,9 @@ namespace Battle.AI {
                 return true;
             }
 
-            for (int i=0; i<tileIndex; i++) {
+            for (int i=0; i<3; i++) {
+                if (i == index) continue; // do not check that this tile is this tile
+                
                 if (virtualTiles[i].row == row && virtualTiles[i].col == col && virtualTiles[i].color == color) {
                     manaGain++;
                     return true;
