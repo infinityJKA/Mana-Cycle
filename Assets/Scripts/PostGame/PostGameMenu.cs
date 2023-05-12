@@ -33,6 +33,11 @@ namespace PostGame {
         [SerializeField] private AudioClip moveSFX;
         [SerializeField] private AudioClip selectSFX;
 
+        
+        // arcade mode info, hidden outside of arcade mode
+        [SerializeField] private GameObject arcadeInfoPannel;
+        [SerializeField] private TMPro.TextMeshProUGUI arcadeInfoText;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -57,6 +62,9 @@ namespace PostGame {
 
                     displayed = true;
                     timerRunning = false;
+
+                    // will be set active if in arcade mode & won
+                    arcadeInfoPannel.SetActive(false);
 
                     if (Storage.gamemode == Storage.GameMode.Solo)
                     {
@@ -98,6 +106,10 @@ namespace PostGame {
                                 MenuItems[1].SetActive(false);
                                 MenuItems.RemoveAt(1);
                                 rematchTextGUI.text = "Replay";
+
+                                // set info pannel visibility and text
+                                arcadeInfoPannel.SetActive(true);
+                                arcadeInfoText.text = String.Format("{0} more to go\nnext up: {1}", Storage.level.GetAheadCount(), Storage.level.nextSeriesLevel.levelName);
                             }
                             else 
                             {

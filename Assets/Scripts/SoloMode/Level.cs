@@ -74,6 +74,19 @@ namespace SoloMode {
             if (levelRequirement != null) return PlayerPrefs.GetInt(levelRequirement.levelName+"_Cleared", 0) == 1;
             else return true;
         }
+
+        // get amount of levels ahead of this one in the series
+        public int GetAheadCount()
+        {
+            int count = 0;
+            Level refLevel = this;
+            while (refLevel.nextSeriesLevel != null) {
+                count++;
+                refLevel = refLevel.nextSeriesLevel;
+            }
+
+            return count;
+        }
     }
 
     #if (UNITY_EDITOR)
