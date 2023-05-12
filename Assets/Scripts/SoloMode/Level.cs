@@ -75,12 +75,25 @@ namespace SoloMode {
             else return true;
         }
 
+        public bool GetCleared()
+        {
+            // get to last level in series, and return if it is cleared. an entire series must be cleared for it to show as cleared
+            Level refLevel = this;
+            while (refLevel.nextSeriesLevel != null) 
+            {
+                refLevel = refLevel.nextSeriesLevel;
+            }
+
+            return PlayerPrefs.GetInt(refLevel.levelName+"_Cleared", 0) == 1;
+        }
+
         // get amount of levels ahead of this one in the series
         public int GetAheadCount()
         {
             int count = 0;
             Level refLevel = this;
-            while (refLevel.nextSeriesLevel != null) {
+            while (refLevel.nextSeriesLevel != null) 
+            {
                 count++;
                 refLevel = refLevel.nextSeriesLevel;
             }
