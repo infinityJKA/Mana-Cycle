@@ -281,16 +281,15 @@ namespace Battle.Board {
                 }
             }
 
-             portrait.sprite = battler.sprite;
-
             // setup battler variables for the mirrored, take opponent sprite / abilities
             if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shapeshifter)
             {
                 battler = enemyBoard.battler;
-                battler.portraitOffset = enemyBoard.battler.portraitOffset;
-                portrait.color = new Color(0f,0f,0f,0.47f);
+                portrait.color = new Color(1f,0f,0f,0.47f);
+                
             }
 
+            portrait.sprite = battler.sprite;
 
             abilityManager.InitManaBar();
 
