@@ -237,9 +237,9 @@ namespace SoloMode {
             Level selectedLevel = levelsList[selectedLevelIndex[selectedTabIndex]];
             descriptionText.text = selectedLevel.description;
 
-            bool selectedCleared = PlayerPrefs.GetInt(selectedLevel.levelName+"_Cleared", 0) == 1;
+            bool selectedCleared = selectedLevel.GetCleared();
             highScoreBG.SetActive(selectedCleared);
-            highScoreText.text = "High Score: "+PlayerPrefs.GetInt(selectedLevel.levelName+"_HighScore", 0);
+            highScoreText.text = "High Score: "+selectedLevel.GetHighScore();
 
             if (selectedLevel.time != -1)
             {

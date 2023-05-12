@@ -87,7 +87,7 @@ namespace SoloMode {
             return PlayerPrefs.GetInt(refLevel.levelName+"_Cleared", 0) == 1;
         }
 
-        // get amount of levels ahead of this one in the series
+        /// <summary> get amount of levels ahead of this one in the series </summary>
         public int GetAheadCount()
         {
             int count = 0;
@@ -99,6 +99,22 @@ namespace SoloMode {
             }
 
             return count;
+        }
+
+        /// <summary> get sum of high score in level series</summary>
+        public int GetHighScore()
+        {
+            int sum =  PlayerPrefs.GetInt(this.levelName+"_HighScore", 0);
+            Level refLevel = this.nextSeriesLevel;
+            
+            while (refLevel != null)
+            {
+                sum += PlayerPrefs.GetInt(refLevel.levelName+"_HighScore", 0);
+                refLevel = refLevel.nextSeriesLevel;
+            }
+
+            return sum;
+
         }
     }
 
