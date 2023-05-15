@@ -99,7 +99,9 @@ namespace Battle.AI {
                 // quick-drop when the target rotation and column are met (or if concurrent actions)
                 bool reachedTargetCol = board.GetPiece().GetCol() == this.targetCol;
                 if ((reachedTargetRot && reachedTargetCol) || concurrentActions) {
-                    if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
+                    int rowsFromTop = boardHighestRow - GameBoard.height + GameBoard.physicalHeight;
+                    // will not insta-drop if highest row is 4 from top
+                    if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop && rowsFromTop > 4) {
                         // Only insta-drop once the piece is in the correct spot, even if concurrent actions
                         board.instaDropThisFrame = (reachedTargetRot && reachedTargetCol);
                     } else {

@@ -47,6 +47,9 @@ namespace Battle.AI {
         // The highest row (lowest value) on the board that was found during the latest calculation
         public int boardHighestRow;
 
+        // true if the current placement will kill the player if placed. will try to avoid these placements but sometimes necessary
+        public bool willKill;
+
         public BestPlacementJob(GameBoard board, NativeArray<int> bestPlacement, float accuracy) {
             this.bestPlacement = bestPlacement;
             this.accuracy = accuracy;
@@ -81,6 +84,7 @@ namespace Battle.AI {
             right = piece.GetRight().color;
             tileIndex = 0;
             invalidPlacement = false;
+            willKill = false;
 
             manaGain = 0; // net mana gain for the current placement
 
