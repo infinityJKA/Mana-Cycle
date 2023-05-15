@@ -60,13 +60,14 @@ namespace Battle.Board {
             if (mana >= board.Battler.activeAbilityMana) return;
 
             mana = Math.Min(mana+count, board.Battler.activeAbilityMana);
+            RefreshManaBar();
+
             // mana filled to max, play sound and animation
             if (mana >= board.Battler.activeAbilityMana)
             {
                 SoundManager.Instance.PlaySound(manaFillSFX);
                 manaDisp.GetComponent<ColorFlash>().Flash();
             }
-            RefreshManaBar();
         }
 
         public void UseAbility() {
