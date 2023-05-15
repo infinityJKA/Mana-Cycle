@@ -541,14 +541,14 @@ namespace Battle.Board {
             PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f));
         }
 
-        public void MoveLeft(){
-            MovePiece(-1, 0);
+        public bool MoveLeft(){
             PlaySFX("move", pitch : Random.Range(0.9f,1.1f));
+            return MovePiece(-1, 0);
         }
 
-        public void MoveRight(){
-            MovePiece(1, 0);
+        public bool MoveRight(){
             PlaySFX("move", pitch : Random.Range(0.9f,1.1f));
+            return MovePiece(1, 0);
         }
 
         public void Spellcast(){

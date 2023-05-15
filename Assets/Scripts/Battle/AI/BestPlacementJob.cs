@@ -21,6 +21,10 @@ namespace Battle.AI {
 
         // This color will be heavily prioritized
         public ManaColor prioritizeColor;
+
+        // Minimum and maximum piece columns that can be target
+        public int minCol;
+        public int maxCol;
         
         // public NativeArray<VirtualTile> virtualTiles;
 
@@ -53,10 +57,13 @@ namespace Battle.AI {
         // true if the current placement will kill the player if placed. will try to avoid these placements but sometimes necessary
         public bool willKill;
 
-        public BestPlacementJob(GameBoard board, NativeArray<int> bestPlacement, float accuracy, ManaColor prioritizeColor = ManaColor.Any) {
+        public BestPlacementJob(GameBoard board, NativeArray<int> bestPlacement, float accuracy, ManaColor prioritizeColor = ManaColor.Any,
+        int minCol = 0, int maxCol = 7) {
             this.bestPlacement = bestPlacement;
             this.accuracy = accuracy;
             this.prioritizeColor = prioritizeColor;
+            this.minCol = minCol;
+            this.maxCol = maxCol;
 
             // copy down the state of the board's tiles' colors
             boardTiles = new NativeArray<ManaColor>(GameBoard.height*GameBoard.width, Allocator.Persistent);
@@ -167,12 +174,20 @@ namespace Battle.AI {
 
                 if (bestPlacement[3] == 0) Debug.LogWarning("Backup piece placements both failed");
 
-                // if NO placements worked, check all placements that accuracy check skipped earlier,
-                // as it may have skipped all valid placements
+                // if still no, check all placements again but force
                 for (int i=rngConstant; i<rngConstant+32; i++) {
                     int col = (i/4)%8;
                     int rot = i%4;
-                    SimulatePlacement(col, rot, inverseAccuracy: true);
+                    SimulatePlacement(col, rot, force: true);
+                }
+                if (bestPlacement[3] != 0) return;
+
+                // if NO placements worked, check all placements that accuracy check skipped earlier,
+                // as it possibly could have skipped all valid placements
+                for (int i=rngConstant; i<rngConstant+32; i++) {
+                    int col = (i/4)%8;
+                    int rot = i%4;
+                    SimulatePlacement(col, rot, inverseAccuracy: true, force: true);
                 }
 
                 // when reaching here, there is no possible placements... so AI is dead,
@@ -198,7 +213,10 @@ namespace Battle.AI {
             // If accuracy check for this placement failed, ai did not "see" this placement possibility
             if ( !force && !accuracyRng[(col*8 + rot) % 32] && !inverseAccuracy ) return;
 
-            if (force) Debug.Log("Trying force placement: "+col+", "+rot);
+            // obey min and max column, unless force placing
+            if (!force && (col < minCol || col > maxCol)) return;
+
+            // if (force) Debug.Log("Trying force placement: "+col+", "+rot);
             // else Debug.Log("Trying placement: "+col+", "+rot);
 
             // A list of mana colors with their positions as opposed to a full array,
@@ -365,9 +383,9 @@ namespace Battle.AI {
         bool CheckColorMatch(NativeArray<VirtualTile> virtualTiles, int index, int row, int col, ManaColor color) {
             if (row < 0 || row >= GameBoard.height || col < 0 || col >= GameBoard.width) return false;
 
-            // heavily waight if matches weighted color
+            // weight if matches priority color
             if (boardTiles[row * GameBoard.width + col] == color) {
-                if (color == prioritizeColor) {manaGain += 10;} else  {manaGain += 1;}
+                if (color == prioritizeColor) {manaGain += 3;} else  {manaGain += 1;}
                 return true;
             }
 

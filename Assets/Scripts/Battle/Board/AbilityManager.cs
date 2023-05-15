@@ -71,7 +71,7 @@ namespace Battle.Board {
         }
 
         public void UseAbility() {
-            if (mana >= board.Battler.activeAbilityMana) {
+            if (board.Battler.activeAbilityEffect != Battler.ActiveAbilityEffect.None && mana >= board.Battler.activeAbilityMana) {
                 mana = 0;
                 RefreshManaBar();
                 Debug.Log("use active ability");
