@@ -62,6 +62,9 @@ namespace Battle.AI {
         // Highest row found during the last placement calculation
         int boardHighestRow = GameBoard.height;
 
+        // rows from top - used in various methods
+        int rowsFromTop;
+
         void Update() {
             // stop while not player controlled, uninitialized, paused, post game or dialogue
             if (board.IsPlayerControlled() || !board.isInitialized() || board.isPaused() || board.isPostGame() || board.convoPaused) return;
@@ -99,13 +102,12 @@ namespace Battle.AI {
                 // quick-drop when the target rotation and column are met (or if concurrent actions)
                 bool reachedTargetCol = board.GetPiece().GetCol() == this.targetCol;
                 if ((reachedTargetRot && reachedTargetCol) || concurrentActions) {
-                    int rowsFromTop = boardHighestRow - GameBoard.height + GameBoard.physicalHeight;
-                    // will not insta-drop if highest row is 4 from top
-                    if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop && rowsFromTop > 4) {
+                    // will not insta-drop if highest row is >4 from top
+                    if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop && rowsFromTop > 3) {
                         // Only insta-drop once the piece is in the correct spot, even if concurrent actions
                         board.instaDropThisFrame = (reachedTargetRot && reachedTargetCol);
                     } else {
-                        board.quickFall = true;
+                        if (!job.willKill) board.quickFall = true;
                     }
                 }
             }     
@@ -150,7 +152,11 @@ namespace Battle.AI {
                 default:
                     // Schedule the job that calcualtes the tile position to run later after this frame
                     bestPlacement = new NativeArray<int>(4, Allocator.TempJob);
-                    job = new BestPlacementJob(board, bestPlacement, accuracy);
+
+                    // when nearing top, prioritize current color
+                    var prioritizeColor = rowsFromTop < 6 ? board.GetCycleColor() : Cycle.ManaColor.Any;
+
+                    job = new BestPlacementJob(board, bestPlacement, accuracy, prioritizeColor);
                     placementJobRunning = true;
                     jobHandle = job.Schedule();
                     break;
@@ -168,6 +174,7 @@ namespace Battle.AI {
                 targetRot = bestPlacement[1];
                 // Debug.Log("col="+targetCol+", rot="+targetRot+" - manaGain="+bestPlacement[2]+", highestRow="+bestPlacement[3]);
                 boardHighestRow = job.boardHighestRow;
+                rowsFromTop = boardHighestRow - GameBoard.height + GameBoard.physicalHeight;
                 bestPlacement.Dispose();
                 job.boardTiles.Dispose();
                 job.accuracyRng.Dispose();
@@ -194,16 +201,15 @@ namespace Battle.AI {
             // Incoming damage greater than 0: 8% chance
             if (incomingDamage > 0 && Random.value < 0.08f*castChanceMultiplier) return true;
 
-            int rowsFromTop = boardHighestRow - GameBoard.height + GameBoard.physicalHeight;
             // Chance is based on height from top of physical board
-            // <4 from top: 125% chance, guaranteed unless cast chance multiplier < 0.8
-            if (rowsFromTop < 4 && Random.value < 1.25f*castChanceMultiplier) return true;
+            // recovery mode (<4 from top): pretty much always guaranteed, 150% chance, always unless cast chance multiplier < 0.667
+            if (rowsFromTop < 4 && Random.value < 1.50f*castChanceMultiplier) return true;
 
-            // <8 from top: 35% chance
-            if (rowsFromTop < 8 && Random.value < 0.35f*castChanceMultiplier) return true;
+            // <7 from top: 40% chance
+            if (rowsFromTop < 7 && Random.value < 0.40f*castChanceMultiplier) return true;
 
-            // <12 from top: 10% chance
-            if (rowsFromTop < 12 && Random.value < 0.1f*castChanceMultiplier) return true;
+            // <10 from top: 15% chance
+            if (rowsFromTop < 10 && Random.value < 0.15f*castChanceMultiplier) return true;
 
             // Persistent 4% chance
             if (Random.value < 0.04f*castChanceMultiplier) return true;
@@ -219,21 +225,20 @@ namespace Battle.AI {
             // don't try to use if not enough mana.
             if (board.abilityManager.mana < board.Battler.activeAbilityMana) return false;
 
-            int rowsFromTop = boardHighestRow - GameBoard.height + GameBoard.physicalHeight;
             switch (board.Battler.activeAbilityEffect) {
                 // iron sword: more likely the higher the highest row is
                 case Battler.ActiveAbilityEffect.IronSword:
                     // if the highest column is less than 3 tiles high, do not use
                     if (rowsFromTop > 11) return false;
 
-                    // <4 from top: 150% chance, guaranteed unless ability chance multiplier < 0.667
-                    if (rowsFromTop < 4 && Random.value < 1.5f*abilityChanceMultiplier) return true;
+                    // <4 from top: 200% chance, guaranteed unless ability chance multiplier < 0.5
+                    if (rowsFromTop < 4 && Random.value < 2.00f*abilityChanceMultiplier) return true;
 
-                    // <8 from top: 70% chance
-                    if (rowsFromTop < 8 && Random.value < 0.7f*abilityChanceMultiplier) return true;
+                    // <7 from top: 75% chance
+                    if (rowsFromTop < 7 && Random.value < 0.75f*abilityChanceMultiplier) return true;
 
-                    // <12 from top: 20% chance
-                    if (rowsFromTop < 12 && Random.value < 0.2f*abilityChanceMultiplier) return true;
+                    // <10 from top: 25% chance
+                    if (rowsFromTop < 10 && Random.value < 0.25f*abilityChanceMultiplier) return true;
 
                     // persistent 4% chance
                     if (Random.value < 0.04f*abilityChanceMultiplier) return true;
@@ -247,16 +252,16 @@ namespace Battle.AI {
                 // pyro bomb: same numbers as iron sword, for now
                 case Battler.ActiveAbilityEffect.PyroBomb:
                     // if the highest column is less than 3 tiles high, do not use
-                    if (rowsFromTop > 15) return false;
-                    
-                    // <4 from top: 150% chance, guaranteed unless ability chance multiplier < 0.667
-                    if (rowsFromTop < 4 && Random.value < 1.5f*abilityChanceMultiplier) return true;
+                    if (rowsFromTop > 11) return false;
 
-                    // <8 from top: 70% chance
-                    if (rowsFromTop < 8 && Random.value < 0.7f*abilityChanceMultiplier) return true;
+                    // <4 from top: 200% chance, guaranteed unless ability chance multiplier < 0.5
+                    if (rowsFromTop < 4 && Random.value < 2.00f*abilityChanceMultiplier) return true;
 
-                    // <12 from top: 20% chance
-                    if (rowsFromTop < 12 && Random.value < 0.2f*abilityChanceMultiplier) return true;
+                    // <7 from top: 75% chance
+                    if (rowsFromTop < 7 && Random.value < 0.75f*abilityChanceMultiplier) return true;
+
+                    // <10 from top: 25% chance
+                    if (rowsFromTop < 10 && Random.value < 0.25f*abilityChanceMultiplier) return true;
 
                     // persistent 4% chance
                     if (Random.value < 0.04f*abilityChanceMultiplier) return true;

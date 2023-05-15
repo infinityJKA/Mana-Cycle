@@ -18,6 +18,9 @@ namespace Battle.AI {
 
         // A percentage of how "accurate" the determined placement should be.
         public float accuracy;
+
+        // This color will be heavily prioritized
+        public ManaColor prioritizeColor;
         
         // public NativeArray<VirtualTile> virtualTiles;
 
@@ -50,9 +53,10 @@ namespace Battle.AI {
         // true if the current placement will kill the player if placed. will try to avoid these placements but sometimes necessary
         public bool willKill;
 
-        public BestPlacementJob(GameBoard board, NativeArray<int> bestPlacement, float accuracy) {
+        public BestPlacementJob(GameBoard board, NativeArray<int> bestPlacement, float accuracy, ManaColor prioritizeColor = ManaColor.Any) {
             this.bestPlacement = bestPlacement;
             this.accuracy = accuracy;
+            this.prioritizeColor = prioritizeColor;
 
             // copy down the state of the board's tiles' colors
             boardTiles = new NativeArray<ManaColor>(GameBoard.height*GameBoard.width, Allocator.Persistent);
@@ -361,8 +365,9 @@ namespace Battle.AI {
         bool CheckColorMatch(NativeArray<VirtualTile> virtualTiles, int index, int row, int col, ManaColor color) {
             if (row < 0 || row >= GameBoard.height || col < 0 || col >= GameBoard.width) return false;
 
+            // heavily waight if matches weighted color
             if (boardTiles[row * GameBoard.width + col] == color) {
-                manaGain++;
+                if (color == prioritizeColor) {manaGain += 10;} else  {manaGain += 1;}
                 return true;
             }
 
@@ -370,7 +375,7 @@ namespace Battle.AI {
                 if (i == index) continue; // do not check that this tile is this tile
                 
                 if (virtualTiles[i].row == row && virtualTiles[i].col == col && virtualTiles[i].color == color) {
-                    manaGain++;
+                    if (color == prioritizeColor) {manaGain += 10;} else  {manaGain += 1;}
                     return true;
                 }
             }
