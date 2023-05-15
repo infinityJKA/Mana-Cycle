@@ -178,7 +178,7 @@ namespace Battle.AI {
                     bestPlacement = new NativeArray<int>(4, Allocator.TempJob);
 
                     // when nearing top, prioritize current color
-                    var prioritizeColor = rowsFromTop < 7 ? board.GetCycleColor() : Cycle.ManaColor.Any;
+                    var prioritizeColor = rowsFromTop < 5 ? board.GetCycleColor() : Cycle.ManaColor.Any;
 
                     job = new BestPlacementJob(board, bestPlacement, accuracy, prioritizeColor, minCol, maxCol);
                     placementJobRunning = true;

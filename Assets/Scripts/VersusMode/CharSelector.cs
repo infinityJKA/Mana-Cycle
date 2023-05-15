@@ -191,13 +191,17 @@ namespace VersusMode {
             portrait.sprite = selectedBattler.sprite;
             nameText.text = selectedBattler.displayName;
 
-            if (selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
+            if (selectedBattler.passiveAbilityEffect == Battle.Battler.PassiveAbilityEffect.None && selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
                 abilityText.text = "No special abilities";
             } else {
-                abilityText.text = selectedBattler.passiveAbilityDesc 
-                + "\n\n" 
-                + "<b>"+selectedBattler.activeAbilityName+"</b>: "
-                + selectedBattler.activeAbilityDesc;
+                if (selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
+                    abilityText.text = selectedBattler.passiveAbilityDesc;
+                } else {
+                    abilityText.text = selectedBattler.passiveAbilityDesc 
+                    + "\n\n" 
+                    + "<b>"+selectedBattler.activeAbilityName+"</b>: "
+                    + selectedBattler.activeAbilityDesc;
+                }
             }
         }
 
