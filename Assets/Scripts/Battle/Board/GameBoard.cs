@@ -66,6 +66,11 @@ namespace Battle.Board {
         /** Board background. Animated fall down when defeated */
         [SerializeField] private BoardDefeatFall boardDefeatFall;
 
+        /// If the board is inputting to quick fall the current piece. 
+        public bool quickFall = false;
+        /// If the board has inputted to insta-drop, but only true for one frame until after checked.
+        public bool instaDropThisFrame = false;
+       
         /** Current fall delay for pieces. */
         [SerializeField] private float fallTime = 0.8f;
 
@@ -355,12 +360,8 @@ namespace Battle.Board {
                     // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
                     else if (!convoPaused && !postGame) {
                         if (playerControlled && piece != null){
-                            if (Input.GetKey(inputScript.Down)){
-                                this.fallTimeMult = 0.1f;
-                            }
-                            else{
-                                this.fallTimeMult = 1f;
-                            }
+                            quickFall = Input.GetKey(inputScript.Down);
+                            instaDropThisFrame = Input.GetKeyDown(inputScript.Up);
                         }
                     }
                 }
@@ -368,66 +369,74 @@ namespace Battle.Board {
                 // -------- PIECE FALL/PLACE ----------------
                 if (!defeated && doPieceFalling)
                 {
-                    // Get the time that has passed since the previous piece fall.
-                    // If it is greater than fall time (or fallTime/10 if holding down),
-                    // move the piece one down.
-                    // (Final fall time has to be greater than 0.05)
-                    double finalFallTime = fallTime*this.fallTimeMult;
+                    if (instaDropThisFrame && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
+                        PlacePiece();
+                    } else {
+                        fallTimeMult = quickFall ? 0.1f : 1f;
 
-                    // If not fast-dropping, slow down fall if this is a slow falling tile
-                    if (piece && piece.slowFall && fallTimeMult > 0.2f) finalFallTime *= 2f;
+                        // Get the time that has passed since the previous piece fall.
+                        // If it is greater than fall time (or fallTime/10 if holding down),
+                        // move the piece one down.
+                        // (Final fall time has to be greater than 0.05)
+                        double finalFallTime = fallTime*this.fallTimeMult;
 
-                    if (finalFallTime < 0.05){
-                        finalFallTime = 0.05;
-                    }
-                    if (finalFallTime < 0.4 && piece && piece.slowFall && fallTimeMult > 0.2f) {
-                        finalFallTime = 0.4;
-                    }
+                        // If not fast-dropping, slow down fall if this is a slow falling tile
+                        if (piece && piece.slowFall && fallTimeMult > 0.2f) finalFallTime *= 2f;
 
-                    if(Time.time - previousFallTime > finalFallTime){
+                        if (finalFallTime < 0.05){
+                            finalFallTime = 0.05;
+                        }
+                        if (finalFallTime < 0.4 && piece && piece.slowFall && fallTimeMult > 0.2f) {
+                            finalFallTime = 0.4;
+                        }
 
-                        // Try to move the piece down.
-                        bool movedDown = MovePiece(0, 1);
+                        if (Time.time - previousFallTime > finalFallTime) {
 
-                        if (!movedDown) {
-                            // If it can't be moved down,
-                            // also check for sliding buffer, and place if beyond that
-                            // don't use slide time if down held
-                            // if (!Input.GetKey(inputScript.Down)) {
-                            
-                            // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
-                
-                                if (playerControlled && !Input.GetKey(inputScript.Down)) {
-                                    finalFallTime += slideTime;
-                                }
+                            // Try to move the piece down.
+                            bool movedDown = MovePiece(0, 1);
+
+                            if (!movedDown) {
+                                // If it can't be moved down,
+                                // also check for sliding buffer, and place if beyond that
+                                // don't use slide time if down held
+                                // if (!Input.GetKey(inputScript.Down)) {
+                                
+                                // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
+                    
+                                    if (playerControlled && !Input.GetKey(inputScript.Down)) {
+                                        finalFallTime += slideTime;
+                                    }
 
 
-                            // true if time is up for the extra slide buffer
-                            bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
-                            // if exxtended time is up and still can't move down, place
-                            if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
-                            {
-                                PlacePiece();
-                            }
-                        } else {
-                            // If it did move down, adjust numbers.
-                            // reset to 0 if row fallen to is below the last.
-                            // otherwise, increment
-                            if (piece != null && piece.GetRow() > lastRowFall) {
-                                lastRowFall = piece.GetRow();
-                                rowFallCount = 0;
-                            } else {
-                                rowFallCount++;
-                                // if row fall count exceeds 3, auto place
-                                if (rowFallCount > 3) {
+                                // true if time is up for the extra slide buffer
+                                bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
+                                // if exxtended time is up and still can't move down, place
+                                if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
+                                {
                                     PlacePiece();
                                 }
-                            }
+                            } else {
+                                // If it did move down, adjust numbers.
+                                // reset to 0 if row fallen to is below the last.
+                                // otherwise, increment
+                                if (piece != null && piece.GetRow() > lastRowFall) {
+                                    lastRowFall = piece.GetRow();
+                                    rowFallCount = 0;
+                                } else {
+                                    rowFallCount++;
+                                    // if row fall count exceeds 3, auto place
+                                    if (rowFallCount > 3) {
+                                        PlacePiece();
+                                    }
+                                }
 
-                            // if it did move, reset fall time
-                            previousFallTime = Time.time;  
-                        }
-                    }    
+                                // if it did move, reset fall time
+                                previousFallTime = Time.time;  
+                            }
+                        } 
+                    }
+
+                    instaDropThisFrame = false;
                 }
 
                 // TRASH DAMAGE TIMER
