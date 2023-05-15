@@ -120,7 +120,8 @@ MonoBehaviour:
   battler: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
   playerControlled: 1
   playerSide: 0
-  pieceBoard: {fileID: 5659340913180476123}
+  pieceBoard: {fileID: 1610189136958843712}
+  ghostPieceBoard: {fileID: 2676182262240373688}
   inputScripts: []
   soloInputScripts: []
   controlsGraphic: {fileID: 0}
@@ -136,6 +137,7 @@ MonoBehaviour:
   boardDefeatFall: {fileID: 8094125696873794837}
   quickFall: 0
   instaDropThisFrame: 0
+  drawGhostPiece: 1
   fallTime: 0.8
   slideTime: 0.6
   winTextObj: {fileID: 2225117465364027543}
@@ -1933,6 +1935,7 @@ RectTransform:
   m_LocalScale: {x: 50, y: 50, z: 50}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2676182262240373688}
   - {fileID: 5423107690381716464}
   m_Father: {fileID: 7828971040557076086}
   m_RootOrder: -1
@@ -1977,6 +1980,42 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 25, y: -75}
   m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &5799563848184469118
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2676182262240373688}
+  m_Layer: 5
+  m_Name: GhostTiles
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2676182262240373688
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5799563848184469118}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1610189136958843712}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5820511308280191943
 GameObject:
