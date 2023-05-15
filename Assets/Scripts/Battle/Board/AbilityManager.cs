@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Sound; 
+using Animation;
 
 namespace Battle.Board {
     /// <summary>
@@ -39,7 +40,7 @@ namespace Battle.Board {
         void Start()
         {
             mana = 0;
-            mana = board.Battler.activeAbilityMana; // for easy debug
+            mana = board.Battler.activeAbilityMana -1; // for easy debug
 
             RefreshManaBar();
         }
@@ -59,8 +60,14 @@ namespace Battle.Board {
             if (mana >= board.Battler.activeAbilityMana) return;
 
             mana = Math.Min(mana+count, board.Battler.activeAbilityMana);
-            if (mana >= board.Battler.activeAbilityMana) SoundManager.Instance.PlaySound(manaFillSFX);
             RefreshManaBar();
+
+            // mana filled to max, play sound and animation
+            if (mana >= board.Battler.activeAbilityMana)
+            {
+                SoundManager.Instance.PlaySound(manaFillSFX);
+                manaDisp.GetComponent<ColorFlash>().Flash();
+            }
         }
 
         public void UseAbility() {

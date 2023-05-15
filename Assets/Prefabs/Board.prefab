@@ -135,7 +135,7 @@ MonoBehaviour:
   attackPopup: {fileID: 8221106855628571997}
   boardDefeatFall: {fileID: 8094125696873794837}
   quickFall: 0
-  quickFallThisFrame: 0
+  instaDropThisFrame: 0
   fallTime: 0.8
   slideTime: 0.6
   winTextObj: {fileID: 2225117465364027543}
@@ -2219,6 +2219,7 @@ GameObject:
   - component: {fileID: 6376738914643313135}
   - component: {fileID: 6396213769104585712}
   - component: {fileID: 7165777715501705125}
+  - component: {fileID: 1899462636190011022}
   m_Layer: 5
   m_Name: ManaDisp
   m_TagString: Untagged
@@ -2267,7 +2268,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: dd8301677a3a34828a1dbe308592ca65, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.1254902, g: 0.5019608, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2284,6 +2285,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1899462636190011022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6209580756291489751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac4d39d5442c461bb10fc0b889546d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &6229331255761855871
 GameObject:
   m_ObjectHideFlags: 0
