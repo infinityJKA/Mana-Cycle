@@ -35,6 +35,7 @@ namespace Battle.AI {
         private int move;
         private int targetCol;
         private int targetRot;
+        private int minCol, maxCol;
 
         private float nextMoveTimer;
 
@@ -73,6 +74,8 @@ namespace Battle.AI {
             if (board.pieceSpawned){
                 board.pieceSpawned = false;
                 board.quickFall = false;
+                minCol = 0;
+                maxCol = 7;
                 MakePlacementDecision();
             }
 
@@ -92,10 +95,17 @@ namespace Battle.AI {
                 if (reachedTargetRot || concurrentActions)
                 {
                     if (board.GetPiece().GetCol() > this.targetCol){
-                        board.MoveLeft();
+                        // if piece cannot move, update min/max col and recalculate position
+                        if (!board.MoveLeft() && !placementJobRunning) {
+                            minCol = board.GetPiece().GetCol();
+                            MakePlacementDecision();
+                        }
                     }
                     else if (board.GetPiece().GetCol() < this.targetCol){
-                        board.MoveRight();
+                        if (!board.MoveRight() && !placementJobRunning) {
+                            maxCol = board.GetPiece().GetCol();
+                            MakePlacementDecision();
+                        }
                     }
                 }
 
@@ -103,7 +113,22 @@ namespace Battle.AI {
                 bool reachedTargetCol = board.GetPiece().GetCol() == this.targetCol;
                 if ((reachedTargetRot && reachedTargetCol) || concurrentActions) {
                     // will not insta-drop if highest row is >4 from top
-                    if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop && rowsFromTop > 3) {
+                    if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
+
+                        // stop if any column is very high
+                        if (boardHighestRow < 2) {
+                            if (!job.willKill) board.quickFall = true;
+                            return;
+                        }
+
+                        // if any of the 4 middle columns are too high, cease insta drop
+                        for (int c = 2; c < 6; c++) {
+                            if (ColHighestRow(c) < 4) {
+                                if (!job.willKill) board.quickFall = true;
+                                return;
+                            }
+                        }
+
                         // Only insta-drop once the piece is in the correct spot, even if concurrent actions
                         board.instaDropThisFrame = (reachedTargetRot && reachedTargetCol);
                     } else {
@@ -130,7 +155,6 @@ namespace Battle.AI {
                 // Iron Sword: targets the tallest column always.
                 case Battler.ActiveAbilityEffect.IronSword:
                     targetCol = HighestColumn();
-                    Debug.Log("Sword target column: "+targetCol);
                     targetRot = 0;
                     break;
 
@@ -154,9 +178,9 @@ namespace Battle.AI {
                     bestPlacement = new NativeArray<int>(4, Allocator.TempJob);
 
                     // when nearing top, prioritize current color
-                    var prioritizeColor = rowsFromTop < 6 ? board.GetCycleColor() : Cycle.ManaColor.Any;
+                    var prioritizeColor = rowsFromTop < 7 ? board.GetCycleColor() : Cycle.ManaColor.Any;
 
-                    job = new BestPlacementJob(board, bestPlacement, accuracy, prioritizeColor);
+                    job = new BestPlacementJob(board, bestPlacement, accuracy, prioritizeColor, minCol, maxCol);
                     placementJobRunning = true;
                     jobHandle = job.Schedule();
                     break;
@@ -330,6 +354,15 @@ namespace Battle.AI {
             }
 
             return lowestCol;
+        }
+
+        int ColHighestRow(int col) {
+            for (int row = GameBoard.height - 1; row >= 0; row--) {
+                if (!board.tiles[row, col]) {
+                    return row;
+                }
+            }
+            return 0;
         }
     }
 }
