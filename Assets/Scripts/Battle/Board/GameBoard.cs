@@ -70,7 +70,10 @@ namespace Battle.Board {
         public bool quickFall = false;
         /// If the board has inputted to insta-drop, but only true for one frame until after checked.
         public bool instaDropThisFrame = false;
-       
+
+        /// Whether or not the ghost tile should be drawn on this board
+        public bool drawGhostPiece = true;
+
         /** Current fall delay for pieces. */
         [SerializeField] private float fallTime = 0.8f;
 
@@ -115,6 +118,11 @@ namespace Battle.Board {
         public Tile[,] tiles;
         /** Piece that is currently being dropped. */
         private Piece piece;
+
+        /// <summary>
+        /// Ghost tiles that are being drawn to show where the current piece's tiles will land
+        /// </summary>
+        private List<Tile> ghostTiles;
 
         /** Amount of times the player has cleared the cycle. Used in daamge formula */
         private int cycleLevel = 0;
@@ -304,6 +312,8 @@ namespace Battle.Board {
             if (singlePlayer && !Storage.level.aiBattle) {
                 objectiveList.InitializeObjectiveListItems(this);
             }
+
+            ghostTiles = new List<Tile>();
         }
 
         void Update()
@@ -523,21 +533,29 @@ namespace Battle.Board {
         public void RotateLeft(){
             if (!piece.IsRotatable) return;
             piece.RotateLeft();
+
             if(!ValidPlacement()){
                 // try nudging left, then right, then up. If none work, undo the rotation
                 // only bump up if row fallen to 3 or less times
                 if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
             }
+
+            RefreshGhostPiece();
+
             PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f));
         }
 
         public void RotateRight(){
             if (!piece.IsRotatable) return;
             piece.RotateRight();
+
             if(!ValidPlacement()){
                 // try nudging right, then left, then up. If none work, undo the rotation
                 if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
             }
+
+            RefreshGhostPiece();
+
             PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f));
         }
 
@@ -728,7 +746,10 @@ namespace Battle.Board {
                 
                 piece.gameObject.SetActive(false);
                 Defeat();
+                return;
             }
+
+            RefreshGhostPiece();
         }
 
         // Move the current piece by this amount.
@@ -743,6 +764,10 @@ namespace Battle.Board {
                 piece.Move(-col, -row);
                 return false;
             }
+
+            // if the piece moved horizontally, refresh ghost piece
+            if (col != 0) RefreshGhostPiece();
+
             return true;
         }
 
@@ -798,6 +823,61 @@ namespace Battle.Board {
 
             RefreshBlobs();
             StartCoroutine(CheckMidConvoAfterDelay());
+        }
+
+        /// <summary>
+        /// Redraw the ghost piece that shows where the current piece will land in the current column.
+        /// Should be called when piece rotated, column changed or tiles underneath change.
+        /// </summary>
+        public void RefreshGhostPiece() {
+            if (!drawGhostPiece) return;
+
+            foreach (var ghostTile in ghostTiles) Destroy(ghostTile.gameObject);
+            ghostTiles.Clear();
+
+            if (piece == null) return;
+
+            var ghostPiece = Instantiate(piece.gameObject, piece.transform.parent, true).GetComponent<Piece>();
+            ghostPiece.MakeGhostPiece(ref ghostTiles);
+
+            // calculate position via ghost tile
+            var simulatedTiles = new Tile[height, width];
+            Array.Copy(tiles, 0, simulatedTiles, 0, simulatedTiles.Length);
+ 
+            ghostPiece.PlaceTilesOnBoard(ref simulatedTiles, pieceBoard.transform);
+            Destroy(ghostPiece.gameObject);
+
+            // Keep looping until none of the piece's tiles fall
+            // (No other tiles need to be checked as tiles underneath them won't move, only tiles above)
+            bool tileFell = true;
+            while (tileFell) {
+                tileFell = false;
+                
+                // Affect all placed tiles with gravity.
+                foreach (Vector2Int tile in piece)
+                {
+                    // Only do gravity if this tile is still here and hasn't fallen to gravity yet
+                    if (!(tile.y >= height) && simulatedTiles[tile.y, tile.x] != null)
+                    {
+                        // If a tile fell, set tileFell to true and the loop will go again after this
+                        if (GhostTileGravity(ref simulatedTiles, tile.x, tile.y))
+                        {
+                            tileFell = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        private struct VirtualBoardTile {
+            public int row, col;
+            public Tile tile;
+
+            public VirtualBoardTile(int row, int col, Tile tile) {
+                this.row = row;
+                this.col = col;
+                this.tile = tile;
+            }
         }
 
         /// <summary>
@@ -1307,6 +1387,43 @@ namespace Battle.Board {
                         );
 
                         tiles[r, c] = null;
+                        return true;
+                    }
+                    break;
+                }
+            }
+            return false;
+        }
+
+        public bool GhostTileGravity(ref Tile[,] simulatedTiles, int c, int r)
+        {
+            // If there isn't a tile here, it can't fall, because it isnt a tile...
+            if (simulatedTiles[r, c] == null) return false;
+
+            // If the tile is an antigravity tile, do not pull it down. (etc. infinity's sword)
+            // only pull downward if forced, e.g. by Infinity's ability itslef pulling it down
+            // as opposed to from an AllTileGravity from a clear
+            if (!simulatedTiles[r, c].doGravity) return false;
+
+            // For each tile, check down until there is no longer an empty tile
+            for (int rFall = r+1; rFall <= height; rFall++)
+            {
+                // Once a non-empty is found, or reached the bottom move the tile to right above it
+                if (rFall == height || simulatedTiles[rFall, c] != null)
+                {
+                    // only fall if tile is in a different position than before
+                    if (rFall-1 != r) {
+                        simulatedTiles[rFall-1, c] = simulatedTiles[r, c];
+
+                        // ddo not animate tile; have it immediately snap to where it will fall
+                        simulatedTiles[rFall-1, c].transform.localPosition = new Vector3(
+                            c - GameBoard.width/2f + 0.5f, 
+                            -rFall + 1 + GameBoard.physicalHeight/2f - 0.5f + GameBoard.height - GameBoard.physicalHeight, 
+                        0);
+
+                        // simulatedTiles[rFall-1, c].transform.localPosition = Vector2.zero;
+
+                        simulatedTiles[r, c] = null;
                         return true;
                     }
                     break;

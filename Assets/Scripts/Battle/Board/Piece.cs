@@ -26,6 +26,9 @@ namespace Battle.Board {
         // This piece's rotation, direction that the top tile is facing. Start out facing up.
         [SerializeField] protected Orientation orientation = Orientation.up;
 
+        // If this is a ghost piece - tiles will not actually physically exist on the board
+        public bool ghostPiece { get; private set; }
+
         // Orientation is the way that the "top" tile is facing
         public enum Orientation
         {
@@ -201,6 +204,11 @@ namespace Battle.Board {
             UpdateOrientation();
         }
 
+        public void SetRotation(Orientation orientation) {
+            this.orientation = orientation;
+            UpdateOrientation();
+        }
+
         // Update the roation of this object's rotation center, after orientation changes.
         public virtual void UpdateOrientation()
         {
@@ -238,29 +246,29 @@ namespace Battle.Board {
         }
 
         // Place this tile's pieces onto the passed board.
-        public virtual void PlaceTilesOnBoard(ref Tile[,] board, Transform pieceBoard)
+        public virtual void PlaceTilesOnBoard(ref Tile[,] tiles, Transform pieceBoard)
         {
             // Place center tile
-            board[row, col] = center;
+            tiles[row, col] = center;
 
             // Place top and right tile based on orientation
             switch (orientation)
             {
                 case Orientation.up:
-                    board[row-1, col] = top;
-                    board[row, col+1] = right;
+                    tiles[row-1, col] = top;
+                    tiles[row, col+1] = right;
                     break;
                 case Orientation.left:
-                    board[row, col-1] = top;
-                    board[row-1, col] = right;
+                    tiles[row, col-1] = top;
+                    tiles[row-1, col] = right;
                     break;
                 case Orientation.down:
-                    board[row+1, col] = top;
-                    board[row, col-1] = right;
+                    tiles[row+1, col] = top;
+                    tiles[row, col-1] = right;
                     break;
                 case Orientation.right:
-                    board[row, col+1] = top;
-                    board[row+1, col] = right;
+                    tiles[row, col+1] = top;
+                    tiles[row+1, col] = right;
                     break;
             }
 
@@ -288,6 +296,16 @@ namespace Battle.Board {
             Destroy(center.gameObject);
             Destroy(top.gameObject);
             Destroy(right.gameObject);
+        }
+
+        public void MakeGhostPiece(ref List<Tile> ghostTiles) {
+            center.MakeGhostTile();
+            top.MakeGhostTile();
+            right.MakeGhostTile();
+
+            ghostTiles.Add(center);
+            ghostTiles.Add(top);
+            ghostTiles.Add(right);
         }
 
         // Accessors
