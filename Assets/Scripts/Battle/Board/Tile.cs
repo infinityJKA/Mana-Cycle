@@ -137,5 +137,14 @@ namespace Battle.Board {
                 SetColor(color, board);
             }
         }
+
+        public void MakeGhostTile() {
+            image.color = new Color(
+                image.color.r,
+                image.color.g,
+                image.color.b,
+                image.color.a * 0.5f
+            );
+        }
     }
 }
