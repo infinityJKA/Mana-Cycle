@@ -80,6 +80,13 @@ namespace Battle.Board {
                     case Battler.ActiveAbilityEffect.ZBlind: ZBlind(); break;
                     default: break;
                 }
+
+                // apply osmose if applicable
+                if (board.enemyBoard.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Osmose)
+                {
+                    // add 10% of max active ability mana to enemy
+                    board.enemyBoard.abilityManager.GainMana(board.enemyBoard.Battler.activeAbilityMana / 10);
+                }
             }
         }
 
