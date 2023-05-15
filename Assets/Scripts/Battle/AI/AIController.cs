@@ -100,7 +100,8 @@ namespace Battle.AI {
                 bool reachedTargetCol = board.GetPiece().GetCol() == this.targetCol;
                 if ((reachedTargetRot && reachedTargetCol) || concurrentActions) {
                     if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
-                        board.instaDropThisFrame = true;
+                        // Only insta-drop once the piece is in the correct spot, even if concurrent actions
+                        board.instaDropThisFrame = (reachedTargetRot && reachedTargetCol);
                     } else {
                         board.quickFall = true;
                     }
