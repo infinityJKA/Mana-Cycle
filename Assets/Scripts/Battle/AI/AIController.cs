@@ -12,18 +12,23 @@ namespace Battle.AI {
 
         // AI difficulty params
         // Move delay - approximate delay between piece movements, lower is faster
+        [Tooltip("Delay between movements, lower value is faster.")]
         public float moveDelay = 0.5f;
         // Accuracy - how often the AI chooses "best" mana netting position instead of just lowest column, as a percentage
         [Range(0, 1)]
+        [Tooltip("How intelligent the AI\'s placements are.")]
         public float accuracy = 1.0f;
         // Multiplier for how likely the AI is to spellcast, as opposed to the standard of 1.0.
         // 1.0 is considered the "best" value, above or below should be worse
+        [Tooltip("Affects how often the AI spellcasts.")]
         public float castChanceMultiplier = 1.0f;
         // Multiplier for how likely the AI is to use their active ability, as opposed to the standard of 1.0.
         // 1.0 is considered the "best" value, above or below should be worse
+        [Tooltip("Affects how often the AI will use their ability.")]
         public float abilityChanceMultiplier = 1.0f;
         // If true, AI will not wait until piece is in correct rotation to start moving,
         // and will not wait until in correct rotation/column to start quickdropping
+        [Tooltip("AI will rotate, move and drop at the same time.")]
         public bool concurrentActions;
 
         // Movement
@@ -230,8 +235,7 @@ namespace Battle.AI {
 
                 // whirlpool: random chance while ready
                 case Battler.ActiveAbilityEffect.Whirlpool:
-                    // 40% chance while ready
-                    return Random.value < 0.35;
+                    return Random.value < 0.35*abilityChanceMultiplier;
 
                 // pyro bomb: same numbers as iron sword, for now
                 case Battler.ActiveAbilityEffect.PyroBomb:
@@ -254,21 +258,19 @@ namespace Battle.AI {
 
                 // foresight: random chance while ready
                 case Battler.ActiveAbilityEffect.Foresight:
-                    // 40% chance while ready
-                    return Random.value < 0.5;
+                    return Random.value < 0.5*abilityChanceMultiplier;
 
                 // gold mine: random chance while ready
                 case Battler.ActiveAbilityEffect.GoldMine:
-                    // 40% chance while ready
-                    return Random.value < 0.25;
+                    return Random.value < 0.35*abilityChanceMultiplier;
 
                 // z?blind: random chance while ready
                 case Battler.ActiveAbilityEffect.ZBlind:
-                    // 40% chance while ready
-                    return Random.value < 0.35;
+                    return Random.value < 0.35*abilityChanceMultiplier;
 
+                // default: random chance
                 default:
-                    return false;
+                    return Random.value < 0.5*abilityChanceMultiplier;
             }
         }
 
