@@ -58,6 +58,11 @@ namespace Battle.Board {
             Destroy(center);
         }
 
+        public override void MakeGhostPiece(ref List<Tile> ghostTiles) {
+            center.MakeGhostTile();
+            ghostTiles.Add(center);
+        }
+
         public override void OnPlace(GameBoard board) 
         {
             switch(effect)

@@ -280,7 +280,8 @@ namespace Battle.Board {
             top.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
 
             right.transform.SetParent(pieceBoard, true);
-            right.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+            right.transform.rotation = Quaternion.
+            LookRotation(Vector3.forward, Vector3.up);
         }
 
         /// <summary>
@@ -298,7 +299,7 @@ namespace Battle.Board {
             Destroy(right.gameObject);
         }
 
-        public void MakeGhostPiece(ref List<Tile> ghostTiles) {
+        public virtual void MakeGhostPiece(ref List<Tile> ghostTiles) {
             center.MakeGhostTile();
             top.MakeGhostTile();
             right.MakeGhostTile();

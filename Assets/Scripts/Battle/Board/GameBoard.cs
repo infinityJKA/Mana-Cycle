@@ -30,7 +30,12 @@ namespace Battle.Board {
         [SerializeField] private int playerSide;
 
         /** Obect where pieces are drawn */
-        [SerializeField] public GameObject pieceBoard;
+        [SerializeField] public Transform pieceBoard;
+
+        /// <summary>
+        /// Transform where ghost tiles are parented to
+        /// </summary>
+        [SerializeField] public Transform ghostPieceBoard;
 
         /** Input mapping for this board */
         [SerializeField] public InputScript[] inputScripts;
@@ -616,9 +621,9 @@ namespace Battle.Board {
         // Add a piece to this board without having the player control or place it (keep their current piece).
         public void SpawnStandalonePiece(Piece piece, int column) {
             // Send it to a random color and drop it
-            piece.transform.SetParent(pieceBoard.transform, false);
+            piece.transform.SetParent(pieceBoard, false);
             piece.MoveTo(column, 3);
-            piece.PlaceTilesOnBoard(ref tiles, pieceBoard.transform);
+            piece.PlaceTilesOnBoard(ref tiles, pieceBoard);
             Destroy(piece);
             piece.OnPlace(this);
             foreach (Vector2Int pos in piece) {
@@ -701,7 +706,7 @@ namespace Battle.Board {
             Destroy(piece);
 
             // parent the new piece and set it to the drop location
-            nextPiece.transform.SetParent(pieceBoard.transform, false);
+            nextPiece.transform.SetParent(pieceBoard, false);
             nextPiece.MoveTo(3,4);
 
             // reset row fall data (used in sliding)
@@ -791,7 +796,7 @@ namespace Battle.Board {
         {
             if (piece == null) return;
             lastPlaceTime = Time.time;
-            piece.PlaceTilesOnBoard(ref tiles, pieceBoard.transform);
+            piece.PlaceTilesOnBoard(ref tiles, piece.ghostPiece ? ghostPieceBoard : pieceBoard.transform);
 
             piece.OnPlace(this);
 
@@ -844,7 +849,7 @@ namespace Battle.Board {
             var simulatedTiles = new Tile[height, width];
             Array.Copy(tiles, 0, simulatedTiles, 0, simulatedTiles.Length);
  
-            ghostPiece.PlaceTilesOnBoard(ref simulatedTiles, pieceBoard.transform);
+            ghostPiece.PlaceTilesOnBoard(ref simulatedTiles, ghostPieceBoard);
             Destroy(ghostPiece.gameObject);
 
             // Keep looping until none of the piece's tiles fall
@@ -1419,7 +1424,9 @@ namespace Battle.Board {
                         simulatedTiles[rFall-1, c].transform.localPosition = new Vector3(
                             c - GameBoard.width/2f + 0.5f, 
                             -rFall + 1 + GameBoard.physicalHeight/2f - 0.5f + GameBoard.height - GameBoard.physicalHeight, 
-                        0);
+                            0.5f // move tile away from camera so it is rendered behind non-ghost tiles
+                        );
+
 
                         // simulatedTiles[rFall-1, c].transform.localPosition = Vector2.zero;
 
