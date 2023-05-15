@@ -849,6 +849,9 @@ namespace Battle.Board {
             return ClearTile(col, row, true);
         }
 
+        // Get a specific color from the cycle with the given offset.
+
+
         // Deal damage to the other player(s(?))
         // shootSpawnPos is where the shoot particle is spawned
         public void DealDamage(int damage, Vector3 shootSpawnPos, int color, int chain)
@@ -1032,7 +1035,7 @@ namespace Battle.Board {
         }
 
         public void RefreshBlobs() {
-            RefreshBlobs(CurrentColor());
+            RefreshBlobs(GetCycleColor());
 
             // just tucked this in here, since it correlates to the lot of the same things
             // refreshes zman color obscuring
@@ -1052,13 +1055,13 @@ namespace Battle.Board {
             if (blobs.Count == 0) {
                 // Check for foresight icon, consuming it and skipping to next color if possible.
                 if (abilityManager.ForesightCheck()) {
-                    RefreshBlobs( cycle.GetColor( (cyclePosition+1) % ManaCycle.cycleLength ) );
+                    RefreshBlobs( GetCycleColor(1) );
                     if (totalBlobMana > 0) {
                         abilityManager.UseForesight();
                         AdvanceCycle();
                         Spellcast(chain);
                     } else {
-                        RefreshBlobs( CurrentColor() );
+                        RefreshBlobs( GetCycleColor() );
                         casting = false;
                         RefreshObjectives();
                         StartCoroutine(CheckMidConvoAfterDelay());
@@ -1154,7 +1157,7 @@ namespace Battle.Board {
                         // DMG is scaled by chain and cascade.
                         int damage = (int)( (totalPointMult * damagePerMana) * (1 + (chain-1)*0.5f) * cascade );
                         // Send the damage over. Will counter incoming damage first.
-                        DealDamage(damage, averagePos, (int)CurrentColor(), chain);
+                        DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
 
                         // Do gravity everywhere
                         AllTileGravity();
@@ -1366,7 +1369,11 @@ namespace Battle.Board {
             return tiles[r,c].GetManaColor() == color;
         }
 
-        public ManaColor CurrentColor()
+        public ManaColor GetCycleColor(int offset) {
+            return cycle.GetColor( (cyclePosition+offset) % ManaCycle.cycleLength );
+        }
+
+        public ManaColor GetCycleColor()
         {
             return cycle.GetColor(cyclePosition);
         }

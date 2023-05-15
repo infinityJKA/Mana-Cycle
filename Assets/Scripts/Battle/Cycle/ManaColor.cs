@@ -9,5 +9,6 @@ namespace Battle.Cycle {
         Multicolor,
         Colorless,
         None,
+        Any // only used by AI - prioritize parameter
     }
 }

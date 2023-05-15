@@ -140,7 +140,7 @@ namespace Battle.Board {
         {
             if (Random.value < 0.15f)
             {
-                return board.CurrentColor();
+                return board.GetCycleColor();
             } else {
                 return RandomColor();
             }
