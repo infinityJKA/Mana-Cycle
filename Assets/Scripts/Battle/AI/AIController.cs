@@ -69,7 +69,7 @@ namespace Battle.AI {
             // Will be run the frame a piece is spawned
             if (board.pieceSpawned){
                 board.pieceSpawned = false;
-                board.SetFallTimeMult(1f);
+                board.quickFall = false;
                 MakePlacementDecision();
             }
 
@@ -99,7 +99,11 @@ namespace Battle.AI {
                 // quick-drop when the target rotation and column are met (or if concurrent actions)
                 bool reachedTargetCol = board.GetPiece().GetCol() == this.targetCol;
                 if ((reachedTargetRot && reachedTargetCol) || concurrentActions) {
-                    board.SetFallTimeMult(0.1f);
+                    if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
+                        board.instaDropThisFrame = true;
+                    } else {
+                        board.quickFall = true;
+                    }
                 }
             }     
         }

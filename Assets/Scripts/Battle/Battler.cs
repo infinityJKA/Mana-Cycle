@@ -19,6 +19,7 @@ namespace Battle {
             Shields, // summon shields if damage bar is empty
             Shapeshifter, // used for the Mirrored, copies other battler's look
             Osmose, // gain special when opponent uses ability
+            Instadrop, // trainbot's definitely not overpowered ability
         }
 
         /// <summary>Description this battler's passive ability</summary>
