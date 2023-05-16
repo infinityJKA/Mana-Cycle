@@ -14,6 +14,13 @@ public class Storage
     public static bool isPlayer1;
     public static bool isPlayer2;
 
+    // player preferences, can be changed in charselect, otherwise they typically copy playerprefs
+    public static bool p1GhostPiece;
+    public static bool p2GhostPiece;
+
+    // battle preferences, can also be changed in charselect. Applied to both player but both can modify it
+    public static bool enableAbilities;
+
     /** level that the player selected */
     public static SoloMode.Level level;
 
