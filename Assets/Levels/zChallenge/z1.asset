@@ -13,17 +13,18 @@ MonoBehaviour:
   m_Name: z1
   m_EditorClassIdentifier: 
   levelName: Z-1
-  description: With the max fall speed, score 10000 points and clear 150 mana.
+  description: Get a 3 chain with the same color!
   conversation: {fileID: 11400000, guid: 2b9231dd0e1a56a4a80539e2ca3c1d37, type: 2}
   midLevelConversations: []
   time: 180
   scoreGoal: 0
-  cycleLength: 7
-  cycleUniqueColors: 5
-  fallTime: 0.01
+  cycleLength: 3
+  cycleUniqueColors: 1
+  lockPieceColors: 0
+  fallTime: 0.8
   slideTimeMulti: 0.1
   availableBattlers:
-  - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+  - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
   objectives:
   - condition: 1
     value: 10000
