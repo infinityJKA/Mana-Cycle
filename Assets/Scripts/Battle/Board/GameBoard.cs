@@ -11,12 +11,11 @@ using PostGame;
 using Animation;
 using Battle.Cycle;
 using Sound;
+using Battle.AI;
 
 namespace Battle.Board {
     public class GameBoard : MonoBehaviour
     {
-
-
         // Everything else
         // If this board is in single player mode */
         [SerializeField] public bool singlePlayer;
@@ -295,6 +294,12 @@ namespace Battle.Board {
                         enemyBoard.battler = Storage.level.opponent;
                         enemyBoard.portrait.sprite = Storage.level.opponent.sprite;
                         if (playerSide == 0) enemyBoard.SetPlayerControlled(false);
+                        // set up ai difficulty values
+                        AIController aiController = enemyBoard.GetComponent<AIController>();
+                        aiController.accuracy *= Storage.level.aiDifficulty;
+                        aiController.castChanceMultiplier *= Storage.level.aiDifficulty;
+                        aiController.abilityChanceMultiplier *= Storage.level.aiDifficulty;
+                        aiController.concurrentActions = (Storage.level.aiDifficulty >= 0.9 ? true : false);
                         
                     }
                 }

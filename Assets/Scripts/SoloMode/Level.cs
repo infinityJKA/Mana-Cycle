@@ -60,6 +60,10 @@ namespace SoloMode {
 
         public Battle.Battler opponent;
 
+        // dictates AIController values. 1 is hardest, 0 is worst
+        [Range(0,1)]
+        public float aiDifficulty = 1;
+
         // Battle music
         public AudioClip battleMusic;
 
