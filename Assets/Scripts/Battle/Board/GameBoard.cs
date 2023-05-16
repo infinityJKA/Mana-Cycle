@@ -302,7 +302,10 @@ namespace Battle.Board {
                         aiController.accuracy *= Storage.level.aiDifficulty;
                         aiController.castChanceMultiplier *= Storage.level.aiDifficulty;
                         aiController.abilityChanceMultiplier *= Storage.level.aiDifficulty;
+                        // ai used concurrent actions if difficulty is high enough
                         aiController.concurrentActions = (Storage.level.aiDifficulty >= 0.9 ? true : false);
+                        // ai moves slower at lower difficulties
+                        aiController.moveDelay += 1/Storage.level.aiDifficulty/10;
                         
                     }
                 }
