@@ -181,6 +181,8 @@ namespace Battle.Board {
         private int totalBlobs;
         /** Highest combo scored by the player */
         private int highestCombo;
+        /** Highest combo scored by the player */
+        private int highestCascade;
 
         // use gameobject for sounds so it can be saved as prefab and shared between boards
         [SerializeField] private GameObject sfxObject;
@@ -1228,6 +1230,7 @@ namespace Battle.Board {
                         if (abilityManager.enabled) abilityManager.GainMana(totalBlobMana);
 
                         highestCombo = Math.Max(highestCombo, chain);
+                        highestCascade = Math.Max(highestCascade, cascade);
 
                         float totalPointMult = 0;
                         // Clear all blob-contained tiles from the board.
@@ -1648,6 +1651,10 @@ namespace Battle.Board {
 
         public int GetHighestCombo() {
             return highestCombo;
+        }
+
+        public int GetHighestCascade() {
+            return highestCascade;
         }
 
         public int GetBlobCount() {

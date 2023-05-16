@@ -27,6 +27,7 @@ namespace SoloMode {
                 case ObjectiveCondition.Survive: return board.timer.TimeUp() || board.IsWinner();
                 case ObjectiveCondition.Defeated: return value == 0 ? !board.IsDefeated() : board.IsDefeated();
                 case ObjectiveCondition.Won: return value == 0 ? !board.WonAndNotCasting() : board.WonAndNotCasting();
+                case ObjectiveCondition.TopCascade: return board.GetHighestCascade() >= value;
                 default: return false;
             }
         }
@@ -37,6 +38,7 @@ namespace SoloMode {
                 case ObjectiveCondition.SpellcastTotal: return board.GetTotalSpellcasts()+"/"+value+" Spellcasts";
                 case ObjectiveCondition.Survive: return "Survive!";
                 case ObjectiveCondition.TopCombo: return "Best Combo: " + board.GetHighestCombo()+"/"+value;
+                case ObjectiveCondition.TopCascade: return "Best Cascade: " + board.GetHighestCascade()+"/"+value;
                 default: return "This is an objective";
             }
         }
@@ -48,6 +50,7 @@ namespace SoloMode {
         ManaClearedTotal,
         SpellcastTotal,
         TopCombo,
+        TopCascade,
         BlobCount,
         Survive,
         /** 0=false, 1=true */
