@@ -39,6 +39,8 @@ namespace Battle.Cycle {
         public static int cycleLength = 7;
         // Amount of unique colors in the cycle
         public static int cycleUniqueColors = 5;
+        // whether or not the peices you can pull are locked to cycle colors. true in most cases, false in some levels
+        public static bool lockPieceColors = true;
 
         public bool usingSprites;
 
@@ -48,6 +50,7 @@ namespace Battle.Cycle {
             if (boards[0].singlePlayer) {
                 cycleLength = boards[0].GetLevel().cycleLength;
                 cycleUniqueColors = boards[0].GetLevel().cycleUniqueColors;
+                lockPieceColors = boards[0].GetLevel().lockPieceColors;
                 boards[1].pointer.SetActive(false);
                 boards[1].pointer.gameObject.SetActive(false);
             } else {
@@ -98,7 +101,8 @@ namespace Battle.Cycle {
                 ManaColor colorBelow = cycle[i+1];
 
                 // Keep picking a new color until it is different than the one above & below
-                while (cycle[i] == colorAbove || cycle[i] == colorBelow)
+                // don't run if cycle length and unique color amount make this impossible
+                while ((cycle[i] == colorAbove || cycle[i] == colorBelow) && (cycleUniqueColors != 1))
                 {
                     cycle[i] = (ManaColor)Random.Range(0,cycleUniqueColors);
                 }

@@ -31,8 +31,13 @@ namespace SoloMode {
         /** Amount of unique colors in the cycle. */
         [SerializeField] public int cycleUniqueColors = 5;
 
+        [SerializeField] public bool lockPieceColors = true;
+ 
         /** Falling delay of pieces in this level. **/
         [SerializeField] public float fallTime = 0.8f;
+
+        /** Modify delay before a piece is placed **/
+        [SerializeField] public float slideTimeMulti = 1f;
 
         // the actual char you play as in the level, chosen by char select or automatically
         [System.NonSerialized] public Battle.Battler battler;
