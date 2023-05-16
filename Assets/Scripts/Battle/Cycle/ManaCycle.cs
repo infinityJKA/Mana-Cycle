@@ -99,9 +99,8 @@ namespace Battle.Cycle {
 
                 // Keep picking a new color until it is different than the one above & below
                 // don't run if cycle length and unique color amount make this impossible
-                while ((cycle[i] == colorAbove || cycle[i] == colorBelow) && (cycleUniqueColors < cycleLength))
+                while ((cycle[i] == colorAbove || cycle[i] == colorBelow) && (cycleUniqueColors != 1))
                 {
-                    Debug.Log("this should be running");
                     cycle[i] = (ManaColor)Random.Range(0,cycleUniqueColors);
                 }
             }
