@@ -62,8 +62,8 @@ namespace Battle.Board {
             mana = Math.Min(mana+count, board.Battler.activeAbilityMana);
             RefreshManaBar();
 
-            // mana filled to max, play sound and animation
-            if (mana >= board.Battler.activeAbilityMana)
+            // mana filled to max, play sound and animation. only run if ability requires mana
+            if (mana >= board.Battler.activeAbilityMana && board.Battler.activeAbilityMana > 0)
             {
                 SoundManager.Instance.PlaySound(manaFillSFX);
                 manaDisp.GetComponent<ColorFlash>().Flash();
