@@ -1254,7 +1254,7 @@ namespace Battle.Board {
 
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.
-                        int damage = (int)( (totalPointMult * damagePerMana) * (1 + (chain-1)*0.5f) * cascade );
+                        int damage = (int)( (totalPointMult * damagePerMana) * (1 + (chain-1)*0.5f) * (Math.Pow(3,cascade)));
                         // Send the damage over. Will counter incoming damage first.
                         DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
 
