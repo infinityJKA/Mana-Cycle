@@ -37,7 +37,7 @@ namespace SoloMode {
         [SerializeField] public float fallTime = 0.8f;
 
         /** Modify delay before a piece is placed **/
-        [SerializeField] public float slideTimeMulti = 1f;
+        [SerializeField] public float slideTimeMult = 1f;
 
         // the actual char you play as in the level, chosen by char select or automatically
         [System.NonSerialized] public Battle.Battler battler;
