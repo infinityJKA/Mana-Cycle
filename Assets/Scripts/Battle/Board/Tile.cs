@@ -56,12 +56,18 @@ namespace Battle.Board {
         // If gravity should pull this tile down.
         public bool doGravity { get; private set; } = true;
 
-        public void SetColor(ManaColor color, GameBoard board, bool setColor = true, bool setSprite = true)
+        public void SetColor(ManaColor color, GameBoard board, bool ghost = false, bool setColor = true, bool setSprite = true)
         {
             this.color = color;
             // Get image and set color from the list in this scene's cycle
             if (setColor) image.color = board.cycle.GetManaColors()[ ((int)color) ];
-            if (setSprite && board.cycle.usingSprites) image.sprite = board.cycle.manaSprites[ ((int)color) ];
+            if (setSprite && board.cycle.usingSprites) {
+                if (ghost) {
+                    image.sprite = board.cycle.ghostManaSprites[ ((int)color) ];
+                } else {
+                    image.sprite = board.cycle.manaSprites[ ((int)color) ];
+                }
+            }
         }
 
         public ManaColor GetManaColor()
@@ -136,15 +142,6 @@ namespace Battle.Board {
                 obscured = false;
                 SetColor(color, board);
             }
-        }
-
-        public void MakeGhostTile() {
-            image.color = new Color(
-                image.color.r,
-                image.color.g,
-                image.color.b,
-                image.color.a * 0.5f
-            );
         }
     }
 }
