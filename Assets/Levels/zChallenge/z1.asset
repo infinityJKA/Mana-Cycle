@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: z1
   m_EditorClassIdentifier: 
   levelName: Z-1
-  description: Get a 3 chain with the same color!
+  description: Get a 3 cascade with a one-color cycle!
   conversation: {fileID: 11400000, guid: 2b9231dd0e1a56a4a80539e2ca3c1d37, type: 2}
   midLevelConversations: []
   time: 180
@@ -22,18 +22,16 @@ MonoBehaviour:
   cycleUniqueColors: 1
   lockPieceColors: 0
   fallTime: 0.8
-  slideTimeMulti: 0.1
+  slideTimeMulti: 1
   availableBattlers:
   - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
   objectives:
-  - condition: 1
-    value: 10000
-  - condition: 2
-    value: 150
+  - condition: 5
+    value: 3
   levelRequirement: {fileID: 0}
   nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
-  opponent: {fileID: 0}
+  opponent: {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
   aiDifficulty: 1
-  battleMusic: {fileID: 8300000, guid: 3ae6f862584dbd44dbd058debdebe7ef, type: 3}
+  battleMusic: {fileID: 8300000, guid: f24191f50e4a24f38a6b5b468d49c5fc, type: 3}
