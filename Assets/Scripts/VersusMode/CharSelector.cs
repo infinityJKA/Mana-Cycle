@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 using Sound;
 
@@ -12,6 +13,9 @@ namespace VersusMode {
         ///<summary>True for player 1, false for player 2.</summary>
         [SerializeField] private bool isPlayer1;
 
+        ///<summary>Other player's charselector. Only used in mirroring battle preferences</summary>
+        [SerializeField] private CharSelector opponentSelector;
+
         ///<summary>Input script used to move the cursor and select character</summary>
         [SerializeField] private InputScript inputScript;
         // set as the inputScript when in solo mode
@@ -23,30 +27,45 @@ namespace VersusMode {
         ///<summary>SFX played when interacting with menu</summary>
         [SerializeField] private AudioClip switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX;
 
+        /// Fade in/out speed for the ability info & settings box
+        [SerializeField] private float fadeSpeed;
+        /// Displacement of the ability info & settings box when fading in/out
+        [SerializeField] private Vector2 fadeDisplacement;
 
         ///<summary>Canvas group for the ability info box</summary>
         [SerializeField] private CanvasGroup abilityInfoCanvasGroup;
         ///<summary>Text field within the ability description object that displays passive&active ability</summary>
         [SerializeField] private TMPro.TextMeshProUGUI abilityText;
+
+        ///<summary>Canvas group for the char select settings box</summary>
+        [SerializeField] private CanvasGroup settingsCanvasGroup;
+        ///<summary>Toggle that toggles the ghost piece specific to this battle. Copies settings value at start</summary>
+        [SerializeField] private Toggle ghostPieceToggle;
+
         /// tip text in the corner, p2 tip text gets hidden in solo
         [SerializeField] private GameObject tipText;
-        /// Fade in/out speed for the ability info box
-        [SerializeField] private float fadeSpeed;
-        /// Displacement of the ability info when fading in/out
-        [SerializeField] private Vector2 fadeDisplacement;
+
         /// character grid gameobject used to hide unavailable battlers
         [SerializeField] private GameObject battlerGrid;
 
         ///<summary>If the ability info screen is currently being displayed</summary>
         private bool abilityInfoDisplayed = false;
+        ///<summary>If the ability info screen is currently being displayed</summary>
+        private bool settingsDisplayed = false;
         ///<summary>If the ability info box is currently animating in OR out</summary>
-        private bool animating;
+        private bool abilityInfoAnimating;
+        ///<summary>If the ability info box is currently animating in OR out</summary>
+        private bool settingsAnimating;
         ///<summary>Current percentage that the ability menu is faded in/out
-        private float fadeAmount = 0;
+        private float abilityInfoFadeAmount = 0;
+        ///<summary>Current percentage that the ability menu is faded in/out
+        private float settingsFadeAmount = 0;
 
         ///<summary> Currently selected icon's Selectable component </summary>
         private CharacterIcon selectedIcon;
-
+        ///<summary> Currently selected selectable in the settings menu </summary>
+        private Selectable settingsSelection; 
+        
         ///<summary>True when the player has locked in their choice
         public bool lockedIn {get; private set;}
 
@@ -93,26 +112,46 @@ namespace VersusMode {
                 }
             }
 
+            SetSettingsSelection(ghostPieceToggle);
+            ghostPieceToggle.isOn = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
         }
 
         void Update() {
-            if (animating) {
+            if (abilityInfoAnimating) {
                 // fade the ability window in/out according to state
-                float target = abilityInfoDisplayed ? 1 : 0;
-                fadeAmount = Mathf.MoveTowards(fadeAmount, target, fadeSpeed*Time.deltaTime);
-                if (fadeAmount == target) animating = false;
-
-                abilityInfoCanvasGroup.alpha = fadeAmount;
-
-                if (animating) {
-                    abilityInfoCanvasGroup.transform.localPosition = centerPosition + (1-fadeAmount)*fadeDisplacement*(isPlayer1?1:-1);
+                float abilityTarget = abilityInfoDisplayed ? 1 : 0;
+                abilityInfoFadeAmount = Mathf.MoveTowards(abilityInfoFadeAmount, abilityTarget, fadeSpeed*Time.deltaTime);
+                if (abilityInfoFadeAmount == abilityTarget) abilityInfoAnimating = false;
+                abilityInfoCanvasGroup.alpha = abilityInfoFadeAmount;
+                if (abilityInfoAnimating) {
+                    abilityInfoCanvasGroup.transform.localPosition = centerPosition + (1-abilityInfoFadeAmount) * fadeDisplacement * (isPlayer1?1:-1);
                 } else {
                     abilityInfoCanvasGroup.transform.localPosition = centerPosition;
                 }
             }
 
-            // Move cursor if not locked in
-            if (!lockedIn) 
+            if (settingsAnimating) {
+                float settingsTarget = settingsDisplayed ? 1 : 0;
+                settingsFadeAmount = Mathf.MoveTowards(settingsFadeAmount, settingsTarget, fadeSpeed*Time.deltaTime);
+                if (settingsFadeAmount == settingsTarget) settingsAnimating = false;
+                settingsCanvasGroup.alpha = settingsFadeAmount;
+                if (settingsAnimating) {
+                    settingsCanvasGroup.transform.localPosition = centerPosition + (1-settingsFadeAmount) * fadeDisplacement * (isPlayer1?1:-1);
+                } else {
+                    settingsCanvasGroup.transform.localPosition = centerPosition;
+                }
+            }
+
+            if (settingsDisplayed) {
+                // Look for a new icon to select in inputted directions, select if found
+                if (Input.GetKeyDown(inputScript.Left)) SetSettingsSelection(settingsSelection.FindSelectableOnLeft());
+                else if (Input.GetKeyDown(inputScript.Right)) SetSettingsSelection(settingsSelection.FindSelectableOnRight());
+                else if (Input.GetKeyDown(inputScript.Up)) SetSettingsSelection(settingsSelection.FindSelectableOnUp());
+                else if (Input.GetKeyDown(inputScript.Down)) SetSettingsSelection(settingsSelection.FindSelectableOnDown());
+            }
+
+            // Move cursor if not locked in and not controlling settings menu
+            else if (!lockedIn) 
             {
                 // Look for a new icon to select in inputted directions, select if found
                 if (Input.GetKeyDown(inputScript.Left)) SetSelection(selectedIcon.selectable.FindSelectableOnLeft());
@@ -122,12 +161,18 @@ namespace VersusMode {
             }
 
             // Lock in or un-lock in when cast is pressed
-            if (Input.GetKeyDown(inputScript.Cast)) ToggleLock();
+            if (Input.GetKeyDown(inputScript.Cast) && !settingsDisplayed) ToggleLock();
 
-            // unlock in when pause pressed, or go back to menu if not locked in
             if (Input.GetKeyDown(inputScript.Pause)) 
             {
-                if (lockedIn) ToggleLock();
+                // close ability info/settings menu if it is open
+                if (abilityInfoDisplayed) ToggleAbilityInfo();
+                else if (settingsDisplayed) ToggleSettings();
+                
+                // unlock in when pause pressed
+                else if (lockedIn) ToggleLock();
+
+                // or go back to menu if not locked in
                 else {
                     if (!transitionHandler) {
                         Debug.LogError("Transition handler not found in scene!");
@@ -141,6 +186,10 @@ namespace VersusMode {
             if (Input.GetKeyDown(inputScript.RotateCCW))
             {
                 ToggleAbilityInfo();
+            }
+            if (Input.GetKeyDown(inputScript.RotateCW))
+            {
+                ToggleSettings();
             }
 
         }
@@ -164,9 +213,25 @@ namespace VersusMode {
         }
 
         void ToggleAbilityInfo() {
+            if (settingsDisplayed) ToggleSettings();
             abilityInfoDisplayed = !abilityInfoDisplayed;
-            animating = true;
+            abilityInfoAnimating = true;
             SoundManager.Instance.PlaySound(abilityInfoDisplayed ? infoOpenSFX : infoCloseSFX);
+        }
+
+        void ToggleSettings() {
+            if (abilityInfoDisplayed) ToggleAbilityInfo();
+            settingsDisplayed = !settingsDisplayed;
+            settingsAnimating = true;
+            // selectedIcon.cursorImage.color = new Color(1f, 1f, 1f, settingsDisplayed ? 0.5f : 1f);
+            SoundManager.Instance.PlaySound(settingsDisplayed ? infoOpenSFX : infoCloseSFX);
+        }
+
+        void SetSettingsSelection(Selectable selectable) {
+            if (selectable == null || selectable == settingsSelection) return;
+            if (settingsSelection) settingsSelection.OnDeselect(null);
+            settingsSelection = selectable;
+            settingsSelection.OnSelect(null);
         }
 
         public void SetSelection(Selectable newSelection) {
@@ -177,7 +242,7 @@ namespace VersusMode {
 
             CharacterIcon newSelectedIcon = newSelection.GetComponent<CharacterIcon>();
             if (!newSelectedIcon) {
-                Debug.LogError("CharacterIcon component not found on new cursor selectable");
+                // Debug.LogError("CharacterIcon component not found on new cursor selectable");
                 return;
             }
 
