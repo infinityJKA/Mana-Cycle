@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
+  m_Name: z1
+  m_EditorClassIdentifier: 
+  levelName: Z-1
+  description: Get a 3 cascade with a one-color cycle!
+  conversation: {fileID: 11400000, guid: 2b9231dd0e1a56a4a80539e2ca3c1d37, type: 2}
+  midLevelConversations: []
+  time: 180
+  scoreGoal: 0
+  cycleLength: 3
+  cycleUniqueColors: 1
+  lockPieceColors: 0
+  fallTime: 0.8
+  slideTimeMulti: 1
+  availableBattlers:
+  - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
+  objectives:
+  - condition: 5
+    value: 3
+  levelRequirement: {fileID: 0}
+  nextSeriesLevel: {fileID: 0}
+  survivalWin: 0
+  aiBattle: 0
+  opponent: {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
+  aiDifficulty: 1
+  battleMusic: {fileID: 8300000, guid: f24191f50e4a24f38a6b5b468d49c5fc, type: 3}
