@@ -194,6 +194,9 @@ namespace Battle.Board {
         // Particle system for when a tile is cleared
         [SerializeField] private GameObject clearParticleSystem;
 
+        // the controller object for this board
+        public GameObject controllerObject;
+
         // In party mode, this is the timer before the user takes direct uncounterable damage from all trash tiles
         // Timer starts when a trash tile is added, and will stop running when no trash tiles tick when timer is up
         private float trashDamageTimer;
@@ -295,7 +298,7 @@ namespace Battle.Board {
                         enemyBoard.portrait.sprite = Storage.level.opponent.sprite;
                         if (playerSide == 0) enemyBoard.SetPlayerControlled(false);
                         // set up ai difficulty values
-                        AIController aiController = enemyBoard.GetComponent<AIController>();
+                        AIController aiController = enemyBoard.controllerObject.GetComponent<AIController>();
                         aiController.accuracy *= Storage.level.aiDifficulty;
                         aiController.castChanceMultiplier *= Storage.level.aiDifficulty;
                         aiController.abilityChanceMultiplier *= Storage.level.aiDifficulty;
