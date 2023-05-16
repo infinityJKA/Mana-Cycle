@@ -854,6 +854,11 @@ namespace Battle.Board {
             if (piece == null) return;
 
             var ghostPiece = Instantiate(piece.gameObject, piece.transform.parent, true).GetComponent<Piece>();
+
+            ghostPiece.GetCenter().SetColor(piece.GetCenter().color, this, ghost: true);
+            ghostPiece.GetTop().SetColor(piece.GetTop().color, this, ghost: true);
+            ghostPiece.GetRight().SetColor(piece.GetRight().color, this, ghost: true);
+
             ghostPiece.MakeGhostPiece(ref ghostTiles);
 
             // calculate position via ghost tile

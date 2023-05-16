@@ -300,10 +300,6 @@ namespace Battle.Board {
         }
 
         public virtual void MakeGhostPiece(ref List<Tile> ghostTiles) {
-            center.MakeGhostTile();
-            top.MakeGhostTile();
-            right.MakeGhostTile();
-
             ghostTiles.Add(center);
             ghostTiles.Add(top);
             ghostTiles.Add(right);
