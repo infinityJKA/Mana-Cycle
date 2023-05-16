@@ -431,8 +431,8 @@ namespace Battle.Board {
                                 
                                 // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
                     
-                                    if (playerControlled && !Input.GetKey(inputScript.Down)) {
-                                        finalFallTime += (slideTime*level.slideTimeMulti);
+                                    if (playerControlled && !Input.GetKey(inputScript.Down) && level) {
+                                        finalFallTime += (slideTime*level.slideTimeMult);
                                     }
 
 
