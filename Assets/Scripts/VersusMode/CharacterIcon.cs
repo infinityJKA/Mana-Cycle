@@ -18,7 +18,7 @@ namespace VersusMode {
         //<summary>Image for the battler portrait</summary>
         [SerializeField] private Image portrait;
         //<summary>Images for the players & cpu cursor overlayed on this icon.</summary>
-        [SerializeField] private UnityEngine.UI.Image cursorImage, cpuCursorImage;
+        [SerializeField] public UnityEngine.UI.Image cursorImage, cpuCursorImage;
 
         // serialized refs to all the different cursor sprites
         [SerializeField] private Sprite p1CursorSprite, p2CursorSprite, bothCursorSprite, cpuCursorSprite;
