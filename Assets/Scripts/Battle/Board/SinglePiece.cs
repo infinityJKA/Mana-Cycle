@@ -59,7 +59,6 @@ namespace Battle.Board {
         }
 
         public override void MakeGhostPiece(ref List<Tile> ghostTiles) {
-            center.MakeGhostTile();
             ghostTiles.Add(center);
         }
 

@@ -20,6 +20,9 @@ namespace Battle.Cycle {
         // List of sprites to use for mana of this color (corresponds to indexes in manaColors)
         [SerializeField] public List<Sprite> manaSprites;
 
+        // List of sprites for ghost piece tiles.
+        [SerializeField] public List<Sprite> ghostManaSprites;
+
         // Used for Geo's gold mine crystals that correspond to colors in this cycle.
         [SerializeField] public List<Material> crystalMaterials;
 

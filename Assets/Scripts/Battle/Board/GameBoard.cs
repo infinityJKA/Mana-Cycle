@@ -331,7 +331,8 @@ namespace Battle.Board {
                 objectiveList.InitializeObjectiveListItems(this);
             }
 
-            ghostTiles = new List<Tile>();
+            drawGhostPiece = playerControlled && PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
+            if (drawGhostPiece) ghostTiles = new List<Tile>();
         }
 
         void Update()
@@ -431,8 +432,8 @@ namespace Battle.Board {
                                 
                                 // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
                     
-                                    if (playerControlled && !Input.GetKey(inputScript.Down)) {
-                                        finalFallTime += (slideTime*level.slideTimeMulti);
+                                    if (playerControlled && !Input.GetKey(inputScript.Down) && level) {
+                                        finalFallTime += (slideTime*level.slideTimeMult);
                                     }
 
 
@@ -856,6 +857,11 @@ namespace Battle.Board {
             if (piece == null) return;
 
             var ghostPiece = Instantiate(piece.gameObject, piece.transform.parent, true).GetComponent<Piece>();
+
+            ghostPiece.GetCenter().SetColor(piece.GetCenter().color, this, ghost: true);
+            ghostPiece.GetTop().SetColor(piece.GetTop().color, this, ghost: true);
+            ghostPiece.GetRight().SetColor(piece.GetRight().color, this, ghost: true);
+
             ghostPiece.MakeGhostPiece(ref ghostTiles);
 
             // calculate position via ghost tile
