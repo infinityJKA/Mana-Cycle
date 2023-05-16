@@ -44,7 +44,10 @@ namespace MainMenu {
         {
             foreach (InputScript inputScript in inputScripts) {
                 if (Input.GetKeyDown(inputScript.Cast)) {
-                    if (EventSystem.current.currentSelectedGameObject != null) EventSystem.current.currentSelectedGameObject.GetComponent<Button>().onClick.Invoke();
+                    if (EventSystem.current.currentSelectedGameObject != null) {
+                        var obj = EventSystem.current.currentSelectedGameObject;
+                        obj.GetComponent<Selectable>().Select();
+                    }
                 }
             }
         }

@@ -331,7 +331,8 @@ namespace Battle.Board {
                 objectiveList.InitializeObjectiveListItems(this);
             }
 
-            ghostTiles = new List<Tile>();
+            drawGhostPiece = playerControlled && PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
+            if (drawGhostPiece) ghostTiles = new List<Tile>();
         }
 
         void Update()
