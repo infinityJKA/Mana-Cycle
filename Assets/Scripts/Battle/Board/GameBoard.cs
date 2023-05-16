@@ -430,7 +430,7 @@ namespace Battle.Board {
                                 // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
                     
                                     if (playerControlled && !Input.GetKey(inputScript.Down)) {
-                                        finalFallTime += slideTime;
+                                        finalFallTime += (slideTime*level.slideTimeMulti);
                                     }
 
 
