@@ -136,7 +136,7 @@ namespace Battle.Board {
 
         public static ManaColor RandomColor()
         {
-            return (ManaColor)Random.Range(0, ManaCycle.cycleUniqueColors);
+            return (ManaColor)Random.Range(0, (ManaCycle.lockPieceColors ? ManaCycle.cycleUniqueColors : 5));
         }
 
         protected static ManaColor ColorWeightedRandom(GameBoard board)

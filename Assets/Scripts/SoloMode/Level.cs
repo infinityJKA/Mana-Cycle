@@ -31,6 +31,8 @@ namespace SoloMode {
         /** Amount of unique colors in the cycle. */
         [SerializeField] public int cycleUniqueColors = 5;
 
+        [SerializeField] public bool lockPieceColors = true;
+ 
         /** Falling delay of pieces in this level. **/
         [SerializeField] public float fallTime = 0.8f;
 
