@@ -64,6 +64,8 @@ namespace Battle.Board {
             if (setSprite && board.cycle.usingSprites) {
                 if (ghost) {
                     image.sprite = board.cycle.ghostManaSprites[ ((int)color) ];
+                    image.GetComponent<UnityEngine.UI.Outline>().enabled = true;
+                    image.GetComponent<UnityEngine.UI.Outline>().effectColor = Color.Lerp(image.color, Color.white, 0.4f);
                 } else {
                     image.sprite = board.cycle.manaSprites[ ((int)color) ];
                 }
