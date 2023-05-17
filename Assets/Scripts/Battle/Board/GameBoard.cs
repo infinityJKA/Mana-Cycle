@@ -213,6 +213,9 @@ namespace Battle.Board {
         // Start is called before the first frame update
         void Start()
         {
+            // serialize lastSeriesLevel, if applicable 
+            if (Storage.level.nextSeriesLevel != null) Storage.level.nextSeriesLevel.lastSeriesLevel = Storage.level;
+            
             // if in solo mode, add solo additional inputs
             if (Storage.gamemode == Storage.GameMode.Solo) inputScripts = soloInputScripts;
 
