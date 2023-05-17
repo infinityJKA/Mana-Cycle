@@ -52,6 +52,8 @@ namespace Battle.Board {
 
         public void RefreshManaBar()
         {        
+            // if this is disabled, also disable mana bar
+            manaBar.gameObject.SetActive(enabled);
             manaDisp.fillAmount = 1f * mana / board.Battler.activeAbilityMana;
         }
 

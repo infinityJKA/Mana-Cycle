@@ -338,6 +338,7 @@ namespace Battle.Board {
             if (drawGhostPiece) ghostTiles = new List<Tile>();
 
             abilityManager.enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
+            abilityManager.RefreshManaBar();
         }
 
         void Update()
