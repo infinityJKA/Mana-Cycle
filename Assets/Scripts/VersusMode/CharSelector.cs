@@ -41,6 +41,8 @@ namespace VersusMode {
         [SerializeField] private CanvasGroup settingsCanvasGroup;
         ///<summary>Toggle that toggles the ghost piece specific to this battle. Copies settings value at start</summary>
         [SerializeField] private Toggle ghostPieceToggle;
+        ///<summary>Toggle that toggles the ghost piece specific to this battle. Copies settings value at start</summary>
+        [SerializeField] private Toggle abilityToggle;
 
         /// tip text in the corner, p2 tip text gets hidden in solo
         [SerializeField] private GameObject tipText;
@@ -114,6 +116,7 @@ namespace VersusMode {
 
             SetSettingsSelection(ghostPieceToggle);
             ghostPieceToggle.isOn = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
+            abilityToggle.isOn = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
         }
 
         void Update() {
@@ -159,9 +162,26 @@ namespace VersusMode {
                 else if (Input.GetKeyDown(inputScript.Up)) SetSelection(selectedIcon.selectable.FindSelectableOnUp());
                 else if (Input.GetKeyDown(inputScript.Down)) SetSelection(selectedIcon.selectable.FindSelectableOnDown());
             }
+            
+            if (Input.GetKeyDown(inputScript.Cast)) {
+                // when in settings menu, cast will toggle the current toggle, press the current button, etc..
+                if (settingsDisplayed) {
+                    var toggle = settingsSelection.GetComponent<Toggle>();
+                    if (toggle) toggle.isOn = !toggle.isOn;
 
-            // Lock in or un-lock in when cast is pressed
-            if (Input.GetKeyDown(inputScript.Cast) && !settingsDisplayed) ToggleLock();
+                    // if any battle preferences were just toggled, update its state in Storage and the other player's settings toggle
+                    if (settingsSelection == abilityToggle) {
+                        PlayerPrefs.SetInt("enableAbilities", abilityToggle.isOn ? 1 : 0);
+                        opponentSelector.abilityToggle.isOn = abilityToggle.isOn;
+                    }
+                } 
+
+                // Lock in or un-lock in when cast is pressed
+                else {
+                    ToggleLock();
+                }
+            }
+
 
             if (Input.GetKeyDown(inputScript.Pause)) 
             {
@@ -272,6 +292,12 @@ namespace VersusMode {
 
         void OnValidate() {
             transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
+        }
+
+        // used by CharSelectMenu to receive player pereference decisions
+        public bool doGhostPiece { 
+            get { return ghostPieceToggle.isOn; }
+            set { ghostPieceToggle.isOn = value; }    
         }
     }
 }

@@ -331,8 +331,10 @@ namespace Battle.Board {
                 objectiveList.InitializeObjectiveListItems(this);
             }
 
-            drawGhostPiece = playerControlled && PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
+            drawGhostPiece = playerControlled && PlayerPrefs.GetInt(playerSide == 0 ? "drawGhostPiece" : "drawGhostPieceP2", 1) == 1;
             if (drawGhostPiece) ghostTiles = new List<Tile>();
+
+            abilityManager.enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
         }
 
         void Update()
