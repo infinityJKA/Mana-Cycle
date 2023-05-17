@@ -45,7 +45,7 @@ namespace VersusMode {
         [SerializeField] private Toggle abilityToggle;
 
         /// tip text in the corner, p2 tip text gets hidden in solo
-        [SerializeField] private GameObject tipText;
+        [SerializeField] private VersusTipText tipText;
 
         /// character grid gameobject used to hide unavailable battlers
         [SerializeField] private GameObject battlerGrid;
@@ -89,16 +89,17 @@ namespace VersusMode {
             RefreshLockVisuals();
 
             
-            if (Storage.gamemode == Storage.GameMode.Solo)
+            if (Storage.gamemode == Storage.GameMode.Solo || !Storage.isPlayerControlled2)
             {
                 // set solo mode inputs 
                 // TODO change tip text depending on inputs
                 inputScript = soloInputScript;
+                tipText.Refresh();
 
                 // hide p2 elements in in solo mode
                 if (!isPlayer1)
                 {
-                    tipText.SetActive(false);
+                    tipText.gameObject.SetActive(false);
                     gameObject.SetActive(false);
                     return;
                 }

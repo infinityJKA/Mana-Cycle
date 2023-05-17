@@ -8,7 +8,7 @@ namespace VersusMode {
         ///<summary>Cached list of all children</summary>
         [SerializeField] [InspectorName("Input Script")] private InputScript i;
 
-        void OnValidate() {
+        public void Refresh() {
             if (!i) {
                 Debug.LogError("Missing input script on versus tip text");
                 return;
@@ -22,6 +22,10 @@ namespace VersusMode {
                 Utils.KeySymbol(i.RotateCCW),
                 Utils.KeySymbol(i.RotateCW)
             );
+        }
+
+        void OnValidate() {
+            Refresh();
         }
     }
 }
