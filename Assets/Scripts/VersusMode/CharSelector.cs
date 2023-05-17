@@ -71,6 +71,11 @@ namespace VersusMode {
         ///<summary>True when the player has locked in their choice
         public bool lockedIn {get; private set;}
 
+        ///<summary> If currently in CPU select mode. This will control CPU cursor instead of cpu cursor. (p2 only)
+        public bool isCpu {get; private set;}
+        ///<summary> If active. Will only be inactive if this is CPU and player1 is currently selecting </summary>
+        public bool active {get; private set;}
+
 
         // cached on validate
         private TransitionScript transitionHandler;
@@ -121,6 +126,8 @@ namespace VersusMode {
         }
 
         void Update() {
+            if (!enabled) return;
+
             if (abilityInfoAnimating) {
                 // fade the ability window in/out according to state
                 float abilityTarget = abilityInfoDisplayed ? 1 : 0;
