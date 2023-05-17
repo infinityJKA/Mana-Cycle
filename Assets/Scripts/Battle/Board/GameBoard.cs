@@ -613,6 +613,7 @@ namespace Battle.Board {
 
         public void UseAbility(){
             if (abilityManager.enabled) abilityManager.UseAbility();
+            RefreshGhostPiece();
         }
 
         public ManaColor PullColorFromBag() {
