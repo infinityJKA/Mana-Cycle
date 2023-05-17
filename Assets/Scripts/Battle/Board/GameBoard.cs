@@ -864,8 +864,8 @@ namespace Battle.Board {
             var ghostPiece = Instantiate(piece.gameObject, piece.transform.parent, true).GetComponent<Piece>();
 
             ghostPiece.GetCenter().SetColor(piece.GetCenter().color, this, ghost: true);
-            ghostPiece.GetTop().SetColor(piece.GetTop().color, this, ghost: true);
-            ghostPiece.GetRight().SetColor(piece.GetRight().color, this, ghost: true);
+            if (ghostPiece.GetTop() != null) ghostPiece.GetTop().SetColor(piece.GetTop().color, this, ghost: true);
+            if (ghostPiece.GetRight() != null) ghostPiece.GetRight().SetColor(piece.GetRight().color, this, ghost: true);
 
             ghostPiece.MakeGhostPiece(ref ghostTiles);
 

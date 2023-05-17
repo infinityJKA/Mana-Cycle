@@ -40,7 +40,7 @@ namespace Battle.Board {
         void Start()
         {
             mana = 0;
-            mana = board.Battler.activeAbilityMana -1; // for easy debug
+            mana = board.Battler.activeAbilityMana; // for easy debug
 
             RefreshManaBar();
         }
