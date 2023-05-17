@@ -46,6 +46,7 @@ namespace Battle.Board {
         }
 
         public void InitManaBar() {
+            if (!enabled) return;
             // set height based on mana required for battler - 50 is the reference
             manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, manaBar.sizeDelta.y * board.Battler.activeAbilityMana/50f);
         }
@@ -71,6 +72,8 @@ namespace Battle.Board {
                 manaDisp.GetComponent<ColorFlash>().Flash();
             }
         }
+
+                
 
         public void UseAbility() {
             if (board.Battler.activeAbilityEffect != Battler.ActiveAbilityEffect.None && mana >= board.Battler.activeAbilityMana) {

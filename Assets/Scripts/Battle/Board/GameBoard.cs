@@ -338,7 +338,7 @@ namespace Battle.Board {
             if (drawGhostPiece) ghostTiles = new List<Tile>();
 
             abilityManager.enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
-            abilityManager.RefreshManaBar();
+            abilityManager.InitManaBar();
         }
 
         void Update()
@@ -366,10 +366,10 @@ namespace Battle.Board {
                     if (pauseMenu.paused && !postGame)
                     {
                         if (Input.GetKeyDown(inputScript.Up)) {
-                            pauseMenu.MoveCursor(1);
+                            pauseMenu.MoveCursor(Vector3.up);
                             PlaySFX("move", pitch : 0.8f);
                         } else if (Input.GetKeyDown(inputScript.Down)) {
-                            pauseMenu.MoveCursor(-1);
+                            pauseMenu.MoveCursor(Vector3.down);
                             PlaySFX("move", pitch : 0.75f);
                         }
 
@@ -382,9 +382,9 @@ namespace Battle.Board {
                     else if (postGame && !winMenu.timerRunning)
                     {
                         if (Input.GetKeyDown(inputScript.Up)) {
-                            winMenu.MoveCursor(1);
+                            winMenu.MoveCursor(Vector3.up);
                         } else if (Input.GetKeyDown(inputScript.Down)) {
-                            winMenu.MoveCursor(-1);
+                            winMenu.MoveCursor(Vector3.down);
                         }
 
                         if (Input.GetKeyDown(inputScript.Cast)){
@@ -549,8 +549,6 @@ namespace Battle.Board {
             portrait.GetComponent<ColorFlash>().SetBaseColor(portrait.color);
             portrait.sprite = battler.sprite;
 
-
-            abilityManager.InitManaBar();
             attackPopup.SetBattler(battler);
         }
 
@@ -754,7 +752,7 @@ namespace Battle.Board {
             Transform manaColor = cycle.transform.GetChild(cyclePosition);
             // Debug.Log(cycle.transform.GetChild(cyclePosition));
 
-            pointer.transform.position = manaColor.transform.position + Vector3.right * 50f * ((playerSide == 0) ? -1 : 1);
+            pointer.transform.position = manaColor.transform.position + Vector3.right * 80f * ((playerSide == 0) ? -1 : 1);
         }
 
         // Create a new piece and spawn it at the top of the board. Replaces the current piece field.

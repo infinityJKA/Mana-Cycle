@@ -73,7 +73,7 @@ namespace Battle {
                     // If there is any leftover damage, travel to enemy board and damage them
                     if (overflow > 0) {
                         damage = overflow;
-                        Attack(target.enemyBoard);
+                        Attack(target);
                     } else {
                         // if not, destroy here
                         Destroy(this.gameObject);
