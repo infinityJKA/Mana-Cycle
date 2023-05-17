@@ -75,9 +75,9 @@ namespace MainMenu {
             // this is currently always called from main menu versus setup, so set gamemode to versus
             Storage.gamemode = Storage.GameMode.Versus;
             switch(setup){
-                case 1: Storage.isPlayer1 = true; Storage.isPlayer2 = false; break;
-                case 2: Storage.isPlayer1 = false; Storage.isPlayer2 = false; break;
-                default: Storage.isPlayer1 = true; Storage.isPlayer2 = true; break;
+                case 1: Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = false; break;
+                case 2: Storage.isPlayerControlled1 = false; Storage.isPlayerControlled2 = false; break;
+                default: Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = true; break;
             }
             TransitionHandler.WipeToScene("CharSelect");
         }
