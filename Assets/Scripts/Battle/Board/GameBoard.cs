@@ -214,7 +214,7 @@ namespace Battle.Board {
         void Start()
         {
             // serialize lastSeriesLevel, if applicable 
-            if (Storage.level.nextSeriesLevel != null) Storage.level.nextSeriesLevel.lastSeriesLevel = Storage.level;
+            if (Storage.level != null && Storage.level.nextSeriesLevel != null) Storage.level.nextSeriesLevel.lastSeriesLevel = Storage.level;
             
             // if in solo mode, add solo additional inputs
             if (Storage.gamemode == Storage.GameMode.Solo) inputScripts = soloInputScripts;
