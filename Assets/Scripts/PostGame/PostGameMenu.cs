@@ -118,6 +118,14 @@ namespace PostGame {
                                 MenuItems.RemoveAt(2);
                             }
                         }
+
+                        // if reached the end of a solo level, go to win screen
+                        if (Storage.level.nextSeriesLevel == null && Storage.level.lastSeriesLevel)
+                        {
+                            Time.timeScale = 1f;
+                            MenuUI.SetActive(false);
+                            transitionHandler.WipeToScene("ArcadeWin");
+                        } 
                     }
                     else
                     {
