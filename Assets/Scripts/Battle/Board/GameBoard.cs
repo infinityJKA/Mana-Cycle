@@ -281,12 +281,12 @@ namespace Battle.Board {
                 if (playerSide == 0)
                 {
                     battler = Storage.battler1;
-                    playerControlled = Storage.isPlayer1;
+                    playerControlled = Storage.isPlayerControlled1;
                 }
                 else
                 {
                     battler = Storage.battler2;
-                    playerControlled = Storage.isPlayer2;
+                    playerControlled = Storage.isPlayerControlled2;
                 }
             }
             else

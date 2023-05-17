@@ -11,8 +11,8 @@ public class Storage
     public static Battle.Battler battler2;
     
     // player/cpu state selected by players
-    public static bool isPlayer1;
-    public static bool isPlayer2;
+    public static bool isPlayerControlled1;
+    public static bool isPlayerControlled2;
 
     /** level that the player selected */
     public static SoloMode.Level level;
