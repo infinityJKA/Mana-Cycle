@@ -74,8 +74,10 @@ namespace SoloMode {
 
         public void Awake()
         {
+            // this doesn't run consistiently for some reason, moved to gameboard
             // set LastSeriesLevel
-            if (nextSeriesLevel != null) nextSeriesLevel.lastSeriesLevel = this;
+            // Debug.Log("there i am 0,0");
+            // if (nextSeriesLevel != null) nextSeriesLevel.lastSeriesLevel = this;
         }
 
         public bool RequirementsMet()

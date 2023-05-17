@@ -213,6 +213,9 @@ namespace Battle.Board {
         // Start is called before the first frame update
         void Start()
         {
+            // serialize lastSeriesLevel, if applicable 
+            if (Storage.level != null && Storage.level.nextSeriesLevel != null) Storage.level.nextSeriesLevel.lastSeriesLevel = Storage.level;
+            
             // if in solo mode, add solo additional inputs
             if (Storage.gamemode == Storage.GameMode.Solo) inputScripts = soloInputScripts;
 
@@ -278,12 +281,12 @@ namespace Battle.Board {
                 if (playerSide == 0)
                 {
                     battler = Storage.battler1;
-                    playerControlled = Storage.isPlayer1;
+                    playerControlled = Storage.isPlayerControlled1;
                 }
                 else
                 {
                     battler = Storage.battler2;
-                    playerControlled = Storage.isPlayer2;
+                    playerControlled = Storage.isPlayerControlled2;
                 }
             }
             else
@@ -331,8 +334,11 @@ namespace Battle.Board {
                 objectiveList.InitializeObjectiveListItems(this);
             }
 
-            drawGhostPiece = playerControlled && PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
+            drawGhostPiece = playerControlled && PlayerPrefs.GetInt(playerSide == 0 ? "drawGhostPiece" : "drawGhostPieceP2", 1) == 1;
             if (drawGhostPiece) ghostTiles = new List<Tile>();
+
+            abilityManager.enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
+            abilityManager.RefreshManaBar();
         }
 
         void Update()
@@ -607,6 +613,7 @@ namespace Battle.Board {
 
         public void UseAbility(){
             if (abilityManager.enabled) abilityManager.UseAbility();
+            RefreshGhostPiece();
         }
 
         public ManaColor PullColorFromBag() {
@@ -859,8 +866,8 @@ namespace Battle.Board {
             var ghostPiece = Instantiate(piece.gameObject, piece.transform.parent, true).GetComponent<Piece>();
 
             ghostPiece.GetCenter().SetColor(piece.GetCenter().color, this, ghost: true);
-            ghostPiece.GetTop().SetColor(piece.GetTop().color, this, ghost: true);
-            ghostPiece.GetRight().SetColor(piece.GetRight().color, this, ghost: true);
+            if (ghostPiece.GetTop() != null) ghostPiece.GetTop().SetColor(piece.GetTop().color, this, ghost: true);
+            if (ghostPiece.GetRight() != null) ghostPiece.GetRight().SetColor(piece.GetRight().color, this, ghost: true);
 
             ghostPiece.MakeGhostPiece(ref ghostTiles);
 
@@ -1260,7 +1267,7 @@ namespace Battle.Board {
 
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.
-                        int damage = (int)( (totalPointMult * damagePerMana) * (1 + (chain-1)*0.5f) * (Math.Pow(3,cascade)));
+                        int damage = (int)( (totalPointMult * damagePerMana) * (1 + (chain-1)*0.5f) * (Math.Pow(3,cascade) / 3f));
                         // Send the damage over. Will counter incoming damage first.
                         DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
 

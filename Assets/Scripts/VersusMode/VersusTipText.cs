@@ -8,17 +8,24 @@ namespace VersusMode {
         ///<summary>Cached list of all children</summary>
         [SerializeField] [InspectorName("Input Script")] private InputScript i;
 
-        void OnValidate() {
+        public void Refresh() {
             if (!i) {
                 Debug.LogError("Missing input script on versus tip text");
                 return;
             }
             gameObject.GetComponent<TMPro.TextMeshProUGUI>().text =
-            String.Format("{0} - Cursor\n{1} - Select   {2} - Info\n{3} - Back",
-            Utils.KeySymbol(i.Up)+Utils.KeySymbol(i.Left)+Utils.KeySymbol(i.Down)+Utils.KeySymbol(i.Right),
-            Utils.KeySymbol(i.Cast),
-            Utils.KeySymbol(i.RotateCCW),
-            Utils.KeySymbol(i.Pause));
+            String.Format(
+                "{0} - Cursor\n{1} - Select   {2} - Back\n{3} - Info   {4} - Settings",
+                Utils.KeySymbols(i.Up, i.Left, i.Down, i.Right),
+                Utils.KeySymbol(i.Cast),
+                Utils.KeySymbol(i.Pause),
+                Utils.KeySymbol(i.RotateCCW),
+                Utils.KeySymbol(i.RotateCW)
+            );
+        }
+
+        void OnValidate() {
+            Refresh();
         }
     }
 }

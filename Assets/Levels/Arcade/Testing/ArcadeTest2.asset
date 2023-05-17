@@ -20,7 +20,9 @@ MonoBehaviour:
   scoreGoal: 9
   cycleLength: 7
   cycleUniqueColors: 5
+  lockPieceColors: 1
   fallTime: 0.1
+  slideTimeMult: 1
   availableBattlers:
   - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
@@ -34,4 +36,5 @@ MonoBehaviour:
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
+  aiDifficulty: 1
   battleMusic: {fileID: 8300000, guid: b9bb2c746a5f8e443825278af7a74436, type: 3}

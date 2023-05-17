@@ -120,12 +120,17 @@ namespace PostGame {
                         }
 
                         // if reached the end of a solo level, go to win screen
-                        if (Storage.level.nextSeriesLevel == null && Storage.level.lastSeriesLevel)
+                        if (Storage.level.nextSeriesLevel == null && Storage.level.lastSeriesLevel != null)
                         {
+                            Debug.Log("Errrrmm...");
                             Time.timeScale = 1f;
                             MenuUI.SetActive(false);
                             transitionHandler.WipeToScene("ArcadeWin");
                         } 
+
+                        // Debug.Log("why did this stop working :((");
+                        // Debug.Log(Storage.level.nextSeriesLevel);
+                        // Debug.Log(Storage.level.lastSeriesLevel);
                     }
                     else
                     {
