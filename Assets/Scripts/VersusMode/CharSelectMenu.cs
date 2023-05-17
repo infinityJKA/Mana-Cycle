@@ -72,7 +72,6 @@ namespace VersusMode {
                     Storage.battler2 = p2Selector.selectedBattler;
                     Storage.level = null;
                     Storage.gamemode = Storage.GameMode.Versus;
-                    
                     PlayerPrefs.SetInt("drawGhostPieceP2", p2Selector.doGhostPiece ? 1 : 0);
                 }
                 else 

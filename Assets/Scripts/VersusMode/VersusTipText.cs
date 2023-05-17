@@ -16,7 +16,7 @@ namespace VersusMode {
             gameObject.GetComponent<TMPro.TextMeshProUGUI>().text =
             String.Format(
                 "{0} - Cursor\n{1} - Select   {2} - Back\n{3} - Info   {4} - Settings",
-                Utils.KeySymbol(i.Up) + Utils.KeySymbol(i.Left) + Utils.KeySymbol(i.Down) + Utils.KeySymbol(i.Right),
+                Utils.KeySymbols(i.Up, i.Left, i.Down, i.Right),
                 Utils.KeySymbol(i.Cast),
                 Utils.KeySymbol(i.Pause),
                 Utils.KeySymbol(i.RotateCCW),
