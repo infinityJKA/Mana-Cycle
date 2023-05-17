@@ -310,7 +310,7 @@ GameObject:
   - component: {fileID: 3303903778296644098}
   - component: {fileID: 9161599540900038825}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: PlayerSettingsHeader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -570,10 +570,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.22138664, g: 0.23584908, b: 0.22138664, a: 1}
-    m_HighlightedColor: {r: 0.39484373, g: 0.4433962, b: 0.39110893, a: 1}
-    m_PressedColor: {r: 0.29730332, g: 0.3962264, b: 0.28969383, a: 1}
-    m_SelectedColor: {r: 0.34648922, g: 0.3962264, b: 0.34202564, a: 1}
+    m_NormalColor: {r: 0.2627451, g: 0.27450982, b: 0.2627451, a: 1}
+    m_HighlightedColor: {r: 0.41568628, g: 0.49019608, b: 0.41568628, a: 1}
+    m_PressedColor: {r: 0.41568628, g: 0.49019608, b: 0.41568628, a: 1}
+    m_SelectedColor: {r: 0.41568628, g: 0.49019608, b: 0.41568628, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -658,9 +658,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 0.26455143, g: 0.2735849, b: 0.26455143, a: 1}
-    m_HighlightedColor: {r: 0.32675192, g: 0.7169812, b: 0.29423285, a: 1}
-    m_PressedColor: {r: 0.22772954, g: 0.509434, b: 0.2042542, a: 1}
-    m_SelectedColor: {r: 0.2980001, g: 0.6037736, b: 0.27055892, a: 1}
+    m_HighlightedColor: {r: 0.4175244, g: 0.49056602, b: 0.41420433, a: 1}
+    m_PressedColor: {r: 0.41568628, g: 0.49019608, b: 0.41568628, a: 1}
+    m_SelectedColor: {r: 0.36638537, g: 0.4528302, b: 0.36098257, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1296,6 +1296,7 @@ MonoBehaviour:
   abilityText: {fileID: 6059286461696921985}
   settingsCanvasGroup: {fileID: 3217693027718034865}
   ghostPieceToggle: {fileID: 1360921580818144791}
+  abilityToggle: {fileID: 9184732515958813814}
   tipText: {fileID: 0}
   battlerGrid: {fileID: 0}
 --- !u!1 &6304514132889695577
@@ -1386,7 +1387,7 @@ GameObject:
   - component: {fileID: 2373319464315868213}
   - component: {fileID: 2006003906349504669}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: BattleSettingsHeader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

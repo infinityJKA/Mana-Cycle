@@ -20,6 +20,9 @@ namespace VersusMode {
 
             p1Selector.SetSelection(firstSelection);
             p2Selector.SetSelection(firstSelection);
+
+            p1Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
+            p2Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPieceP2", 1) == 1;
         }
 
         // Update is called once per frame
@@ -61,18 +64,21 @@ namespace VersusMode {
                 // if (Storage.isPlayer1 == null) Storage.isPlayer1 = true;
                 // if (Storage.isPlayer2 == null) Storage.isPlayer2 = true;
 
+                PlayerPrefs.SetInt("drawGhostPiece", p1Selector.doGhostPiece ? 1 : 0);
+
                 if (Storage.gamemode != Storage.GameMode.Solo)
                 {
                     Storage.battler1 = p1Selector.selectedBattler;
                     Storage.battler2 = p2Selector.selectedBattler;
                     Storage.level = null;
                     Storage.gamemode = Storage.GameMode.Versus;
+                    
+                    PlayerPrefs.SetInt("drawGhostPieceP2", p2Selector.doGhostPiece ? 1 : 0);
                 }
                 else 
                 {
                     Storage.level.battler = p1Selector.selectedBattler;
                 }
-
 
                 if (!transitionHandler) {
                     Debug.LogError("Transition handler not found in scene!");

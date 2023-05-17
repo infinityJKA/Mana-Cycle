@@ -931,8 +931,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u2191\u2190\u2193\u2192 - Cursor\n/ - Select   , - Info\nBack Space -
-    Back"
+  m_text: "\u2191\u2190\u2193\u2192 - Cursor\n/ - Select   Back Space - Back\n, -
+    Info   . - Settings"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
@@ -1070,9 +1070,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'RDFG - Cursor
 
-    E - Select   Q - Info
+    E - Select   Tab - Back
 
-    Tab - Back'
+    Q - Info   W - Settings'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
@@ -2343,6 +2343,10 @@ PrefabInstance:
       propertyPath: inputScript
       value: 
       objectReference: {fileID: 11400000, guid: 23e0fde6fd3784132844b12c502f8b20, type: 2}
+    - target: {fileID: 5349231826878265137, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
+      propertyPath: opponentSelector
+      value: 
+      objectReference: {fileID: 3004535545199556288}
     - target: {fileID: 5714248975515387141, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
       propertyPath: m_Name
       value: P2Selector
@@ -2554,6 +2558,10 @@ PrefabInstance:
       propertyPath: soloInputScript
       value: 
       objectReference: {fileID: 11400000, guid: 1a9e593bfdbc8c44fb272a6e7be1fd94, type: 2}
+    - target: {fileID: 5349231826878265137, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
+      propertyPath: opponentSelector
+      value: 
+      objectReference: {fileID: 802279588}
     - target: {fileID: 5664668976183946495, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
       propertyPath: m_IsActive
       value: 1
