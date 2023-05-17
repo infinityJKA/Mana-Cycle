@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VersusGrid
-  m_Shader: {fileID: 4800000, guid: ecfa8f5732b504ef98fba10aa18d0326, type: 3}
+  m_Name: TextGradient
+  m_Shader: {fileID: 4800000, guid: b7c109a55ddaf4a2b8efdc9414fefd7c, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -44,9 +44,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 5993ce57db744449a87045e4177d3321, type: 3}
-        m_Scale: {x: 20, y: 10}
-        m_Offset: {x: -44.491085, y: 22.245543}
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -61,14 +61,41 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha0: 1
+    - _Alpha1: 1
+    - _Alpha2: -1
+    - _Alpha3: -1
+    - _Alpha4: -1
+    - _Alpha5: -1
+    - _Alpha6: -1
+    - _Alpha7: -1
+    - _AlphaTime0: 0
+    - _AlphaTime1: 1
+    - _AlphaTime2: -1
+    - _AlphaTime3: -1
+    - _AlphaTime4: -1
+    - _AlphaTime5: -1
+    - _AlphaTime6: -1
+    - _AlphaTime7: -1
+    - _Alphas: 2
     - _BumpScale: 1
     - _ColorMask: 15
+    - _ColorTime0: 0
+    - _ColorTime1: 1
+    - _ColorTime2: -1
+    - _ColorTime3: -1
+    - _ColorTime4: -1
+    - _ColorTime5: -1
+    - _ColorTime6: -1
+    - _ColorTime7: -1
+    - _Colors: 2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _IsVertical: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -86,5 +113,13 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color0: {r: 0.088510156, g: 0.4811321, b: 0.088510156, a: 1}
+    - _Color1: {r: 0.042052314, g: 0.990566, b: 0.042052314, a: 1}
+    - _Color2: {r: 1, g: 0, b: 1, a: 1}
+    - _Color3: {r: 1, g: 0, b: 1, a: 1}
+    - _Color4: {r: 1, g: 0, b: 1, a: 1}
+    - _Color5: {r: 1, g: 0, b: 1, a: 1}
+    - _Color6: {r: 1, g: 0, b: 1, a: 1}
+    - _Color7: {r: 1, g: 0, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
