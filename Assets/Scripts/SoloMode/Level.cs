@@ -69,6 +69,9 @@ namespace SoloMode {
         [Range(0,1)]
         public float aiDifficulty = 1;
 
+        // the rate at which trash pieces are sent to the board. -1 (or any value less than 0) disables
+        public float trashSendRate = -1;
+
         // Battle music
         public AudioClip battleMusic;
 

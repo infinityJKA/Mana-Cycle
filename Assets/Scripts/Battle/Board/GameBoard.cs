@@ -295,6 +295,7 @@ namespace Battle.Board {
                 if (Storage.gamemode == Storage.GameMode.Solo && playerControlled)
                 {
                     battler = level.battler;
+
                     // set opp in ai battles
                     if (Storage.level.aiBattle)
                     {
@@ -494,7 +495,7 @@ namespace Battle.Board {
                         // if there are tiles, damage and reset the timer.
                         // if no tiles, set timer to 0 (not running)
                         if (trashDamage > 0) {
-                            TakeDamage(trashDamage, 0.333f);
+                            if (Storage.gamemode != Storage.GameMode.Solo) TakeDamage(trashDamage, 0.333f);
                             trashDamageTimer = trashDamageTimerDuration;
                         } else {
                             trashDamageTimer = 0;
@@ -545,6 +546,10 @@ namespace Battle.Board {
             }
 
             if (playerSide == 1) Debug.Log(battler.name);
+
+
+            // setup level trash timer if applicable
+            if (Storage.gamemode == Storage.GameMode.Solo && level.trashSendRate > 0) Invoke("AddTrashTile", level.trashSendRate);
 
             portrait.GetComponent<ColorFlash>().SetBaseColor(portrait.color);
             portrait.sprite = battler.sprite;
@@ -635,6 +640,9 @@ namespace Battle.Board {
             if (trashDamageTimer == 0) {
                 trashDamageTimer = trashDamageTimerDuration;
             }
+
+            // start trash timer again if applicable
+            if (level.trashSendRate > 0) Invoke("AddTrashTile", level.trashSendRate);
         }
 
         // Add a piece to this board without having the player control or place it (keep their current piece).
