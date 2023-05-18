@@ -1699,13 +1699,19 @@ namespace Battle.Board {
         /// <param name="pitch">pitch of the sound, 1f=normal</param>
         /// <param name="pan">pan of the sound, -1=left, 0=center, 1=right. leave as -2 for default of whichever side board is on</param>
         /// <param name="important">if this sfx should be prioritized over others and should always be played if possible</param>
-        public void PlaySFX(string key, float pitch = 1, float pan = -2, bool important = true)
+        public void PlaySFX(string key, float pitch = 1, float pan = -2, float volumeScale = 1f, bool important = true)
         {
+            // only do stereo sound if 
             if (pan == -2) {
-                pan = (playerSide == 1) ? 0.75f : -0.75f;
+                if (enemyBoard.enabled) {
+                    pan = (playerSide == 1) ? 0.75f : -0.75f;
+                    volumeScale *= 1.5f;
+                } else {
+                    pan = 0;
+                }
             }
 
-            SoundManager.Instance.PlaySound(sfx[key], pitch: pitch, pan: pan, important: important);
+            SoundManager.Instance.PlaySound(sfx[key], pitch: pitch, pan: pan, volumeScale: volumeScale, important: important);
         }
 
         static int obscureRadius = 3;
