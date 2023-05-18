@@ -28,11 +28,16 @@ namespace Sound {
         public void PlaySound(AudioClip clip, float pitch = 1f, float pan = 0f, float volumeScale = 1f, bool important = true)
         {
             // don't play if sound limit exceeded
-            if (effectSource.transform.childCount >= 19) return;
+            // if (effectSource.transform.childCount >= 19) return;
 
             // if this is an unimportant sound, don't play if there are a lot of sfx playing
             // (things like move, rotate, place are not important)
-            if (effectSource.transform.childCount >= 14 && !important) return; 
+            // if (effectSource.transform.childCount >= 14 && !important) return; 
+
+            // If sound limit exceeded, remove the topmost sound effect
+            if (effectSource.transform.childCount >= 19) {
+                Destroy(effectSource.transform.GetChild(0).gameObject);
+            }
 
             // create a new gameobject with an audiosource, to avoid interfering with other sound effects
             var tempEffectSource = new GameObject("tempEffectSource").AddComponent<AudioSource>();
