@@ -12,15 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: ArcadeHard1
   m_EditorClassIdentifier: 
-  levelName: Arcade Hard
-  description: Go against several challengers in a row! Extra Challenging!
+  levelName: Arcade ULT
+  description: Go against several challengers in a row, only for the experienced
+    users!
   conversation: {fileID: 11400000, guid: 021d54915f16345fe960892ed4591d63, type: 2}
   midLevelConversations: []
   time: 300
   scoreGoal: 0
   cycleLength: 7
   cycleUniqueColors: 5
+  lockPieceColors: 1
   fallTime: 0.6
+  slideTimeMult: 1
   availableBattlers:
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
   - {fileID: 11400000, guid: 91c504e9689114ce0bf46b0f721e8f16, type: 2}
@@ -36,4 +39,5 @@ MonoBehaviour:
   aiBattle: 1
   opponent: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
   aiDifficulty: 0.65
+  trashSendRate: -1
   battleMusic: {fileID: 0}
