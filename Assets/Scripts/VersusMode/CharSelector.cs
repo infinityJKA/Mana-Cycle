@@ -64,17 +64,40 @@ namespace VersusMode {
         private float settingsFadeAmount = 0;
 
         ///<summary> Currently selected icon's Selectable component </summary>
-        private CharacterIcon selectedIcon;
+        public CharacterIcon selectedIcon;
         ///<summary> Currently selected selectable in the settings menu </summary>
         private Selectable settingsSelection; 
         
         ///<summary>True when the player has locked in their choice
         public bool lockedIn {get; private set;}
 
-        ///<summary> If currently in CPU select mode. This will control CPU cursor instead of cpu cursor. (p2 only)
-        public bool isCpu {get; private set;}
+        ///<summary> If currently in CPU select mode. This will control CPU cursor instead of cpu cursor. (player vs. ai p2 only)
+        public bool isCpuCursor {get; private set;}
         ///<summary> If active. Will only be inactive if this is CPU and player1 is currently selecting </summary>
-        public bool active {get; private set;}
+        private bool active;
+        public bool Active {
+            get { return active; }
+            set {
+                active = value;
+
+                if (active) {
+                    portrait.enabled = true;
+                    nameText.enabled = true;
+                    SetSelection(selectedIcon.selectable);
+                    selectedIcon.cursorImage.color = Color.white;
+                }
+                // if not active (player vs. cpu only): dimmed cursor if p1, hide if p2
+                else {
+                    if (isPlayer1) {
+                        selectedIcon.cursorImage.color = new Color(1f, 1f, 1f, 0.5f);
+                    } else {
+                        portrait.color = new Color(1f, 1f, 1f, 0.5f);
+                        nameText.enabled = false;
+                        HideSelection();
+                    }
+                }
+            }
+        }
 
 
         // cached on validate
@@ -93,8 +116,26 @@ namespace VersusMode {
             centerPosition = abilityInfoCanvasGroup.transform.localPosition;
             RefreshLockVisuals();
 
+            // yeah uhh... this code got kinda bad. might try to refactor it after semis so that we can actually understand what's going on throughout this file
+
+            // Set cpu cursor to true if in Versus: player vs. opponent only. set to cpu cursor and false if this is p2
+            if (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2 && Storage.level == null) {
+                if (!isPlayer1) {
+                    isCpuCursor = true;
+                    Active = false;
+                    portrait.enabled = false;
+                } else {
+                    // inputs should be solo inputs scripts, as the player will play in the game
+                    inputScript = soloInputScript;
+                    opponentSelector.inputScript = soloInputScript;
+                    tipText.Refresh();
+                    Active = true;
+                }
+            } else {
+                Active = true;
+            }
             
-            if (Storage.gamemode == Storage.GameMode.Solo || !Storage.isPlayerControlled2 && Storage.level != null)
+            if (Storage.gamemode == Storage.GameMode.Solo || (isPlayer1 && (!Storage.isPlayerControlled2 && Storage.level != null)))
             {
                 // set solo mode inputs 
                 // TODO change tip text depending on inputs
@@ -119,6 +160,9 @@ namespace VersusMode {
                     }
                 }
             }
+
+            tipText.gameObject.SetActive(true);
+            gameObject.SetActive(true);
 
             SetSettingsSelection(ghostPieceToggle);
             ghostPieceToggle.isOn = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
@@ -152,6 +196,9 @@ namespace VersusMode {
                     settingsCanvasGroup.transform.localPosition = centerPosition;
                 }
             }
+
+            // don't accept input if not active
+            if (!Active) return;
 
             if (settingsDisplayed) {
                 // Look for a new icon to select in inputted directions, select if found
@@ -200,6 +247,17 @@ namespace VersusMode {
                 // unlock in when pause pressed
                 else if (lockedIn) ToggleLock();
 
+                // if this is the CPU cursor (player vs cpu only), return active state to the player and re-disable this
+                else if (isCpuCursor && !isPlayer1) {
+                    Active = false;
+                    opponentSelector.Active = true;
+                    if (Storage.isPlayerControlled1) {
+                        selectedIcon.SetCPUHovered(true, true);
+                    } else {
+                        selectedIcon.SetSelected(isPlayer1, true, true);
+                    }
+                }
+
                 // or go back to menu if not locked in
                 else {
                     if (!transitionHandler) {
@@ -219,7 +277,6 @@ namespace VersusMode {
             {
                 ToggleSettings();
             }
-
         }
 
         void ToggleLock()
@@ -227,6 +284,12 @@ namespace VersusMode {
             lockedIn = !lockedIn;
             SoundManager.Instance.PlaySound(lockedIn ? selectSFX : unselectSFX);
             RefreshLockVisuals();
+
+            // when locking in, disable and enable cpu selector
+            if (lockedIn && opponentSelector.isCpuCursor) {
+                Active = false;
+                opponentSelector.Active = true;
+            }
         }
 
         void RefreshLockVisuals() {
@@ -274,8 +337,18 @@ namespace VersusMode {
                 return;
             }
 
-            if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
-            newSelectedIcon.SetSelected(isPlayer1, true);
+            if (isCpuCursor) {
+                if (!Storage.isPlayerControlled1) {
+                    if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
+                    newSelectedIcon.SetSelected(isPlayer1, true);
+                } else {
+                    if (selectedIcon) selectedIcon.SetCPUHovered(false);
+                    newSelectedIcon.SetCPUHovered(true);
+                }
+            } else {
+                if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
+                newSelectedIcon.SetSelected(isPlayer1, true);
+            }
 
             SoundManager.Instance.PlaySound(switchSFX, 2.5f);
 
@@ -296,6 +369,10 @@ namespace VersusMode {
                     + selectedBattler.activeAbilityDesc;
                 }
             }
+        }
+
+        public void HideSelection() {
+            selectedIcon.SetSelected(isPlayer1, false);
         }
 
         void OnValidate() {

@@ -32,19 +32,21 @@ namespace VersusMode {
         ///<summary>Set Whether or not p1/p2 is currently hovered over.</summary>
         ///<param name="isPlayer1">true for p1, false for p2</param>
         ///<param name="hovered">true if the player's cursor is here, false if not</param>
-        public void SetSelected(bool isPlayer1, bool hovered) {
+        public void SetSelected(bool isPlayer1, bool hovered, bool dim = false) {
             if (isPlayer1) {
                 p1hovered = hovered;
             } else if (Storage.gamemode != Storage.GameMode.Solo) {
                 p2hovered = hovered;
             }
             RefreshCursorImage();
+            cursorImage.color = dim ? new Color(1, 1, 1, 0.5f) : Color.white;
         }
 
         ///<summary>Same as SetHovered but only for the cpu cursor</summary>
-        public void SetCPUHovered(bool hovered) {
+        public void SetCPUHovered(bool hovered, bool dim = false) {
             cpuHovered = hovered;
             RefreshCursorImage();
+            cpuCursorImage.color = dim ? new Color(1, 1, 1, 0.5f) : Color.white;
         }
 
         ///<summary>Refreshes the images displayed on the cursor to reflect the current cursor state</summary>
