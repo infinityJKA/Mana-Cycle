@@ -17,6 +17,9 @@ public class Storage
     /** level that the player selected */
     public static SoloMode.Level level;
 
+    /// <summary>Index of last item the player hovered in the main menu, start there when re-entering menu</summary>
+    public static int lastMainMenuItem = 1; // start on solo mode
+
     /** last index selected in level select list. -1 will select next level that is not cleared, starts off as this */
     public static int lastLevelSelectedIndex = -1;
     public static int lastTabSelectedIndex = -1;
