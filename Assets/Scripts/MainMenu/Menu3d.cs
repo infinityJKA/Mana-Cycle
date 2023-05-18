@@ -33,29 +33,39 @@ namespace MainMenu {
 
         [SerializeField] private TMPro.TextMeshProUGUI tipText;
 
+        ///<summary>GameObject that holds all the Button objects in the scene</summary>
+        [SerializeField] private Transform buttonTransorm;
+
         // Start is called before the first frame update
         void Start()
         {
+            // Select the last item selected by the player in previous menu. Defaults to solo mode button if game was just launched
+            EventSystem.current.SetSelectedGameObject( buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject );
+
             UpdateTip();
         }
 
         // Update is called once per frame
-        void Update()
-        {
-            foreach (InputScript inputScript in inputScripts) {
-                if (Input.GetKeyDown(inputScript.Cast)) {
-                    if (EventSystem.current.currentSelectedGameObject != null) {
-                        var obj = EventSystem.current.currentSelectedGameObject;
-                        obj.GetComponent<Selectable>().Select();
-                    }
-                }
-            }
-        }
+        // void Update()
+        // {
+        //     foreach (InputScript inputScript in inputScripts) {
+        //         if (Input.GetKeyDown(inputScript.Cast)) {
+        //             var selection = EventSystem.current.currentSelectedGameObject;
+        //             Debug.Log(selection);
+        //             if (selection) {
+        //                 Storage.lastMainMenuItem = selection.transform.GetSiblingIndex();
+        //                 Debug.Log(Storage.lastMainMenuItem);
+        //                 selection.GetComponent<Selectable>().Select();
+        //             }
+        //         }
+        //     }
+        // }
 
         public void SelectVersus()
         {
             VersusWindow.SetActive(true);
             MainWindow.SetActive(false);
+            Storage.lastMainMenuItem = 2;
             EventSystem.current.SetSelectedGameObject(VersusFirstSelected);
         }
 
@@ -115,6 +125,7 @@ namespace MainMenu {
 
         public void SelectSolo()
         {
+            Storage.lastMainMenuItem = 1;
             TransitionHandler.WipeToScene("SoloMenu");
         }
 

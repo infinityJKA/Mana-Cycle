@@ -603,7 +603,7 @@ namespace Battle.Board {
                 Spellcast(1);
             }
             else {
-                PlaySFX("failedCast");
+                PlaySFX("failedCast", pan: 0.3f);
                 var shake = pointer.GetComponent<Shake>();
                 if (shake != null) shake.StartShake();
             }
@@ -1699,16 +1699,15 @@ namespace Battle.Board {
         /// <param name="pitch">pitch of the sound, 1f=normal</param>
         /// <param name="pan">pan of the sound, -1=left, 0=center, 1=right. leave as -2 for default of whichever side board is on</param>
         /// <param name="important">if this sfx should be prioritized over others and should always be played if possible</param>
-        public void PlaySFX(string key, float pitch = 1, float pan = -2, float volumeScale = 1f, bool important = true)
+        public void PlaySFX(string key, float pitch = 1, float pan = 0.75f, float volumeScale = 1f, bool important = true)
         {
-            // only do stereo sound if 
-            if (pan == -2) {
-                if (enemyBoard.enabled) {
-                    pan = (playerSide == 1) ? 0.75f : -0.75f;
-                    volumeScale *= 1.5f;
-                } else {
-                    pan = 0;
-                }
+            // flip stereo pan to left side if player1
+            if (enemyBoard.enabled) {
+                if (playerSide == 0) pan = -pan;
+            }
+            // if no enemy, don't pan
+            else {
+                pan = 0;
             }
 
             SoundManager.Instance.PlaySound(sfx[key], pitch: pitch, pan: pan, volumeScale: volumeScale, important: important);
