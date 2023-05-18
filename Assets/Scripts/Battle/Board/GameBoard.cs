@@ -25,7 +25,7 @@ namespace Battle.Board {
 
         // True if the player controls this board. */
         [SerializeField] private bool playerControlled;
-        /** 0 for left side, 1 for right side */
+        /// <summary>0 for left side, 1 for right side</summary>
         [SerializeField] private int playerSide;
 
         /** Obect where pieces are drawn */
@@ -358,7 +358,7 @@ namespace Battle.Board {
                     if (Input.GetKeyDown(inputScript.Pause) && !postGame && !Storage.convoEndedThisInput)
                     {
                         pauseMenu.TogglePause();
-                        PlaySFX("pause");
+                        PlaySFX("pause", pan: 0);
                     }
                     Storage.convoEndedThisInput = false;
 
@@ -367,10 +367,10 @@ namespace Battle.Board {
                     {
                         if (Input.GetKeyDown(inputScript.Up)) {
                             pauseMenu.MoveCursor(Vector3.up);
-                            PlaySFX("move", pitch : 0.8f);
+                            PlaySFX("move", pitch: 0.8f, important: false);
                         } else if (Input.GetKeyDown(inputScript.Down)) {
                             pauseMenu.MoveCursor(Vector3.down);
-                            PlaySFX("move", pitch : 0.75f);
+                            PlaySFX("move", pitch: 0.75f, important: false);
                         }
 
                         if (Input.GetKeyDown(inputScript.Cast)){
@@ -565,7 +565,7 @@ namespace Battle.Board {
 
             RefreshGhostPiece();
 
-            PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f));
+            PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f), important: false);
         }
 
         public void RotateRight(){
@@ -579,16 +579,16 @@ namespace Battle.Board {
 
             RefreshGhostPiece();
 
-            PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f));
+            PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f), important: false);
         }
 
         public bool MoveLeft(){
-            PlaySFX("move", pitch : Random.Range(0.9f,1.1f));
+            PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
             return MovePiece(-1, 0);
         }
 
         public bool MoveRight(){
-            PlaySFX("move", pitch : Random.Range(0.9f,1.1f));
+            PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
             return MovePiece(1, 0);
         }
 
@@ -1692,9 +1692,20 @@ namespace Battle.Board {
             CheckMidLevelConversations();
         }
 
-        public void PlaySFX(string value, float pitch = 1)
+        /// <summary>
+        /// play a sound from this board.
+        /// </summary>
+        /// <param name="key">The key of the sound from the sfx dictionary to play</param>
+        /// <param name="pitch">pitch of the sound, 1f=normal</param>
+        /// <param name="pan">pan of the sound, -1=left, 0=center, 1=right. leave as -2 for default of whichever side board is on</param>
+        /// <param name="important">if this sfx should be prioritized over others and should always be played if possible</param>
+        public void PlaySFX(string key, float pitch = 1, float pan = -2, bool important = true)
         {
-            SoundManager.Instance.PlaySound(sfx[value], pitch : pitch);
+            if (pan == -2) {
+                pan = (playerSide == 1) ? 0.75f : -0.75f;
+            }
+
+            SoundManager.Instance.PlaySound(sfx[key], pitch: pitch, pan: pan, important: important);
         }
 
         static int obscureRadius = 3;
