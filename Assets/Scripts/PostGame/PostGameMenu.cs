@@ -80,9 +80,10 @@ namespace PostGame {
             
             // solo mode in series: retry -> continue
 
-            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && Storage.level.availableBattlers.Count > 1)) {
-            buttonsTransform.Find("LevelSelectButton").GetChild(0).GetComponent<TextMeshProUGUI>()
-                .text = "Character Select";
+            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && Storage.level.availableBattlers.Count > 1))
+            {
+                buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(false);
+                buttonsTransform.Find("CharSelectButton").gameObject.SetActive(true);
             }
 
             // Update level clear status
@@ -136,7 +137,6 @@ namespace PostGame {
                 // if reached the end of a solo level, go to win screen
                 if (Storage.level.nextSeriesLevel == null && Storage.level.lastSeriesLevel != null)
                 {
-                    Debug.Log("Errrrmm...");
                     Time.timeScale = 1f;
                     MenuUI.SetActive(false);
                     transitionHandler.WipeToScene("ArcadeWin");
@@ -198,7 +198,7 @@ namespace PostGame {
         public void MoveCursor(Vector3 dir)
         {
             var toSelect = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectable(dir);
-            EventSystem.current.SetSelectedGameObject(toSelect.gameObject);
+            if (toSelect != null) EventSystem.current.SetSelectedGameObject(toSelect.gameObject);
         }
 
         public void SelectOption()
