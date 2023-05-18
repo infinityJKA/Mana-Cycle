@@ -25,7 +25,7 @@ namespace Sound {
             Load();
         }
 
-        public void PlaySound(AudioClip clip, float pitch = 1f, float pan = 0f, bool important = true)
+        public void PlaySound(AudioClip clip, float pitch = 1f, float pan = 0f, float volumeScale = 1f, bool important = true)
         {
             // don't play if sound limit exceeded
             if (effectSource.transform.childCount >= 19) return;
@@ -39,6 +39,7 @@ namespace Sound {
             tempEffectSource.transform.SetParent(effectSource.transform);
             tempEffectSource.pitch = pitch;
             tempEffectSource.panStereo = pan;
+            tempEffectSource.volume = Mathf.Clamp(tempEffectSource.volume * volumeScale, 0, 1);
             tempEffectSource.PlayOneShot(clip, Instance.effectSource.volume);
             Destroy(tempEffectSource.gameObject, clip.length);
         }
