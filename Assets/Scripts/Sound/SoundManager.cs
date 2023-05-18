@@ -25,14 +25,22 @@ namespace Sound {
             Load();
         }
 
-        public void PlaySound(AudioClip clip, float pitch = 1f)
+        public void PlaySound(AudioClip clip, float pitch = 1f, float pan = 0f, bool important = true)
         {
+            // don't play if sound limit exceeded
+            if (effectSource.transform.childCount >= 19) return;
+
+            // if this is an unimportant sound, don't play if there are a lot of sfx playing
+            // (things like move, rotate, place are not important)
+            if (effectSource.transform.childCount >= 14 && !important) return; 
+
             // create a new gameobject with an audiosource, to avoid interfering with other sound effects
-            GameObject tempEffectSource = new GameObject("tempEffectSource");
-            tempEffectSource.AddComponent<AudioSource>();
-            tempEffectSource.GetComponent<AudioSource>().pitch = pitch;
-            tempEffectSource.GetComponent<AudioSource>().PlayOneShot(clip, Instance.effectSource.volume);
-            Destroy(tempEffectSource, clip.length);
+            var tempEffectSource = new GameObject("tempEffectSource").AddComponent<AudioSource>();
+            tempEffectSource.transform.SetParent(effectSource.transform);
+            tempEffectSource.pitch = pitch;
+            tempEffectSource.panStereo = pan;
+            tempEffectSource.PlayOneShot(clip, Instance.effectSource.volume);
+            Destroy(tempEffectSource.gameObject, clip.length);
         }
 
         /** Set the background music. If the passed song is already playing, do not replay */
