@@ -121,7 +121,7 @@ namespace PostGame {
                     // if in level series, replay button -> continue button
                     if (Storage.level.nextSeriesLevel && cleared)
                     {
-                        retryButton.GetComponent<TextMeshProUGUI>().text = "Continue";
+                        retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Continue";
                         var ev = new Button.ButtonClickedEvent();
                         ev.AddListener(() => SelectContinue());
                         retryButton.onClick = ev;
