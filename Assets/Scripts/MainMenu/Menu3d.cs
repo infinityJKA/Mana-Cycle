@@ -84,6 +84,7 @@ namespace MainMenu {
         public void GoToCharSelect(int setup){
             // this is currently always called from main menu versus setup, so set gamemode to versus
             Storage.gamemode = Storage.GameMode.Versus;
+            Storage.level = null;
             switch(setup){
                 case 1: Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = false; break;
                 case 2: Storage.isPlayerControlled1 = false; Storage.isPlayerControlled2 = false; break;

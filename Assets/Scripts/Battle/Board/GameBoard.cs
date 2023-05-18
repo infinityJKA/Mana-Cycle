@@ -217,7 +217,9 @@ namespace Battle.Board {
             if (Storage.level != null && Storage.level.nextSeriesLevel != null) Storage.level.nextSeriesLevel.lastSeriesLevel = Storage.level;
             
             // if in solo mode, add solo additional inputs
-            if (Storage.gamemode == Storage.GameMode.Solo) inputScripts = soloInputScripts;
+            // also use in player vs. ai
+            if ((Storage.gamemode == Storage.GameMode.Solo) 
+            || (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2)) inputScripts = soloInputScripts;
 
             // get sfx as regular dict
             serializedSoundDict = sfxObject.GetComponent<SFXDict>().sfxDictionary;
