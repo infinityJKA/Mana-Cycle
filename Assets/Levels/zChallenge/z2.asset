@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: z2
   m_EditorClassIdentifier: 
-  levelName: Level 14
+  levelName: z-2
   description: With the max fall speed, score 10000 points and clear 150 mana.
   conversation: {fileID: 11400000, guid: 556c83a908e35774abb6ba6b82383bf1, type: 2}
   midLevelConversations: []
@@ -20,16 +20,17 @@ MonoBehaviour:
   scoreGoal: 0
   cycleLength: 7
   cycleUniqueColors: 5
-  fallTime: 0.01
+  lockPieceColors: 1
+  fallTime: 0.8
+  slideTimeMult: 1
   availableBattlers:
-  - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
-  objectives:
-  - condition: 1
-    value: 10000
-  - condition: 2
-    value: 150
-  levelRequirement: {fileID: 11400000, guid: 18250c36fef6823429774a292681b492, type: 2}
+  - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
+  objectives: []
+  levelRequirement: {fileID: 0}
+  nextSeriesLevel: {fileID: 0}
   survivalWin: 1
   aiBattle: 0
   opponent: {fileID: 0}
+  aiDifficulty: 1
+  trashSendRate: 1
   battleMusic: {fileID: 8300000, guid: b9bb2c746a5f8e443825278af7a74436, type: 3}
