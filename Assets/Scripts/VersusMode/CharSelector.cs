@@ -94,7 +94,7 @@ namespace VersusMode {
             RefreshLockVisuals();
 
             
-            if (Storage.gamemode == Storage.GameMode.Solo || !Storage.isPlayerControlled2)
+            if (Storage.gamemode == Storage.GameMode.Solo || !Storage.isPlayerControlled2 && Storage.level != null)
             {
                 // set solo mode inputs 
                 // TODO change tip text depending on inputs
