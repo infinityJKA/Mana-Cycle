@@ -5,15 +5,18 @@ using Battle.Cycle;
 
 namespace Battle.Board {    
     public class RngManager : MonoBehaviour {
-        private List<ManaColor> bag = new List<ManaColor>();
+        private List<ManaColor> bag; // = new List<ManaColor>();
+        // reason for only init on start or method call on this instance: each instance (player) should needs to its own list
         private int CenterMatchCallCount = 0;
 
         void Start() {
-            // bag = new List<ManaColor>();
+            if (bag == null) bag = new List<ManaColor>();
         }
 
         private void RefillBag()
         {
+            if (bag == null) bag = new List<ManaColor>();
+
             // generate the next piece colors with 2x bag, where x is unique cycle colors
             // create the unsorted list with 2 of each color
             bag.Clear();
@@ -30,6 +33,8 @@ namespace Battle.Board {
         // pull the next color from bag
         public ManaColor PullColorFromBag()
         {
+            if (bag == null) bag = new List<ManaColor>();
+
             // fill bag if empty
             if (bag.Count == 0) RefillBag();
             
