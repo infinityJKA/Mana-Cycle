@@ -198,7 +198,7 @@ namespace PostGame {
         public void MoveCursor(Vector3 dir)
         {
             var toSelect = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectable(dir);
-            EventSystem.current.SetSelectedGameObject(toSelect.gameObject);
+            if (toSelect != null) EventSystem.current.SetSelectedGameObject(toSelect.gameObject);
         }
 
         public void SelectOption()
