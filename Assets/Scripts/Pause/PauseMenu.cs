@@ -31,8 +31,8 @@ namespace Pause {
             }
             
             if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && Storage.level.availableBattlers.Count > 1)) {
-                buttonsTransform.Find("LevelSelectButton").GetChild(0).GetComponent<TextMeshProUGUI>()
-                    .text = "Character Select";
+                buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(false);
+                buttonsTransform.Find("CharSelectButton").gameObject.SetActive(true);
             }
         }
 
@@ -82,7 +82,7 @@ namespace Pause {
         public void MoveCursor(Vector3 dir)
         {
             var toSelect = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectable(dir);
-            EventSystem.current.SetSelectedGameObject(toSelect.gameObject);
+            if (toSelect != null) EventSystem.current.SetSelectedGameObject(toSelect.gameObject);
         }
 
         public void SelectOption()
