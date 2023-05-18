@@ -5,11 +5,11 @@ using Battle.Cycle;
 
 namespace Battle.Board {    
     public class RngManager : MonoBehaviour {
-        private List<ManaColor> bag;
+        private List<ManaColor> bag = new List<ManaColor>();
         private int CenterMatchCallCount = 0;
 
         void Start() {
-            bag = new List<ManaColor>();
+            // bag = new List<ManaColor>();
         }
 
         private void RefillBag()
