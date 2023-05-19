@@ -105,6 +105,8 @@ namespace Battle.Board {
             board.DealDamage(board.damagePerMana*2, center.transform.position, 0, 0);
             board.ClearTile(col, row);
             board.TileGravity(col, row-1, force: true); // makes this piece's tile fall
+            // may cause ta tile to not be in a valid clearing blob - check to unglow them
+            board.UnglowNotInBlobs();
         }
 
 
@@ -131,6 +133,9 @@ namespace Battle.Board {
                 }
             }
             board.AllTileGravity();
+
+            // Because this may cause a tile to fall outside of a blob, unglow un blob tiles
+            board.UnglowNotInBlobs();
 
             board.DealDamage((int)(board.damagePerMana*totalPointMult*1.5f), center.transform.position, 0, 0);
         }

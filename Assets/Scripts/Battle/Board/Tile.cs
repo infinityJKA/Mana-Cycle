@@ -128,7 +128,7 @@ namespace Battle.Board {
             }
             // else, pulse glow if glowTarget is 0 (not animateing to a non-zero glow value), & not animating which previous condition stops
             else if (pulseGlow && glowTarget == 0) {
-                glow = 0.5f + Mathf.PingPong(Time.time*1.5f, 0.25f);
+                glow = 0.45f + Mathf.PingPong(Time.time*1f, 0.2f);
             } 
             // otherwise, no glow if not animating or pulsing
             else {
