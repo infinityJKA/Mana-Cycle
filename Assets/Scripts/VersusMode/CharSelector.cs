@@ -217,7 +217,21 @@ namespace VersusMode {
                         randomBattler = battlerGrid.transform.GetChild(Random.Range(0, battlerGrid.transform.childCount-1)).GetComponent<CharacterIcon>().battler;
                     }
 
-                    UpdateBattlerInfo();
+                    portrait.sprite = selectedBattler.sprite;
+                    // nameText.text = selectedBattler.displayName;
+
+                    if (selectedBattler.passiveAbilityEffect == Battle.Battler.PassiveAbilityEffect.None && selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
+                        abilityText.text = "No special abilities";
+                    } else {
+                        if (selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
+                            abilityText.text = selectedBattler.passiveAbilityDesc;
+                        } else {
+                            abilityText.text = selectedBattler.passiveAbilityDesc 
+                            + "\n\n" 
+                            + "<b>"+selectedBattler.activeAbilityName+"</b>: "
+                            + selectedBattler.activeAbilityDesc;
+                        }
+                    }
                 } else {
                     randomChangeDelay -= Time.deltaTime;
                 }
@@ -321,11 +335,13 @@ namespace VersusMode {
         void RefreshLockVisuals() {
             if (lockedIn){
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, 1f);
+                nameText.text = selectedBattler.displayName;
                 nameText.fontStyle = TMPro.FontStyles.Bold;
             }
             else {
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
                 nameText.fontStyle = TMPro.FontStyles.Normal;
+                nameText.text = (selectedIcon.battler.displayName == "Random") ? "Random" : selectedBattler.displayName;
             }
         }
 
@@ -380,12 +396,8 @@ namespace VersusMode {
 
             selectedIcon = newSelectedIcon;
 
-            UpdateBattlerInfo();
-        }
-
-        void UpdateBattlerInfo() {
             portrait.sprite = selectedBattler.sprite;
-            nameText.text = selectedBattler.displayName;
+            nameText.text = (selectedIcon.battler.displayName == "Random") ? "Random" : selectedBattler.displayName;
 
             if (selectedBattler.passiveAbilityEffect == Battle.Battler.PassiveAbilityEffect.None && selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
                 abilityText.text = "No special abilities";
