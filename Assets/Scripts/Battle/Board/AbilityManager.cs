@@ -41,7 +41,8 @@ namespace Battle.Board {
         {
             mana = 0;
             mana = board.Battler.activeAbilityMana; // for easy debug
-
+            enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
+            manaBar.gameObject.SetActive(enabled);
             RefreshManaBar();
         }
 
@@ -53,13 +54,15 @@ namespace Battle.Board {
 
         public void RefreshManaBar()
         {        
+            
+            if (!enabled) return;
             // if this is disabled, also disable mana bar
-            manaBar.gameObject.SetActive(enabled);
             manaDisp.fillAmount = 1f * mana / board.Battler.activeAbilityMana;
         }
 
         public void GainMana(int count)
         {
+            if (!enabled) return;
             if (mana >= board.Battler.activeAbilityMana) return;
 
             mana = Math.Min(mana+count, board.Battler.activeAbilityMana);
@@ -76,6 +79,7 @@ namespace Battle.Board {
                 
 
         public void UseAbility() {
+            if (!enabled) return;
             if (board.Battler.activeAbilityEffect != Battler.ActiveAbilityEffect.None && mana >= board.Battler.activeAbilityMana) {
                 mana = 0;
                 RefreshManaBar();

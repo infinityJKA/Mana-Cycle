@@ -648,8 +648,10 @@ namespace Battle.Board {
         }
 
         public void UseAbility(){
-            if (abilityManager.enabled) abilityManager.UseAbility();
-            RefreshGhostPiece();
+            if (abilityManager.enabled) {
+                abilityManager.UseAbility();
+                RefreshGhostPiece();
+            }
         }
 
         public ManaColor PullColorFromBag() {
@@ -675,7 +677,7 @@ namespace Battle.Board {
             }
 
             // start trash timer again if applicable
-            if (level.trashSendRate > 0) Invoke("AddTrashTile", level.trashSendRate);
+            if (level != null && level.trashSendRate > 0) Invoke("AddTrashTile", level.trashSendRate);
         }
 
         // Add a piece to this board without having the player control or place it (keep their current piece).
@@ -1200,13 +1202,14 @@ namespace Battle.Board {
             if (glowDelay > 0) {
                 foreach (var blob in blobs) {
                     foreach (var tile in blob.tiles) {
-                        tiles[tile.y, tile.x].AnimateGlow(0.85f, glowDelay);
+                        tiles[tile.y, tile.x].AnimateGlow(1f, glowDelay);
                     }
                 }
             }
         }
 
-        /// <summary>Unglow tiles that aren't currently in any blobs.</summary>
+        /// <summary>Unglow tiles that aren't currently in any blobs.
+        /// Should be called if pieces are cleared in the middle of a spellcast (via abilities).</summary>
         public void UnglowNotInBlobs() {
             for (int r=0; r<height; r++) {
                 for (int c=0; c<width; c++) {
@@ -1268,7 +1271,7 @@ namespace Battle.Board {
 
             if (chain == 1) PlaySFX("startupCast");
 
-            GlowBlobs(0.55f);
+            GlowBlobs(0.8f);
             StartCoroutine(ClearCascadeWithDelay());
             IEnumerator ClearCascadeWithDelay()
             {
@@ -1284,7 +1287,7 @@ namespace Battle.Board {
                     while (totalBlobMana > 0) {
                         // If this is cascading off the same color more than once, short delay between
                         if (cascade > 0) {
-                            GlowBlobs(0.35f);
+                            GlowBlobs(0.5f);
                             yield return new WaitForSeconds(0.5f);
 
                             if (defeated)

@@ -426,5 +426,9 @@ namespace VersusMode {
             get { return ghostPieceToggle.isOn; }
             set { ghostPieceToggle.isOn = value; }    
         }
+
+        public bool enableAbilities { 
+            get { return abilityToggle.isOn; } 
+        }
     }
 }
