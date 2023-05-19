@@ -1195,11 +1195,23 @@ namespace Battle.Board {
             totalBlobMana = TotalMana(blobs);
         }
 
+        /// <summary>Glow tiles that are currently in a blob.</summary>
         public void GlowBlobs(float glowDelay) {
             if (glowDelay > 0) {
                 foreach (var blob in blobs) {
                     foreach (var tile in blob.tiles) {
-                        tiles[tile.y, tile.x].AnimateGlow(1f, glowDelay);
+                        tiles[tile.y, tile.x].AnimateGlow(0.85f, glowDelay);
+                    }
+                }
+            }
+        }
+
+        /// <summary>Unglow tiles that aren't currently in any blobs.</summary>
+        public void UnglowNotInBlobs() {
+            for (int r=0; r<height; r++) {
+                for (int c=0; c<width; c++) {
+                    if (!tilesInBlobs[r, c]) {
+                        tiles[r, c].AnimateGlow(0f, 0.5f);
                     }
                 }
             }
@@ -1256,7 +1268,7 @@ namespace Battle.Board {
 
             if (chain == 1) PlaySFX("startupCast");
 
-            GlowBlobs(0.8f);
+            GlowBlobs(0.55f);
             StartCoroutine(ClearCascadeWithDelay());
             IEnumerator ClearCascadeWithDelay()
             {
@@ -1272,7 +1284,7 @@ namespace Battle.Board {
                     while (totalBlobMana > 0) {
                         // If this is cascading off the same color more than once, short delay between
                         if (cascade > 0) {
-                            GlowBlobs(0.5f);
+                            GlowBlobs(0.35f);
                             yield return new WaitForSeconds(0.5f);
 
                             if (defeated)
