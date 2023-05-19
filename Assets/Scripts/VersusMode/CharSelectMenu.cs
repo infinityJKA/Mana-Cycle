@@ -8,7 +8,7 @@ namespace VersusMode {
         ///<summary>The grid of characters to select with the selectorss defined in this object</summary>
         [SerializeField] private Transform grid;
 
-        [SerializeField] private TransitionScript transitionHandler;
+        private TransitionScript transitionHandler;
         private double timer;
         private bool countdownStarted = false;
         private double maxTime = 1.0;
@@ -23,6 +23,8 @@ namespace VersusMode {
 
             p1Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
             p2Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPieceP2", 1) == 1;
+
+            transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
         }
 
         // Update is called once per frame
@@ -86,10 +88,6 @@ namespace VersusMode {
 
                 transitionHandler.WipeToScene("ManaCycle");
             }
-        }
-        
-        void OnValidate() {
-            // transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
         }
     }
 }
