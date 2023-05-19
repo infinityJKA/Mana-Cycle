@@ -402,6 +402,31 @@ namespace Battle.Board {
                     
                     // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
                     else if (!convoPaused && !postGame) {
+                        // code previously in controller.cs
+                        if (Input.GetKeyDown(inputScript.RotateCW)){
+                            RotateLeft();
+                        }
+
+                        if (Input.GetKeyDown(inputScript.RotateCCW)){
+                            RotateRight();
+                        }
+
+                        if (Input.GetKeyDown(inputScript.Left)){
+                            MoveLeft();
+                        }
+
+                        if (Input.GetKeyDown(inputScript.Right)){
+                            MoveRight();
+                        }
+
+                        if (Input.GetKeyDown(inputScript.Up)){
+                            UseAbility();
+                        }
+
+                        if (Input.GetKeyDown(inputScript.Cast)){
+                            Spellcast();
+                        }
+
                         if (playerControlled && piece != null){
                             quickFall = Input.GetKey(inputScript.Down);
                             instaDropThisFrame = Input.GetKeyDown(inputScript.Up);
