@@ -14,6 +14,10 @@ namespace Battle.Cycle {
         // All ManaColor colors to tint the cycle images
         [SerializeField] private List<Color> manaColors;
 
+        // Color to light mana tiles when they are shown as connected to the ghost piece.
+        [SerializeField] private List<Color> litManaColors;
+
+
         // String representations of the mana color
         [SerializeField] public List<string> manaColorStrings;
 
@@ -140,6 +144,10 @@ namespace Battle.Cycle {
 
         public Color GetManaColor(int index) {
             return manaColors[index];
+        }
+
+        public Color GetLitManaColor(int index) {
+            return litManaColors[index];
         }
     }
 }
