@@ -56,22 +56,31 @@ namespace Battle.Board {
         // If gravity should pull this tile down.
         public bool doGravity { get; private set; } = true;
 
+        /// <summary>Base reference color to use against when this tile is glowed</summary>
+        private Color baseColor;
+        /// <summary>While true, mana brightness will pulse in and out repeatedly</summary>
+        public bool pulseGlow;
+        /// <summary>internal bool used by GameBoard when lighting connected tiles</summary>
+        public bool connectedToGhostPiece;
+
         public void SetColor(ManaColor color, GameBoard board, bool ghost = false, bool setColor = true, bool setSprite = true)
         {
             this.color = color;
             // Get image and set color from the list in this scene's cycle
-            if (setColor) image.color = board.cycle.GetManaColors()[ ((int)color) ];
+            if (setColor) baseColor = board.cycle.GetManaColors()[ ((int)color) ];
             if (setSprite && board.cycle.usingSprites) {
                 if (ghost) {
                     image.sprite = board.cycle.ghostManaSprites[ ((int)color) ];
-                    image.color = new Color(image.color[0],image.color[1],image.color[2], 0.35f);
+                    baseColor = new Color(baseColor[0],baseColor[1],baseColor[2], 0.35f);
                     image.GetComponent<UnityEngine.UI.Outline>().enabled = true;
                     // image.GetComponent<UnityEngine.UI.Outline>().effectColor = Color.Lerp(image.color, Color.white, 0.4f);
-                    image.GetComponent<UnityEngine.UI.Outline>().effectColor = image.color;
+                    image.GetComponent<UnityEngine.UI.Outline>().effectColor = baseColor;
                 } else {
                     image.sprite = board.cycle.manaSprites[ ((int)color) ];
                 }
             }
+
+            image.color = baseColor;
         }
 
         public ManaColor GetManaColor()
@@ -81,6 +90,7 @@ namespace Battle.Board {
 
         public void SetVisualColor(Color color)
         {
+            baseColor = color;
             image.color = color;
         }
 
@@ -100,6 +110,12 @@ namespace Battle.Board {
                     image.transform.localPosition = Vector2.MoveTowards(image.transform.localPosition, targetPosition, speed*Time.deltaTime);
                     speed += acceleration*Time.deltaTime;
                 }
+            }
+
+            if (pulseGlow) {
+                image.color = Color.Lerp(baseColor, Color.white, 0.1f + Mathf.PingPong(Time.time*2f, 0.15f));
+            } else {
+                image.color = baseColor;
             }
         }
 
