@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class TransitionScript : MonoBehaviour
 {
     [SerializeField] private GameObject wipeObj;
-    private Image wipeImg;
+    [SerializeField] private Image wipeImg;
     private static string transitionState = "none";
     private static float inTime;
     private static float outTime;
@@ -21,7 +21,7 @@ public class TransitionScript : MonoBehaviour
     void Start()
     {
         // DontDestroyOnLoad(this.gameObject);
-        wipeImg = wipeObj.GetComponent<Image>();
+        // wipeImg = wipeObj.GetComponent<Image>();
         if (wipingOut){
             wipingOut = false;
             WipeOut();

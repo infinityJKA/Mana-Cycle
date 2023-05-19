@@ -8,7 +8,7 @@ namespace VersusMode {
         ///<summary>The grid of characters to select with the selectorss defined in this object</summary>
         [SerializeField] private Transform grid;
 
-        private TransitionScript transitionHandler;
+        [SerializeField] private TransitionScript transitionHandler;
         private double timer;
         private bool countdownStarted = false;
         private double maxTime = 1.0;
@@ -89,7 +89,7 @@ namespace VersusMode {
         }
         
         void OnValidate() {
-            transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
+            // transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
         }
     }
 }
