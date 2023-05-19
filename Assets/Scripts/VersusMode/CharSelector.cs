@@ -64,7 +64,7 @@ namespace VersusMode {
         private float settingsFadeAmount = 0;
 
         ///<summary> Currently selected icon's Selectable component </summary>
-        public CharacterIcon selectedIcon;
+        private CharacterIcon selectedIcon;
         ///<summary> Currently selected selectable in the settings menu </summary>
         private Selectable settingsSelection; 
         
@@ -99,13 +99,25 @@ namespace VersusMode {
             }
         }
 
+        // when hovering over Random battler, current delay before shown battler changes
+        private float randomChangeDelay;
+        // current battler being shown as randomly selected fighter
+        private Battle.Battler randomBattler;
 
         // cached on validate
         private TransitionScript transitionHandler;
 
 
         // properties
-        public Battle.Battler selectedBattler { get { return selectedIcon.battler; }}
+        public Battle.Battler selectedBattler { 
+            get { 
+                if (selectedIcon.battler.displayName == "Random" && randomBattler) {
+                    return randomBattler;
+                } else {
+                    return selectedIcon.battler;
+                }
+            }
+        }
 
 
         private Vector2 centerPosition;
@@ -194,6 +206,20 @@ namespace VersusMode {
                     settingsCanvasGroup.transform.localPosition = centerPosition + (1-settingsFadeAmount) * fadeDisplacement * (isPlayer1?1:-1);
                 } else {
                     settingsCanvasGroup.transform.localPosition = centerPosition;
+                }
+            }
+
+            if (selectedIcon.battler.displayName == "Random") {
+                if (randomChangeDelay <= 0 && (!lockedIn || !randomBattler)) {
+                    randomChangeDelay = 0.125f;
+                    var prevBattler = randomBattler;
+                    while (!randomBattler || randomBattler.displayName == "Random" || randomBattler == prevBattler) {
+                        randomBattler = battlerGrid.transform.GetChild(Random.Range(0, battlerGrid.transform.childCount-1)).GetComponent<CharacterIcon>().battler;
+                    }
+
+                    UpdateBattlerInfo();
+                } else {
+                    randomChangeDelay -= Time.deltaTime;
                 }
             }
 
@@ -354,6 +380,10 @@ namespace VersusMode {
 
             selectedIcon = newSelectedIcon;
 
+            UpdateBattlerInfo();
+        }
+
+        void UpdateBattlerInfo() {
             portrait.sprite = selectedBattler.sprite;
             nameText.text = selectedBattler.displayName;
 
