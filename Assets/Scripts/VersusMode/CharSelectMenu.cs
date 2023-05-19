@@ -67,6 +67,7 @@ namespace VersusMode {
                 // if (Storage.isPlayer2 == null) Storage.isPlayer2 = true;
 
                 PlayerPrefs.SetInt("drawGhostPiece", p1Selector.doGhostPiece ? 1 : 0);
+                PlayerPrefs.SetInt("enableAbilities", p1Selector.enableAbilities ? 1 : 0);
 
                 if (Storage.gamemode != Storage.GameMode.Solo)
                 {

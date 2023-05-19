@@ -67,6 +67,9 @@ namespace Battle.Board {
 
         /// Variables for glow animation
         private float glow, glowStartTime, glowDuration, glowStart, glowTarget;
+
+        // Animation curve that controls what the tile glow looks like
+        [SerializeField] private AnimationCurve glowAnimCurve;
         
 
         public void SetColor(ManaColor color, GameBoard board, bool ghost = false, bool setColor = true, bool setSprite = true)
@@ -123,8 +126,10 @@ namespace Battle.Board {
 
             // Animate glow
             if (Time.time-glowStartTime < glowDuration) {
-                glow = Mathf.Lerp(glowStart, glowTarget, (Time.time-glowStartTime)/glowDuration);
-                Debug.Log("glow = "+glow);
+                // glow = Mathf.Lerp(glowStart, glowTarget, (Time.time-glowStartTime)/glowDuration);
+                glow = Mathf.Lerp(glowStart, glowTarget, glowAnimCurve.Evaluate((Time.time-glowStartTime)/glowDuration));
+
+                // Debug.Log("glow = "+glow);
             }
             // else, pulse glow if glowTarget is 0 (not animateing to a non-zero glow value), & not animating which previous condition stops
             else if (pulseGlow && glowTarget == 0) {
