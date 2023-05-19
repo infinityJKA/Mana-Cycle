@@ -65,6 +65,10 @@ namespace Battle.Board {
         /// <summary>internal bool used by GameBoard when lighting connected tiles</summary>
         public bool connectedToGhostPiece;
 
+        /// Variables for glow animation
+        private float glow, glowStartTime, glowDuration, glowStart, glowTarget;
+        
+
         public void SetColor(ManaColor color, GameBoard board, bool ghost = false, bool setColor = true, bool setSprite = true)
         {
             this.color = color;
@@ -117,11 +121,20 @@ namespace Battle.Board {
                 }
             }
 
-            if (pulseGlow) {
-                image.color = Color.Lerp(baseColor, litColor, 0.5f + Mathf.PingPong(Time.time*1.5f, 0.25f));
-            } else {
-                image.color = baseColor;
+            // Animate glow
+            if (Time.time-glowStartTime < glowDuration) {
+                glow = Mathf.Lerp(glowStart, glowTarget, (Time.time-glowStartTime)/glowDuration);
+                Debug.Log("glow = "+glow);
             }
+            // else, pulse glow if glowTarget is 0 (not animateing to a non-zero glow value), & not animating which previous condition stops
+            else if (pulseGlow && glowTarget == 0) {
+                glow = 0.5f + Mathf.PingPong(Time.time*1.5f, 0.25f);
+            } 
+            // otherwise, no glow if not animating or pulsing
+            else {
+                glow = glowTarget; // will be 0 unless animated before this
+            }
+            image.color = Color.Lerp(baseColor, litColor, glow);
         }
 
         /// <summary>
@@ -167,6 +180,13 @@ namespace Battle.Board {
                 obscured = false;
                 SetColor(color, board);
             }
+        }
+
+        public void AnimateGlow(float target, float duration) {
+            glowStart = glow;
+            glowTarget = target;
+            glowStartTime = Time.time;
+            glowDuration = duration;
         }
     }
 }
