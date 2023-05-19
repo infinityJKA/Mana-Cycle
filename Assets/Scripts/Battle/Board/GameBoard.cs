@@ -77,6 +77,8 @@ namespace Battle.Board {
 
         /// Whether or not the ghost tile should be drawn on this board
         public bool drawGhostPiece = true;
+        /// <summary>If true, mana connected to the ghost piece will be lit up.</summary>
+        public bool lightConnectedMana = true;
 
         /** Current fall delay for pieces. */
         [SerializeField] private float fallTime = 0.8f;
@@ -120,6 +122,9 @@ namespace Battle.Board {
 
         /** Board containing all tiles that have been placed and their colors. NONE is an empty space (from ManaColor enum). */
         public Tile[,] tiles;
+        /// <summary>Non-real tiles that are simulated for the ghost piece and to light up connected mana</summary>
+        private Tile[,] simulatedTiles;
+
         /** Piece that is currently being dropped. */
         private Piece piece;
 
@@ -527,6 +532,7 @@ namespace Battle.Board {
             PointerReposition();
 
             tiles = new Tile[height, width];
+            if (drawGhostPiece || lightConnectedMana) simulatedTiles = new Tile[height, width];
             SpawnPiece();
 
             CheckMidLevelConversations();
@@ -879,8 +885,11 @@ namespace Battle.Board {
 
             ghostPiece.MakeGhostPiece(ref ghostTiles);
 
-            // calculate position via ghost tile
-            var simulatedTiles = new Tile[height, width];
+            // unlight all lit tiles connected by the previous ghost piece
+            ForEachTile(tile => {
+                tile.connectedToGhostPiece = false; tile.pulseGlow = false;
+                });
+            // copy state of real tiles board
             Array.Copy(tiles, 0, simulatedTiles, 0, simulatedTiles.Length);
  
             ghostPiece.PlaceTilesOnBoard(ref simulatedTiles, ghostPieceBoard);
@@ -899,7 +908,7 @@ namespace Battle.Board {
                     if (!(tile.y >= height) && simulatedTiles[tile.y, tile.x] != null)
                     {
                         // If a tile fell, set tileFell to true and the loop will go again after this
-                        if (GhostTileGravity(ref simulatedTiles, tile.x, tile.y))
+                        if (GhostTileGravity(tile.x, tile.y))
                         {
                             tileFell = true;
                         }
@@ -1142,6 +1151,11 @@ namespace Battle.Board {
         {
             public ManaColor color;
             public List<Vector2Int> tiles;
+
+            public Blob(ManaColor color) {
+                this.color = color;
+                this.tiles = new List<Vector2Int>();
+            }
         }
 
 
@@ -1354,9 +1368,7 @@ namespace Battle.Board {
         // Checks for a blob and recursively expands to all connected tiles
         Blob CheckBlob(int c, int r, ManaColor color)
         {
-            Blob blob = new Blob();
-            blob.color = color;
-            blob.tiles = new List<Vector2Int>();
+            Blob blob = new Blob(color);
 
             ExpandBlob(ref blob, c, r, color);
 
@@ -1435,7 +1447,7 @@ namespace Battle.Board {
             return false;
         }
 
-        public bool GhostTileGravity(ref Tile[,] simulatedTiles, int c, int r)
+        public bool GhostTileGravity(int c, int r)
         {
             // If there isn't a tile here, it can't fall, because it isnt a tile...
             if (simulatedTiles[r, c] == null) return false;
@@ -1462,16 +1474,68 @@ namespace Battle.Board {
                             0.5f // move tile away from camera so it is rendered behind non-ghost tiles
                         );
 
+                        // connect to ghost piece, illuminating connected tiles
+                        ConnectMana();
 
                         // simulatedTiles[rFall-1, c].transform.localPosition = Vector2.zero;
 
                         simulatedTiles[r, c] = null;
                         return true;
                     }
+                    // will reach here if tile did not fall at all and placed itself right where it is
+                    ConnectMana();
                     break;
                 }
+
+                void ConnectMana() {
+                    if (!simulatedTiles[rFall-1, c].connectedToGhostPiece) {
+                        // Connect to the ghost piece that is itself
+                        // simulatedTiles[rFall-1, c].connectedToGhostPiece = true;
+                        // Illuminate all connected tiles
+                        LightConnectedMana(rFall-1, c, simulatedTiles[rFall-1, c].color);
+                    }
+                }
             }
+
             return false;
+        }
+
+
+        // This and ExpandLightBlob are pretty much almost exactly analogous to CheckBlob() and ExpandBlob(), except for lighting tiles
+        void LightConnectedMana(int row, int col, ManaColor color) {
+            Blob blob = new Blob(color);
+            // blob.tiles.Add(new Vector2Int(row, col));
+
+            ExpandLightBlob(row, col, color, ref blob);
+
+            // ExpandLightBlob(row-1, col, color, ref blob);
+            // ExpandLightBlob(row+1, col, color, ref blob);
+            // ExpandLightBlob(row, col-1, color, ref blob);
+            // ExpandLightBlob(row, col+1, color, ref blob);
+
+            // if blob is big enough, light up all connected mana
+            if (blob.tiles.Count >= minBlobSize) blob.tiles.ForEach(tile => simulatedTiles[tile.x, tile.y].pulseGlow = true);
+        }
+
+        void ExpandLightBlob(int row, int col, ManaColor color, ref Blob blob) {
+            // return if OOB
+            if (row < 0 || row >= height || col < 0 || col >= width) return;
+            // return if no sim. tile
+            if (!simulatedTiles[row, col]) return;
+            // return if incorrect color
+            if (simulatedTiles[row, col].color != color) return;
+            // return if already connected - covers condition of already being in a blob
+            if (simulatedTiles[row, col].connectedToGhostPiece) return;
+
+            // Because simulatedTiles copies references to Tile objs on tiles arr, this will affect the correct tile on the tiles arr
+            simulatedTiles[row, col].connectedToGhostPiece = true;
+            blob.tiles.Add(new Vector2Int(row, col));
+
+            // psread to adjacent tiles
+            ExpandLightBlob(row-1, col, color, ref blob);
+            ExpandLightBlob(row+1, col, color, ref blob);
+            ExpandLightBlob(row, col-1, color, ref blob);
+            ExpandLightBlob(row, col+1, color, ref blob);
         }
 
         // Affect all tiles with gravity.
