@@ -1210,7 +1210,7 @@ namespace Battle.Board {
         public void UnglowNotInBlobs() {
             for (int r=0; r<height; r++) {
                 for (int c=0; c<width; c++) {
-                    if (!tilesInBlobs[r, c]) {
+                    if (!tilesInBlobs[r, c] && tiles[r, c ] != null) {
                         tiles[r, c].AnimateGlow(0f, 0.5f);
                     }
                 }
