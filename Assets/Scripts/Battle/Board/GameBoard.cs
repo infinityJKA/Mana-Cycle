@@ -1186,14 +1186,31 @@ namespace Battle.Board {
 
         /** Update the blob list this board has recognized. Should be called every time the board changes. */
 
-        public void RefreshBlobs(ManaColor color) {
+        public void RefreshBlobs(ManaColor color, float glowDelay = 0f) {
             tilesInBlobs = new bool[height, width];
             FindBlobs(color);
+
+            GlowBlobs(glowDelay);
+
             totalBlobMana = TotalMana(blobs);
         }
 
-        public void RefreshBlobs() {
-            RefreshBlobs(GetCycleColor());
+        public void GlowBlobs(float glowDelay) {
+            if (glowDelay > 0) {
+                foreach (var blob in blobs) {
+                    foreach (var tile in blob.tiles) {
+                        tiles[tile.y, tile.x].AnimateGlow(1f, glowDelay);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the collection of connected mana blobs.
+        /// </summary>
+        /// <param name="glowDelay">if above 0, start glowing mana about to be cleared</param>
+        public void RefreshBlobs(float glowDelay = 0f) {
+            RefreshBlobs(GetCycleColor(), glowDelay);
 
             // just tucked this in here, since it correlates to the lot of the same things
             // refreshes zman color obscuring
@@ -1239,6 +1256,7 @@ namespace Battle.Board {
 
             if (chain == 1) PlaySFX("startupCast");
 
+            GlowBlobs(0.8f);
             StartCoroutine(ClearCascadeWithDelay());
             IEnumerator ClearCascadeWithDelay()
             {
@@ -1254,6 +1272,7 @@ namespace Battle.Board {
                     while (totalBlobMana > 0) {
                         // If this is cascading off the same color more than once, short delay between
                         if (cascade > 0) {
+                            GlowBlobs(0.5f);
                             yield return new WaitForSeconds(0.5f);
 
                             if (defeated)
@@ -1297,9 +1316,11 @@ namespace Battle.Board {
                         foreach (Blob blob in blobs) {
                             // run onclear first to check for point multiplier increases (geo gold mine)
                             foreach (Vector2Int pos in blob.tiles) {
-                                if (tiles[pos.y, pos.x]) tiles[pos.y, pos.x].BeforeClear(blob);
+                                if (tiles[pos.y, pos.x]) {
+                                    tiles[pos.y, pos.x].BeforeClear(blob);
+                                }
                             }
-                            // then remove the tiles from the board and 
+                            // then remove the tiles from the board 
                             foreach (Vector2Int pos in blob.tiles) {
                                 totalPointMult += ClearTile(pos.x, pos.y);
 
