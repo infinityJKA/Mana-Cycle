@@ -58,6 +58,8 @@ namespace Battle.Board {
 
         /// <summary>Base reference color to use against when this tile is glowed</summary>
         private Color baseColor;
+        /// <summary>Color to light this up when connected to ghost piece</summary>
+        private Color litColor;
         /// <summary>While true, mana brightness will pulse in and out repeatedly</summary>
         public bool pulseGlow;
         /// <summary>internal bool used by GameBoard when lighting connected tiles</summary>
@@ -67,11 +69,14 @@ namespace Battle.Board {
         {
             this.color = color;
             // Get image and set color from the list in this scene's cycle
-            if (setColor) baseColor = board.cycle.GetManaColors()[ ((int)color) ];
+            if (setColor) {
+                baseColor = board.cycle.GetManaColor( (int)color );
+                litColor = board.cycle.GetLitManaColor( (int)color );
+            }
             if (setSprite && board.cycle.usingSprites) {
                 if (ghost) {
                     image.sprite = board.cycle.ghostManaSprites[ ((int)color) ];
-                    baseColor = new Color(baseColor[0],baseColor[1],baseColor[2], 0.35f);
+                    baseColor = new Color(baseColor.r, baseColor.g, baseColor.b, 0.4f);
                     image.GetComponent<UnityEngine.UI.Outline>().enabled = true;
                     // image.GetComponent<UnityEngine.UI.Outline>().effectColor = Color.Lerp(image.color, Color.white, 0.4f);
                     image.GetComponent<UnityEngine.UI.Outline>().effectColor = baseColor;
@@ -113,7 +118,7 @@ namespace Battle.Board {
             }
 
             if (pulseGlow) {
-                image.color = Color.Lerp(baseColor, Color.white, 0.1f + Mathf.PingPong(Time.time*2f, 0.15f));
+                image.color = Color.Lerp(baseColor, litColor, 0.5f + Mathf.PingPong(Time.time*1.5f, 0.25f));
             } else {
                 image.color = baseColor;
             }
