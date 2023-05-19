@@ -1488,12 +1488,10 @@ namespace Battle.Board {
                 }
 
                 void ConnectMana() {
-                    if (!simulatedTiles[rFall-1, c].connectedToGhostPiece) {
-                        // Connect to the ghost piece that is itself
-                        // simulatedTiles[rFall-1, c].connectedToGhostPiece = true;
-                        // Illuminate all connected tiles
-                        LightConnectedMana(rFall-1, c, simulatedTiles[rFall-1, c].color);
-                    }
+                    // Connect to the ghost piece that is itself
+                    // simulatedTiles[rFall-1, c].connectedToGhostPiece = true;
+                    // Illuminate all connected tiles
+                    if (lightConnectedMana) LightConnectedMana(rFall-1, c, simulatedTiles[rFall-1, c].color);
                 }
             }
 
@@ -1514,7 +1512,14 @@ namespace Battle.Board {
             // ExpandLightBlob(row, col+1, color, ref blob);
 
             // if blob is big enough, light up all connected mana
-            if (blob.tiles.Count >= minBlobSize) blob.tiles.ForEach(tile => simulatedTiles[tile.x, tile.y].pulseGlow = true);
+            if (blob.tiles.Count >= minBlobSize) {
+                blob.tiles.ForEach(tile => simulatedTiles[tile.x, tile.y].pulseGlow = true);
+            } 
+
+            // otherwise, disconnect it; a later tile might be able to use this in a big enough blob
+            else {
+                simulatedTiles[row, col].connectedToGhostPiece = false;
+            }
         }
 
         void ExpandLightBlob(int row, int col, ManaColor color, ref Blob blob) {
