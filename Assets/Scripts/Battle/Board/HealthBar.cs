@@ -19,6 +19,12 @@ namespace Battle.Board {
         private Image incomingDmgImage;
         [SerializeField]
         private Image shieldImage;
+
+        [SerializeField] private Color hpBarColor;
+        [SerializeField] private Color incDmgBarColor;
+
+        // used for segmented dmg bar
+        private List<GameObject> incDmgBarList;
         
         [SerializeField] private IncomingDamage[] damageQueue;
         public IncomingDamage[] DamageQueue { get { return damageQueue; } } // (public getter for private setter)
@@ -32,10 +38,22 @@ namespace Battle.Board {
         // Start is called before the first frame update
         void Start()
         {   
+            incDmgBarList = new List<GameObject>();
+
             foreach (IncomingDamage incoming in damageQueue)
             {
                 incoming.SetDamage(0);
+
+                // Debug.Log("oq3wjinriow3nouiwe");
+                // Debug.Log(incomingDmgImage.gameObject);
+                // Debug.Log(transform);
+                // Debug.Log(incDmgBarList);
+                // create a new gameobject for each damage slot to have segmented hp bar
+                if (incomingDmgImage != null ) incDmgBarList.Add(Instantiate(incomingDmgImage.gameObject, transform));
+
             }
+
+            if (incomingDmgImage != null) incomingDmgImage.gameObject.SetActive(false);
         }
 
         // Counter the damage in this queue with an incoming damage source.
@@ -78,11 +96,35 @@ namespace Battle.Board {
             hpNum.SetHealth(board.hp);
             hpImage.fillAmount = 1f * board.hp / board.maxHp;
 
-            // incoming amount cannot be greater than hp fill amount 
-            incomingDmgImage.fillAmount = Math.Min(1f * TotalIncomingDamage() / board.maxHp, hpImage.fillAmount);
-            incomingDmgImage.rectTransform.anchoredPosition = new Vector2(incomingDmgImage.rectTransform.anchoredPosition.x, newIncomingPos);
-            float hpBarTopY = (hpImage.fillAmount * hpImage.rectTransform.localScale.y) - hpImage.rectTransform.localScale.y + 1.0f;
-            newIncomingPos = Math.Max(hpBarTopY - incomingDmgImage.fillAmount*incomingDmgImage.rectTransform.localScale.y, 0);
+            // set inc damage bar amounts
+            for (int i = 0; i < incDmgBarList.Count; i++)
+            {
+                GameObject barObj = incDmgBarList[i];
+                Image barImg = barObj.GetComponent<Image>();
+
+                // get sum of all damage slots before this so later damage is shown on top.
+                int newDmg = 0;
+                for(int j = i; j < DamageQueue.Length; j++)
+                {
+                    newDmg += damageQueue[j].dmg;
+                    // Debug.Log(damageQueue[j].dmg);
+                }
+
+                // set fill amount
+                barImg.fillAmount = Math.Min(1f * newDmg / board.maxHp, hpImage.fillAmount);
+
+
+                // incomingDmgImage.fillAmount = Math.Min(1f * TotalIncomingDamage() / board.maxHp, hpImage.fillAmount);
+                // barImg.rectTransform.anchoredPosition = new Vector2(incomingDmgImage.rectTransform.anchoredPosition.x, newIncomingPos);
+                // float hpBarTopY = (hpImage.fillAmount * hpImage.rectTransform.localScale.y) - hpImage.rectTransform.localScale.y + 1.0f;
+                // newIncomingPos = Math.Max(hpBarTopY - barImg.fillAmount*barImg.rectTransform.localScale.y, 0);
+
+                // set color
+                barImg.color = Color.Lerp(hpBarColor, incDmgBarColor, 0.1f + (1f * i/incDmgBarList.Count) * 0.9f);
+
+                // Debug.Log(barObj);
+            }
+
 
             shieldImage.fillAmount = Math.Min(1f * board.shield / board.maxHp, hpImage.fillAmount);
         }
