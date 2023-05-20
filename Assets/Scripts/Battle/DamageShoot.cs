@@ -1,5 +1,7 @@
 using UnityEngine;
 
+using Sound;
+
 namespace Battle {
     public class DamageShoot : MonoBehaviour {
         /** The amount of damage carried by this DamageShoot */
@@ -26,6 +28,8 @@ namespace Battle {
 
         /** acceleration, in screen widths / sec / sec **/
         public float accel = 1f;
+
+        [SerializeField] private AudioClip dealDmgSFX;
 
         // save initial un-accelerated speed to reset back to if countering
         private float initialSpeed;
@@ -92,6 +96,7 @@ namespace Battle {
                 else {
                     target.EnqueueDamage(damage);
                     Destroy(this.gameObject);
+                    target.PlaySFX("dmgShoot", pitch : 1f + target.hpBar.DamageQueue[0].dmg/1000f, volumeScale : 1.5f);
                 }
             }
         }
