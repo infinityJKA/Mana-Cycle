@@ -28,10 +28,10 @@ namespace VersusMode {
             p2Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPieceP2", 1) == 1;
 
             if (Storage.level) {
-                p1Selector.SetLives(1);
+                p1Selector.SetLives(Storage.level.lives);
                 p1Selector.livesSelectable.gameObject.SetActive(false);
             } else {
-                p1Selector.SetLives(PlayerPrefs.GetInt("versusLives", 1));
+                p1Selector.SetLives(PlayerPrefs.GetInt("versusLives", 3));
             }
 
             if (!Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) {
