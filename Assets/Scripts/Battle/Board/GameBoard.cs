@@ -384,10 +384,15 @@ namespace Battle.Board {
                 lives = 1;
             } // otherwise, def. value of 3 will remain which is universal default
 
-            // when the game starts, have the life transform mirror the amount of lives
-            foreach (Transform child in lifeTransform) Destroy(child.gameObject);
-            for (int i=0; i<lives; i++) {
-                Instantiate(lifeHeartObj, lifeTransform);
+            // If in solo mode non-arcade or versus mode, hide lives list if only 1 life
+            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && Storage.level.nextSeriesLevel)) {
+                // when the game starts, have the life transform mirror the amount of lives
+                foreach (Transform child in lifeTransform) Destroy(child.gameObject);
+                for (int i=0; i<lives; i++) {
+                    Instantiate(lifeHeartObj, lifeTransform);
+                }
+            } else {
+                lifeTransform.gameObject.SetActive(false);
             }
 
             tilesInBlobs = new bool[height, width];
