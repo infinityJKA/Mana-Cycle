@@ -172,7 +172,7 @@ namespace Battle.AI {
                 // if somehow there still isn't a placement, probably a rotation issue; flip the piece around
                 if (bestPlacement[3] == 0) SimulatePlacement(highLowCols.Item2, (rngConstant%4) + 2, force: true);
 
-                if (bestPlacement[3] == 0) Debug.LogWarning("Backup piece placements both failed");
+                // if (bestPlacement[3] == 0) Debug.LogWarning("Backup piece placements both failed");
 
                 // if still no, check all placements again but force
                 for (int i=rngConstant; i<rngConstant+32; i++) {
