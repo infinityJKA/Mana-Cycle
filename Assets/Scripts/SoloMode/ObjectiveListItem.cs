@@ -15,7 +15,7 @@ namespace SoloMode {
         public bool Refresh(Battle.Board.GameBoard board) {
             textbox.text = objective.Status(board);
             bool completed = objective.IsCompleted(board);
-            if (completed) textbox.color = Color.green;
+            if (completed) textbox.color = (objective.inverted ? Color.red : Color.green);
             return completed;
         }
     }

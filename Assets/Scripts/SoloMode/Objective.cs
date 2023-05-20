@@ -14,6 +14,9 @@ namespace SoloMode {
         /** Value, depends on the condition */
         public int value;
 
+        // lose if condition is met
+        public bool inverted = false;
+
             /** Method to decide when the conversation should be shown, when all conditions are met */
         public bool IsCompleted(GameBoard board)
         {
@@ -22,6 +25,7 @@ namespace SoloMode {
                 case ObjectiveCondition.PointTotal: return board.hp >= value;
                 case ObjectiveCondition.ManaClearedTotal: return board.GetTotalManaCleared() >= value;
                 case ObjectiveCondition.SpellcastTotal: return board.GetTotalSpellcasts() >= value;
+                case ObjectiveCondition.ManualSpellcastTotal: return board.GetManualSpellcasts() >= value;
                 case ObjectiveCondition.TopCombo: return board.GetHighestCombo() >= value;
                 case ObjectiveCondition.BlobCount: return board.GetBlobCount() >= value;
                 case ObjectiveCondition.Survive: return board.timer.TimeUp() || board.IsWinner();
@@ -32,7 +36,8 @@ namespace SoloMode {
             }
         }
         public string Status(GameBoard board) {
-            switch (condition) {
+            if (!inverted) {
+                switch (condition) {
                 case ObjectiveCondition.PointTotal: return board.hp+"/"+value+" Points";
                 case ObjectiveCondition.ManaClearedTotal: return board.GetTotalManaCleared()+"/"+value+" Mana Cleared";
                 case ObjectiveCondition.SpellcastTotal: return board.GetTotalSpellcasts()+"/"+value+" Spellcasts";
@@ -40,15 +45,25 @@ namespace SoloMode {
                 case ObjectiveCondition.TopCombo: return "Best Combo: " + board.GetHighestCombo()+"/"+value;
                 case ObjectiveCondition.TopCascade: return "Best Cascade: " + board.GetHighestCascade()+"/"+value;
                 default: return "This is an objective";
+                }
             }
+            else {
+                switch (condition) {
+                case ObjectiveCondition.ManualSpellcastTotal: return "Spellcast only " + board.GetManualSpellcasts()+"/"+(value-1) + (value <= 2 ? " time" : "times");
+                default: return "evil objective gang";
+                }
+            }
+
         }
-    }
+
+    } // close objective class
 
     public enum ObjectiveCondition {
         TimeRemaining,
         PointTotal,
         ManaClearedTotal,
         SpellcastTotal,
+        ManualSpellcastTotal,
         TopCombo,
         TopCascade,
         BlobCount,
@@ -77,8 +92,11 @@ namespace SoloMode {
             position.width *= 0.6f;
             EditorGUI.PropertyField(position, property.FindPropertyRelative("condition"), GUIContent.none);
             position.x += position.width;
-            position.width *= 0.667f;
+            position.width *= 0.6f;
             EditorGUI.PropertyField(position, property.FindPropertyRelative("value"), GUIContent.none);
+            position.x += position.width;
+            position.width *= 0.6f;
+            EditorGUI.PropertyField(position, property.FindPropertyRelative("inverted"), GUIContent.none);
 
             EditorGUI.EndProperty();
         }
