@@ -82,7 +82,7 @@ namespace Battle.AI {
             }
 
             // ai moves at timed intervals
-            if ((nextMoveTime - Time.time <= 0) && !board.IsDefeated()){
+            if (!placementJobRunning && (nextMoveTime - Time.time <= 0) && !board.IsDefeated()){
                 // set timer for next move. //// get highest col height so ai speeds up when closer to topout
                 // nextMoveTimer = Time.time + Math.Max(UnityEngine.Random.Range(0.5f,0.8f) - (double) board.getColHeight(FindNthLowestCols(GameBoard.width-1)[0])/15, 0.05f);
                 nextMoveTime = Time.time + UnityEngine.Random.Range(moveDelay*0.5f, moveDelay*1.5f);
@@ -107,12 +107,18 @@ namespace Battle.AI {
                         if (!board.MoveLeft() && !placementJobRunning) {
                             minCol = board.GetPiece().GetCol();
                             MakePlacementDecision();
+                            if (ShouldCast()){
+                                board.Spellcast();
+                            }
                         }
                     }
                     else if (board.GetPiece().GetCol() < this.targetCol){
                         if (!board.MoveRight() && !placementJobRunning) {
                             maxCol = board.GetPiece().GetCol();
                             MakePlacementDecision();
+                            if (ShouldCast()){
+                                board.Spellcast();
+                            }
                         }
                     }
                 }

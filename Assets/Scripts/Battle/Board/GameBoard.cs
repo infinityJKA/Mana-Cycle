@@ -411,8 +411,9 @@ namespace Battle.Board {
             // ai shoudn't bee too dumb or it will just top out and be boring, accuracy shuld actually stay high, speed is what matters
             aiController.accuracy = Mathf.Lerp(0.4f, 1f, difficulty);
 
-            // aiController.castChanceMultiplier = difficulty;
-            // aiController.abilityChanceMultiplier = Storage.level.aiDifficulty;
+            // gonna keep these static for now
+            aiController.castChanceMultiplier = 1.1f;
+            aiController.abilityChanceMultiplier = 1f;
 
             if (difficulty == 1f) {
                 // max out speed on highest difficulty, ~25 moves per second, also enable concurrent actions
