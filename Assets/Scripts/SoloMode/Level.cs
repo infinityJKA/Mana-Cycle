@@ -21,7 +21,7 @@ namespace SoloMode {
         /** Conversations that happen during the level, each with their own condition */
         [SerializeField] public List<MidLevelConversation> midLevelConversations;
         
-        /** Amount of time to complete the level, in seconds. */
+        /** Amount of time to complete the level, in seconds. -1 for infinite time */
         [SerializeField] public int time = 300;
         /** Points needed to complete the level **/
         [SerializeField] public int scoreGoal = 2000;
