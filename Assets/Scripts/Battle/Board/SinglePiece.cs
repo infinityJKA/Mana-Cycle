@@ -47,6 +47,10 @@ namespace Battle.Board {
         // Place this tile's pieces onto the passed board.
         public override void PlaceTilesOnBoard(ref Tile[,] board, Transform pieceBoard)
         {
+            if (!center) {
+                Debug.LogWarning("trying to place destroyed tile");
+                return;
+            }
             // Place this single piece's tile and set its parent
             board[row, col] = center;
 
@@ -115,6 +119,8 @@ namespace Battle.Board {
             effect = Battler.ActiveAbilityEffect.PyroBomb;
             center.SetColor(ManaColor.Colorless, board, false, false);
             center.image.sprite = pyroBombSprite;
+            center.SetVisualColor(Color.white);
+            center.image.gameObject.SetActive(true);
         }
 
         private void PyroBombExplode(GameBoard board) {
@@ -124,6 +130,7 @@ namespace Battle.Board {
             // Destroy tiles in a 3x3 grid (including this piece's bomb tile, which is in the center)
             // exclude this tile initial count
 
+            var explosionCenter = center.transform.position; // grab this before tile is destroyed
             float totalPointMult = 0;
             // Debug.Log(row+", "+col);
             for (int r = row-1; r <= row+1; r++) {
@@ -137,7 +144,7 @@ namespace Battle.Board {
             // Because this may cause a tile to fall outside of a blob, unglow un blob tiles
             board.UnglowNotInBlobs();
 
-            board.DealDamage((int)(board.damagePerMana*totalPointMult*1.5f), center.transform.position, 0, 0);
+            board.DealDamage((int)(board.damagePerMana*totalPointMult*2f), explosionCenter, 0, 0);
         }
 
 

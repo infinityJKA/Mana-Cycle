@@ -39,8 +39,6 @@ namespace Battle.Board {
 
         void Start()
         {
-            mana = 0;
-            mana = board.Battler.activeAbilityMana; // for easy debug
             enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
             manaBar.gameObject.SetActive(enabled);
             RefreshManaBar();
@@ -48,8 +46,11 @@ namespace Battle.Board {
 
         public void InitManaBar() {
             if (!enabled) return;
-            // set height based on mana required for battler - 50 is the reference
-            manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, manaBar.sizeDelta.y * board.Battler.activeAbilityMana/50f);
+            // set height based on mana required for battler - 7px per mana
+            manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, board.Battler.activeAbilityMana*7f);
+            // For now, all battlers start with ability ready
+            mana = board.Battler.activeAbilityMana;
+            RefreshManaBar();
         }
 
         public void RefreshManaBar()

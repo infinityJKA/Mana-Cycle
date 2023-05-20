@@ -340,6 +340,8 @@ namespace Battle.Board {
                 }
             }
 
+            InitBattler();
+
             // in versus mode player vs ai or ai vs ai, set difficulty levels
             if (Storage.gamemode == Storage.GameMode.Versus) {
                 // AI vs. AI
@@ -354,18 +356,10 @@ namespace Battle.Board {
             }
 
             pointer.SetActive(false);
-
-            portrait.sprite = battler.sprite;
-
-            // abilityManager.InitManaBar();
-
-            SetShield(0);
-
-            // initialPos = portrait.GetComponent<RectTransform>().anchoredPosition;
-            portrait.GetComponent<RectTransform>().anchoredPosition = portrait.GetComponent<RectTransform>().anchoredPosition + battler.portraitOffset;
-            attackPopup.SetBattler(battler);
             
             cyclePosition = 0;
+
+            SetShield(0);
 
             hpBar.Setup(this);
 
@@ -395,6 +389,14 @@ namespace Battle.Board {
             for (int i=0; i<lives; i++) {
                 Instantiate(lifeHeartObj, lifeTransform);
             }
+
+            tilesInBlobs = new bool[height, width];
+        }
+
+        void InitBattler() {
+            portrait.sprite = battler.sprite;
+            portrait.GetComponent<RectTransform>().anchoredPosition = portrait.GetComponent<RectTransform>().anchoredPosition + battler.portraitOffset;
+            attackPopup.SetBattler(battler);
         }
 
         void SetAIDifficulty(float difficulty) {
@@ -423,6 +425,8 @@ namespace Battle.Board {
             // portrait.GetComponent<RectTransform>().anchoredPosition = initialPos + battler.portraitOffset;
             // wait for cycle to initialize (after countdown) to run game logic
             if (!cycleInitialized) return;
+
+            PointerReposition();
 
             if (recoveryMode) {
                 recoveryTimer -= Time.deltaTime;
@@ -654,6 +658,7 @@ namespace Battle.Board {
             {
                 Debug.Log("Shapeshifter effect activated");
                 battler = enemyBoard.battler;
+                InitBattler();
                 // maybe experiment with other colors at some point
                 portrait.color = new Color(0.1f,0.1f,0.1f,0.47f);
                 
@@ -673,6 +678,8 @@ namespace Battle.Board {
             portrait.sprite = battler.sprite;
 
             attackPopup.SetBattler(battler);
+
+            abilityManager.InitManaBar();
         }
 
 
@@ -767,18 +774,20 @@ namespace Battle.Board {
         }
 
         // Add a piece to this board without having the player control or place it (keep their current piece).
-        public void SpawnStandalonePiece(Piece piece, int column) {
+        public void SpawnStandalonePiece(Piece newPiece, int column) {
             // Send it to a random color and drop it
-            piece.transform.SetParent(pieceBoard, false);
-            piece.MoveTo(column, 3);
-            piece.PlaceTilesOnBoard(ref tiles, pieceBoard);
-            Destroy(piece.gameObject);
-            piece.OnPlace(this);
+            newPiece.transform.SetParent(pieceBoard, false);
+            newPiece.MoveTo(column, 2);
+            newPiece.PlaceTilesOnBoard(ref tiles, pieceBoard);
+            Destroy(newPiece.gameObject);
+            newPiece.OnPlace(this);
+
             previousFallTime = Time.time;  
-            foreach (Vector2Int pos in piece) {
+            foreach (Vector2Int pos in newPiece) {
                 TileGravity(pos.x, pos.y);
             }
             RefreshBlobs();
+            RefreshGhostPiece();
             // may replace with trash sfx later
             PlaySFX("place");
         }
@@ -943,11 +952,11 @@ namespace Battle.Board {
         // Place a piece on the grid, moving its Tiles into the board array and removing the Piece.
         public void PlaceTilesOnBoard()
         {
-            if (piece == null) return;
+            if (!piece) return;
             lastPlaceTime = Time.time;
             piece.PlaceTilesOnBoard(ref tiles, piece.ghostPiece ? ghostPieceBoard : pieceBoard.transform);
 
-            piece.OnPlace(this);
+            if (!piece.ghostPiece) piece.OnPlace(this);
 
             // After tile objects are moved out, destroy the piece object as it is no longer needed
             Destroy(piece.gameObject);
@@ -1310,7 +1319,7 @@ namespace Battle.Board {
         public void UnglowNotInBlobs() {
             for (int r=0; r<height; r++) {
                 for (int c=0; c<width; c++) {
-                    if (!tilesInBlobs[r, c] && tiles[r, c ] != null) {
+                    if (!tilesInBlobs[r, c] && tiles[r, c] != null) {
                         tiles[r, c].AnimateGlow(0f, 0.5f);
                     }
                 }
@@ -1418,7 +1427,7 @@ namespace Battle.Board {
 
                         totalSpellcasts++;
                         totalManaCleared += totalBlobMana;
-                        if (abilityManager.enabled) abilityManager.GainMana(totalBlobMana);
+                        abilityManager.GainMana(totalBlobMana);
 
                         highestCombo = Math.Max(highestCombo, chain);
                         highestCascade = Math.Max(highestCascade, cascade);
@@ -1845,7 +1854,7 @@ namespace Battle.Board {
 
         public void Win()
         {
-            if (defeated || won) return;
+            if (postGame || won) return;
 
             postGame = true;
             won = true;
