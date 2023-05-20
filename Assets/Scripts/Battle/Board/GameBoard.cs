@@ -473,16 +473,16 @@ namespace Battle.Board {
                         // If it is greater than fall time (or fallTime/10 if holding down),
                         // move the piece one down.
                         // (Final fall time has to be greater than 0.05)
-                        double finalFallTime = fallTime*this.fallTimeMult;
+                        float finalFallTime = fallTime*this.fallTimeMult;
 
                         // If not fast-dropping, slow down fall if this is a slow falling tile
                         if (piece && piece.slowFall && fallTimeMult > 0.2f) finalFallTime *= 2f;
 
-                        if (finalFallTime < 0.05){
-                            finalFallTime = 0.05;
+                        if (finalFallTime < 0.05f){
+                            finalFallTime = 0.05f;
                         }
-                        if (finalFallTime < 0.4 && piece && piece.slowFall && fallTimeMult > 0.2f) {
-                            finalFallTime = 0.4;
+                        if (finalFallTime < 0.8f && piece && piece.slowFall && !quickFall) {
+                            finalFallTime = 0.8f;
                         }
 
                         if (Time.time - previousFallTime > finalFallTime) {
@@ -716,6 +716,7 @@ namespace Battle.Board {
             piece.PlaceTilesOnBoard(ref tiles, pieceBoard);
             Destroy(piece);
             piece.OnPlace(this);
+            previousFallTime = Time.time;  
             foreach (Vector2Int pos in piece) {
                 TileGravity(pos.x, pos.y);
             }

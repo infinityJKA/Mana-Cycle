@@ -102,7 +102,7 @@ namespace Battle.Board {
                 return;
             }
             // When iron sword falls, clear tile below, or destroy when at bottom
-            board.DealDamage(board.damagePerMana*2, center.transform.position, 0, 0);
+            board.DealDamage(board.damagePerMana*5, center.transform.position, 0, 0);
             board.ClearTile(col, row);
             board.TileGravity(col, row-1, force: true); // makes this piece's tile fall
             // may cause ta tile to not be in a valid clearing blob - check to unglow them
