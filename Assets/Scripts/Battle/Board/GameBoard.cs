@@ -1823,6 +1823,7 @@ namespace Battle.Board {
 
         public void Defeat() 
         {
+            recoveryMode = false;
             if (defeated || won) return;
 
             Destroy(piece.gameObject);
@@ -1861,6 +1862,7 @@ namespace Battle.Board {
 
         public void Win()
         {
+            recoveryMode = false;
             if (postGame || won) return;
 
             postGame = true;
