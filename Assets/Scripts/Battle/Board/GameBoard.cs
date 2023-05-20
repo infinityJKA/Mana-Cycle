@@ -188,6 +188,9 @@ namespace Battle.Board {
         private int highestCombo;
         /** Highest combo scored by the player */
         private int highestCascade;
+        /** Total amount of spellcasts this player has performed from manual key presses */
+        private int totalManualSpellcasts;
+
 
         // use gameobject for sounds so it can be saved as prefab and shared between boards
         [SerializeField] private GameObject sfxObject;
@@ -663,6 +666,7 @@ namespace Battle.Board {
                 var shake = pointer.GetComponent<Shake>();
                 if (shake != null) shake.StopShake();
                 Spellcast(1);
+                totalManualSpellcasts++;
             }
             else {
                 PlaySFX("failedCast", pan: 0.3f);
@@ -1830,6 +1834,10 @@ namespace Battle.Board {
 
         public int GetHighestCascade() {
             return highestCascade;
+        }
+
+        public int GetManualSpellcasts() {
+            return totalManualSpellcasts;
         }
 
         public int GetBlobCount() {
