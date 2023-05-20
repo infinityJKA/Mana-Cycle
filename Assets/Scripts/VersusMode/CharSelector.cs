@@ -54,7 +54,7 @@ namespace VersusMode {
         [SerializeField] private Toggle abilityToggle;
 
         /// <summary>Selectable to control the selected life count</summary>
-        [SerializeField] private Selectable livesSelectable;
+        [SerializeField] public Selectable livesSelectable;
         /// <summary>the arrows to show if life count can be increased or decreased</summary>
         [SerializeField] private GameObject livesLeftArrow, livesRightArrow;
         /// <summary>current selected life count value</summary>
