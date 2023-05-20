@@ -443,6 +443,7 @@ namespace Battle.Board {
                     defeated = false;
                     hpBar.hpNum.gameObject.SetActive(true);
                     hp = maxHp;
+                    hpBar.Refresh();
                     previousFallTime = Time.time;
                     if (!piece) SpawnPiece();
                 } else {
@@ -686,6 +687,8 @@ namespace Battle.Board {
             attackPopup.SetBattler(battler);
 
             abilityManager.InitManaBar();
+
+            hpBar.Refresh();
         }
 
 
@@ -1819,6 +1822,8 @@ namespace Battle.Board {
                 for (int i=0; i<6; i++) {
                     hpBar.DamageQueue[i].SetDamage(0);
                 }
+
+                hpBar.Refresh();
             }
         }
 
