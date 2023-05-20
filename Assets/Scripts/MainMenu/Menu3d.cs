@@ -46,20 +46,23 @@ namespace MainMenu {
         }
 
         // Update is called once per frame
-        // void Update()
-        // {
-        //     foreach (InputScript inputScript in inputScripts) {
-        //         if (Input.GetKeyDown(inputScript.Cast)) {
-        //             var selection = EventSystem.current.currentSelectedGameObject;
-        //             Debug.Log(selection);
-        //             if (selection) {
-        //                 Storage.lastMainMenuItem = selection.transform.GetSiblingIndex();
-        //                 Debug.Log(Storage.lastMainMenuItem);
-        //                 selection.GetComponent<Selectable>().Select();
-        //             }
-        //         }
-        //     }
-        // }
+        // not sure why this was commented out
+        void Update()
+        {
+            foreach (InputScript inputScript in inputScripts) {
+                if (Input.GetKeyDown(inputScript.Cast)) {
+                    var selection = EventSystem.current.currentSelectedGameObject;
+                    Debug.Log(selection);
+                    if (selection) {
+                        Storage.lastMainMenuItem = selection.transform.GetSiblingIndex();
+                        Debug.Log(Storage.lastMainMenuItem);
+                        selection.GetComponent<Button>().onClick.Invoke();
+                        Debug.Log("working?");
+                    }
+                    break;
+                }
+            }
+        }
 
         public void SelectVersus()
         {
