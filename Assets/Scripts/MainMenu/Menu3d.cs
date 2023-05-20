@@ -125,6 +125,7 @@ namespace MainMenu {
             SettingsWindow.SetActive(false);
             MainWindow.SetActive(true);
             EventSystem.current.SetSelectedGameObject(SettingsButton);
+            UpdateTip();
         }
 
         public void SelectSolo()
@@ -135,7 +136,7 @@ namespace MainMenu {
 
         public void UpdateTip()
         {
-            tipText.text = String.Format("[Arrow Keys] to move cursor\n[{0}] to select", inputScripts[0].Cast);
+            tipText.text = String.Format("[Arrow Keys] to move cursor\n[{0}] to select", Utils.KeySymbol(inputScripts[0].Cast));
         }
     }
 }
