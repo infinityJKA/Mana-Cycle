@@ -169,7 +169,7 @@ namespace VersusMode {
                     // inputs should be solo inputs scripts, as the player will play in the game
                     inputScript = soloInputScript;
                     opponentSelector.inputScript = soloInputScript;
-                    tipText.Refresh();
+                    tipText.SetInputs(inputScript);
                     Active = true;
                 }
             } else {
@@ -181,7 +181,7 @@ namespace VersusMode {
                 // set solo mode inputs 
                 // TODO change tip text depending on inputs
                 inputScript = soloInputScript;
-                tipText.Refresh();
+                tipText.SetInputs(inputScript);
 
                 // hide p2 elements in in solo mode
                 if (!isPlayer1)

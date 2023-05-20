@@ -8,7 +8,8 @@ namespace VersusMode {
         ///<summary>Cached list of all children</summary>
         [SerializeField] [InspectorName("Input Script")] private InputScript i;
 
-        public void Refresh() {
+        public void SetInputs(InputScript i) {
+            this.i = i;
             if (!i) {
                 Debug.LogError("Missing input script on versus tip text");
                 return;
@@ -25,7 +26,7 @@ namespace VersusMode {
         }
 
         void OnValidate() {
-            Refresh();
+            SetInputs(i);
         }
     }
 }
