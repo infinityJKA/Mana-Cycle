@@ -34,6 +34,13 @@ namespace Pause {
                 buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(false);
                 buttonsTransform.Find("CharSelectButton").gameObject.SetActive(true);
             }
+
+            // dont allow char select option in the middle of arcade mode
+            if (Storage.level.nextSeriesLevel) 
+            {
+                buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(true);
+                buttonsTransform.Find("CharSelectButton").gameObject.SetActive(false);
+            }
         }
 
         public void TogglePause()
