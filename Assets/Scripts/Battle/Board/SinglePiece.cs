@@ -179,9 +179,9 @@ namespace Battle.Board {
         }
 
         public void MakeZman(GameBoard board) {
-            center.MakeObscuresColor();
-            center.SetColor(ManaColor.Colorless, board, false, false);
+            center.SetColor(ManaColor.Colorless, board);
             center.image.sprite = zmanSprite;
+            center.MakeObscuresColor();
             center.MakeFragile();
             center.pointMultiplier -= 1.0f;
         }
