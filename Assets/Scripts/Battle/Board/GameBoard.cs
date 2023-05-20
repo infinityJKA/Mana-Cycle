@@ -385,7 +385,8 @@ namespace Battle.Board {
             } // otherwise, def. value of 3 will remain which is universal default
 
             // If in solo mode non-arcade or versus mode, hide lives list if only 1 life
-            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && Storage.level.nextSeriesLevel)) {
+            // also hide if arcade mode enemy
+            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && Storage.level.nextSeriesLevel && playerSide == 0)) {
                 // when the game starts, have the life transform mirror the amount of lives
                 foreach (Transform child in lifeTransform) Destroy(child.gameObject);
                 for (int i=0; i<lives; i++) {
