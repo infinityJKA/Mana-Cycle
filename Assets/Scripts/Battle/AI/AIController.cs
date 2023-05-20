@@ -37,7 +37,7 @@ namespace Battle.AI {
         private int targetRot;
         private int minCol, maxCol;
 
-        private float nextMoveTimer;
+        private float nextMoveTime;
 
         // Column detection (unused)
         // private Tile[,] boardLayout;
@@ -66,6 +66,8 @@ namespace Battle.AI {
         // rows from top - used in various methods
         int rowsFromTop;
 
+        // when true, insta-drop on next movement tick
+        bool readyToInstaDrop = true;
         void Update() {
             // stop while not player controlled, uninitialized, paused, post game or dialogue
             if (board.IsPlayerControlled() || !board.isInitialized() || board.isPaused() || board.isPostGame() || board.convoPaused || board.recoveryMode) return;
@@ -80,10 +82,16 @@ namespace Battle.AI {
             }
 
             // ai moves at timed intervals
-            if ((nextMoveTimer - Time.time <= 0) && !board.IsDefeated()){
+            if ((nextMoveTime - Time.time <= 0) && !board.IsDefeated()){
                 // set timer for next move. //// get highest col height so ai speeds up when closer to topout
                 // nextMoveTimer = Time.time + Math.Max(UnityEngine.Random.Range(0.5f,0.8f) - (double) board.getColHeight(FindNthLowestCols(GameBoard.width-1)[0])/15, 0.05f);
-                nextMoveTimer = Time.time + UnityEngine.Random.Range(moveDelay*0.5f, moveDelay*1.5f);
+                nextMoveTime = Time.time + UnityEngine.Random.Range(moveDelay*0.5f, moveDelay*1.5f);
+
+                if (readyToInstaDrop) {
+                    readyToInstaDrop = false;
+                    board.instaDropThisFrame = true;
+                    return;
+                }
                 
                 // rotate piece to target rot
                 bool reachedTargetRot = (int)board.GetPiece().getRot() == this.targetRot;
@@ -115,9 +123,12 @@ namespace Battle.AI {
                     // will not insta-drop if highest row is >4 from top
                     if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
 
+                        // Only insta-drop once the piece is in the correct spot, even if concurrent actions
+                        var inPosition = (reachedTargetRot && reachedTargetCol);
+
                         // stop if any column is very high
-                        if (boardHighestRow < 2) {
-                            if (!job.willKill) board.quickFall = true;
+                        if (rowsFromTop < 2) {
+                            if (!job.willKill && inPosition) board.quickFall = true;
                             return;
                         }
 
@@ -129,8 +140,10 @@ namespace Battle.AI {
                             }
                         }
 
-                        // Only insta-drop once the piece is in the correct spot, even if concurrent actions
-                        board.instaDropThisFrame = (reachedTargetRot && reachedTargetCol);
+                        if (inPosition) {
+                            readyToInstaDrop = true;
+                            nextMoveTime = Time.time + UnityEngine.Random.Range(moveDelay*0.3f, moveDelay*0.9f);
+                        }
                     } else {
                         if (!job.willKill) board.quickFall = true;
                     }
@@ -178,7 +191,7 @@ namespace Battle.AI {
                     bestPlacement = new NativeArray<int>(4, Allocator.TempJob);
 
                     // when nearing top, prioritize current color
-                    var prioritizeColor = rowsFromTop < 5 ? board.GetCycleColor() : Cycle.ManaColor.Any;
+                    var prioritizeColor = rowsFromTop < 6 ? board.GetCycleColor() : Cycle.ManaColor.Any;
 
                     job = new BestPlacementJob(board, bestPlacement, accuracy, prioritizeColor, minCol, maxCol);
                     placementJobRunning = true;
