@@ -94,9 +94,15 @@ namespace Battle {
 
                 // default: deal damage to target
                 else {
+                    // target is invincible while in recovery mode
+                    if (target.recoveryMode) {
+                        Destroy(this.gameObject); 
+                        return;
+                    }
+
                     target.EnqueueDamage(damage);
                     Destroy(this.gameObject);
-                    target.PlaySFX("dmgShoot", pitch : 1f + target.hpBar.DamageQueue[0].dmg/1000f, volumeScale : 1.5f);
+                    target.PlaySFX("dmgShoot", pitch: 1f + target.hpBar.DamageQueue[0].dmg/1000f, volumeScale: 1.5f);
                 }
             }
         }
