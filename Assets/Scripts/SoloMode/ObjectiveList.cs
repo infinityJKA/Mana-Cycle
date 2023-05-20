@@ -61,6 +61,9 @@ namespace SoloMode {
             foreach (ObjectiveListItem objListItem in objectiveItems) {
                 bool completed = objListItem.Refresh(board);
                 if (!completed) allObjectivesComplete = false;
+
+                // if an inverted condition is met, die
+                if (objListItem.objective.inverted && completed) board.Defeat();
             }
 
             // if all objectives are complete, and score req. is met, level is won

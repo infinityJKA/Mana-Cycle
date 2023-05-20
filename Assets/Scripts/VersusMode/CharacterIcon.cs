@@ -29,6 +29,11 @@ namespace VersusMode {
         ///<summary>Selectable, used to find adjacent icons to select</summary>
         public Selectable selectable {get; private set;}
 
+        public void Start()
+        {
+            selectable = GetComponent<Selectable>();
+        }
+
         ///<summary>Set Whether or not p1/p2 is currently hovered over.</summary>
         ///<param name="isPlayer1">true for p1, false for p2</param>
         ///<param name="hovered">true if the player's cursor is here, false if not</param>
