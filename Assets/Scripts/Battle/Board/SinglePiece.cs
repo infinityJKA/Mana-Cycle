@@ -64,6 +64,15 @@ namespace Battle.Board {
 
         public override void MakeGhostPiece(ref List<Tile> ghostTiles) {
             ghostTiles.Add(center);
+            
+            if (effect == Battler.ActiveAbilityEffect.IronSword) {
+                ironSwordImage.gameObject.SetActive(false);
+                center.image.gameObject.SetActive(true);
+            }
+
+            else if (effect == Battler.ActiveAbilityEffect.GoldMine) {
+                transform.GetComponentInChildren<MeshRenderer>().enabled = false;
+            }
         }
 
         public override void OnPlace(GameBoard board) 
@@ -147,7 +156,7 @@ namespace Battle.Board {
             board.DealDamage((int)(board.damagePerMana*totalPointMult*2f), explosionCenter, 0, 0);
         }
 
-
+        
         public void MakeGoldMine(GameBoard board) {
             Debug.Log("gold mine piece creation");
 
@@ -159,7 +168,7 @@ namespace Battle.Board {
             // (New) tile is always multicolor
             center.SetColor(ManaColor.Multicolor, board);
             // make tile semi transparent
-            center.image.color = new Color(center.image.color.r, center.image.color.g, center.image.color.b, 0.5f);
+            center.SetVisualColor(new Color(center.image.color.r, center.image.color.g, center.image.color.b, 0.5f));
 
             // This tile's point mult should be 0, unless another mana somehow buffs it
             center.pointMultiplier -= 1.00f;
