@@ -27,7 +27,12 @@ namespace VersusMode {
             p1Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
             p2Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPieceP2", 1) == 1;
 
-            p1Selector.SetLives(PlayerPrefs.GetInt("versusLives", 1));
+            if (Storage.level) {
+                p1Selector.SetLives(1);
+                p1Selector.livesSelectable.gameObject.SetActive(false);
+            } else {
+                p1Selector.SetLives(PlayerPrefs.GetInt("versusLives", 1));
+            }
 
             if (!Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) {
                 p1Selector.cpuLevel = PlayerPrefs.GetInt("CpuVsCpuP1Level", 5);
@@ -61,7 +66,7 @@ namespace VersusMode {
 
             PlayerPrefs.SetInt("drawGhostPiece", p1Selector.doGhostPiece ? 1 : 0);
             PlayerPrefs.SetInt("enableAbilities", p1Selector.enableAbilities ? 1 : 0);
-            PlayerPrefs.SetInt("versusLives", p1Selector.lives);
+            if (Storage.level != null) PlayerPrefs.SetInt("versusLives", p1Selector.lives);
             Storage.lives = p1Selector.lives;
 
             if (Storage.gamemode != Storage.GameMode.Solo)

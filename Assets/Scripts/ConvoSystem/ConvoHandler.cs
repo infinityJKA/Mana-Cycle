@@ -147,6 +147,7 @@ namespace ConvoSystem {
             if (level != null)
             {
                 Storage.level = level;
+                Storage.lives = Storage.level.lives;
 
                 // if multiple chars can be chosen from, go to char select
                 if (Storage.level.availableBattlers.Count > 1)
