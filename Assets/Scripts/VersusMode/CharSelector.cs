@@ -10,6 +10,9 @@ namespace VersusMode {
     ///     This selector also controls the cursor on the character select grid through this script.
     /// </summary>
     public class CharSelector : MonoBehaviour {
+        /// The CharSelect menu in this scene.
+        [SerializeField] private CharSelectMenu menu;
+
         ///<summary>True for player 1, false for player 2.</summary>
         [SerializeField] private bool isPlayer1;
 
@@ -23,6 +26,10 @@ namespace VersusMode {
 
         [SerializeField] private Image portrait;
         [SerializeField] private TMPro.TextMeshProUGUI nameText;
+
+        [SerializeField] private Image cpuLevelImage;
+        [SerializeField] private TMPro.TextMeshProUGUI cpuLevelText;
+        [SerializeField] private GameObject cpuLevelLeftArrow, cpuLevelRightArrow;
 
         ///<summary>SFX played when interacting with menu</summary>
         [SerializeField] private AudioClip switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX;
@@ -104,6 +111,12 @@ namespace VersusMode {
         // current battler being shown as randomly selected fighter
         private Battle.Battler randomBattler;
 
+        // CPU difficulty selected by the player - scale of 1-10
+        public int cpuLevel { get; set; }
+
+        // Spectrum of colors to tint the CPU number with increasing difficulty
+        [SerializeField] private Color[] cpuLevelSpectrum;
+
         // cached on validate
         private TransitionScript transitionHandler;
 
@@ -127,6 +140,7 @@ namespace VersusMode {
             abilityInfoCanvasGroup.alpha = 0;
             centerPosition = abilityInfoCanvasGroup.transform.localPosition;
             RefreshLockVisuals();
+            cpuLevelImage.gameObject.SetActive(false);
 
             // yeah uhh... this code got kinda bad. might try to refactor it after semis so that we can actually understand what's going on throughout this file
 
@@ -248,6 +262,16 @@ namespace VersusMode {
                 else if (Input.GetKeyDown(inputScript.Down)) SetSettingsSelection(settingsSelection.FindSelectableOnDown());
             }
 
+            // if cpu, adjust cpu level while locked in
+            else if (isCpuCursor && lockedIn) {
+                if (Input.GetKeyDown(inputScript.Left)) {
+                    if (cpuLevel > 1) { cpuLevel--; RefreshCpuLevel(); }
+                }
+                else if (Input.GetKeyDown(inputScript.Right)) {
+                    if (cpuLevel < 10) { cpuLevel++; RefreshCpuLevel(); }
+                }
+            }
+
             // Move cursor if not locked in and not controlling settings menu
             else if (!lockedIn) 
             {
@@ -271,7 +295,12 @@ namespace VersusMode {
                     }
                 } 
 
-                // Lock in or un-lock in when cast is pressed
+                // If aready locked in, start match if other player is also locked in
+                else if (lockedIn) {
+                    menu.StartIfReady();
+                }
+
+                // otherwise, lock in this character
                 else {
                     ToggleLock();
                 }
@@ -330,6 +359,13 @@ namespace VersusMode {
                 Active = false;
                 opponentSelector.Active = true;
             }
+
+            if (isCpuCursor) {
+                cpuLevelImage.gameObject.SetActive(lockedIn);
+                RefreshCpuLevel();
+            } else {
+                cpuLevelImage.gameObject.SetActive(false);
+            }
         }
 
         void RefreshLockVisuals() {
@@ -343,6 +379,13 @@ namespace VersusMode {
                 nameText.fontStyle = TMPro.FontStyles.Normal;
                 nameText.text = (selectedIcon.battler.displayName == "Random") ? "Random" : selectedBattler.displayName;
             }
+        }
+
+        void RefreshCpuLevel() {
+            cpuLevelText.text = cpuLevel+"";
+            cpuLevelText.color = cpuLevelSpectrum[cpuLevel];
+            cpuLevelLeftArrow.SetActive(cpuLevel > 1);
+            cpuLevelRightArrow.SetActive(cpuLevel < 10);
         }
 
         void ToggleAbilityInfo() {
