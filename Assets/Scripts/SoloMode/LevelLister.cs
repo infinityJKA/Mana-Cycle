@@ -160,6 +160,7 @@ namespace SoloMode {
 
                     StoreSelections();
                     Storage.level = levelsList[selectedLevelIndex[selectedTabIndex]]; 
+                    Storage.lives = Storage.level.lives;
                     Storage.gamemode = Storage.GameMode.Solo;
                     convoHandler.StartLevel(levelsList[selectedLevelIndex[selectedTabIndex]]);
                     focused = false;

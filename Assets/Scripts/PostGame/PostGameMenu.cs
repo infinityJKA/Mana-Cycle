@@ -244,10 +244,10 @@ namespace PostGame {
 
         public void SelectContinue()
         {
-            Debug.Log("selected continue :_)");
             Time.timeScale = 1f;
             Storage.level.nextSeriesLevel.battler = Storage.level.battler;
             Storage.level = Storage.level.nextSeriesLevel;
+            Storage.lives = board.lives;
             transitionHandler.WipeToScene("ManaCycle");
         }
 
