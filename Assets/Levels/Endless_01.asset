@@ -20,7 +20,9 @@ MonoBehaviour:
   scoreGoal: 0
   cycleLength: 7
   cycleUniqueColors: 5
+  lockPieceColors: 1
   fallTime: 0.8
+  slideTimeMult: 1
   availableBattlers:
   - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
@@ -28,9 +30,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
   - {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
   - {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+  - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
   objectives: []
   levelRequirement: {fileID: 0}
+  nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
+  aiDifficulty: 1
+  trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: 72ec2e399e3965549b110f6723209287, type: 3}
