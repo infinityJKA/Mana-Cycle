@@ -424,6 +424,22 @@ namespace Battle.Board {
             // wait for cycle to initialize (after countdown) to run game logic
             if (!cycleInitialized) return;
 
+            if (recoveryMode) {
+                recoveryTimer -= Time.deltaTime;
+                if (recoveryTimer <= 0f) {
+                    boardBackground.color = boardColor;
+                    recoveryText.enabled = false;
+                    recoveryMode = false;
+                    defeated = false;
+                    hpBar.hpNum.gameObject.SetActive(true);
+                    hp = maxHp;
+                    previousFallTime = Time.time;
+                    if (!piece) SpawnPiece();
+                } else {
+                    recoveryText.text = Mathf.CeilToInt(recoveryTimer)+"";
+                }
+            }
+
             // -------- CONTROLS ----------------
             // if (inputScripts == null) return;
             foreach (InputScript inputScript in inputScripts) {
@@ -466,23 +482,8 @@ namespace Battle.Board {
                         }
                     }
 
-                    //otherwise, if in recovery mode, don't perform any non-menu inputs & stop at this branch to update the recovery timer
-                    else if (recoveryMode) {
-                        recoveryTimer -= Time.deltaTime;
-                        if (recoveryTimer <= 0f) {
-                            boardBackground.color = boardColor;
-                            recoveryText.enabled = false;
-                            recoveryMode = false;
-                            defeated = false;
-                            hpBar.hpNum.gameObject.SetActive(true);
-                            hp = maxHp;
-                            previousFallTime = Time.time;
-                            if (!piece) SpawnPiece();
-                        } else {
-                            recoveryText.text = Mathf.CeilToInt(recoveryTimer)+"";
-                        }
-                    }
-
+                    // don't evaulate any branches below this if in recovery mode - only menus
+                    else if (recoveryMode) return;
                     
                     // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
                     else if (!convoPaused && !postGame) {
@@ -1782,7 +1783,7 @@ namespace Battle.Board {
         // If more than one life remains, clears the board and incoming damage, and player suffers a 5-second delay.
         void LoseLife() {
             lives--;
-            Destroy(lifeTransform.GetChild(lifeTransform.childCount-1).gameObject);
+            Destroy(lifeTransform.GetChild(0).gameObject);
 
             if (lives > 0) {
                 PlaySFX("lose", pitch: 1.35f, volumeScale: 0.75f);
