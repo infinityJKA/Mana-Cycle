@@ -108,8 +108,8 @@ namespace PostGame {
 
                 Time.timeScale = 1f;
                 
-                // if first clear (and not in series), immediately exit back to solomenu; otherwise, open menu
-                if (!clearedBefore && cleared && Storage.level.nextSeriesLevel == null) {
+                // if first clear (and not in series or endless), immediately exit back to solomenu; otherwise, open menu
+                if (!clearedBefore && cleared && Storage.level.nextSeriesLevel == null && Storage.level.time != -1) {
                     transitionHandler.WipeToScene("SoloMenu", reverse:true);
                     setMenuSong();
                 } 

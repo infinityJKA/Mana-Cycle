@@ -384,10 +384,16 @@ namespace Battle.Board {
                 lives = 1;
             } // otherwise, def. value of 3 will remain which is universal default
 
-            // when the game starts, have the life transform mirror the amount of lives
-            foreach (Transform child in lifeTransform) Destroy(child.gameObject);
-            for (int i=0; i<lives; i++) {
-                Instantiate(lifeHeartObj, lifeTransform);
+            // If in solo mode non-arcade or versus mode, hide lives list if only 1 life
+            // also hide if arcade mode enemy
+            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && Storage.level.nextSeriesLevel && playerSide == 0)) {
+                // when the game starts, have the life transform mirror the amount of lives
+                foreach (Transform child in lifeTransform) Destroy(child.gameObject);
+                for (int i=0; i<lives; i++) {
+                    Instantiate(lifeHeartObj, lifeTransform);
+                }
+            } else {
+                lifeTransform.gameObject.SetActive(false);
             }
 
             tilesInBlobs = new bool[height, width];
@@ -409,8 +415,8 @@ namespace Battle.Board {
             // aiController.abilityChanceMultiplier = Storage.level.aiDifficulty;
 
             if (difficulty == 1f) {
-                // max out speed on highest difficulty, ~30 moves per second, also enable concurrent actions
-                aiController.moveDelay = 0.03f;
+                // max out speed on highest difficulty, ~25 moves per second, also enable concurrent actions
+                aiController.moveDelay = 0.04f;
                 aiController.concurrentActions = true;
             } else {
                 float movesPerSecond = Mathf.Lerp(0.1f, 9.5f, difficulty);
