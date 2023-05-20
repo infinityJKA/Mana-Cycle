@@ -416,7 +416,7 @@ namespace Battle.Board {
 
             if (difficulty == 1f) {
                 // max out speed on highest difficulty, ~25 moves per second, also enable concurrent actions
-                aiController.moveDelay = 0.04f;
+                aiController.moveDelay = 0.05f;
                 aiController.concurrentActions = true;
             } else {
                 float movesPerSecond = Mathf.Lerp(0.1f, 9.5f, difficulty);
@@ -443,6 +443,7 @@ namespace Battle.Board {
                     defeated = false;
                     hpBar.hpNum.gameObject.SetActive(true);
                     hp = maxHp;
+                    hpBar.Refresh();
                     previousFallTime = Time.time;
                     if (!piece) SpawnPiece();
                 } else {
@@ -686,6 +687,8 @@ namespace Battle.Board {
             attackPopup.SetBattler(battler);
 
             abilityManager.InitManaBar();
+
+            hpBar.Refresh();
         }
 
 
@@ -1819,6 +1822,8 @@ namespace Battle.Board {
                 for (int i=0; i<6; i++) {
                     hpBar.DamageQueue[i].SetDamage(0);
                 }
+
+                hpBar.Refresh();
             }
         }
 

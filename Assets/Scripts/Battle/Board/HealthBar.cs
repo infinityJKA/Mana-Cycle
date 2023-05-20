@@ -20,8 +20,7 @@ namespace Battle.Board {
         [SerializeField]
         private Image shieldImage;
 
-        [SerializeField] private Color hpBarColor;
-        [SerializeField] private Color incDmgBarColor;
+        [SerializeField] private Color incomingStartColor, incomingTargetColor, incomingEndColor;
 
         // used for segmented dmg bar
         private List<GameObject> incDmgBarList = new List<GameObject>();
@@ -125,7 +124,11 @@ namespace Battle.Board {
                 
 
                 // set color
-                barImg.color = Color.Lerp(hpBarColor, incDmgBarColor, 0.1f + (1f * i/incDmgBarList.Count) * 0.9f);
+                if (i==5) {
+                    barImg.color = incomingEndColor;
+                } else {
+                    barImg.color = Color.Lerp(incomingStartColor, incomingTargetColor, i/4f);
+                }
 
                 // Debug.Log(barObj);
             }
