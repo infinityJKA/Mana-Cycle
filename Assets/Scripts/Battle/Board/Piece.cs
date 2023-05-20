@@ -141,11 +141,13 @@ namespace Battle.Board {
 
         protected static ManaColor ColorWeightedRandom(GameBoard board)
         {
+            // still always pull from bag, but replace some with cycle color
+            var bagColor = board.PullColorFromBag();
             if (Random.value < 0.15f)
             {
                 return board.GetCycleColor();
             } else {
-                return RandomColor();
+                return bagColor;
             }
         }
 
