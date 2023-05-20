@@ -310,17 +310,21 @@ namespace Battle.Board {
                         enemyBoard.battler = Storage.level.opponent;
                         enemyBoard.portrait.sprite = Storage.level.opponent.sprite;
                         if (playerSide == 0) enemyBoard.SetPlayerControlled(false);
-                        // set up ai difficulty values
-                        AIController aiController = enemyBoard.controllerObject.GetComponent<AIController>();
-                        aiController.accuracy *= Storage.level.aiDifficulty;
-                        aiController.castChanceMultiplier *= Storage.level.aiDifficulty;
-                        aiController.abilityChanceMultiplier *= Storage.level.aiDifficulty;
-                        // ai used concurrent actions if difficulty is high enough
-                        aiController.concurrentActions = (Storage.level.aiDifficulty >= 0.9 ? true : false);
-                        // ai moves slower at lower difficulties
-                        aiController.moveDelay += 1/Storage.level.aiDifficulty/10;
-                        
+                        enemyBoard.SetAIDifficulty(Storage.level.aiDifficulty);
                     }
+                }
+            }
+
+            // in versus mode player vs ai or ai vs ai, set difficulty levels
+            if (Storage.gamemode == Storage.GameMode.Versus) {
+                // AI vs. AI
+                if (!Storage.isPlayerControlled1 && !Storage.isPlayerControlled2) {
+                    SetAIDifficulty(PlayerPrefs.GetInt(playerSide == 0 ? "CpuVsCpuP1Level" : "CpuVsCpuP2Level", 5)/10f);
+                }
+
+                // player vs AI - set on player 2 only
+                else if (Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && playerSide == 1) {
+                    SetAIDifficulty(PlayerPrefs.GetInt("CpuLevel", 5)/10f);
                 }
             }
 
@@ -347,6 +351,26 @@ namespace Battle.Board {
 
             abilityManager.enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
             abilityManager.InitManaBar();
+        }
+
+        void SetAIDifficulty(float difficulty) {
+            // set up ai difficulty values
+            AIController aiController = controllerObject.GetComponent<AIController>();
+            // ai shoudn't bee too dumb or it will just top out and be boring, accuracy shuld actually stay high, speed is what matters
+            aiController.accuracy = Mathf.Lerp(0.4f, 1f, difficulty);
+
+            // aiController.castChanceMultiplier = difficulty;
+            // aiController.abilityChanceMultiplier = Storage.level.aiDifficulty;
+
+            if (difficulty == 1f) {
+                // max out speed on highest difficulty, ~30 moves per second, also enable concurrent actions
+                aiController.moveDelay = 0.03f;
+                aiController.concurrentActions = true;
+            } else {
+                float movesPerSecond = Mathf.Lerp(0.1f, 9.5f, difficulty);
+                aiController.moveDelay = 1/movesPerSecond;
+                aiController.concurrentActions = false;
+            }
         }
 
         void Update()
