@@ -1838,13 +1838,13 @@ namespace Battle.Board {
             DestroyExistingGhostTiles();
             hpBar.hpNum.gameObject.SetActive(false);
             defeated = true;
+            casting = false;
 
             LoseLife();
 
             if (lives > 0) return;
 
             postGame = true;
-            casting = false;
             if (timer != null) timer.StopTimer();
             foreach (var incoming in hpBar.DamageQueue) {
                 incoming.SetDamage(0);
