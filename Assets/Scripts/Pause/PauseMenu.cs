@@ -36,7 +36,7 @@ namespace Pause {
             }
 
             // dont allow char select option in the middle of arcade mode
-            if (Storage.level.nextSeriesLevel) 
+            if (Storage.level && Storage.level.nextSeriesLevel) 
             {
                 buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(true);
                 buttonsTransform.Find("CharSelectButton").gameObject.SetActive(false);

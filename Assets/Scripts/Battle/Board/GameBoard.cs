@@ -1698,6 +1698,8 @@ namespace Battle.Board {
             if (simulatedTiles[row, col].color != color) return;
             // return if already connected - covers condition of already being in a blob
             if (simulatedTiles[row, col].connectedToGhostPiece) return;
+            // cannot see the color of obscured tiles
+            if (simulatedTiles[row, col].obscured) return;
 
             // Because simulatedTiles copies references to Tile objs on tiles arr, this will affect the correct tile on the tiles arr
             simulatedTiles[row, col].connectedToGhostPiece = true;
