@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 using Sound;
 
@@ -25,10 +26,10 @@ namespace VersusMode {
         [SerializeField] private InputScript soloInputScript;
 
         [SerializeField] private Image portrait;
-        [SerializeField] private TMPro.TextMeshProUGUI nameText;
+        [SerializeField] private TextMeshProUGUI nameText;
 
         [SerializeField] private Image cpuLevelImage;
-        [SerializeField] private TMPro.TextMeshProUGUI cpuLevelText;
+        [SerializeField] private TextMeshProUGUI cpuLevelText;
         [SerializeField] private GameObject cpuLevelLeftArrow, cpuLevelRightArrow;
 
         ///<summary>SFX played when interacting with menu</summary>
@@ -42,14 +43,24 @@ namespace VersusMode {
         ///<summary>Canvas group for the ability info box</summary>
         [SerializeField] private CanvasGroup abilityInfoCanvasGroup;
         ///<summary>Text field within the ability description object that displays passive&active ability</summary>
-        [SerializeField] private TMPro.TextMeshProUGUI abilityText;
+        [SerializeField] private TextMeshProUGUI abilityText;
 
         ///<summary>Canvas group for the char select settings box</summary>
         [SerializeField] private CanvasGroup settingsCanvasGroup;
+
         ///<summary>Toggle that toggles the ghost piece specific to this battle. Copies settings value at start</summary>
         [SerializeField] private Toggle ghostPieceToggle;
         ///<summary>Toggle that toggles the ghost piece specific to this battle. Copies settings value at start</summary>
         [SerializeField] private Toggle abilityToggle;
+
+        /// <summary>Selectable to control the selected life count</summary>
+        [SerializeField] private Selectable livesSelectable;
+        /// <summary>the arrows to show if life count can be increased or decreased</summary>
+        [SerializeField] private GameObject livesLeftArrow, livesRightArrow;
+        /// <summary>current selected life count value</summary>
+        public int lives {get; private set;} = 3;
+        ///
+        [SerializeField] private TextMeshProUGUI livesText;
 
         /// tip text in the corner, p2 tip text gets hidden in solo
         [SerializeField] private VersusTipText tipText;
@@ -260,8 +271,8 @@ namespace VersusMode {
 
             if (settingsDisplayed) {
                 // Look for a new icon to select in inputted directions, select if found
-                if (Input.GetKeyDown(inputScript.Left)) SetSettingsSelection(settingsSelection.FindSelectableOnLeft());
-                else if (Input.GetKeyDown(inputScript.Right)) SetSettingsSelection(settingsSelection.FindSelectableOnRight());
+                if (Input.GetKeyDown(inputScript.Left)) SettingsCursorLeft();
+                else if (Input.GetKeyDown(inputScript.Right)) SettingsCursorRight();
                 else if (Input.GetKeyDown(inputScript.Up)) SetSettingsSelection(settingsSelection.FindSelectableOnUp());
                 else if (Input.GetKeyDown(inputScript.Down)) SetSettingsSelection(settingsSelection.FindSelectableOnDown());
             }
@@ -436,6 +447,41 @@ namespace VersusMode {
             settingsAnimating = true;
             // selectedIcon.cursorImage.color = new Color(1f, 1f, 1f, settingsDisplayed ? 0.5f : 1f);
             SoundManager.Instance.PlaySound(settingsDisplayed ? infoOpenSFX : infoCloseSFX);
+        }
+
+        static int minLives = 1, maxLives = 5;
+        void AdjustLives(int delta) {
+            lives = Mathf.Clamp(lives+delta, minLives, maxLives);
+            opponentSelector.lives = lives;
+            RefreshLives();
+            opponentSelector.RefreshLives();
+        }
+
+        public void SetLives(int lives) {
+            this.lives = lives;
+            AdjustLives(0);
+        }
+
+        void RefreshLives() {
+            livesText.text = lives+"";
+            livesLeftArrow.SetActive(lives > minLives);
+            livesRightArrow.SetActive(lives < maxLives);
+        }
+
+        void SettingsCursorLeft() {
+            if (settingsSelection == livesSelectable) {
+                AdjustLives(-1);
+            } else {
+                SetSettingsSelection(settingsSelection.FindSelectableOnLeft());
+            }
+        }
+
+        void SettingsCursorRight() {
+            if (settingsSelection == livesSelectable) {
+                AdjustLives(1);
+            } else {
+                SetSettingsSelection(settingsSelection.FindSelectableOnRight());
+            }
         }
 
         void SetSettingsSelection(Selectable selectable) {
