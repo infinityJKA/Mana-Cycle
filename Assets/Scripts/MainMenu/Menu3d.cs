@@ -46,20 +46,23 @@ namespace MainMenu {
         }
 
         // Update is called once per frame
-        // void Update()
-        // {
-        //     foreach (InputScript inputScript in inputScripts) {
-        //         if (Input.GetKeyDown(inputScript.Cast)) {
-        //             var selection = EventSystem.current.currentSelectedGameObject;
-        //             Debug.Log(selection);
-        //             if (selection) {
-        //                 Storage.lastMainMenuItem = selection.transform.GetSiblingIndex();
-        //                 Debug.Log(Storage.lastMainMenuItem);
-        //                 selection.GetComponent<Selectable>().Select();
-        //             }
-        //         }
-        //     }
-        // }
+        // not sure why this was commented out
+        void Update()
+        {
+            foreach (InputScript inputScript in inputScripts) {
+                if (Input.GetKeyDown(inputScript.Cast)) {
+                    var selection = EventSystem.current.currentSelectedGameObject;
+                    Debug.Log(selection);
+                    if (selection) {
+                        Storage.lastMainMenuItem = selection.transform.GetSiblingIndex();
+                        Debug.Log(Storage.lastMainMenuItem);
+                        selection.GetComponent<Button>().onClick.Invoke();
+                        Debug.Log("working?");
+                    }
+                    break;
+                }
+            }
+        }
 
         public void SelectVersus()
         {
@@ -122,6 +125,7 @@ namespace MainMenu {
             SettingsWindow.SetActive(false);
             MainWindow.SetActive(true);
             EventSystem.current.SetSelectedGameObject(SettingsButton);
+            UpdateTip();
         }
 
         public void SelectSolo()
@@ -132,7 +136,7 @@ namespace MainMenu {
 
         public void UpdateTip()
         {
-            tipText.text = String.Format("[Arrow Keys] to move cursor\n[{0}] to select", inputScripts[0].Cast);
+            tipText.text = String.Format("[Arrow Keys] to move cursor\n[{0}] to select", Utils.KeySymbol(inputScripts[0].Cast));
         }
     }
 }

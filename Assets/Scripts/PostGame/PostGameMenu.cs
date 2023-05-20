@@ -126,6 +126,9 @@ namespace PostGame {
                         var ev = new Button.ButtonClickedEvent();
                         ev.AddListener(() => SelectContinue());
                         retryButton.onClick = ev;
+
+                        buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(true);
+                        buttonsTransform.Find("CharSelectButton").gameObject.SetActive(false);
                         
 
                         // set info pannel visibility and text
