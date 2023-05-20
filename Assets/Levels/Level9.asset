@@ -20,14 +20,20 @@ MonoBehaviour:
   scoreGoal: 2800
   cycleLength: 7
   cycleUniqueColors: 5
+  lockPieceColors: 1
   fallTime: 0.45
+  slideTimeMult: 1
   availableBattlers:
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
   objectives:
-  - condition: 4
+  - condition: 5
     value: 5
+    inverted: 0
   levelRequirement: {fileID: 11400000, guid: 9e9db0819655b64469e94f6a439a0f46, type: 2}
+  nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
+  aiDifficulty: 1
+  trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: 2d4799e5a59601b44a2f1673cb0e301c, type: 3}
