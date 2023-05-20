@@ -49,7 +49,7 @@ namespace Battle.Board {
                 // Debug.Log(transform);
                 // Debug.Log(incDmgBarList);
                 // create a new gameobject for each damage slot to have segmented hp bar
-                if (incomingDmgImage != null ) incDmgBarList.Add(Instantiate(incomingDmgImage.gameObject, transform));
+                if (incomingDmgImage != null ) incDmgBarList.Add(Instantiate(incomingDmgImage.gameObject, hpImage.gameObject.transform));
 
             }
 
@@ -115,9 +115,14 @@ namespace Battle.Board {
 
 
                 // incomingDmgImage.fillAmount = Math.Min(1f * TotalIncomingDamage() / board.maxHp, hpImage.fillAmount);
-                // barImg.rectTransform.anchoredPosition = new Vector2(incomingDmgImage.rectTransform.anchoredPosition.x, newIncomingPos);
-                // float hpBarTopY = (hpImage.fillAmount * hpImage.rectTransform.localScale.y) - hpImage.rectTransform.localScale.y + 1.0f;
-                // newIncomingPos = Math.Max(hpBarTopY - barImg.fillAmount*barImg.rectTransform.localScale.y, 0);
+                float hpBarTopY = (hpImage.fillAmount * hpImage.rectTransform.localScale.y) - hpImage.rectTransform.localScale.y;
+                // Debug.Log(hpBarTopY);
+                newIncomingPos = hpBarTopY * barObj.GetComponent<RectTransform>().rect.height;
+                barImg.rectTransform.anchoredPosition = new Vector2(incomingDmgImage.rectTransform.anchoredPosition.x, newIncomingPos);
+
+                // dont allow fill amount overflow
+                barImg.fillAmount = Math.Min(barImg.fillAmount, hpImage.fillAmount);
+                
 
                 // set color
                 barImg.color = Color.Lerp(hpBarColor, incDmgBarColor, 0.1f + (1f * i/incDmgBarList.Count) * 0.9f);
