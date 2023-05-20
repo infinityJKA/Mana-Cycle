@@ -383,11 +383,13 @@ namespace VersusMode {
             // when locking in, disable and enable cpu selector
             if (lockedIn && opponentSelector.isCpuCursor) {
                 // is this is also a cpu cursor (AI vs AI)
-                if (isPlayer1 && isCpuCursor && !selectingCpuLevel) {
-                    selectingCpuLevel = true;
-                } else {
-                    Active = false;
-                    opponentSelector.Active = true;
+                if (isPlayer1) {
+                    if (isCpuCursor && !selectingCpuLevel) {
+                        selectingCpuLevel = true;
+                    } else {
+                        Active = false;
+                        opponentSelector.Active = true;
+                    }
                 }
             }
 
