@@ -14,6 +14,9 @@ public class Storage
     public static bool isPlayerControlled1;
     public static bool isPlayerControlled2;
 
+    // amount of lives the player will start with in arcade mode, used for persistence between arcade levels
+    public static int arcadeLives;
+
     /** level that the player selected */
     public static SoloMode.Level level;
 
