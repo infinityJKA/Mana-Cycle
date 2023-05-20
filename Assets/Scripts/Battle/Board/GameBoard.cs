@@ -219,6 +219,8 @@ namespace Battle.Board {
         public int lives { get; private set; } = 3;
         // Transform where LifeHearts display the amount of remaining lives.
         [SerializeField] private Transform lifeTransform;
+        // Prefab for a life heart displayed in the lives transform of the board
+        [SerializeField] private GameObject lifeHeartObj;
 
         // Board background image - used to change color when recovering
         [SerializeField] private Image boardBackground;
@@ -378,6 +380,21 @@ namespace Battle.Board {
             abilityManager.InitManaBar();
 
             recoveryText.enabled = false;
+
+            // in versus mode or solo mode player, use val from storage
+            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.gamemode == Storage.GameMode.Solo && playerSide == 0)) {
+                lives = Storage.lives;
+            } 
+            // enemies in solo mode levels will always have 1 life (might make param for this in level i fneeded)
+            else if (Storage.gamemode == Storage.GameMode.Solo && playerSide == 1) {
+                lives = 1;
+            } // otherwise, def. value of 3 will remain which is universal default
+
+            // when the game starts, have the life transform mirror the amount of lives
+            foreach (Transform child in lifeTransform) Destroy(child.gameObject);
+            for (int i=0; i<lives; i++) {
+                Instantiate(lifeHeartObj, lifeTransform);
+            }
         }
 
         void SetAIDifficulty(float difficulty) {
@@ -462,7 +479,7 @@ namespace Battle.Board {
                             previousFallTime = Time.time;
                             if (!piece) SpawnPiece();
                         } else {
-                            recoveryText.text = Mathf.FloorToInt(recoveryTimer)+"";
+                            recoveryText.text = Mathf.CeilToInt(recoveryTimer)+"";
                         }
                     }
 
@@ -1765,7 +1782,7 @@ namespace Battle.Board {
         // If more than one life remains, clears the board and incoming damage, and player suffers a 5-second delay.
         void LoseLife() {
             lives--;
-            Destroy(lifeTransform.GetChild(0).gameObject);
+            Destroy(lifeTransform.GetChild(lifeTransform.childCount-1).gameObject);
 
             if (lives > 0) {
                 PlaySFX("lose", pitch: 1.35f, volumeScale: 0.75f);

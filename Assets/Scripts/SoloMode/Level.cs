@@ -26,6 +26,9 @@ namespace SoloMode {
         /** Points needed to complete the level **/
         [SerializeField] public int scoreGoal = 2000;
 
+        /// <summary>Amount of lives the player gets.<summary>
+        [SerializeField] public int lives = 1;
+
         /** Total length of the cycle. */
         [SerializeField] public int cycleLength = 7;
         /** Amount of unique colors in the cycle. */
