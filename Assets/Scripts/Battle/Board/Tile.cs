@@ -176,6 +176,7 @@ namespace Battle.Board {
             if (!obscured) {
                 obscured = true;
                 image.sprite = obscuredSprite;
+                baseColor = obscureColor;
                 image.color = obscureColor;
             }
         }
