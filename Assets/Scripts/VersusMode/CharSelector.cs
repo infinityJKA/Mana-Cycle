@@ -32,7 +32,7 @@ namespace VersusMode {
         [SerializeField] private GameObject cpuLevelLeftArrow, cpuLevelRightArrow;
 
         ///<summary>SFX played when interacting with menu</summary>
-        [SerializeField] private AudioClip switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX;
+        [SerializeField] private AudioClip switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX, settingsToggleSFX;
 
         /// Fade in/out speed for the ability info & settings box
         [SerializeField] private float fadeSpeed;
@@ -114,6 +114,9 @@ namespace VersusMode {
         // CPU difficulty selected by the player - scale of 1-10
         public int cpuLevel { get; set; }
 
+        // only used in AI vs. AI mode - if this is P1 and wll give control to p2 after selecting cpu difficulty right now if true
+        private bool selectingCpuLevel;
+
         // Spectrum of colors to tint the CPU number with increasing difficulty
         [SerializeField] private Color[] cpuLevelSpectrum;
 
@@ -151,6 +154,7 @@ namespace VersusMode {
                     Active = false;
                     portrait.enabled = false;
                 } else {
+                    if (!Storage.isPlayerControlled1) isCpuCursor = true;
                     // inputs should be solo inputs scripts, as the player will play in the game
                     inputScript = soloInputScript;
                     opponentSelector.inputScript = soloInputScript;
@@ -286,14 +290,26 @@ namespace VersusMode {
                 // when in settings menu, cast will toggle the current toggle, press the current button, etc..
                 if (settingsDisplayed) {
                     var toggle = settingsSelection.GetComponent<Toggle>();
-                    if (toggle) toggle.isOn = !toggle.isOn;
+                    if (toggle) {
+                        toggle.isOn = !toggle.isOn;
+                        SoundManager.Instance.PlaySound(settingsToggleSFX);
+                    }
 
                     // if any battle preferences were just toggled, update its state in Storage and the other player's settings toggle
                     if (settingsSelection == abilityToggle) {
                         PlayerPrefs.SetInt("enableAbilities", abilityToggle.isOn ? 1 : 0);
                         opponentSelector.abilityToggle.isOn = abilityToggle.isOn;
                     }
-                } 
+                }
+
+                // if this is CPU and locked into selecting CPU level, give control to other board
+                else if (selectingCpuLevel) {
+                    selectingCpuLevel = false;
+                    SoundManager.Instance.PlaySound(selectSFX);
+                    Active = false;
+                    opponentSelector.Active = true;
+                    RefreshLockVisuals();
+                }
 
                 // If aready locked in, start match if other player is also locked in
                 else if (lockedIn) {
@@ -312,6 +328,12 @@ namespace VersusMode {
                 // close ability info/settings menu if it is open
                 if (abilityInfoDisplayed) ToggleAbilityInfo();
                 else if (settingsDisplayed) ToggleSettings();
+
+                // stop selecting cpu level if selecting
+                else if (selectingCpuLevel) {
+                    selectingCpuLevel = false;
+                    RefreshLockVisuals();
+                }
                 
                 // unlock in when pause pressed
                 else if (lockedIn) ToggleLock();
@@ -350,14 +372,23 @@ namespace VersusMode {
 
         void ToggleLock()
         {
-            lockedIn = !lockedIn;
-            SoundManager.Instance.PlaySound(lockedIn ? selectSFX : unselectSFX);
-            RefreshLockVisuals();
+            lockedIn = !lockedIn;  
+
+            if (isPlayer1 && isCpuCursor && !selectingCpuLevel) {
+                SoundManager.Instance.PlaySound(settingsToggleSFX);
+            } else {
+                SoundManager.Instance.PlaySound(lockedIn ? selectSFX : unselectSFX);
+            }
 
             // when locking in, disable and enable cpu selector
             if (lockedIn && opponentSelector.isCpuCursor) {
-                Active = false;
-                opponentSelector.Active = true;
+                // is this is also a cpu cursor (AI vs AI)
+                if (isPlayer1 && isCpuCursor && !selectingCpuLevel) {
+                    selectingCpuLevel = true;
+                } else {
+                    Active = false;
+                    opponentSelector.Active = true;
+                }
             }
 
             if (isCpuCursor) {
@@ -366,11 +397,13 @@ namespace VersusMode {
             } else {
                 cpuLevelImage.gameObject.SetActive(false);
             }
+
+            RefreshLockVisuals();
         }
 
         void RefreshLockVisuals() {
             if (lockedIn){
-                portrait.color = new Color(1.0f, 1.0f, 1.0f, 1f);
+                portrait.color = new Color(1.0f, 1.0f, 1.0f, selectingCpuLevel ? 0.65f : 1f);
                 nameText.text = selectedBattler.displayName;
                 nameText.fontStyle = TMPro.FontStyles.Bold;
             }
