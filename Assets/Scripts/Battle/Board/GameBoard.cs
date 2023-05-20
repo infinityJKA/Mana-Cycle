@@ -213,6 +213,26 @@ namespace Battle.Board {
         private static float trashDamageTimerDuration = 5f;
         private static int damagePerTrash = 5;
 
+
+        // Amount of remaining lives. When dying, lose a life. If more than one life is remaining,
+        // clear all incoming damage, clear the board, and suffer a 6-second delay before you can place pieces again.
+        public int lives { get; private set; } = 3;
+        // Transform where LifeHearts display the amount of remaining lives.
+        [SerializeField] private Transform lifeTransform;
+
+        // Board background image - used to change color when recovering
+        [SerializeField] private Image boardBackground;
+        // standard board backgorund color, and color when recovering
+        [SerializeField] private Color boardColor, boardRecoverColor;
+        // true while in "recovery mode" - 5 seconds of delay, pieces will not spawn
+        public bool recoveryMode { get; private set; }
+        // Recovery timer - amount of time to wait before regaining control and pieces start spawning again
+        private float recoveryTimer;
+        // the number in the center of the board when in recovery mode
+        [SerializeField] private TMPro.TextMeshProUGUI recoveryText;
+
+        private static readonly float recoveryDelay = 3f;
+
         // MANAGERS
         [SerializeField] public AbilityManager abilityManager;
 
@@ -331,6 +351,8 @@ namespace Battle.Board {
                 }
             }
 
+            pointer.SetActive(false);
+
             portrait.sprite = battler.sprite;
 
             // abilityManager.InitManaBar();
@@ -350,10 +372,12 @@ namespace Battle.Board {
             }
 
             drawGhostPiece = playerControlled && PlayerPrefs.GetInt(playerSide == 0 ? "drawGhostPiece" : "drawGhostPieceP2", 1) == 1;
-            if (drawGhostPiece) ghostTiles = new List<Tile>();
+            ghostTiles = new List<Tile>();
 
             abilityManager.enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
             abilityManager.InitManaBar();
+
+            recoveryText.enabled = false;
         }
 
         void SetAIDifficulty(float difficulty) {
@@ -382,8 +406,6 @@ namespace Battle.Board {
             // portrait.GetComponent<RectTransform>().anchoredPosition = initialPos + battler.portraitOffset;
             // wait for cycle to initialize (after countdown) to run game logic
             if (!cycleInitialized) return;
-
-            PointerReposition();
 
             // -------- CONTROLS ----------------
             // if (inputScripts == null) return;
@@ -426,6 +448,24 @@ namespace Battle.Board {
                             winMenu.SelectOption();
                         }
                     }
+
+                    //otherwise, if in recovery mode, don't perform any non-menu inputs & stop at this branch to update the recovery timer
+                    else if (recoveryMode) {
+                        recoveryTimer -= Time.deltaTime;
+                        if (recoveryTimer <= 0f) {
+                            boardBackground.color = boardColor;
+                            recoveryText.enabled = false;
+                            recoveryMode = false;
+                            defeated = false;
+                            hpBar.hpNum.gameObject.SetActive(true);
+                            hp = maxHp;
+                            previousFallTime = Time.time;
+                            if (!piece) SpawnPiece();
+                        } else {
+                            recoveryText.text = Mathf.FloorToInt(recoveryTimer)+"";
+                        }
+                    }
+
                     
                     // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
                     else if (!convoPaused && !postGame) {
@@ -462,7 +502,7 @@ namespace Battle.Board {
                 }
 
                 // -------- PIECE FALL/PLACE ----------------
-                if (!defeated && doPieceFalling)
+                if (!defeated && !recoveryMode && doPieceFalling)
                 {
                     if (instaDropThisFrame && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
                         PlacePiece();
@@ -714,7 +754,7 @@ namespace Battle.Board {
             piece.transform.SetParent(pieceBoard, false);
             piece.MoveTo(column, 3);
             piece.PlaceTilesOnBoard(ref tiles, pieceBoard);
-            Destroy(piece);
+            Destroy(piece.gameObject);
             piece.OnPlace(this);
             previousFallTime = Time.time;  
             foreach (Vector2Int pos in piece) {
@@ -794,7 +834,7 @@ namespace Battle.Board {
             pieceSpawned = true;
             // destroy the piece currently being dropped
             piece.DestroyTiles();
-            Destroy(piece);
+            Destroy(piece.gameObject);
 
             // parent the new piece and set it to the drop location
             nextPiece.transform.SetParent(pieceBoard, false);
@@ -892,7 +932,7 @@ namespace Battle.Board {
             piece.OnPlace(this);
 
             // After tile objects are moved out, destroy the piece object as it is no longer needed
-            Destroy(piece);
+            Destroy(piece.gameObject);
 
             if (!postGame) PlaySFX("place");
 
@@ -921,6 +961,12 @@ namespace Battle.Board {
             StartCoroutine(CheckMidConvoAfterDelay());
         }
 
+        // Destroy any existing ghost tiles on the board (simulated board).
+        void DestroyExistingGhostTiles() {
+            foreach (var ghostTile in ghostTiles) Destroy(ghostTile.gameObject);
+            ghostTiles.Clear();
+        }
+
         /// <summary>
         /// Redraw the ghost piece that shows where the current piece will land in the current column.
         /// Should be called when piece rotated, column changed or tiles underneath change.
@@ -928,16 +974,20 @@ namespace Battle.Board {
         public void RefreshGhostPiece() {
             if (!drawGhostPiece) return;
 
-            foreach (var ghostTile in ghostTiles) Destroy(ghostTile.gameObject);
-            ghostTiles.Clear();
+            DestroyExistingGhostTiles();
 
             if (piece == null) return;
 
             var ghostPiece = Instantiate(piece.gameObject, piece.transform.parent, true).GetComponent<Piece>();
 
             ghostPiece.GetCenter().SetColor(piece.GetCenter().color, this, ghost: true);
-            if (ghostPiece.GetTop() != null) ghostPiece.GetTop().SetColor(piece.GetTop().color, this, ghost: true);
-            if (ghostPiece.GetRight() != null) ghostPiece.GetRight().SetColor(piece.GetRight().color, this, ghost: true);
+            
+            if (ghostPiece.GetTop() != null) {
+                ghostPiece.GetTop().SetColor(piece.GetTop().color, this, ghost: true);
+            }
+            if (ghostPiece.GetRight() != null) {
+                ghostPiece.GetRight().SetColor(piece.GetRight().color, this, ghost: true);
+            }
 
             ghostPiece.MakeGhostPiece(ref ghostTiles);
 
@@ -1711,21 +1761,52 @@ namespace Battle.Board {
             return postGame;
         }
 
+        // Called when defeated. Lose one life and update life transform
+        // If more than one life remains, clears the board and incoming damage, and player suffers a 5-second delay.
+        void LoseLife() {
+            lives--;
+            Destroy(lifeTransform.GetChild(0).gameObject);
+
+            if (lives > 0) {
+                PlaySFX("lose", pitch: 1.35f, volumeScale: 0.75f);
+
+                recoveryMode = true;
+                recoveryTimer = recoveryDelay;
+
+                boardBackground.color = boardRecoverColor;
+                recoveryText.enabled = true;
+
+                for (int r=0; r<height; r++) {
+                    for (int c=0; c<width; c++) {
+                        ClearTile(c, r);
+                    }
+                }
+                for (int i=0; i<6; i++) {
+                    hpBar.DamageQueue[i].SetDamage(0);
+                }
+            }
+        }
+
         public void Defeat() 
         {
             if (defeated || won) return;
 
-            postGame = true;
-            defeated = true;
-            casting = false;
+            Destroy(piece.gameObject);
+            piece = null;
+            DestroyExistingGhostTiles();
             hpBar.hpNum.gameObject.SetActive(false);
+            defeated = true;
+
+            LoseLife();
+
+            if (lives > 0) return;
+
+            postGame = true;
+            casting = false;
             if (timer != null) timer.StopTimer();
             foreach (var incoming in hpBar.DamageQueue) {
                 incoming.SetDamage(0);
             }
-
-            Destroy(piece);
-            piece = null;
 
             // pieceBoard.SetActive(false);
             winTextObj.SetActive(true);

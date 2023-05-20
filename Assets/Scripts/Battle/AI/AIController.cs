@@ -68,7 +68,7 @@ namespace Battle.AI {
 
         void Update() {
             // stop while not player controlled, uninitialized, paused, post game or dialogue
-            if (board.IsPlayerControlled() || !board.isInitialized() || board.isPaused() || board.isPostGame() || board.convoPaused) return;
+            if (board.IsPlayerControlled() || !board.isInitialized() || board.isPaused() || board.isPostGame() || board.convoPaused || board.recoveryMode) return;
 
             // Will be run the frame a piece is spawned
             if (board.pieceSpawned){
