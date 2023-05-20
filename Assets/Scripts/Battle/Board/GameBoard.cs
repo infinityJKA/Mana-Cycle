@@ -416,7 +416,7 @@ namespace Battle.Board {
 
             if (difficulty == 1f) {
                 // max out speed on highest difficulty, ~25 moves per second, also enable concurrent actions
-                aiController.moveDelay = 0.04f;
+                aiController.moveDelay = 0.05f;
                 aiController.concurrentActions = true;
             } else {
                 float movesPerSecond = Mathf.Lerp(0.1f, 9.5f, difficulty);
