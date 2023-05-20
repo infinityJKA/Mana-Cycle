@@ -24,7 +24,7 @@ namespace Battle.Board {
         [SerializeField] private Color incDmgBarColor;
 
         // used for segmented dmg bar
-        private List<GameObject> incDmgBarList;
+        private List<GameObject> incDmgBarList = new List<GameObject>();
         
         [SerializeField] private IncomingDamage[] damageQueue;
         public IncomingDamage[] DamageQueue { get { return damageQueue; } } // (public getter for private setter)
