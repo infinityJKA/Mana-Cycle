@@ -119,6 +119,14 @@ namespace PostGame {
                     MenuUI.SetActive(true);
                     Time.timeScale = 0f;
 
+                    // dont allow char select option in the middle of arcade mode
+                    if (Storage.level.nextSeriesLevel) 
+                    {
+                        buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(true);
+                        buttonsTransform.Find("CharSelectButton").gameObject.SetActive(false);
+                    }
+                    
+
                     // if in level series, replay button -> continue button
                     if (Storage.level.nextSeriesLevel && cleared)
                     {
