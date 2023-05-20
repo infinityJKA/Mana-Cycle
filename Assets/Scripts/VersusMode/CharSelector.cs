@@ -449,7 +449,7 @@ namespace VersusMode {
             SoundManager.Instance.PlaySound(settingsDisplayed ? infoOpenSFX : infoCloseSFX);
         }
 
-        static int minLives = 1, maxLives = 5;
+        static int minLives = 1, maxLives = 15;
         void AdjustLives(int delta) {
             lives = Mathf.Clamp(lives+delta, minLives, maxLives);
             opponentSelector.lives = lives;
