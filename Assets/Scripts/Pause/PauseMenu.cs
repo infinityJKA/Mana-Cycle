@@ -101,8 +101,9 @@ namespace Pause {
         public void SelectOption()
         {
             // Debug.Log(pauseMenuItems[currentSelection]);
+            var button = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
+            if (button) button.onClick.Invoke();
             if (paused) SoundManager.Instance.UnpauseBGM();
-            EventSystem.current.currentSelectedGameObject.GetComponent<Button>().onClick.Invoke();
         }
     }
 }
