@@ -18,6 +18,7 @@ MonoBehaviour:
   midLevelConversations: []
   time: 180
   scoreGoal: 0
+  lives: 1
   cycleLength: 3
   cycleUniqueColors: 1
   lockPieceColors: 0
@@ -26,8 +27,9 @@ MonoBehaviour:
   availableBattlers:
   - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
   objectives:
-  - condition: 5
+  - condition: 6
     value: 3
+    inverted: 0
   levelRequirement: {fileID: 0}
   nextSeriesLevel: {fileID: 0}
   survivalWin: 0
