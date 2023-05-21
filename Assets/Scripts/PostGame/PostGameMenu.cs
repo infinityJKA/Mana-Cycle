@@ -94,16 +94,18 @@ namespace PostGame {
                 // if not endless mode and is winner, level is cleared
                 bool clearedBefore = PlayerPrefs.GetInt(levelID+"_Cleared", 0) == 1;
                 bool cleared = board.IsWinner() || (Storage.level.time == -1 && Storage.level.scoreGoal == 0);
-                if (cleared) PlayerPrefs.SetInt(levelID+"_Cleared", 1);
-
-                // If solo mode win: retry -> replay
-                retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>()
-                    .text = "Replay";
 
                 // set highscore if level was cleared
-                if (cleared) {
+                if (cleared) {        
+                    PlayerPrefs.SetInt(levelID+"_Cleared", 1);
+
+                    int score = board.hp + (board.lives-1)*2000; // add 2000 to score for each remaining life
                     int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
-                    PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(board.hp, highScore));
+                    PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(score, highScore));
+
+                    // If solo mode win: retry -> replay
+                    retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>()
+                        .text = "Replay";
                 }
 
                 Time.timeScale = 1f;
@@ -228,6 +230,7 @@ namespace PostGame {
             if (Storage.level.lastSeriesLevel != null)
             {
                 Storage.level = Storage.level.GetRootLevel();
+                Storage.lives = Storage.level.lives;
                 transitionHandler.WipeToScene("ManaCycle", reverse: true);
                 Time.timeScale = 1f;
             }
@@ -269,7 +272,8 @@ namespace PostGame {
             Time.timeScale = 1f;
             Storage.level.nextSeriesLevel.battler = Storage.level.battler;
             Storage.level = Storage.level.nextSeriesLevel;
-            Storage.lives = board.lives;
+            Storage.lives = board.recoveryMode ? 2000 : board.lives;
+            Storage.hp = board.hp;
             transitionHandler.WipeToScene("ManaCycle");
         }
 

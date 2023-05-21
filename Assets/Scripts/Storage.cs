@@ -16,6 +16,8 @@ public class Storage
 
     // amount of lives players will start with. used for persistence between arcade levels, and also set via versus mode settings
     public static int lives = 3;
+    // in arcade mode- persist HP between matches
+    public static int hp;
 
     /** level that the player selected */
     public static SoloMode.Level level;
