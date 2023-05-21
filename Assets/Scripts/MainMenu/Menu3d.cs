@@ -56,8 +56,12 @@ namespace MainMenu {
                     if (selection) {
                         Storage.lastMainMenuItem = selection.transform.GetSiblingIndex();
                         Debug.Log(Storage.lastMainMenuItem);
-                        selection.GetComponent<Button>().onClick.Invoke();
-                        Debug.Log("working?");
+
+                        Button button = selection.GetComponent<Button>();
+                        if (button) button.onClick.Invoke();
+
+                        Toggle toggle = selection.GetComponent<Toggle>();
+                        if (toggle) toggle.isOn = !toggle.isOn;
                     }
                     break;
                 }
