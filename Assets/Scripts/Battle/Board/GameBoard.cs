@@ -488,8 +488,10 @@ namespace Battle.Board {
             // if (inputScripts == null) return;
 
             // these will be set to true if any of the input scripts trigger it
-            quickFall = false;
-            instaDropThisFrame = false;
+            if (playerControlled) {
+                quickFall = false;
+                instaDropThisFrame = false;
+            }
 
             foreach (InputScript inputScript in inputScripts) {
                 if (inputScript != null)
