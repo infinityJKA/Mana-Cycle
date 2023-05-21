@@ -210,8 +210,6 @@ namespace Battle.Board {
         // In party mode, this is the timer before the user takes direct uncounterable damage from all trash tiles
         // Timer starts when a trash tile is added, and will stop running when no trash tiles tick when timer is up
         private float trashDamageTimer;
-        private static float trashDamageTimerDuration = 5f;
-        private static int damagePerTrash = 5;
 
 
         // Amount of remaining lives. When dying, lose a life. If more than one life is remaining,
@@ -457,8 +455,42 @@ namespace Battle.Board {
                 }
             }
 
+            // TRASH DAMAGE TIMER
+            // if above 0, tick down
+            // If not in a level or level is against an AI, take trash damage
+            if (!defeated && !postGame && (!Storage.level || Storage.level.aiBattle) && trashDamageTimer > 0) {
+                trashDamageTimer -= Time.deltaTime;
+
+                // if reached 0, check for tiles.
+                
+                if (trashDamageTimer <= 0) {
+                    int trashDamage = 0;
+                    for (int r=0; r<height; r++) {
+                        for (int c=0; c<width; c++) {
+                            if (tiles[r, c] && tiles[r, c].trashTile) {
+                                trashDamage += damagePerTrash;
+                            }
+                        }
+                    }
+
+                    // if there are tiles, damage and reset the timer.
+                    // if no tiles, set timer to 0 (not running)
+                    if (trashDamage > 0) {
+                        TakeDamage(trashDamage, 0.333f);
+                        trashDamageTimer = trashDamageTimerDuration;
+                    } else {
+                        trashDamageTimer = 0;
+                    }
+                }
+            }
+
             // -------- CONTROLS ----------------
             // if (inputScripts == null) return;
+
+            // these will be set to true if any of the input scripts trigger it
+            quickFall = false;
+            instaDropThisFrame = false;
+
             foreach (InputScript inputScript in inputScripts) {
                 if (inputScript != null)
                 {
@@ -530,115 +562,86 @@ namespace Battle.Board {
                         }
 
                         if (playerControlled && piece != null){
-                            quickFall = Input.GetKey(inputScript.Down);
-                            instaDropThisFrame = Input.GetKeyDown(inputScript.Up);
-                        }
-                    }
-                }
-
-                // -------- PIECE FALL/PLACE ----------------
-                if (!defeated && !recoveryMode && doPieceFalling)
-                {
-                    if (instaDropThisFrame && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
-                        PlacePiece();
-                    } else {
-                        fallTimeMult = quickFall ? 0.1f : 1f;
-
-                        // Get the time that has passed since the previous piece fall.
-                        // If it is greater than fall time (or fallTime/10 if holding down),
-                        // move the piece one down.
-                        // (Final fall time has to be greater than 0.05)
-                        float finalFallTime = fallTime*this.fallTimeMult;
-
-                        // If not fast-dropping, slow down fall if this is a slow falling tile
-                        if (piece && piece.slowFall && fallTimeMult > 0.2f) finalFallTime *= 2f;
-
-                        if (finalFallTime < 0.05f){
-                            finalFallTime = 0.05f;
-                        }
-                        if (finalFallTime < 0.8f && piece && piece.slowFall && !quickFall) {
-                            finalFallTime = 0.8f;
-                        }
-
-                        if (Time.time - previousFallTime > finalFallTime) {
-
-                            // Try to move the piece down.
-                            bool movedDown = MovePiece(0, 1);
-
-                            if (!movedDown) {
-                                // If it can't be moved down,
-                                // also check for sliding buffer, and place if beyond that
-                                // don't use slide time if down held
-                                // if (!Input.GetKey(inputScript.Down)) {
-                                
-                                // if (Input.GetKey(inputScript.Left) || Input.GetKey(inputScript.Right)) {
-                    
-                                    if (playerControlled && !Input.GetKey(inputScript.Down) && level) {
-                                        finalFallTime += (slideTime*level.slideTimeMult);
-                                    }
-
-
-                                // true if time is up for the extra slide buffer
-                                bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
-                                // if exxtended time is up and still can't move down, place
-                                if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
-                                {
-                                    PlacePiece();
-                                }
-                            } else {
-                                // If it did move down, adjust numbers.
-                                // reset to 0 if row fallen to is below the last.
-                                // otherwise, increment
-                                if (piece != null && piece.GetRow() > lastRowFall) {
-                                    lastRowFall = piece.GetRow();
-                                    rowFallCount = 0;
-                                } else {
-                                    rowFallCount++;
-                                    // if row fall count exceeds 3, auto place
-                                    if (rowFallCount > 3) {
-                                        PlacePiece();
-                                    }
-                                }
-
-                                // if it did move, reset fall time
-                                previousFallTime = Time.time;  
-                            }
-                        } 
-                    }
-
-                    instaDropThisFrame = false;
-                }
-
-                // TRASH DAMAGE TIMER
-                // if above 0, tick down
-                // If not in a level or level is against an AI, take trash damage
-                if ((!Storage.level || Storage.level.aiBattle) && trashDamageTimer > 0) {
-                    trashDamageTimer -= Time.deltaTime;
-
-                    // if reached 0, check for tiles.
-                    
-                    if (trashDamageTimer <= 0) {
-                        int trashDamage = 0;
-                        for (int r=0; r<height; r++) {
-                            for (int c=0; c<width; c++) {
-                                if (tiles[r, c] && tiles[r, c].trashTile) {
-                                    trashDamage += damagePerTrash;
-                                }
-                            }
-                        }
-
-                        // if there are tiles, damage and reset the timer.
-                        // if no tiles, set timer to 0 (not running)
-                        if (trashDamage > 0) {
-                            TakeDamage(trashDamage, 0.333f);
-                            trashDamageTimer = trashDamageTimerDuration;
-                        } else {
-                            trashDamageTimer = 0;
+                            if (Input.GetKey(inputScript.Down)) quickFall = true;
+                            if (Input.GetKeyDown(inputScript.Up)) instaDropThisFrame = true;
                         }
                     }
                 }
             }
+
+            // -------- PIECE FALL/PLACE ----------------
+            if (!defeated && !recoveryMode && doPieceFalling)
+            {
+                if (instaDropThisFrame && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
+                    PlacePiece();
+                } else {
+                    fallTimeMult = quickFall ? 0.1f : 1f;
+
+                    // Get the time that has passed since the previous piece fall.
+                    // If it is greater than fall time (or fallTime/10 if holding down),
+                    // move the piece one down.
+                    // (Final fall time has to be greater than 0.05)
+                    float finalFallTime = fallTime*this.fallTimeMult;
+
+                    // If not fast-dropping, slow down fall if this is a slow falling tile
+                    if (piece && piece.slowFall && fallTimeMult > 0.2f) finalFallTime *= 2f;
+
+                    if (finalFallTime < 0.05f){
+                        finalFallTime = 0.05f;
+                    }
+                    if (finalFallTime < 0.8f && piece && piece.slowFall && !quickFall) {
+                        finalFallTime = 0.8f;
+                    }
+
+                    if (Time.time - previousFallTime > finalFallTime) {
+
+                        // Try to move the piece down.
+                        bool movedDown = MovePiece(0, 1);
+
+                        if (!movedDown) {
+                            // If it can't be moved down,
+                            // also check for sliding buffer, and place if beyond that
+                            // don't use slide time if quick falling
+                            if (playerControlled && !quickFall && level) {
+                                finalFallTime += (slideTime*level.slideTimeMult);
+                            }
+
+
+                            // true if time is up for the extra slide buffer
+                            bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
+                            // if exxtended time is up and still can't move down, place
+                            if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
+                            {
+                                PlacePiece();
+                            }
+                        } else {
+                            // If it did move down, adjust numbers.
+                            // reset to 0 if row fallen to is below the last.
+                            // otherwise, increment
+                            if (piece != null && piece.GetRow() > lastRowFall) {
+                                lastRowFall = piece.GetRow();
+                                rowFallCount = 0;
+                            } else {
+                                rowFallCount++;
+                                // if row fall count exceeds 3, auto place
+                                if (rowFallCount > 3) {
+                                    PlacePiece();
+                                }
+                            }
+
+                            // if it did move, reset fall time
+                            previousFallTime = Time.time;  
+                        }
+                    } 
+                }
+
+                instaDropThisFrame = false;
+            }
         }
+
+        private static float trashDamageTimerDuration = 5f;
+        private static int damagePerTrash = 5;
+
 
         // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
         public void InitializeCycle(ManaCycle cycle)
@@ -793,7 +796,7 @@ namespace Battle.Board {
         public void SpawnStandalonePiece(Piece newPiece, int column) {
             // Send it to a random color and drop it
             newPiece.transform.SetParent(pieceBoard, false);
-            newPiece.MoveTo(column, 2);
+            newPiece.MoveTo(column, 1);
             newPiece.PlaceTilesOnBoard(ref tiles, pieceBoard);
             Destroy(newPiece.gameObject);
             newPiece.OnPlace(this);
@@ -810,7 +813,34 @@ namespace Battle.Board {
 
         // Spawn the standalone piece in a random column
         public void SpawnStandalonePiece(Piece piece) {
-            SpawnStandalonePiece(piece, (int)Random.Range(0, 8));
+            // Choose a random column to send the piece to.
+            // If at any point it overlaps with the piece being dropped, choose a new column
+            // Try this a maximum of 10 times before giving up and destroying the piece
+            // note: only checks for the center piece, aka single pieces/trash tiles
+            for (int i=0; i<10; i++) {
+                bool valid = true;
+                int col = (int)Random.Range(0, 8);
+
+                int row = 1;
+                while (row < height && !tiles[row, col]) {
+                    row++;
+                }
+
+                foreach (var pos in piece) {
+                    if (pos.y == row-1 && pos.x == col) {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (valid) {
+                    SpawnStandalonePiece(piece, col);
+                    return;
+                }
+            }
+
+            piece.DestroyTiles();
+            Destroy(piece.gameObject);
         }
 
         // Hides all 
