@@ -73,9 +73,9 @@ namespace Battle.AI {
                     if (board.tiles[r, c]) {
                         // If the tile is obscured by zman, AI will be more likely to remember the color based on accuracy
                         // If not, it knows it's a color, but not what color
-                        // Even the highest accuracy AI will only remember 70% of the colors at a time, 
+                        // Even the highest accuracy AI will only remember 60% of the colors at a time, 
                         // just so zman isnt completely useless against high level AI
-                        if (board.tiles[r, c].obscured && UnityEngine.Random.value > accuracy*0.7f) {
+                        if (board.tiles[r, c].obscured && UnityEngine.Random.value > accuracy*0.6f) {
                             boardTiles[r*GameBoard.width + c] = ManaColor.Colorless;
                         } else {
                             boardTiles[r*GameBoard.width + c] = board.tiles[r, c].color;

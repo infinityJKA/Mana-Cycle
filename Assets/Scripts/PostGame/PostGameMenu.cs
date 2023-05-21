@@ -94,31 +94,18 @@ namespace PostGame {
                 // if not endless mode and is winner, level is cleared
                 bool clearedBefore = PlayerPrefs.GetInt(levelID+"_Cleared", 0) == 1;
                 bool cleared = board.IsWinner() || (Storage.level.time == -1 && Storage.level.scoreGoal == 0);
-                if (cleared) PlayerPrefs.SetInt(levelID+"_Cleared", 1);
-
-                // If solo mode win: retry -> replay
-                retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>()
-                    .text = "Replay";
 
                 // set highscore if level was cleared
-                if (cleared) {
-                    PlayerPrefs.SetInt(levelID+"_LatestScore", board.hp);
-                    
-                    // If there is not a next-in-series level, set high score.
-                    if (!Storage.level.nextSeriesLevel) {
-                        // if arcade mode, highscore is sum of latest scores
-                        if (Storage.level.lastSeriesLevel) {
-                            levelID = Storage.level.GetRootLevel().levelName;
-                            int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
-                            PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(Storage.level.GetRootLevel().GetTotalLatestScore(), highScore));
-                        }
+                if (cleared) {        
+                    PlayerPrefs.SetInt(levelID+"_Cleared", 1);
 
-                        // if not, high score is for current level
-                        else {
-                            int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
-                            PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(board.hp, highScore));
-                        }
-                    }
+                    int score = board.hp + (board.lives-1)*2000; // add 2000 to score for each remaining life
+                    int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
+                    PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(score, highScore));
+
+                    // If solo mode win: retry -> replay
+                    retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>()
+                        .text = "Replay";
                 }
 
                 Time.timeScale = 1f;

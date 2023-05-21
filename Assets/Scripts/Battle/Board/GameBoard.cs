@@ -414,7 +414,7 @@ namespace Battle.Board {
             // set up ai difficulty values
             AIController aiController = controllerObject.GetComponent<AIController>();
             // ai shoudn't bee too dumb or it will just top out and be boring, accuracy shuld actually stay high, speed is what matters
-            aiController.accuracy = Mathf.Lerp(0.4f, 1f, difficulty);
+            aiController.accuracy = Mathf.Lerp(0.5f, 1f, difficulty);
 
             // gonna keep these static for now
             aiController.castChanceMultiplier = 1.1f;
@@ -611,7 +611,8 @@ namespace Battle.Board {
 
                 // TRASH DAMAGE TIMER
                 // if above 0, tick down
-                if (trashDamageTimer > 0) {
+                // If not in a level or level is against an AI, take trash damage
+                if ((!Storage.level || Storage.level.aiBattle) && trashDamageTimer > 0) {
                     trashDamageTimer -= Time.deltaTime;
 
                     // if reached 0, check for tiles.
@@ -629,7 +630,7 @@ namespace Battle.Board {
                         // if there are tiles, damage and reset the timer.
                         // if no tiles, set timer to 0 (not running)
                         if (trashDamage > 0) {
-                            if (Storage.gamemode != Storage.GameMode.Solo) TakeDamage(trashDamage, 0.333f);
+                            TakeDamage(trashDamage, 0.333f);
                             trashDamageTimer = trashDamageTimerDuration;
                         } else {
                             trashDamageTimer = 0;

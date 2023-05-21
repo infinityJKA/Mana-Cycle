@@ -130,38 +130,48 @@ namespace SoloMode {
             return refLevel;
         }
 
-        /// <summary> get sum of latest score in level series, used to set high score of first level in series</summary>
-        public int GetTotalLatestScore()
+        /// <summary>Get the highscore of this level, or of the last level if in a series</summary>
+        public int GetHighScore()
         {
-            int sum =  PlayerPrefs.GetInt(this.levelName+"_LatestScore", 0);
+            int score =  PlayerPrefs.GetInt(this.levelName+"_HighScore", 0);
             Level refLevel = this.nextSeriesLevel;
             
             while (refLevel != null)
             {
-                sum += PlayerPrefs.GetInt(refLevel.levelName+"_LatestScore", 0);
+                score = PlayerPrefs.GetInt(refLevel.levelName+"_HighScore", 0);
                 refLevel = refLevel.nextSeriesLevel;
             }
 
-            return sum;
-
-        }
-
-        public int GetHighScore() {
-            return PlayerPrefs.GetInt(this.levelName+"_HighScore", 0);
+            return score;
         }
     }
 
     #if (UNITY_EDITOR)
     [CustomEditor(typeof(Level))]
     public class LevelListerEditor : Editor {
+        
+
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
+
+            Level level = (Level) target;
+
+            GUILayout.Label("PlayerPrefs progress:");
+            GUILayout.Label("High score: "+PlayerPrefs.GetInt(level.levelName+"_HighScore", 0));
             
-            GUILayout.Label("\"Reset Level Progress\" will reset progress of ALL levels, resetting clear status and highscore.");
+            GUILayout.Label("Reset the progress of this level:");
 
             if (GUILayout.Button("Reset Level Progress")) {
+                PlayerPrefs.DeleteKey(level.levelName+"_Cleared");
+                PlayerPrefs.DeleteKey(level.levelName+"_HighScore");
+                Debug.Log("cleared progress of "+level.levelName);
+            }
+
+            GUILayout.Label("Reset ALL player preferences and level status:");
+
+            if (GUILayout.Button("Reset ALL Progress")) {
                 PlayerPrefs.DeleteAll();
-                Debug.Log("Level progress reset!");
+                Debug.Log("All progress reset!");
             }
         }
     }
