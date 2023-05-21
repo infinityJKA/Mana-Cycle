@@ -73,7 +73,7 @@ namespace Battle.AI {
             if (board.IsPlayerControlled() || !board.isInitialized() || board.isPaused() || board.isPostGame() || board.convoPaused || board.recoveryMode) return;
 
             // Will be run the frame a piece is spawned
-            if (board.pieceSpawned){
+            if (board.pieceSpawned && board.GetPiece()){
                 board.pieceSpawned = false;
                 board.quickFall = false;
                 minCol = 0;

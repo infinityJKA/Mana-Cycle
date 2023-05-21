@@ -868,6 +868,7 @@ namespace Battle.Board {
         /// Destroys the current piece and spawns the passed piece in its place.
         /// </summary>
         public void ReplacePiece(Piece nextPiece) {
+            if (!nextPiece) return;
             pieceSpawned = true;
             // destroy the piece currently being dropped
             piece.DestroyTiles();
@@ -1833,8 +1834,8 @@ namespace Battle.Board {
             recoveryMode = false;
             if (defeated || won) return;
 
+            piece.DestroyTiles();
             Destroy(piece.gameObject);
-            piece = null;
             DestroyExistingGhostTiles();
             hpBar.hpNum.gameObject.SetActive(false);
             defeated = true;
