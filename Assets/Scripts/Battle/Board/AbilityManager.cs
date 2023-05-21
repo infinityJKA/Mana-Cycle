@@ -39,6 +39,7 @@ namespace Battle.Board {
 
         void Start()
         {
+            board = GetComponent<GameBoard>();
             enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
             manaBar.gameObject.SetActive(enabled);
             RefreshManaBar();
@@ -115,10 +116,6 @@ namespace Battle.Board {
             SinglePiece ironSwordPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
             ironSwordPiece.MakeIronSword(board);
             board.ReplacePiece(ironSwordPiece);
-        }
-
-        void OnValidate() {
-            board = GetComponent<GameBoard>();
         }
 
         /// <summary>

@@ -534,7 +534,8 @@ namespace Battle.Board {
                     }
 
                     // don't evaulate any branches below this if in recovery mode - only menus
-                    else if (recoveryMode) return;
+                    // also don't control if the player isn't controlling the board
+                    else if (recoveryMode || !playerControlled) continue;
                     
                     // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
                     else if (!convoPaused && !postGame) {
@@ -569,7 +570,7 @@ namespace Battle.Board {
                         }
                     }
                 }
-            }
+            }            
 
             // -------- PIECE FALL/PLACE ----------------
             if (!defeated && !recoveryMode && doPieceFalling)
