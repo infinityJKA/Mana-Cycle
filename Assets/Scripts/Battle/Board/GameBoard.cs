@@ -608,9 +608,9 @@ namespace Battle.Board {
 
 
                             // true if time is up for the extra slide buffer
-                            bool pastExtraSlide = Time.time - previousFallTime > finalFallTime;
+                            bool pastExtraSlide = (Time.time - previousFallTime) > finalFallTime;
                             // if exxtended time is up and still can't move down, place
-                            if (pastExtraSlide && !movedDown && Time.time > lastPlaceTime + slideTime)
+                            if (pastExtraSlide && Time.time > lastPlaceTime + slideTime)
                             {
                                 PlacePiece();
                             }
@@ -801,7 +801,7 @@ namespace Battle.Board {
             Destroy(newPiece.gameObject);
             newPiece.OnPlace(this);
 
-            previousFallTime = Time.time;  
+            // previousFallTime = Time.time;  
             foreach (Vector2Int pos in newPiece) {
                 TileGravity(pos.x, pos.y);
             }
