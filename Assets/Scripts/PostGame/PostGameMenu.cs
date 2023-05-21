@@ -102,8 +102,23 @@ namespace PostGame {
 
                 // set highscore if level was cleared
                 if (cleared) {
-                    int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
-                    PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(board.hp, highScore));
+                    PlayerPrefs.SetInt(levelID+"_LatestScore", board.hp);
+                    
+                    // If there is not a next-in-series level, set high score.
+                    if (!Storage.level.nextSeriesLevel) {
+                        // if arcade mode, highscore is sum of latest scores
+                        if (Storage.level.lastSeriesLevel) {
+                            levelID = Storage.level.GetRootLevel().levelName;
+                            int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
+                            PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(Storage.level.GetRootLevel().GetTotalLatestScore(), highScore));
+                        }
+
+                        // if not, high score is for current level
+                        else {
+                            int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
+                            PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(board.hp, highScore));
+                        }
+                    }
                 }
 
                 Time.timeScale = 1f;
@@ -225,6 +240,7 @@ namespace PostGame {
             if (Storage.level.lastSeriesLevel != null)
             {
                 Storage.level = Storage.level.GetRootLevel();
+                Storage.lives = Storage.level.lives;
                 transitionHandler.WipeToScene("ManaCycle", reverse: true);
                 Time.timeScale = 1f;
             }
@@ -266,7 +282,8 @@ namespace PostGame {
             Time.timeScale = 1f;
             Storage.level.nextSeriesLevel.battler = Storage.level.battler;
             Storage.level = Storage.level.nextSeriesLevel;
-            Storage.lives = board.lives;
+            Storage.lives = board.recoveryMode ? 2000 : board.lives;
+            Storage.hp = board.hp;
             transitionHandler.WipeToScene("ManaCycle");
         }
 
