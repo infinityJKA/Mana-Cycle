@@ -144,6 +144,10 @@ namespace SoloMode {
 
             return score;
         }
+
+        public bool IsEndless() {
+            return time == -1 && scoreGoal == 0;
+        }
     }
 
     #if (UNITY_EDITOR)

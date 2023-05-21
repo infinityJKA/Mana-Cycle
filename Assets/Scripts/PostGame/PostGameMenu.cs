@@ -99,7 +99,7 @@ namespace PostGame {
                 if (cleared) {        
                     PlayerPrefs.SetInt(levelID+"_Cleared", 1);
 
-                    int score = board.hp + (board.lives-1)*2000; // add 2000 to score for each remaining life
+                    int score = Storage.level.IsEndless() ? board.hp : board.hp + (board.lives-1)*2000; // add 2000 to score for each remaining life
                     int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
                     PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(score, highScore));
 
