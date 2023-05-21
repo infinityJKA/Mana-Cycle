@@ -130,20 +130,24 @@ namespace SoloMode {
             return refLevel;
         }
 
-        /// <summary> get sum of high score in level series</summary>
-        public int GetHighScore()
+        /// <summary> get sum of latest score in level series, used to set high score of first level in series</summary>
+        public int GetTotalLatestScore()
         {
-            int sum =  PlayerPrefs.GetInt(this.levelName+"_HighScore", 0);
+            int sum =  PlayerPrefs.GetInt(this.levelName+"_LatestScore", 0);
             Level refLevel = this.nextSeriesLevel;
             
             while (refLevel != null)
             {
-                sum += PlayerPrefs.GetInt(refLevel.levelName+"_HighScore", 0);
+                sum += PlayerPrefs.GetInt(refLevel.levelName+"_LatestScore", 0);
                 refLevel = refLevel.nextSeriesLevel;
             }
 
             return sum;
 
+        }
+
+        public int GetHighScore() {
+            return PlayerPrefs.GetInt(this.levelName+"_HighScore", 0);
         }
     }
 

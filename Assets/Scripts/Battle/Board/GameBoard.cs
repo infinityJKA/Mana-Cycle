@@ -378,6 +378,11 @@ namespace Battle.Board {
             // in versus mode or solo mode player, use val from storage
             if (Storage.gamemode == Storage.GameMode.Versus || (Storage.gamemode == Storage.GameMode.Solo && playerSide == 0)) {
                 lives = Storage.lives;
+                // also persist HP if moving on in arcade mode
+                if (Storage.gamemode == Storage.GameMode.Solo && Storage.level.lastSeriesLevel) {
+                    hp = Storage.hp;
+                    hpBar.Refresh();
+                }
             } 
             // enemies in solo mode levels will always have 1 life (might make param for this in level i fneeded)
             else if (Storage.gamemode == Storage.GameMode.Solo && playerSide == 1) {
@@ -1193,6 +1198,10 @@ namespace Battle.Board {
                 }
 
                 // if no incoming damage/enemy shield was found, send straight to opponent
+                if (enemyBoard.recoveryMode) {
+                    Destroy(shoot.gameObject);
+                    return;
+                }
                 shoot.target = enemyBoard;
                 shoot.mode = DamageShoot.Mode.Attacking;
                 shoot.destination = enemyBoard.hpBar.DamageQueue[0].transform.position;
