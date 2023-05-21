@@ -42,7 +42,7 @@ namespace Pause {
                 buttonsTransform.Find("CharSelectButton").gameObject.SetActive(false);
             }
 
-            if (Storage.level && Storage.level.lastSeriesLevel)
+            if (Storage.level && (Storage.level.lastSeriesLevel || Storage.level.nextSeriesLevel))
             {
                 buttonsTransform.Find("RetryButton").GetChild(0).GetComponent<TextMeshProUGUI>()
                     .text = "Restart";
