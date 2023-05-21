@@ -222,7 +222,18 @@ namespace PostGame {
 
         public void SelectRematchButton()
         {
-            SceneManager.LoadScene("ManaCycle");
+            if (Storage.level.lastSeriesLevel != null)
+            {
+                Storage.level = Storage.level.GetRootLevel();
+                transitionHandler.WipeToScene("ManaCycle", reverse: true);
+                Time.timeScale = 1f;
+            }
+            else
+            {
+                SceneManager.LoadScene("ManaCycle");
+            }
+
+            
         }
 
         public void SelectBackToMainButton()

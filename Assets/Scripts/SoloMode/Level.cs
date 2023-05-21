@@ -118,6 +118,18 @@ namespace SoloMode {
             return count;
         }
 
+        /// <summary> return first level in series </summary>
+        public Level GetRootLevel()
+        {
+            Level refLevel = this;
+            while (refLevel.lastSeriesLevel != null)
+            {
+                refLevel = refLevel.lastSeriesLevel;
+            }
+
+            return refLevel;
+        }
+
         /// <summary> get sum of high score in level series</summary>
         public int GetHighScore()
         {
