@@ -209,7 +209,10 @@ namespace PostGame {
         public void MoveCursor(Vector3 dir)
         {
             var toSelect = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectable(dir);
-            if (toSelect != null) EventSystem.current.SetSelectedGameObject(toSelect.gameObject);
+            if (toSelect != null){
+                EventSystem.current.SetSelectedGameObject(toSelect.gameObject);
+                SoundManager.Instance.PlaySound(moveSFX);
+            }
         }
 
         public void SelectOption()
