@@ -208,6 +208,8 @@ namespace VersusMode {
             SetSettingsSelection(ghostPieceToggle);
             ghostPieceToggle.isOn = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
             abilityToggle.isOn = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
+
+            transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
         }
 
         void Update() {
@@ -539,10 +541,6 @@ namespace VersusMode {
 
         public void HideSelection() {
             selectedIcon.SetSelected(isPlayer1, false);
-        }
-
-        void OnValidate() {
-            transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
         }
 
         // used by CharSelectMenu to receive player pereference decisions
