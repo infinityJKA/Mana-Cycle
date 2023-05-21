@@ -200,14 +200,14 @@ namespace SoloMode {
             {
                 // flavor lines
                 if (i < 0 || i >= levelsList.Length){
-                    newText += "################" + "\n";
+                    newText += "##################" + "\n";
                 }
                 else{
                     Level level = levelsList[i];
 
                     bool cleared = level.GetCleared();
 
-                    if (i == selectedLevelIndex[selectedTabIndex] && level.RequirementsMet()) newText += " <color=#FFFFFF>";
+                    if (i == selectedLevelIndex[selectedTabIndex] && level.RequirementsMet()) newText += "<color=#FFFFFF>";
 
                     else if (!level.RequirementsMet()) newText += "<color=#015706>";
 

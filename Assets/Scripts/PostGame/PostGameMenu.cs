@@ -227,7 +227,7 @@ namespace PostGame {
 
         public void SelectRematchButton()
         {
-            if (Storage.level.lastSeriesLevel != null)
+            if (Storage.level && Storage.level.lastSeriesLevel != null)
             {
                 Storage.level = Storage.level.GetRootLevel();
                 Storage.lives = Storage.level.lives;
