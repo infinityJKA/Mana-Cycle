@@ -88,29 +88,15 @@ namespace SoloMode {
             selectedLevelIndexes = new int[tabs.Length];
             selectedTabIndex = 0;
             focused = true;
-            // decLine = (listText.font.faceInfo.descentLine);
 
-            // last level and tab selected when in this window.
+            // generates all the listed levels and organizes them into a transform
+            MakeTabLevelLists();
 
-
-            // if (Storage.lastTabSelectedIndex == -1) Storage.lastTabSelectedIndex = 0;
-            // else selectedTabIndex = Storage.lastTabSelectedIndex;
-
-            // if (Storage.lastLevelSelectedIndex == -1) Storage.lastLevelSelectedIndex = GetNextLevel();
-            // else selectedLevelIndexes[selectedTabIndex] = Storage.lastLevelSelectedIndex;
-
+            // initialize offsets for position animation
             listOffset = listTransform.anchoredPosition;
             tabOffset = tabText.rectTransform.offsetMin;
-            // levelScrollAmount = listText.fontSize;
 
-            // idk how to get char width. public field guess&check for now
-            // tab scroll amount is number of px per character
-            // tabScrollAmount = tabText.textInfo.characterInfo[1].xAdvance; 
-
-            // MakeTabLevelLists();
-            // MoveCursor();
-            // RefreshList();
-
+            // refresh shown information for first selected current tab & level
             RefreshTab();
             RefreshCursor();
             RefreshDescription();
