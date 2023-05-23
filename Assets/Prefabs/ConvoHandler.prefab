@@ -619,6 +619,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2453605081079221889}
+  - component: {fileID: 8819025827953989821}
   - component: {fileID: 2453605081079221890}
   m_Layer: 5
   m_Name: ConvoHandler
@@ -648,6 +649,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!223 &8819025827953989821
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2453605081079221888}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!114 &2453605081079221890
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -668,7 +691,6 @@ MonoBehaviour:
   board: {fileID: 0}
   disableDuringConvo: []
   disablePermanentOnConvo: []
-  tutorialDimMask: {fileID: 0}
   typeSpeed: 40
 --- !u!1 &2453605081250774414
 GameObject:
