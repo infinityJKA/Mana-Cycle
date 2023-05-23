@@ -119,8 +119,8 @@ namespace Battle.Board {
                     moving = false;
                     if (onFallAnimComplete != null) onFallAnimComplete();
                 } else {
-                    image.transform.localPosition = Vector2.MoveTowards(image.transform.localPosition, targetPosition, speed*Time.deltaTime);
-                    speed += acceleration*Time.deltaTime;
+                    image.transform.localPosition = Vector2.MoveTowards(image.transform.localPosition, targetPosition, speed*Time.smoothDeltaTime);
+                    speed += acceleration*Time.smoothDeltaTime;
                 }
             }
 

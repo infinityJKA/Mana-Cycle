@@ -27,7 +27,7 @@ namespace Animation {
 
         void Update() {
             if (Time.time > fadeBeginTime) {
-                canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, 0, fadeSpeed*Time.deltaTime);
+                canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, 0, fadeSpeed*Time.smoothDeltaTime);
             }
         }
 
