@@ -92,7 +92,7 @@ namespace SoloMode {
             else return true;
         }
 
-        public bool GetCleared()
+        public bool IsCleared()
         {
             // get to last level in series, and return if it is cleared. an entire series must be cleared for it to show as cleared
             Level refLevel = this;
