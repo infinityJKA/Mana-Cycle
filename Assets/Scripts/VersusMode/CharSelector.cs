@@ -218,7 +218,7 @@ namespace VersusMode {
             if (abilityInfoAnimating) {
                 // fade the ability window in/out according to state
                 float abilityTarget = abilityInfoDisplayed ? 1 : 0;
-                abilityInfoFadeAmount = Mathf.MoveTowards(abilityInfoFadeAmount, abilityTarget, fadeSpeed*Time.deltaTime);
+                abilityInfoFadeAmount = Mathf.MoveTowards(abilityInfoFadeAmount, abilityTarget, fadeSpeed*Time.smoothDeltaTime);
                 if (abilityInfoFadeAmount == abilityTarget) abilityInfoAnimating = false;
                 abilityInfoCanvasGroup.alpha = abilityInfoFadeAmount;
                 if (abilityInfoAnimating) {
@@ -230,7 +230,7 @@ namespace VersusMode {
 
             if (settingsAnimating) {
                 float settingsTarget = settingsDisplayed ? 1 : 0;
-                settingsFadeAmount = Mathf.MoveTowards(settingsFadeAmount, settingsTarget, fadeSpeed*Time.deltaTime);
+                settingsFadeAmount = Mathf.MoveTowards(settingsFadeAmount, settingsTarget, fadeSpeed*Time.smoothDeltaTime);
                 if (settingsFadeAmount == settingsTarget) settingsAnimating = false;
                 settingsCanvasGroup.alpha = settingsFadeAmount;
                 if (settingsAnimating) {
@@ -264,7 +264,7 @@ namespace VersusMode {
                         }
                     }
                 } else {
-                    randomChangeDelay -= Time.deltaTime;
+                    randomChangeDelay -= Time.smoothDeltaTime;
                 }
             }
 

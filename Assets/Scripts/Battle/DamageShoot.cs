@@ -38,8 +38,8 @@ namespace Battle {
         }
 
         void Update() {
-            transform.position = Vector3.MoveTowards(transform.position, destination, speed * Screen.width * Time.deltaTime);
-            speed += accel * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, destination, speed * Screen.width * Time.smoothDeltaTime);
+            speed += accel * Time.smoothDeltaTime;
 
             // If this damageShoot has reached its destination, counter/damage
             if (ReachedDestination()) {

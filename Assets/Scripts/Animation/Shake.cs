@@ -30,7 +30,7 @@ namespace Animation {
         void Update()
         {
             if (shaking) {
-                shakeTime -= Time.deltaTime;
+                shakeTime -= Time.smoothDeltaTime;
 
                 if (shakeTime > 0) {
                     currentMagnitude = magnitude * (shakeTime / shakeDuration) * intensity;

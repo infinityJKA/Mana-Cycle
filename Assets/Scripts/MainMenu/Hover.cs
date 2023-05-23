@@ -20,7 +20,7 @@ namespace MainMenu {
         // Update is called once per frame
         void Update()
         {
-            t += Time.deltaTime;
+            t += Time.smoothDeltaTime;
             y = (float) Math.Sin(t*speed) * scale;
             transform.position = new Vector3(transform.position.x, originY + y, transform.position.z);
         }

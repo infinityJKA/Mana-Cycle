@@ -30,7 +30,7 @@ namespace Animation {
         // Update is called once per frame
         void Update()
         {
-            time -= Time.deltaTime;
+            time -= Time.smoothDeltaTime;
 
             if (time > 0) {
                 graphic.color = Color.Lerp(baseColor, flashColor, time / duration);

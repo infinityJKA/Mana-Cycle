@@ -1519,6 +1519,7 @@ namespace Battle.Board {
 
                         // Check for cascaded blobs (cascade loop will continue if resulting totalBlobMana > 0)
                         RefreshBlobs();
+                        RefreshGhostPiece();
 
                         RefreshObjectives();
                         StartCoroutine(CheckMidConvoAfterDelay());

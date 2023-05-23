@@ -20,10 +20,10 @@ namespace Battle.Board {
         void Update() {
             if (falling)
             {
-                fallDistance += fallSpeed*Time.unscaledDeltaTime;
-                fallSpeed += fallAcceleration*Time.unscaledDeltaTime;
-                rotation += angularSpeed*Time.unscaledDeltaTime;
-                angularSpeed += angularAcceleration*Time.unscaledDeltaTime;
+                fallDistance += fallSpeed*Time.smoothDeltaTime;
+                fallSpeed += fallAcceleration*Time.smoothDeltaTime;
+                rotation += angularSpeed*Time.smoothDeltaTime;
+                angularSpeed += angularAcceleration*Time.smoothDeltaTime;
 
                 transform.localPosition = startPos + Vector2.down*fallDistance;
                 transform.eulerAngles = new Vector3(0, 0, rotation);

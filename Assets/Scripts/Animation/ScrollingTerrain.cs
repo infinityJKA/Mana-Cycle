@@ -11,7 +11,7 @@ public class ScrollingTerrain : MonoBehaviour {
 
     void Update()
     {
-        transform.Translate(speed * Vector3.back * Time.unscaledDeltaTime);
+        transform.Translate(speed * Vector3.back * Time.smoothDeltaTime);
         if (transform.position.z > offset) {
             transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - offset*2);
         } else if (transform.position.z < -offset) {
