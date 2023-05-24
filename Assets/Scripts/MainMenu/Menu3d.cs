@@ -36,6 +36,9 @@ namespace MainMenu {
         ///<summary>GameObject that holds all the Button objects in the scene</summary>
         [SerializeField] private Transform buttonTransorm;
 
+        // Text to dispalys the current version
+        [SerializeField] private TMPro.TextMeshProUGUI versionText;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -43,6 +46,8 @@ namespace MainMenu {
             EventSystem.current.SetSelectedGameObject( buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject );
 
             UpdateTip();
+
+            versionText.text = "Version "+Application.version;
         }
 
         // Update is called once per frame
