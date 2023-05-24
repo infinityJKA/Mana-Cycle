@@ -46,7 +46,7 @@ namespace Battle.Board {
         }
 
         public void InitManaBar() {
-            if (!enabled) return;
+            if (!enabled || !board || !board.Battler) return;
             // set height based on mana required for battler - 7px per mana
             manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, board.Battler.activeAbilityMana*7f);
             // For now, all battlers start with ability ready
@@ -64,7 +64,7 @@ namespace Battle.Board {
 
         public void GainMana(int count)
         {
-            if (!enabled) return;
+            if (!enabled || !board || !board.Battler) return;
             if (mana >= board.Battler.activeAbilityMana) return;
 
             mana = Math.Min(mana+count, board.Battler.activeAbilityMana);
