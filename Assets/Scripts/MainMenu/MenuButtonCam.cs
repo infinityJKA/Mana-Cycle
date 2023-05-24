@@ -17,7 +17,7 @@ namespace MainMenu {
         public CinemachineVirtualCamera thisCam;
         public CinemachineBrain brain;
         public TMP_Text textBox;
-        public string text;
+        // public string text;
 
         // Components to only be enabled when this item is selected
         public MonoBehaviour[] enableWhenSelected;
@@ -28,9 +28,9 @@ namespace MainMenu {
         public void OnSelect(BaseEventData eventData){
             // if(eventData.selectedObject == this.gameObject){
                 SoundManager.Instance.PlaySound(selectSFX);
-                if (brain.ActiveVirtualCamera != null) brain.ActiveVirtualCamera.Priority = 1;
-                thisCam.Priority = 30;
-                textBox.text = text;
+                if (brain && brain.ActiveVirtualCamera != null) brain.ActiveVirtualCamera.Priority = 1;
+                if (thisCam) thisCam.Priority = 30;
+                // textBox.text = text;
             // }
 
             foreach (MonoBehaviour comp in enableWhenSelected) {
