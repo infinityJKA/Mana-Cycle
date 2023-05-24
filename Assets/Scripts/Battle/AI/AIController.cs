@@ -64,7 +64,7 @@ namespace Battle.AI {
         int boardHighestRow = GameBoard.height;
 
         // rows from top - used in various methods
-        int rowsFromTop;
+        int rowsFromTop = 18;
 
         // when true, insta-drop on next movement tick
         bool readyToInstaDrop = true;
@@ -159,16 +159,6 @@ namespace Battle.AI {
 
 
         public void MakePlacementDecision() {
-            // Won't try to spellcast if there are no blobs or already casting
-            // Debug.Log("cast chance: "+(CurrentCastChance()*100)+"%");
-            if (ShouldCast()){
-                board.Spellcast();
-            }
-
-            if (ShouldActivateAbility()){
-                board.UseAbility();
-            }
-
             // Make different placement decisions based on the effect of the tile being dropped.
             switch (board.GetPiece().effect) {
                 // Iron Sword: targets the tallest column always.
@@ -221,6 +211,15 @@ namespace Battle.AI {
                 bestPlacement.Dispose();
                 job.boardTiles.Dispose();
                 job.accuracyRng.Dispose();
+
+                // after placement job, make informed decision to cast/use ability
+                if (ShouldCast()){
+                    board.Spellcast();
+                }
+
+                if (ShouldActivateAbility()){
+                    board.UseAbility();
+                }
             }
         }
 

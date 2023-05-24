@@ -21,7 +21,9 @@ namespace SoloMode {
         // List level object caches
         /** list text component where the lines are written out */
         [SerializeField] private RectTransform listTransform;
-        [SerializeField] private TMPro.TextMeshProUGUI tabText;
+        [SerializeField] private RectTransform tabTransform;
+
+        private TextMeshProUGUI[] tabTexts;
 
         // self explanatory
         [SerializeField] private TMPro.TextMeshProUGUI descriptionText;
@@ -67,7 +69,9 @@ namespace SoloMode {
         // Transform of all pre-computed lists of levels, computed on start
         [SerializeField] private Transform levelTabTransform;
         // Prefab containing a listed level - default text is a flavor line
-        [SerializeField] private TextMeshProUGUI textLine;
+        [SerializeField] private TextMeshProUGUI listedLevelPrefab;
+        // Prefab containing the name of a tab
+        [SerializeField] private TextMeshProUGUI tabNamePrefab;
         
         // colors used for displayed levels
         [SerializeField] private Color levelColor, lockedColor, selectedColor, clearedColor;
@@ -94,9 +98,10 @@ namespace SoloMode {
 
             // initialize offsets for position animation
             listOffset = listTransform.anchoredPosition;
-            tabOffset = tabText.rectTransform.offsetMin;
+            tabOffset = tabTransform.anchoredPosition;
 
             // refresh shown information for first selected current tab & level
+            tabTexts[0].color = selectedColor;
             RefreshTab();
             RefreshCursor();
             RefreshDescription();
@@ -164,18 +169,39 @@ namespace SoloMode {
             listTransform.anchoredPosition = 
             Vector2.SmoothDamp(listTransform.anchoredPosition, targetListPosition, ref vel, 0.1f);
 
-            tabText.rectTransform.offsetMin = 
-            Vector2.SmoothDamp(tabText.rectTransform.offsetMin, targetTabPosition, ref vel2, 0.1f);
+            tabTransform.anchoredPosition = 
+            Vector2.SmoothDamp(tabTransform.anchoredPosition, targetTabPosition, ref vel2, 0.1f);
         }
 
         public void MakeTabLevelLists() {
-            foreach (Transform child in levelTabTransform) DestroyImmediate(child.gameObject);
+            
 
             selectedLevelIndexes = new int[tabs.Length];
 
+            // make string for tab list - might break up later for color + not performance tanks
+            // string newTabText = "";
+            // for (int i = 0; i < tabs.Length; i++)
+            // {
+            //     SoloMenuTab currentTab = tabs[i];
+            //     newTabText += currentTab.tabName + new string(' ', tabWhitespacing);
+            // }
+            // tabText.text = newTabText;
+
             // Generate each tab
+            foreach (Transform child in tabTransform) DestroyImmediate(child.gameObject);
+            foreach (Transform child in levelTabTransform) DestroyImmediate(child.gameObject);
+
+            tabTexts = new TextMeshProUGUI[4];
+
+            Vector2 tabOffset = Vector2.zero;
             for (int t=0; t<tabs.Length; t++) {
                 SoloMenuTab tab = tabs[t];
+
+                var tabName = Instantiate<TextMeshProUGUI>(tabNamePrefab, tabTransform);
+                tabTexts[t] = tabName;
+                tabName.text = tab.tabName;
+                tabName.rectTransform.anchoredPosition = tabOffset;
+                tabOffset += Vector2.right * tabScrollAmount * (tab.tabName.Length + tabWhitespacing);
 
                 // Create the empty gameobject that wil house all the listed levels
                 RectTransform tabLevelsTransform = new GameObject(tab.name, typeof(RectTransform)).GetComponent<RectTransform>();
@@ -189,7 +215,7 @@ namespace SoloMode {
                 for (int i = 0; i < tab.levelsList.Length; i++) {
                     Level level = tab.levelsList[i];
 
-                    var listedLevel = Instantiate<TextMeshProUGUI>(textLine, tabLevelsTransform);
+                    var listedLevel = Instantiate<TextMeshProUGUI>(listedLevelPrefab, tabLevelsTransform);
                     listedLevel.rectTransform.localPosition = offset;
 
                     bool selected = i == selectedLevelIndexes[selectedTabIndex];
@@ -213,7 +239,7 @@ namespace SoloMode {
 
         void MakeFlavorLines(Transform parent, ref Vector2 offset) {
             for (int i=0; i<flavorLineCount; i++) {
-                var flavorLine = Instantiate(textLine, parent);
+                var flavorLine = Instantiate(listedLevelPrefab, parent);
                 flavorLine.rectTransform.localPosition = offset;
                 offset += Vector2.down*levelScrollAmount;
             }
@@ -266,8 +292,12 @@ namespace SoloMode {
             if (selectedTabIndex+delta < 0 || selectedTabIndex+delta >= tabs.Length) return;
 
             levelTabTransform.GetChild(selectedTabIndex).gameObject.SetActive(false);
+            tabTexts[selectedTabIndex].color = levelColor;
+
             selectedTabIndex += delta;
+
             levelTabTransform.GetChild(selectedTabIndex).gameObject.SetActive(true);
+            tabTexts[selectedTabIndex].color = selectedColor;
 
             RefreshTab();
             RefreshListedLevelText(selectedLevel, selectedText, true);
@@ -296,20 +326,20 @@ namespace SoloMode {
 
         void RefreshTab() {
             // make tab list string
-            string newTabText = "";
-            for (int i = 0; i < tabs.Length; i++)
-            {
-                // most readable code in ohio
-                newTabText += (selectedTabIndex == i) ? "<color=white>" : "<color=#10FF10>";
-                newTabText += (selectedTabIndex == i && selectedTabIndex > 0) ? "< " : "  ";
+            // string newTabText = "";
+            // for (int i = 0; i < tabs.Length; i++)
+            // {
+            //     // most readable code in ohio
+            //     newTabText += (selectedTabIndex == i) ? "<color=white>" : "<color=#10FF10>";
+            //     newTabText += (selectedTabIndex == i && selectedTabIndex > 0) ? "< " : "  ";
 
-                SoloMenuTab currentTab = tabs[i];
-                newTabText += currentTab.tabName;
+            //     SoloMenuTab currentTab = tabs[i];
+            //     newTabText += currentTab.tabName;
 
-                newTabText += (selectedTabIndex == i && selectedTabIndex < tabs.Length-1) ? " ></color>" : "  </color>";
-            }
+            //     newTabText += (selectedTabIndex == i && selectedTabIndex < tabs.Length-1) ? " ></color>" : "  </color>";
+            // }
 
-            tabText.text = newTabText;
+            // tabText.text = newTabText;
 
             // update target tab scroll pos
             float newTabPos = 0;
