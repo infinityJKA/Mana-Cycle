@@ -47,7 +47,7 @@ namespace MainMenu {
 
             UpdateTip();
 
-            versionText.text = "Version "+Application.version;
+            versionText.text = "v"+Application.version;
         }
 
         // Update is called once per frame
