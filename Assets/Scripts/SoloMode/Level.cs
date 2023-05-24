@@ -162,8 +162,15 @@ namespace SoloMode {
 
             GUILayout.Label("PlayerPrefs progress:");
             GUILayout.Label("High score: "+PlayerPrefs.GetInt(level.levelName+"_HighScore", 0));
+
+            GUILayout.Label(level.RequirementsMet() ? "Level unlocked" : "Unlock this level");
+
+            if (GUILayout.Button("Unlock this level")) {
+                PlayerPrefs.SetInt(level.levelRequirement.levelName+"_Cleared", 1);
+                Debug.Log("cleared progress of "+level.levelName);
+            }
             
-            GUILayout.Label("Reset the progress of this level:");
+            GUILayout.Label("Reset the progress of this level");
 
             if (GUILayout.Button("Reset Level Progress")) {
                 PlayerPrefs.DeleteKey(level.levelName+"_Cleared");
@@ -171,7 +178,7 @@ namespace SoloMode {
                 Debug.Log("cleared progress of "+level.levelName);
             }
 
-            GUILayout.Label("Reset ALL player preferences and level status:");
+            GUILayout.Label("Reset ALL player preferences and level status");
 
             if (GUILayout.Button("Reset ALL Progress")) {
                 PlayerPrefs.DeleteAll();
