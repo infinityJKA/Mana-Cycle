@@ -16,6 +16,9 @@ namespace VersusMode {
         // Sound to play when both players are ready and match is starting
         [SerializeField] private AudioClip startSFX;
 
+        [SerializeField] private bool mobile;
+        public bool Mobile { get {return mobile;} }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -96,7 +99,7 @@ namespace VersusMode {
                 return;
             }
 
-            transitionHandler.WipeToScene("ManaCycle");
+            transitionHandler.WipeToScene(mobile ? "MobileManaCycle" : "ManaCycle");
         }
     }
 }

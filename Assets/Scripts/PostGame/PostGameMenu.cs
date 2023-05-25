@@ -112,7 +112,7 @@ namespace PostGame {
                 
                 // if first clear (and not in series or endless), immediately exit back to solomenu; otherwise, open menu
                 if (!clearedBefore && cleared && Storage.level.nextSeriesLevel == null && Storage.level.time != -1) {
-                    transitionHandler.WipeToScene("SoloMenu", reverse:true);
+                    transitionHandler.WipeToScene(board.Mobile ? "MobileSoloMenu" : "SoloMenu", reverse:true);
                     setMenuSong();
                 } 
                 else
@@ -231,7 +231,7 @@ namespace PostGame {
             {
                 Storage.level = Storage.level.GetRootLevel();
                 Storage.lives = Storage.level.lives;
-                transitionHandler.WipeToScene("ManaCycle", reverse: true);
+                transitionHandler.WipeToScene(board.Mobile ? "MobileManaCycle" : "ManaCycle", reverse: true);
                 Time.timeScale = 1f;
             }
             else
@@ -246,21 +246,21 @@ namespace PostGame {
         {
             setMenuSong();
             Time.timeScale = 1f;
-            transitionHandler.WipeToScene("MainMenu", reverse: true);
+            transitionHandler.WipeToScene(board.Mobile ? "MobileMainMenu" : "MainMenu", reverse: true);
         }
 
         public void SelectBackToCSS()
         {
             setMenuSong();
             Time.timeScale = 1f;
-            transitionHandler.WipeToScene("CharSelect", reverse: true);
+            transitionHandler.WipeToScene(board.Mobile ? "MobileCharSelect" : "CharSelect", reverse: true);
         }
 
         public void SelectBackToSolo()
         {
             setMenuSong();
             Time.timeScale = 1f;
-            transitionHandler.WipeToScene("SoloMenu", reverse: true);
+            transitionHandler.WipeToScene(board.Mobile ? "MobileSoloMenu" : "SoloMenu", reverse: true);
         }
 
         public void setMenuSong(){
@@ -274,7 +274,7 @@ namespace PostGame {
             Storage.level = Storage.level.nextSeriesLevel;
             Storage.lives = board.recoveryMode ? 2000 : board.lives;
             Storage.hp = board.hp;
-            transitionHandler.WipeToScene("ManaCycle");
+            transitionHandler.WipeToScene(board.Mobile ? "MobileManaCycle" : "ManaCycle");
         }
 
 
