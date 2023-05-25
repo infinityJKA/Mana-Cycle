@@ -20,10 +20,17 @@ namespace SoloMode {
 
         // List level object caches
         /** list text component where the lines are written out */
+        // level container; height is controlled for mobile level lister scroll thing
+        [SerializeField] private RectTransform levelContainerTransform;
         [SerializeField] private RectTransform listTransform;
         [SerializeField] private RectTransform tabTransform;
 
+        // Array of the 4(+) tab texts
         private TextMeshProUGUI[] tabTexts;
+        // Target colors for all tab texts
+        private Color[] tabColors, tabTargetColors;
+        // Color lerp positions for all tab texts
+        private float[] tabColorPositions;
 
         // self explanatory
         [SerializeField] private TMPro.TextMeshProUGUI descriptionText;
@@ -36,10 +43,10 @@ namespace SoloMode {
         [SerializeField] private InputScript[] inputScripts;
 
         /** Initial offset of the list, saved on start from anchored position */
-        private Vector2 listOffset;
+        protected Vector2 listOffset;
         private Vector2 tabOffset;
 
-        [SerializeField] private float levelScrollAmount;
+        [SerializeField] protected float levelYSpacing;
         [SerializeField] private float tabScrollAmount;
 
         /** Index of current level selected */
@@ -49,7 +56,7 @@ namespace SoloMode {
         // private float decLine;
 
         /** current targeted scroll position */
-        private Vector2 targetListPosition;
+        protected Vector2 targetListPosition;
         private Vector2 targetTabPosition;
         /** current scroll velocity */
         private Vector2 vel = Vector2.zero;
@@ -64,27 +71,52 @@ namespace SoloMode {
         [SerializeField] private AudioClip selectSFX;
         [SerializeField] private AudioClip errorSFX;
 
-        [SerializeField] private SoloMenuTab[] tabs;
+        [SerializeField] protected SoloMenuTab[] tabs;
 
         // Transform of all pre-computed lists of levels, computed on start
-        [SerializeField] private Transform levelTabTransform;
+        [SerializeField] protected Transform levelTabTransform;
         // Prefab containing a listed level - default text is a flavor line
         [SerializeField] private TextMeshProUGUI listedLevelPrefab;
+        // Prefab for the container of all the listed levels in a tab
+        [SerializeField] private GameObject tabLevelsPrefab;
         // Prefab containing the name of a tab
         [SerializeField] private TextMeshProUGUI tabNamePrefab;
+        // Used in mobile mode. Tab is centered instead of hugging the edge of the solo level menu
+        [SerializeField] private bool centerTab;
+        // If the target color of tabs should be animated instead of instantly set.
+        [SerializeField] private bool animateTabColors;
         
         // colors used for displayed levels
-        [SerializeField] private Color levelColor, lockedColor, selectedColor, clearedColor;
+        [SerializeField] private Color levelColor, lockedColor, selectedColor, clearedColor, tabColor, tabSelectedColor;
+
+        // Curve for the color change of tabs
+        [SerializeField] private AnimationCurve tabColorAnimationCurve;
+        // color fade speed of tab color
+        [SerializeField] private float tabFadeSpeed = 10f;
+
+        // If the level list should smooth damp to align to top - shoould be turned off in mobile
+        [SerializeField] private bool autoMoveLevelList;
+
+        // If description box should be shown and updated - false if mobile mode
+        [SerializeField] protected bool showDescription = true;
+
+        // If the cursor should be displayed. Will be automatically set to true if left/right arrow keypress is detected.
+        // Set to false initially in mobile but if keyboard is connected or sum then show the arrows
+        [SerializeField] private bool showLevelCursor = true;
+
+        // True if buttons should open the corresponding level when clicked. (mobile only)
+        // eventually, should open the description box for that level with a play and exit button, but ill work on that later
+        [SerializeField] private bool levelsClickable = false;
 
         // currently unused references
-        [SerializeField] GameObject upArrow;
-        [SerializeField] GameObject downArrow;
+        [SerializeField] private GameObject upArrow;
+        [SerializeField] private GameObject downArrow;
 
         
 
 
-        private static int tabWhitespacing = 4;
-        private static int flavorLineCount = 15;
+        [SerializeField] int tabWhitespacing = 4;
+        [SerializeField] int flavorLineCount = 15;
 
         // Start is called before the first frame update
         void Start()
@@ -101,7 +133,8 @@ namespace SoloMode {
             tabOffset = tabTransform.anchoredPosition;
 
             // refresh shown information for first selected current tab & level
-            tabTexts[0].color = selectedColor;
+            tabTexts[0].color = tabSelectedColor;
+
             RefreshTab();
             RefreshCursor();
             RefreshDescription();
@@ -116,26 +149,28 @@ namespace SoloMode {
 
                 if (Input.GetKeyDown(inputScript.Up))
                 {
+                    showLevelCursor = true;
                     MoveCursor(-1);
                     SoundManager.Instance.PlaySound(moveSFX, pitch : 1.18f);
                 }
 
                 if (Input.GetKeyDown(inputScript.Down))
                 {
+                    showLevelCursor = true;
                     MoveCursor(1);
                     SoundManager.Instance.PlaySound(moveSFX, pitch : 1.06f);
                 }
 
                 if (Input.GetKeyDown(inputScript.Right))
                 {
-                    MoveTabCursor(1);
-                    SoundManager.Instance.PlaySound(swapTabSFX, pitch : 1.56f);
+                    showLevelCursor = true;
+                    LeftTabArrow();
                 }
 
                 if (Input.GetKeyDown(inputScript.Left))
                 {
-                    MoveTabCursor(-1);
-                    SoundManager.Instance.PlaySound(swapTabSFX, pitch : 1.68f);
+                    showLevelCursor = true;
+                    RightTabArrow();
                 }
 
                 // pause - go back to main menu
@@ -148,34 +183,60 @@ namespace SoloMode {
                 // cast - open selected level
                 if (Input.GetKeyDown(inputScript.Cast))
                 {
-                    if (!selectedLevel.RequirementsMet()) 
-                    {
-                        SoundManager.Instance.PlaySound(errorSFX);
-                        return;
-                    }
-
-                    StoreSelections();
-                    Storage.level = selectedLevel; 
-                    Storage.lives = Storage.level.lives;
-                    Storage.gamemode = Storage.GameMode.Solo;
-                    convoHandler.StartLevel(selectedLevel);
-                    focused = false;
-                    Storage.levelSelectedThisInput = true;
-                    SoundManager.Instance.PlaySound(selectSFX);
+                    ConfirmLevel(selectedLevel);
                 }
             }
 
             // smoothly update displayed y position of level list
-            listTransform.anchoredPosition = 
+            if (autoMoveLevelList) listTransform.anchoredPosition = 
             Vector2.SmoothDamp(listTransform.anchoredPosition, targetListPosition, ref vel, 0.1f);
 
             tabTransform.anchoredPosition = 
             Vector2.SmoothDamp(tabTransform.anchoredPosition, targetTabPosition, ref vel2, 0.1f);
+
+            // animate tab colors
+            if (animateTabColors) {
+                for (int i=0; i<tabs.Length; i++) {
+                    if (tabColorPositions[i] < 1f) {
+                        tabColorPositions[i] += Time.deltaTime*tabFadeSpeed;
+                        float colorT = Mathf.Min(1f, tabColorAnimationCurve.Evaluate(tabColorPositions[i]));
+                        tabTexts[i].color = Color.Lerp(tabColors[i], tabTargetColors[i], colorT);
+                    }
+                }
+            }
         }
 
-        public void MakeTabLevelLists() {
-            
+        public void ConfirmLevel(Level pressedLevel) {
+            if (!pressedLevel.RequirementsMet()) 
+            {
+                SoundManager.Instance.PlaySound(errorSFX);
+                return;
+            }
+            SoundManager.Instance.PlaySound(selectSFX);
 
+            StoreSelections();
+            Storage.level = pressedLevel; 
+            Storage.lives = Storage.level.lives;
+            Storage.gamemode = Storage.GameMode.Solo;
+            convoHandler.StartLevel(pressedLevel);
+            focused = false;
+            Storage.levelSelectedThisInput = true;
+        }
+
+        public void LeftTabArrow() {
+            MoveTabCursor(-1);
+            SoundManager.Instance.PlaySound(swapTabSFX, pitch : 1.68f);
+        }
+
+        public void RightTabArrow() {
+            MoveTabCursor(1);
+            SoundManager.Instance.PlaySound(swapTabSFX, pitch : 1.56f);
+        }
+
+        /// <summary>
+        /// Constructs the gameObjects that hold all the levels, and a text object for all tabs.
+        /// </summary>
+        public void MakeTabLevelLists() {
             selectedLevelIndexes = new int[tabs.Length];
 
             // make string for tab list - might break up later for color + not performance tanks
@@ -191,7 +252,12 @@ namespace SoloMode {
             foreach (Transform child in tabTransform) DestroyImmediate(child.gameObject);
             foreach (Transform child in levelTabTransform) DestroyImmediate(child.gameObject);
 
-            tabTexts = new TextMeshProUGUI[4];
+            tabTexts = new TextMeshProUGUI[tabs.Length];
+            if (animateTabColors) {
+                tabColors = new Color[tabs.Length];
+                tabTargetColors = new Color[tabs.Length];
+                tabColorPositions = new float[tabs.Length];
+            }
 
             Vector2 tabOffset = Vector2.zero;
             for (int t=0; t<tabs.Length; t++) {
@@ -199,54 +265,71 @@ namespace SoloMode {
 
                 var tabName = Instantiate<TextMeshProUGUI>(tabNamePrefab, tabTransform);
                 tabTexts[t] = tabName;
+                if (animateTabColors) {
+                    tabColors[t] = tabColor;
+                    tabTargetColors[t] = tabColor;
+                    tabTexts[t].color = tabColor;
+                    tabColorPositions[t] = 1f;
+                }
                 tabName.text = tab.tabName;
                 tabName.rectTransform.anchoredPosition = tabOffset;
-                tabOffset += Vector2.right * tabScrollAmount * (tab.tabName.Length + tabWhitespacing);
+                int len = centerTab ? 6 : tab.tabName.Length;
+                tabOffset += Vector2.right * tabScrollAmount * (len + tabWhitespacing);
 
                 // Create the empty gameobject that wil house all the listed levels
-                RectTransform tabLevelsTransform = new GameObject(tab.name, typeof(RectTransform)).GetComponent<RectTransform>();
-                tabLevelsTransform.SetParent(levelTabTransform, false);
+                GameObject tabLevelsObject = Instantiate(tabLevelsPrefab);
+                tabLevelsObject.transform.SetParent(levelTabTransform, false);
 
-                Vector2 offset = Vector2.up*levelScrollAmount*flavorLineCount;
+                Vector2 offset = Vector2.up*levelYSpacing*flavorLineCount;
 
-                MakeFlavorLines(tabLevelsTransform, ref offset);
+                MakeFlavorLines(tabLevelsObject.transform, ref offset);
 
                 // Add a listed level element for each level in the tab
                 for (int i = 0; i < tab.levelsList.Length; i++) {
                     Level level = tab.levelsList[i];
 
-                    var listedLevel = Instantiate<TextMeshProUGUI>(listedLevelPrefab, tabLevelsTransform);
+                    var listedLevel = Instantiate<TextMeshProUGUI>(listedLevelPrefab, tabLevelsObject.transform);
                     listedLevel.rectTransform.localPosition = offset;
 
                     bool selected = i == selectedLevelIndexes[selectedTabIndex];
                     RefreshListedLevelText(level, listedLevel, selected);
 
-                    offset += Vector2.down*levelScrollAmount;
+                    if (levelsClickable) {
+                        listedLevel.gameObject.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => ConfirmLevel(level));
+                    }
+
+                    offset += Vector2.down*levelYSpacing;
                 }
 
-                MakeFlavorLines(tabLevelsTransform, ref offset);
+                MakeFlavorLines(tabLevelsObject.transform, ref offset);
 
-                if (t>0) tabLevelsTransform.gameObject.SetActive(false);
+                // initially hide all tabs other than first tab
+                if (t>0) tabLevelsObject.SetActive(false);
             }
+
+            if (levelContainerTransform) levelContainerTransform.sizeDelta 
+            = new Vector2(levelContainerTransform.sizeDelta.x, (selectedTab.levelsList.Length-1)*levelYSpacing);
 
             RefreshDescription();
         }
 
-        void RefreshListedLevelText(Level level, TextMeshProUGUI listedLevel, bool selected) {
-            listedLevel.color = level.RequirementsMet() ? (selected ? selectedColor : levelColor) : lockedColor; // i love nested ternary statements
-            listedLevel.text = level.levelName + (selected ? " <" : "") + (level.IsCleared() ? "  <color=#00ffdf>X" : "  <color=#000000>X");
+        protected void RefreshListedLevelText(Level level, TextMeshProUGUI listedLevel, bool selected) {
+            if (!levelsClickable) listedLevel.color = level.RequirementsMet() ? ((selected) ? selectedColor : levelColor) : lockedColor; // i love nested ternary statements
+            listedLevel.text = level.levelName + ((selected && showLevelCursor) ? " <" : "") + (level.IsCleared() ? "  <color=#00ffdf>X" : "  <color=#00000000>X");
         }
 
         void MakeFlavorLines(Transform parent, ref Vector2 offset) {
             for (int i=0; i<flavorLineCount; i++) {
                 var flavorLine = Instantiate(listedLevelPrefab, parent);
+                flavorLine.gameObject.GetComponent<UnityEngine.UI.Button>().enabled = false;
+                flavorLine.color = levelColor;
                 flavorLine.rectTransform.localPosition = offset;
-                offset += Vector2.down*levelScrollAmount;
+                offset += Vector2.down*levelYSpacing;
             }
         }
 
-        SoloMenuTab selectedTab { get { return tabs[selectedTabIndex]; } }
-        Level selectedLevel { get { return selectedTab.levelsList[selectedLevelIndexes[selectedTabIndex]];} }
+        protected SoloMenuTab selectedTab { get { return tabs[selectedTabIndex]; } }
+        protected Level selectedLevel { get { return selectedTab.levelsList[selectedLevelIndexes[selectedTabIndex]];} }
 
         private void StoreSelections()
         {
@@ -257,9 +340,9 @@ namespace SoloMode {
 
         Transform listedLevelsTransform { get { return levelTabTransform.GetChild( selectedTabIndex ); } }
         // Transform listedLevelTransform { get { return listedLevelTransform.GetChild( selectedLevelIndex ); } }
-        TextMeshProUGUI selectedText { get { return listedLevelsTransform.GetChild(flavorLineCount+selectedLevelIndex).GetComponent<TextMeshProUGUI>();} }
+        protected TextMeshProUGUI selectedText { get { return listedLevelsTransform.GetChild(flavorLineCount+selectedLevelIndex).GetComponent<TextMeshProUGUI>();} }
 
-        int selectedLevelIndex { 
+        protected int selectedLevelIndex { 
             get { return selectedLevelIndexes[selectedTabIndex]; }
             set {
                 selectedLevelIndexes[selectedTabIndex] = value;
@@ -281,7 +364,7 @@ namespace SoloMode {
 
         void RefreshCursor() {
             // update the targeted level scroll position
-            targetListPosition = listOffset + Vector2.up * selectedLevelIndex * levelScrollAmount;
+            if (autoMoveLevelList) targetListPosition = listOffset + Vector2.up * selectedLevelIndex * levelYSpacing;
 
             // show the description of the newly hovered level
             RefreshDescription();
@@ -292,12 +375,27 @@ namespace SoloMode {
             if (selectedTabIndex+delta < 0 || selectedTabIndex+delta >= tabs.Length) return;
 
             levelTabTransform.GetChild(selectedTabIndex).gameObject.SetActive(false);
-            tabTexts[selectedTabIndex].color = levelColor;
+            if (animateTabColors) {
+                tabColors[selectedTabIndex] = tabTexts[selectedTabIndex].color;
+                tabColorPositions[selectedTabIndex] = 0f;
+                tabTargetColors[selectedTabIndex] = tabColor;
+            } else {
+                tabTexts[selectedTabIndex].color = tabColor;
+            }
 
             selectedTabIndex += delta;
 
             levelTabTransform.GetChild(selectedTabIndex).gameObject.SetActive(true);
-            tabTexts[selectedTabIndex].color = selectedColor;
+            if (animateTabColors) {
+                tabColors[selectedTabIndex] = tabTexts[selectedTabIndex].color;
+                tabColorPositions[selectedTabIndex] = 0f;
+                tabTargetColors[selectedTabIndex] = tabSelectedColor;
+            } else {
+                tabTexts[selectedTabIndex].color = tabSelectedColor;
+            }
+
+            if (levelContainerTransform) levelContainerTransform.sizeDelta 
+            = new Vector2(levelContainerTransform.sizeDelta.x, (selectedTab.levelsList.Length-1)*levelYSpacing);
 
             RefreshTab();
             RefreshListedLevelText(selectedLevel, selectedText, true);
@@ -306,6 +404,8 @@ namespace SoloMode {
 
         void RefreshDescription()
         {
+            if (!showDescription) return;
+
             // display the description and time of the selected level
             descriptionText.text = selectedLevel.description;
 
@@ -345,7 +445,8 @@ namespace SoloMode {
             float newTabPos = 0;
             for (int i = 0; i < selectedTabIndex; i++)
             {
-                newTabPos += (tabs[i].tabName.Length+tabWhitespacing) * tabScrollAmount;
+                int len = centerTab ? 6 : tabs[i].tabName.Length;
+                newTabPos += (len+tabWhitespacing) * tabScrollAmount;
             }
             targetTabPosition = tabOffset + Vector2.left * newTabPos;
             // Debug.Log("TABPOS: " + targetTabPosition);
@@ -369,7 +470,7 @@ namespace SoloMode {
 
     #if (UNITY_EDITOR)
     [CustomEditor(typeof(LevelLister))]
-    public class InputScriptEditor : Editor {
+    public class LevelListEditor : Editor {
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
             
