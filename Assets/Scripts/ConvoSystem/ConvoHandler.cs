@@ -66,35 +66,40 @@ namespace ConvoSystem {
 
                 if (Input.GetKeyDown(inputScript.Cast) && !Storage.levelSelectedThisInput)
                 {
-                    // if typing, set typing to false which will cause the coroutine to finish the current line on next update
-                    if (typing) {
-                        typing = false;
-                    }
-
-                    // otherwise, display next line & finish any animation that may be happening
-                    else {
-                        index++;
-                        leftSpeaker.animating = false;
-                        rightSpeaker.animating = false;
-                        // end convo when past the last index; otherwise, next line
-                        if (index >= convo.dialogueList.Length){
-                            EndConvo();
-                        } else {
-                            DisplayConvoLine();
-                        }
-                    }
+                    Advance();
                 } 
                 
                 // skip rest of convo when pause pressed
                 else if (Input.GetKeyDown(inputScript.Pause)) {
-                    Storage.convoEndedThisInput = true;
-                    // Storage.convoSkippedThisInput = true;
-                    EndConvo();
+                    
                 }
             }
 
 
             Storage.levelSelectedThisInput = false;
+        }
+
+        /// <summary>
+        /// Finish typing the current line, or move on to the next line if not typing.
+        /// </summary>
+        public void Advance() {
+            // if typing, set typing to false which will cause the coroutine to finish the current line on next update
+            if (typing) {
+                typing = false;
+            }
+
+            // otherwise, display next line & finish any animation that may be happening
+            else {
+                index++;
+                leftSpeaker.animating = false;
+                rightSpeaker.animating = false;
+                // end convo when past the last index; otherwise, next line
+                if (index >= convo.dialogueList.Length){
+                    EndConvo();
+                } else {
+                    DisplayConvoLine();
+                }
+            }
         }
 
         public void StartLevel(Level level) {
@@ -129,7 +134,7 @@ namespace ConvoSystem {
             StartConvo(convo);
         }
 
-        void EndConvo()
+        public void EndConvo()
         {
             if (board != null) {
                 // Try to automatically start the next conversation avaialble. If none are, move on

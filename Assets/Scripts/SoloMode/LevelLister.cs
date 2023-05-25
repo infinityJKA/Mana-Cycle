@@ -56,7 +56,7 @@ namespace SoloMode {
         // private float decLine;
 
         /** current targeted scroll position */
-        protected Vector2 targetListPosition;
+        protected Vector2 targetListPosition = Vector2.left*50f;
         private Vector2 targetTabPosition;
         /** current scroll velocity */
         private Vector2 vel = Vector2.zero;
@@ -149,27 +149,23 @@ namespace SoloMode {
 
                 if (Input.GetKeyDown(inputScript.Up))
                 {
-                    showLevelCursor = true;
                     MoveCursor(-1);
                     SoundManager.Instance.PlaySound(moveSFX, pitch : 1.18f);
                 }
 
                 if (Input.GetKeyDown(inputScript.Down))
                 {
-                    showLevelCursor = true;
                     MoveCursor(1);
                     SoundManager.Instance.PlaySound(moveSFX, pitch : 1.06f);
                 }
 
-                if (Input.GetKeyDown(inputScript.Right))
+                if (Input.GetKeyDown(inputScript.Left))
                 {
-                    showLevelCursor = true;
                     LeftTabArrow();
                 }
 
-                if (Input.GetKeyDown(inputScript.Left))
+                if (Input.GetKeyDown(inputScript.Right))
                 {
-                    showLevelCursor = true;
                     RightTabArrow();
                 }
 
@@ -221,6 +217,8 @@ namespace SoloMode {
             convoHandler.StartLevel(pressedLevel);
             focused = false;
             Storage.levelSelectedThisInput = true;
+
+            gameObject.SetActive(false);
         }
 
         public void LeftTabArrow() {
@@ -351,6 +349,8 @@ namespace SoloMode {
 
         void MoveCursor(int delta)
         {
+            if (!showLevelCursor) return;
+
             // don't move cursor if movement will send cursor outside the list
             if (selectedLevelIndex+delta < 0 || selectedLevelIndex+delta >= selectedTab.levelsList.Length) return;
 
