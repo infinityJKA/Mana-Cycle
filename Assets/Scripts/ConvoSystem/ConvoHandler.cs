@@ -57,6 +57,8 @@ namespace ConvoSystem {
 
         // [SerializeField] private AudioClip typeSound;
 
+        [SerializeField] private bool mobile;
+
         // Update is called once per frame
         void Update()
         {
@@ -157,13 +159,13 @@ namespace ConvoSystem {
                 // if multiple chars can be chosen from, go to char select
                 if (Storage.level.availableBattlers.Count > 1)
                 {
-                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("CharSelect");
+                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(mobile ? "CharSelect" : "CharSelect");
                 }
                 // if only one available char, set battler and go to manacycle
                 else 
                 {
                     Storage.level.battler = Storage.level.availableBattlers[0];
-                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("ManaCycle");
+                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(mobile ? "MobileManaCycle" : "ManaCycle");
                 }
                 
             }

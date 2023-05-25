@@ -11,6 +11,8 @@ namespace SoloMode
     {
         [SerializeField] Image portrait;
         private TransitionScript transitionHandler;
+        [SerializeField] bool mobile;
+
         void Start()
         {
             transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
@@ -21,7 +23,7 @@ namespace SoloMode
         {
             if (Input.anyKeyDown)
             {
-                transitionHandler.WipeToScene("MainMenu", reverse:true);
+                transitionHandler.WipeToScene(mobile ? "MobileMainMenu" : "MainMenu", reverse:true);
                 SoundManager.Instance.SetBGM(SoundManager.Instance.mainMenuMusic);
             }
         }

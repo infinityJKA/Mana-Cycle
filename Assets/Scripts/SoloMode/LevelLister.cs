@@ -108,6 +108,9 @@ namespace SoloMode {
         // eventually, should open the description box for that level with a play and exit button, but ill work on that later
         [SerializeField] private bool levelsClickable = false;
 
+        // If this should lead to mobile scenes or not.
+        [SerializeField] private bool mobile;
+
         // currently unused references
         [SerializeField] private GameObject upArrow;
         [SerializeField] private GameObject downArrow;
@@ -173,7 +176,7 @@ namespace SoloMode {
                 if (Input.GetKeyDown(inputScript.Pause))
                 {
                     StoreSelections();
-                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("MainMenu", reverse : true);
+                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(mobile ? "MobileMainMenu" : "MainMenu", reverse : true);
                 }
 
                 // cast - open selected level

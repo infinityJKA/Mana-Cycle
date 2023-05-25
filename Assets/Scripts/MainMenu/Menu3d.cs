@@ -39,6 +39,8 @@ namespace MainMenu {
         // Text to dispalys the current version
         [SerializeField] private TMPro.TextMeshProUGUI versionText;
 
+        [SerializeField] private bool mobile;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -102,7 +104,7 @@ namespace MainMenu {
                 case 2: Storage.isPlayerControlled1 = false; Storage.isPlayerControlled2 = false; break;
                 default: Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = true; break;
             }
-            TransitionHandler.WipeToScene("CharSelect");
+            TransitionHandler.WipeToScene(mobile ? "CharSelect" : "CharSelect");
         }
 
         public void SelectHTP()
@@ -140,7 +142,7 @@ namespace MainMenu {
         public void SelectSolo()
         {
             Storage.lastMainMenuItem = 1;
-            TransitionHandler.WipeToScene("SoloMenu");
+            TransitionHandler.WipeToScene(mobile ? "MobileSoloMenu" : "SoloMenu");
         }
 
         public void UpdateTip()
