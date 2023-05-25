@@ -8485,6 +8485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   convoHandler: {fileID: 7863578174897850017}
+  levelContainerTransform: {fileID: 281963176}
   listTransform: {fileID: 343862334}
   tabTransform: {fileID: 1002075728}
   descriptionText: {fileID: 1179184351}
@@ -8495,7 +8496,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1a9e593bfdbc8c44fb272a6e7be1fd94, type: 2}
   - {fileID: 11400000, guid: 5ad37dd104c16447f831d6504870f714, type: 2}
   - {fileID: 11400000, guid: 6b068398bbf2d48f68d8331347d2b06a, type: 2}
-  levelScrollAmount: 70
+  levelYSpacing: 75
   tabScrollAmount: 50
   selectedLevelIndexes: 00000000000000000000000000000000
   selectedTabIndex: 0
@@ -8510,13 +8511,31 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 66348327234f74d00bb2ecb2d5e87e61, type: 2}
   levelTabTransform: {fileID: 343862334}
   listedLevelPrefab: {fileID: 5971857194432679398, guid: 0baec6eabbb4e09498e91a7169af2d0c, type: 3}
+  tabLevelsPrefab: {fileID: 4995481726080978350, guid: 0543b445813dca94295d7e53489c22cf, type: 3}
   tabNamePrefab: {fileID: 7733330688268648138, guid: 4a897e9421d24eb41acb579a528b1c81, type: 3}
+  centerTab: 0
+  animateTabColors: 0
   levelColor: {r: 0, g: 1, b: 0.0627451, a: 1}
   lockedColor: {r: 0.003921569, g: 0.34117648, b: 0.023529412, a: 1}
   selectedColor: {r: 1, g: 1, b: 1, a: 1}
   clearedColor: {r: 0, g: 1, b: 0.8745098, a: 1}
+  tabColor: {r: 0, g: 1, b: 0.0627451, a: 1}
+  tabSelectedColor: {r: 1, g: 1, b: 1, a: 1}
+  tabColorAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  tabFadeSpeed: 10
+  autoMoveLevelList: 1
+  showDescription: 1
+  showLevelCursor: 1
+  levelsClickable: 0
   upArrow: {fileID: 19198859}
   downArrow: {fileID: 1099408736}
+  tabWhitespacing: 4
+  flavorLineCount: 15
 --- !u!223 &2051468847
 Canvas:
   m_ObjectHideFlags: 0

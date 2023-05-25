@@ -305,7 +305,7 @@ namespace SoloMode {
                 if (t>0) tabLevelsObject.SetActive(false);
             }
 
-            if (levelContainerTransform) levelContainerTransform.sizeDelta 
+            if (levelContainerTransform && !autoMoveLevelList) levelContainerTransform.sizeDelta 
             = new Vector2(levelContainerTransform.sizeDelta.x, (selectedTab.levelsList.Length-1)*levelYSpacing);
 
             RefreshDescription();
@@ -319,7 +319,7 @@ namespace SoloMode {
         void MakeFlavorLines(Transform parent, ref Vector2 offset) {
             for (int i=0; i<flavorLineCount; i++) {
                 var flavorLine = Instantiate(listedLevelPrefab, parent);
-                flavorLine.gameObject.GetComponent<UnityEngine.UI.Button>().enabled = false;
+                if (levelsClickable) flavorLine.gameObject.GetComponent<UnityEngine.UI.Button>().enabled = false;
                 flavorLine.color = levelColor;
                 flavorLine.rectTransform.localPosition = offset;
                 offset += Vector2.down*levelYSpacing;
@@ -394,7 +394,7 @@ namespace SoloMode {
                 tabTexts[selectedTabIndex].color = tabSelectedColor;
             }
 
-            if (levelContainerTransform) levelContainerTransform.sizeDelta 
+            if (levelContainerTransform && !autoMoveLevelList) levelContainerTransform.sizeDelta 
             = new Vector2(levelContainerTransform.sizeDelta.x, (selectedTab.levelsList.Length-1)*levelYSpacing);
 
             RefreshTab();
