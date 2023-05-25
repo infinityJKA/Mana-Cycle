@@ -16,7 +16,11 @@ using Battle.AI;
 namespace Battle.Board {
     public class GameBoard : MonoBehaviour
     {
-        // Everything else
+        // True if this is in the mobile mana cycle scene.
+        // Changes various things such as hiding control display, pointer direction, etc
+        [SerializeField] private bool mobile;
+        public bool Mobile { get { return mobile;} }
+
         // If this board is in single player mode */
         [SerializeField] public bool singlePlayer;
         // The battler selected for this board.
@@ -55,6 +59,7 @@ namespace Battle.Board {
 
         /** Cycle pointer game object that belongs to this board */
         [SerializeField] public GameObject pointer;
+        [SerializeField] private Vector3 pointerOffset;
 
         /** Stores the board's cycle level indicator */
         [SerializeField] private CycleMultiplier cycleLevelDisplay;
@@ -262,7 +267,8 @@ namespace Battle.Board {
             }
 
             // don't show controls for player2 if singleplayer and player 2
-            if ((playerSide == 0 || !singlePlayer) && inputScripts.Length > 0 && inputScripts[0] != null) controlsGraphic.SetInputs(inputScripts[0]);
+            if (mobile) controlsGraphic.gameObject.SetActive(false);
+            else if ((playerSide == 0 || !singlePlayer) && inputScripts.Length > 0 && inputScripts[0] != null) controlsGraphic.SetInputs(inputScripts[0]);
 
             // load level if applicable
             if (Storage.level != null)
@@ -941,7 +947,7 @@ namespace Battle.Board {
             Transform manaColor = cycle.transform.GetChild(cyclePosition);
             // Debug.Log(cycle.transform.GetChild(cyclePosition));
 
-            pointer.transform.position = manaColor.transform.position + Vector3.right * 80f * ((playerSide == 0) ? -1 : 1);
+            pointer.transform.position = manaColor.transform.position + pointerOffset;
         }
 
         // Create a new piece and spawn it at the top of the board. Replaces the current piece field.
