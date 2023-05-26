@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-using UnityEditor;
-
 using Battle;
 
 namespace VersusMode {
@@ -12,6 +10,9 @@ namespace VersusMode {
         //<summary>Currently displayed battler.</summary>
         [SerializeField] private Battler _battler;
         public Battler battler {get {return _battler;}}
+
+        // player 1's selector - used to choose selection via click or mobile touch
+        [SerializeField] private CharSelector selector;
 
         //<summary>Icon background where gradient material is set</summary>
         [SerializeField] private Image background;
@@ -27,11 +28,19 @@ namespace VersusMode {
         private bool p1hovered, p2hovered, cpuHovered;
 
         ///<summary>Selectable, used to find adjacent icons to select</summary>
-        public Selectable selectable {get; private set;}
+        public Button selectable {get; private set;}
 
         public void Start()
         {
-            selectable = GetComponent<Selectable>();
+            selectable = GetComponent<Button>();
+            selectable.onClick.AddListener(() => {
+                selector.SetSelection(selectable);
+                
+                // If there is not amother selector & on mobile, automatically lock in
+                if (!selector.lockedIn && selector.menu.Mobile 
+                    && (!selector.opponentSelector || !selector.opponentSelector.enabled || selector.opponentSelector == selector)
+                ) selector.ToggleLock();
+            });
         }
 
         ///<summary>Set Whether or not p1/p2 is currently hovered over.</summary>
@@ -74,7 +83,7 @@ namespace VersusMode {
             if (_battler != null) {
                 background.material = _battler.gradientMat;
                 portrait.sprite = _battler.sprite;
-                selectable = GetComponent<Selectable>();
+                selectable = GetComponent<Button>();
             } else {
                 Debug.LogError("Battler is null on "+gameObject.name+"!");
                 Debug.Log(_battler);

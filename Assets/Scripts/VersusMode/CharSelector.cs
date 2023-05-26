@@ -12,13 +12,13 @@ namespace VersusMode {
     /// </summary>
     public class CharSelector : MonoBehaviour {
         /// The CharSelect menu in this scene.
-        [SerializeField] private CharSelectMenu menu;
+        [SerializeField] public CharSelectMenu menu;
 
         ///<summary>True for player 1, false for player 2.</summary>
         [SerializeField] private bool isPlayer1;
 
         ///<summary>Other player's charselector. Only used in mirroring battle preferences</summary>
-        [SerializeField] private CharSelector opponentSelector;
+        [SerializeField] public CharSelector opponentSelector;
 
         ///<summary>Input script used to move the cursor and select character</summary>
         [SerializeField] private InputScript inputScript;
@@ -153,67 +153,15 @@ namespace VersusMode {
             // Storage.gamemode = Storage.GameMode.Solo;
             abilityInfoCanvasGroup.alpha = 0;
             centerPosition = abilityInfoCanvasGroup.transform.localPosition;
-            RefreshLockVisuals();
             cpuLevelImage.gameObject.SetActive(false);
 
-            // yeah uhh... this code got kinda bad. might try to refactor it after semis so that we can actually understand what's going on throughout this file
-
-            // Set cpu cursor to true if in Versus: player vs. opponent only. set to cpu cursor and false if this is p2
-            if (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2 && Storage.level == null) {
-                if (!isPlayer1) {
-                    isCpuCursor = true;
-                    Active = false;
-                    portrait.enabled = false;
-                } else {
-                    if (!Storage.isPlayerControlled1) isCpuCursor = true;
-                    // inputs should be solo inputs scripts, as the player will play in the game
-                    inputScript = soloInputScript;
-                    opponentSelector.inputScript = soloInputScript;
-                    tipText.SetInputs(inputScript);
-                    Active = true;
-                }
-            } else {
-                Active = true;
-            }
-            
-            if (Storage.gamemode == Storage.GameMode.Solo || (isPlayer1 && (!Storage.isPlayerControlled2 && Storage.level != null)))
-            {
-                // set solo mode inputs 
-                // TODO change tip text depending on inputs
-                inputScript = soloInputScript;
-                tipText.SetInputs(inputScript);
-
-                // hide p2 elements in in solo mode
-                if (!isPlayer1)
-                {
-                    tipText.gameObject.SetActive(false);
-                    gameObject.SetActive(false);
-                    return;
-                }
-
-                // loop through battlers and hide battler portraits based on level available battlers
-                for (int i = 0; i < battlerGrid.transform.childCount; i++)
-                {
-                    GameObject portrait = battlerGrid.transform.GetChild(i).gameObject;
-                    // Debug.Log(portrait.name);
-                    if (!Storage.level.availableBattlers.Contains(portrait.GetComponent<CharacterIcon>().battler)){
-                        portrait.SetActive(false);
-                    }
-                }
-            }
-
-            tipText.gameObject.SetActive(true);
+            tipText.gameObject.SetActive(!menu.Mobile);
             gameObject.SetActive(true);
-
-            SetSettingsSelection(ghostPieceToggle);
-            ghostPieceToggle.isOn = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
-            abilityToggle.isOn = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
-
             transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
         }
 
         void Update() {
-            if (!enabled) return;
+            if (!enabled || !selectedIcon) return;
 
             if (abilityInfoAnimating) {
                 // fade the ability window in/out according to state
@@ -388,7 +336,59 @@ namespace VersusMode {
             }
         }
 
-        void ToggleLock()
+        public void MenuInit() {
+            RefreshLockVisuals();
+
+            // Set cpu cursor to true if in Versus: player vs. opponent only. set to cpu cursor and false if this is p2
+            if (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2 && Storage.level == null) {
+                if (!isPlayer1) {
+                    isCpuCursor = true;
+                    Active = false;
+                    portrait.enabled = false;
+                } else {
+                    if (!Storage.isPlayerControlled1) isCpuCursor = true;
+                    // inputs should be solo inputs scripts, as the player will play in the game
+                    inputScript = soloInputScript;
+                    opponentSelector.inputScript = soloInputScript;
+                    tipText.SetInputs(inputScript);
+                    Active = true;
+                }
+            } else {
+                Active = true;
+            }
+            
+            if (Storage.gamemode == Storage.GameMode.Solo || (isPlayer1 && (!Storage.isPlayerControlled2 && Storage.level != null)))
+            {
+                // set solo mode inputs 
+                // TODO change tip text depending on inputs
+                inputScript = soloInputScript;
+                tipText.SetInputs(inputScript);
+
+                // hide p2 elements in in solo mode
+                if (!isPlayer1)
+                {
+                    tipText.gameObject.SetActive(false);
+                    gameObject.SetActive(false);
+                    return;
+                }
+
+                // loop through battlers and hide battler portraits based on level available battlers
+                for (int i = 0; i < battlerGrid.transform.childCount; i++)
+                {
+                    GameObject portrait = battlerGrid.transform.GetChild(i).gameObject;
+                    // Debug.Log(portrait.name);
+                    if (!Storage.level.availableBattlers.Contains(portrait.GetComponent<CharacterIcon>().battler)){
+                        portrait.SetActive(false);
+                    }
+                }
+            }
+
+            SetSettingsSelection(ghostPieceToggle);
+            ghostPieceToggle.isOn = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
+            abilityToggle.isOn = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
+        }
+
+        public void ToggleLock()
         {
             lockedIn = !lockedIn;  
 
@@ -419,6 +419,7 @@ namespace VersusMode {
             }
 
             RefreshLockVisuals();
+            menu.RefreshStartButton();
         }
 
         void RefreshLockVisuals() {
@@ -491,7 +492,7 @@ namespace VersusMode {
             }
         }
 
-        void SetSettingsSelection(Selectable selectable) {
+        public void SetSettingsSelection(Selectable selectable) {
             if (selectable == null || selectable == settingsSelection) return;
             if (settingsSelection) settingsSelection.OnDeselect(null);
             settingsSelection = selectable;

@@ -15,6 +15,12 @@ namespace VersusMode {
 
         // Sound to play when both players are ready and match is starting
         [SerializeField] private AudioClip startSFX;
+        
+        // Start button - only used in mobile mode
+        [SerializeField] private Button startButton;
+
+        // Start text to darken when button disabled
+        [SerializeField] private Selectable startText;
 
         [SerializeField] private bool mobile;
         public bool Mobile { get {return mobile;} }
@@ -25,7 +31,10 @@ namespace VersusMode {
             Selectable firstSelection = grid.GetChild(0).GetComponent<Selectable>();
 
             p1Selector.SetSelection(firstSelection);
-            p2Selector.SetSelection(firstSelection);
+            if (!mobile) p2Selector.SetSelection(firstSelection);
+
+            p1Selector.MenuInit();
+            if (!mobile) p2Selector.MenuInit();
 
             p1Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
             p2Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPieceP2", 1) == 1;
@@ -45,18 +54,23 @@ namespace VersusMode {
             }
 
             transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
+
+            RefreshStartButton();
+        }
+
+        bool ready { 
+            get { 
+                return p1Selector.lockedIn && (p2Selector.lockedIn || Storage.gamemode == Storage.GameMode.Solo);
+            } 
         }
 
         void Update() {
-            bool ready = p1Selector.lockedIn && (p2Selector.lockedIn || Storage.gamemode == Storage.GameMode.Solo);
-
             // while both ready, blink the ready gameobject
             readyObject.SetActive(ready && Mathf.PingPong(Time.time, 0.4f) > 0.125f);
         }
 
         // Called when player casts while locked in. If both players are ready, match will begin
         public void StartIfReady() {
-            bool ready = p1Selector.lockedIn && (p2Selector.lockedIn || Storage.gamemode == Storage.GameMode.Solo);
             if (ready) {
                 Sound.SoundManager.Instance.PlaySound(startSFX, 0.5f);
                 StartMatch();
@@ -100,6 +114,12 @@ namespace VersusMode {
             }
 
             transitionHandler.WipeToScene(mobile ? "MobileManaCycle" : "ManaCycle");
+        }
+
+        public void RefreshStartButton() {
+            if (!mobile) return;
+            startButton.interactable = ready;
+            startText.interactable = ready;
         }
     }
 }
