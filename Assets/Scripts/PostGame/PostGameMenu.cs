@@ -236,7 +236,8 @@ namespace PostGame {
             }
             else
             {
-                SceneManager.LoadScene("ManaCycle");
+                // TODO: fix
+                SceneManager.LoadScene(board.Mobile ? "MobileManaCycle" : "ManaCycle");
             }
 
             

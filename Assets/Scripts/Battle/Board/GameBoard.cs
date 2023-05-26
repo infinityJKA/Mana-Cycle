@@ -158,10 +158,10 @@ namespace Battle.Board {
         public bool pieceSpawned;
 
         private bool cycleInitialized;
-        private bool postGame = false;
+        public bool postGame { get; private set; } = false;
 
-        private Pause.PauseMenu pauseMenu;
-        private PostGameMenu winMenu;
+        public Pause.PauseMenu pauseMenu { get; private set; }
+        public PostGameMenu winMenu { get; private set;}
 
         /** Prefab for damage shoots, spawned when dealing damage. */
         [SerializeField] private GameObject damageShootPrefab;
@@ -491,92 +491,7 @@ namespace Battle.Board {
             }
 
             // -------- CONTROLS ----------------
-            // if (inputScripts == null) return;
-
-            // these will be set to true if any of the input scripts trigger it
-            if (playerControlled) {
-                quickFall = false;
-                instaDropThisFrame = false;
-            }
-
-            foreach (InputScript inputScript in inputScripts) {
-                if (inputScript != null)
-                {
-                    if (Input.GetKeyDown(inputScript.Pause) && !postGame && !Storage.convoEndedThisInput)
-                    {
-                        pauseMenu.TogglePause();
-                        PlaySFX("pause", pan: 0);
-                    }
-                    Storage.convoEndedThisInput = false;
-
-                    // control the pause menu if paused
-                    if (pauseMenu.paused && !postGame)
-                    {
-                        if (Input.GetKeyDown(inputScript.Up)) {
-                            pauseMenu.MoveCursor(Vector3.up);
-                            PlaySFX("move", pitch: 0.8f, important: false);
-                        } else if (Input.GetKeyDown(inputScript.Down)) {
-                            pauseMenu.MoveCursor(Vector3.down);
-                            PlaySFX("move", pitch: 0.75f, important: false);
-                        }
-
-                        if (Input.GetKeyDown(inputScript.Cast)){
-                            pauseMenu.SelectOption();
-                        }           
-                    }
-
-                    // same with post game menu, if timer is not running
-                    else if (postGame && !winMenu.timerRunning)
-                    {
-                        if (Input.GetKeyDown(inputScript.Up)) {
-                            winMenu.MoveCursor(Vector3.up);
-                        } else if (Input.GetKeyDown(inputScript.Down)) {
-                            winMenu.MoveCursor(Vector3.down);
-                        }
-
-                        if (Input.GetKeyDown(inputScript.Cast)){
-                            winMenu.SelectOption();
-                        }
-                    }
-
-                    // don't evaulate any branches below this if in recovery mode - only menus
-                    // also don't control if the player isn't controlling the board
-                    else if (recoveryMode || !playerControlled) continue;
-                    
-                    // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame
-                    else if (!convoPaused && !postGame) {
-                        // code previously in controller.cs
-                        if (Input.GetKeyDown(inputScript.RotateCW)){
-                            RotateLeft();
-                        }
-
-                        if (Input.GetKeyDown(inputScript.RotateCCW)){
-                            RotateRight();
-                        }
-
-                        if (Input.GetKeyDown(inputScript.Left)){
-                            MoveLeft();
-                        }
-
-                        if (Input.GetKeyDown(inputScript.Right)){
-                            MoveRight();
-                        }
-
-                        if (Input.GetKeyDown(inputScript.Up)){
-                            UseAbility();
-                        }
-
-                        if (Input.GetKeyDown(inputScript.Cast)){
-                            Spellcast();
-                        }
-
-                        if (playerControlled && piece != null){
-                            if (Input.GetKey(inputScript.Down)) quickFall = true;
-                            if (Input.GetKeyDown(inputScript.Up)) instaDropThisFrame = true;
-                        }
-                    }
-                }
-            }            
+            // moved to COntroller.cs
 
             // -------- PIECE FALL/PLACE ----------------
             if (!defeated && !recoveryMode && doPieceFalling)
@@ -741,13 +656,19 @@ namespace Battle.Board {
         }
 
         public bool MoveLeft(){
-            PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
-            return MovePiece(-1, 0);
+            if (MovePiece(-1, 0)) {
+                PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
+                return true;
+            }
+            return false;
         }
 
-        public bool MoveRight(){
-            PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
-            return MovePiece(1, 0);
+        public bool MoveRight() {
+            if (MovePiece(1, 0)) {
+                PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
+                return true;
+            }
+            return false;
         }
 
         public void Spellcast(){
@@ -984,8 +905,10 @@ namespace Battle.Board {
                 return false;
             }
 
-            // if the piece moved horizontally, refresh ghost piece
-            if (col != 0) RefreshGhostPiece();
+            // if the piece moved horizontally, play sound & refresh ghost piece
+            if (col != 0) {
+                RefreshGhostPiece();
+            }
 
             return true;
         }

@@ -296,7 +296,9 @@ namespace SoloMode {
                     RefreshListedLevelText(level, listedLevel, selected);
 
                     if (levelsClickable) {
-                        listedLevel.gameObject.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => ConfirmLevel(level));
+                        var button = listedLevel.gameObject.GetComponent<UnityEngine.UI.Button>();
+                        button.onClick.AddListener(() => ConfirmLevel(level));
+                        if (!level.RequirementsMet()) button.interactable = false;
                     }
 
                     offset += Vector2.down*levelYSpacing;
