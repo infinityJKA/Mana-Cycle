@@ -97,9 +97,10 @@ namespace Battle {
                             board.Spellcast();
                         }
 
-                        if (board.IsPlayerControlled() && board.GetPiece() != null){
-                            if (Input.GetKey(inputScript.Down)) board.quickFall = true;
-                            if (Input.GetKeyDown(inputScript.Up)) board.instaDropThisFrame = true;
+                        if (board.IsPlayerControlled() && board.GetPiece() != null) {
+                            // don't set to false if already true
+                            board.quickFall = Input.GetKey(inputScript.Down) || board.quickFall; 
+                            board.instaDropThisFrame = Input.GetKeyDown(inputScript.Up);
                         }
                     }
                 }

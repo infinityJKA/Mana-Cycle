@@ -12,7 +12,7 @@ namespace VersusMode {
         public Battler battler {get {return _battler;}}
 
         // player 1's selector - used to choose selection via click or mobile touch
-        [SerializeField] private CharSelector selector;
+        [SerializeField] private CharSelectMenu menu;
 
         //<summary>Icon background where gradient material is set</summary>
         [SerializeField] private Image background;
@@ -34,12 +34,7 @@ namespace VersusMode {
         {
             selectable = GetComponent<Button>();
             selectable.onClick.AddListener(() => {
-                selector.SetSelection(selectable);
-                
-                // If there is not amother selector & on mobile, automatically lock in
-                if (!selector.lockedIn && selector.menu.Mobile 
-                    && (!selector.opponentSelector || !selector.opponentSelector.enabled || selector.opponentSelector == selector)
-                ) selector.ToggleLock();
+                menu.SetSelection(selectable);            
             });
         }
 
