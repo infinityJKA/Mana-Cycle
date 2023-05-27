@@ -45,7 +45,7 @@ namespace MainMenu {
         void Start()
         {
             // Select the last item selected by the player in previous menu. Defaults to solo mode button if game was just launched
-            EventSystem.current.SetSelectedGameObject( buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject );
+            if (!mobile) EventSystem.current.SetSelectedGameObject( buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject );
 
             UpdateTip();
 
@@ -80,14 +80,14 @@ namespace MainMenu {
             VersusWindow.SetActive(true);
             MainWindow.SetActive(false);
             Storage.lastMainMenuItem = 2;
-            EventSystem.current.SetSelectedGameObject(VersusFirstSelected);
+            if (!mobile) EventSystem.current.SetSelectedGameObject(VersusFirstSelected);
         }
 
         public void CloseVersus()
         {
             VersusWindow.SetActive(false);
             MainWindow.SetActive(true);
-            EventSystem.current.SetSelectedGameObject(VersusButton);
+            if (!mobile) EventSystem.current.SetSelectedGameObject(VersusButton);
         }
 
         public void setVersusDescription(string newText)
@@ -104,14 +104,14 @@ namespace MainMenu {
                 case 2: Storage.isPlayerControlled1 = false; Storage.isPlayerControlled2 = false; break;
                 default: Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = true; break;
             }
-            TransitionHandler.WipeToScene(mobile ? "CharSelect" : "CharSelect");
+            TransitionHandler.WipeToScene(mobile ? "MobileCharSelect" : "CharSelect");
         }
 
         public void SelectHTP()
         {
             HTPWindow.SetActive(true);
             MainWindow.SetActive(false);
-            EventSystem.current.SetSelectedGameObject(HTPFirstSelected);
+            if (!mobile) EventSystem.current.SetSelectedGameObject(HTPFirstSelected);
             HTPScript.Init();
             // HTPPage = 0;
         }
@@ -120,14 +120,14 @@ namespace MainMenu {
         {
             HTPWindow.SetActive(false);
             MainWindow.SetActive(true);
-            EventSystem.current.SetSelectedGameObject(HTPButton);
+            if (!mobile) EventSystem.current.SetSelectedGameObject(HTPButton);
         }
 
         public void SelectSettings()
         {
             SettingsWindow.SetActive(true);
             MainWindow.SetActive(false);
-            EventSystem.current.SetSelectedGameObject(SettingsFirstSelected);
+            if (!mobile) EventSystem.current.SetSelectedGameObject(SettingsFirstSelected);
             SettingsScript.Init();
         }
 
@@ -135,7 +135,7 @@ namespace MainMenu {
         {
             SettingsWindow.SetActive(false);
             MainWindow.SetActive(true);
-            EventSystem.current.SetSelectedGameObject(SettingsButton);
+            if (!mobile) EventSystem.current.SetSelectedGameObject(SettingsButton);
             UpdateTip();
         }
 
