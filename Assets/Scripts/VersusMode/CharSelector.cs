@@ -134,6 +134,7 @@ namespace VersusMode {
         // cached on validate
         private TransitionScript transitionHandler;
 
+        static readonly int minCpuLevel = 1, maxCpuLevel = 10;
 
         // properties
         public Battle.Battler selectedBattler { 
@@ -151,8 +152,10 @@ namespace VersusMode {
         void Start() {
             // TEMP FOR TESTING !! ,`:)
             // Storage.gamemode = Storage.GameMode.Solo;
-            abilityInfoCanvasGroup.alpha = 0;
-            centerPosition = abilityInfoCanvasGroup.transform.localPosition;
+            if (!menu.Mobile) {
+                abilityInfoCanvasGroup.alpha = 0;
+                centerPosition = abilityInfoCanvasGroup.transform.localPosition;
+            }
             cpuLevelImage.gameObject.SetActive(false);
 
             tipText.gameObject.SetActive(!menu.Mobile);
@@ -230,10 +233,10 @@ namespace VersusMode {
             // if cpu, adjust cpu level while locked in
             else if (isCpuCursor && lockedIn) {
                 if (Input.GetKeyDown(inputScript.Left)) {
-                    if (cpuLevel > 1) { cpuLevel--; RefreshCpuLevel(); }
+                    if (cpuLevel > minCpuLevel) { cpuLevel--; RefreshCpuLevel(); }
                 }
                 else if (Input.GetKeyDown(inputScript.Right)) {
-                    if (cpuLevel < 10) { cpuLevel++; RefreshCpuLevel(); }
+                    if (cpuLevel < maxCpuLevel) { cpuLevel++; RefreshCpuLevel(); }
                 }
             }
 
@@ -287,8 +290,8 @@ namespace VersusMode {
             if (Input.GetKeyDown(inputScript.Pause)) 
             {
                 // close ability info/settings menu if it is open
-                if (abilityInfoDisplayed) ToggleAbilityInfo();
-                else if (settingsDisplayed) ToggleSettings();
+                if (!menu.Mobile && abilityInfoDisplayed) ToggleAbilityInfo();
+                else if (!menu.Mobile && settingsDisplayed) ToggleSettings();
 
                 // stop selecting cpu level if selecting
                 else if (selectingCpuLevel) {
@@ -328,11 +331,11 @@ namespace VersusMode {
             // show/hide ability info when rotate CCW is pressed
             if (Input.GetKeyDown(inputScript.RotateCCW))
             {
-                ToggleAbilityInfo();
+                if (!menu.Mobile) ToggleAbilityInfo();
             }
             if (Input.GetKeyDown(inputScript.RotateCW))
             {
-                ToggleSettings();
+                if (!menu.Mobile) ToggleSettings();
             }
         }
 
@@ -438,8 +441,8 @@ namespace VersusMode {
         void RefreshCpuLevel() {
             cpuLevelText.text = cpuLevel+"";
             cpuLevelText.color = cpuLevelSpectrum[cpuLevel];
-            cpuLevelLeftArrow.SetActive(cpuLevel > 1);
-            cpuLevelRightArrow.SetActive(cpuLevel < 10);
+            cpuLevelLeftArrow.SetActive(cpuLevel > minCpuLevel);
+            cpuLevelRightArrow.SetActive(cpuLevel < maxCpuLevel);
         }
 
         void ToggleAbilityInfo() {
@@ -458,7 +461,7 @@ namespace VersusMode {
         }
 
         static int minLives = 1, maxLives = 15;
-        void AdjustLives(int delta) {
+        public void AdjustLives(int delta) {
             lives = Mathf.Clamp(lives+delta, minLives, maxLives);
             opponentSelector.lives = lives;
             RefreshLives();
