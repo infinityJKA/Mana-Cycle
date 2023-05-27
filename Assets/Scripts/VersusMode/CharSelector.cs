@@ -28,7 +28,7 @@ namespace VersusMode {
         [SerializeField] private Image portrait;
         [SerializeField] private TextMeshProUGUI nameText;
 
-        [SerializeField] private Image cpuLevelImage;
+        [SerializeField] private GameObject cpuLevelObject;
         [SerializeField] private TextMeshProUGUI cpuLevelText;
         [SerializeField] private GameObject cpuLevelLeftArrow, cpuLevelRightArrow;
 
@@ -90,7 +90,7 @@ namespace VersusMode {
         public bool lockedIn {get; private set;}
 
         ///<summary> If currently in CPU select mode. This will control CPU cursor instead of cpu cursor. (player vs. ai p2 only)
-        public bool isCpuCursor {get; private set;}
+        public bool isCpuCursor;
         ///<summary> If active. Will only be inactive if this is CPU and player1 is currently selecting </summary>
         private bool active;
         public bool Active {
@@ -114,6 +114,15 @@ namespace VersusMode {
                         HideSelection();
                     }
                 }
+
+                if (menu.Mobile) {
+                    if (isCpuCursor) {
+                        if (active) {
+                            cpuLevelObject.SetActive(true);
+                            RefreshCpuLevel();
+                        }
+                    }
+                }
             }
         }
 
@@ -123,7 +132,14 @@ namespace VersusMode {
         private Battle.Battler randomBattler;
 
         // CPU difficulty selected by the player - scale of 1-10
-        public int cpuLevel { get; set; }
+        private int cpuLevel;
+        public int CpuLevel {
+            get { return cpuLevel; }
+            set {
+                cpuLevel = value;
+                if (active) RefreshCpuLevel();
+            }
+        }
 
         // only used in AI vs. AI mode - if this is P1 and wll give control to p2 after selecting cpu difficulty right now if true
         private bool selectingCpuLevel;
@@ -156,7 +172,6 @@ namespace VersusMode {
                 abilityInfoCanvasGroup.alpha = 0;
                 centerPosition = abilityInfoCanvasGroup.transform.localPosition;
             }
-            cpuLevelImage.gameObject.SetActive(false);
 
             tipText.gameObject.SetActive(!menu.Mobile);
             gameObject.SetActive(true);
@@ -233,10 +248,10 @@ namespace VersusMode {
             // if cpu, adjust cpu level while locked in
             else if (isCpuCursor && lockedIn) {
                 if (Input.GetKeyDown(inputScript.Left)) {
-                    if (cpuLevel > minCpuLevel) { cpuLevel--; RefreshCpuLevel(); }
+                    if (CpuLevel > minCpuLevel) { CpuLevel--; RefreshCpuLevel(); }
                 }
                 else if (Input.GetKeyDown(inputScript.Right)) {
-                    if (cpuLevel < maxCpuLevel) { cpuLevel++; RefreshCpuLevel(); }
+                    if (CpuLevel < maxCpuLevel) { CpuLevel++; RefreshCpuLevel(); }
                 }
             }
 
@@ -267,7 +282,7 @@ namespace VersusMode {
                 }
 
                 // if this is CPU and locked into selecting CPU level, give control to other board
-                else if (selectingCpuLevel) {
+                else if (selectingCpuLevel && !menu.Mobile) {
                     selectingCpuLevel = false;
                     SoundManager.Instance.PlaySound(selectSFX);
                     Active = false;
@@ -294,7 +309,7 @@ namespace VersusMode {
                 else if (!menu.Mobile && settingsDisplayed) ToggleSettings();
 
                 // stop selecting cpu level if selecting
-                else if (selectingCpuLevel) {
+                else if (selectingCpuLevel && !menu.Mobile) {
                     selectingCpuLevel = false;
                     RefreshLockVisuals();
                 }
@@ -386,6 +401,13 @@ namespace VersusMode {
                 }
             }
 
+            if (menu.Mobile && isCpuCursor && Active) {
+                cpuLevelObject.SetActive(true);
+                RefreshCpuLevel();
+            } else {
+                cpuLevelObject.SetActive(false);
+            }
+
             SetSettingsSelection(ghostPieceToggle);
             ghostPieceToggle.isOn = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
             abilityToggle.isOn = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
@@ -395,7 +417,7 @@ namespace VersusMode {
         {
             lockedIn = !lockedIn;  
 
-            if (isPlayer1 && isCpuCursor && !selectingCpuLevel) {
+            if (isPlayer1 && isCpuCursor && !selectingCpuLevel && !menu.Mobile) {
                 SoundManager.Instance.PlaySound(settingsToggleSFX);
             } else {
                 SoundManager.Instance.PlaySound(lockedIn ? selectSFX : unselectSFX);
@@ -405,7 +427,7 @@ namespace VersusMode {
             if (lockedIn && opponentSelector.isCpuCursor) {
                 // is this is also a cpu cursor (AI vs AI)
                 if (isPlayer1) {
-                    if (isCpuCursor && !selectingCpuLevel) {
+                    if (isCpuCursor && !selectingCpuLevel && !menu.Mobile) {
                         selectingCpuLevel = true;
                     } else {
                         Active = false;
@@ -414,11 +436,14 @@ namespace VersusMode {
                 }
             }
 
-            if (isCpuCursor) {
-                cpuLevelImage.gameObject.SetActive(lockedIn);
-                RefreshCpuLevel();
-            } else {
-                cpuLevelImage.gameObject.SetActive(false);
+            if (!menu.Mobile) {
+                if (isCpuCursor) {
+                    Debug.Log("toggling cpu level obj");
+                    cpuLevelObject.SetActive(lockedIn);
+                } else {
+                    cpuLevelObject.SetActive(menu.Mobile && isCpuCursor);
+                }
+                if (cpuLevelObject.activeInHierarchy) RefreshCpuLevel();
             }
 
             RefreshLockVisuals();
@@ -427,7 +452,7 @@ namespace VersusMode {
 
         void RefreshLockVisuals() {
             if (lockedIn){
-                portrait.color = new Color(1.0f, 1.0f, 1.0f, selectingCpuLevel ? 0.65f : 1f);
+                portrait.color = new Color(1.0f, 1.0f, 1.0f, (selectingCpuLevel && !menu.Mobile) ? 0.65f : 1f);
                 nameText.text = selectedBattler.displayName;
                 nameText.fontStyle = TMPro.FontStyles.Bold;
             }
@@ -438,11 +463,11 @@ namespace VersusMode {
             }
         }
 
-        void RefreshCpuLevel() {
-            cpuLevelText.text = cpuLevel+"";
-            cpuLevelText.color = cpuLevelSpectrum[cpuLevel];
-            cpuLevelLeftArrow.SetActive(cpuLevel > minCpuLevel);
-            cpuLevelRightArrow.SetActive(cpuLevel < maxCpuLevel);
+        public void RefreshCpuLevel() {
+            cpuLevelText.text = CpuLevel+"";
+            cpuLevelText.color = cpuLevelSpectrum[CpuLevel];
+            cpuLevelLeftArrow.SetActive(CpuLevel > minCpuLevel);
+            cpuLevelRightArrow.SetActive(CpuLevel < maxCpuLevel);
         }
 
         void ToggleAbilityInfo() {
@@ -477,6 +502,11 @@ namespace VersusMode {
             livesText.text = lives+"";
             livesLeftArrow.SetActive(lives > minLives);
             livesRightArrow.SetActive(lives < maxLives);
+        }
+
+        public void AdjustCPULevel(int delta) {
+            CpuLevel = Mathf.Clamp(CpuLevel+delta, minCpuLevel, maxCpuLevel);
+            // RefreshCpuLevel(); // called in CpuLevel property
         }
 
         void SettingsCursorLeft() {

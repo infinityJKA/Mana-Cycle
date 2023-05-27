@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// just a place to store some temporary values between scenes. 
-// bad practice? yes. do we care? not really
+// just a place to store some temporary values between scenes
 public class Storage
 {
     // battlers selected by players

@@ -25,16 +25,25 @@ namespace VersusMode {
         [SerializeField] private bool mobile;
         public bool Mobile { get {return mobile;} }
 
+        // (for debug purposes)
+        void Awake() {
+            if (Storage.gamemode == Storage.GameMode.Default) {
+                Storage.gamemode = Storage.GameMode.Versus;
+                Storage.isPlayerControlled1 = false;
+                Storage.isPlayerControlled2 = false;
+            }
+        }
+
         // Start is called before the first frame update
         void Start()
         {
             Selectable firstSelection = grid.GetChild(0).GetComponent<Selectable>();
 
+            p2Selector.SetSelection(firstSelection);
             p1Selector.SetSelection(firstSelection);
-            if (!mobile) p2Selector.SetSelection(firstSelection);
 
+            p2Selector.MenuInit();
             p1Selector.MenuInit();
-            if (!mobile) p2Selector.MenuInit();
 
             p1Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
             p2Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPieceP2", 1) == 1;
@@ -47,10 +56,10 @@ namespace VersusMode {
             }
 
             if (!Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) {
-                p1Selector.cpuLevel = PlayerPrefs.GetInt("CpuVsCpuP1Level", 5);
-                p2Selector.cpuLevel = PlayerPrefs.GetInt("CpuVsCpuP2Level", 5);
+                p1Selector.CpuLevel = PlayerPrefs.GetInt("CpuVsCpuP1Level", 5);
+                p2Selector.CpuLevel = PlayerPrefs.GetInt("CpuVsCpuP2Level", 5);
             } else if (Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) {
-                p2Selector.cpuLevel = PlayerPrefs.GetInt("CpuLevel", 5);
+                p2Selector.CpuLevel = PlayerPrefs.GetInt("CpuLevel", 5);
             }
 
             transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
@@ -66,7 +75,7 @@ namespace VersusMode {
 
         void Update() {
             // while both ready, blink the ready gameobject
-            readyObject.SetActive(ready && Mathf.PingPong(Time.time, 0.4f) > 0.125f);
+            if (!mobile) readyObject.SetActive(ready && Mathf.PingPong(Time.time, 0.4f) > 0.125f);
         }
 
         // Called when player casts while locked in. If both players are ready, match will begin
@@ -101,10 +110,10 @@ namespace VersusMode {
             }
 
             if (p1Selector.isCpuCursor && p2Selector.isCpuCursor) {
-                PlayerPrefs.SetInt("CpuVsCpuP1Level", p1Selector.cpuLevel);
-                PlayerPrefs.SetInt("CpuVsCpuP2Level", p2Selector.cpuLevel);
+                PlayerPrefs.SetInt("CpuVsCpuP1Level", p1Selector.CpuLevel);
+                PlayerPrefs.SetInt("CpuVsCpuP2Level", p2Selector.CpuLevel);
             } else if (!p1Selector.isCpuCursor && p2Selector.isCpuCursor) {
-                PlayerPrefs.SetInt("CpuLevel", p2Selector.cpuLevel);
+                PlayerPrefs.SetInt("CpuLevel", p2Selector.CpuLevel);
             }
             
 
@@ -116,10 +125,51 @@ namespace VersusMode {
             transitionHandler.WipeToScene(mobile ? "MobileManaCycle" : "ManaCycle");
         }
 
+        // ---- Mobile ----
         public void RefreshStartButton() {
             if (!mobile) return;
-            startButton.interactable = ready;
-            startText.interactable = ready;
+            // startButton.interactable = ready;
+            // startText.interactable = ready;
+
+            if (Storage.gamemode == Storage.GameMode.Versus && p1Selector.Active) {
+                startText.GetComponent<TMPro.TextMeshProUGUI>().text = "SELECT";
+            } else {
+                startText.GetComponent<TMPro.TextMeshProUGUI>().text = "START!";
+            }
+        }
+
+        // Called when character icons are pressed from the grid
+        public void SetSelection(Selectable selectable) {
+            if (p1Selector.Active) {
+                p1Selector.SetSelection(selectable);
+            } else {
+                p2Selector.SetSelection(selectable);
+            }
+        }
+
+        // Called when the start/select button is pressed in mobile. 
+        // Locks in current character if p1 and p2 also has to select;
+        // starts game if p2 or p1 and p2 deosn't have to select
+        public void StartButtonPressed() {
+            if (p1Selector.Active) {
+                if (Storage.gamemode == Storage.GameMode.Versus) {
+                    p1Selector.ToggleLock();
+                } else {
+                    StartIfReady();
+                }
+            } else if (p2Selector.Active) {
+                if (!p2Selector.lockedIn) p2Selector.ToggleLock();
+                StartIfReady();
+            }
+        }
+
+        // used by on-screen buttons
+        public void AdjustCpuLevel(int delta) {
+            if (p1Selector.Active) {
+                p1Selector.AdjustCPULevel(delta);
+            } else {
+                p2Selector.AdjustCPULevel(delta);
+            }
         }
     }
 }

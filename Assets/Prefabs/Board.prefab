@@ -86,8 +86,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6497960546296106959}
-  - {fileID: 5772421829298210278}
   - {fileID: 6647794107243349722}
+  - {fileID: 5772421829298210278}
   m_Father: {fileID: 0}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -156,7 +156,7 @@ MonoBehaviour:
   multiBattleMusic: {fileID: 8300000, guid: bb2df057ec31041e08a2010acaf4872e, type: 3}
   particleParent: {fileID: 4920481684090110958}
   clearParticleSystem: {fileID: 8444103318734970022, guid: 25402455859d44a83abb5c7f5c764f7d, type: 3}
-  controllerObject: {fileID: 0}
+  controllerObject: {fileID: 2359411655281228369}
   lifeTransform: {fileID: 8845861909844032918}
   lifeHeartObj: {fileID: 7506047623504768559, guid: 58adc0e5267f1db41be8273b0c472c90, type: 3}
   boardBackground: {fileID: 7375610561186021462}
@@ -1038,7 +1038,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 2738482425047349209}
-  sensitivity: 0.4
+  sensitivity: 0.25
+  doMouse: 0
 --- !u!1 &2456237102310508810
 GameObject:
   m_ObjectHideFlags: 0
