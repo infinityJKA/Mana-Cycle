@@ -159,7 +159,7 @@ namespace ConvoSystem {
                 // if multiple chars can be chosen from, go to char select
                 if (Storage.level.availableBattlers.Count > 1)
                 {
-                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(mobile ? "CharSelect" : "CharSelect");
+                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(mobile ? "MobileCharSelect" : "CharSelect");
                 }
                 // if only one available char, set battler and go to manacycle
                 else 
