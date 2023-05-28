@@ -128,7 +128,7 @@ namespace Battle {
             }
             // If finger swiped about a tile and a half's distance up quickly, spellcast
             // tile must also have moved less than a tile's width horizontally
-            // TODO: make based on angle instead of specific area
+            // possible future improvement: make based on angle instead of specific area
             if (Time.time - touchTime < 0.5f && touch.position.y - dragStartPos.y > 150f && Mathf.Abs(touch.position.x - dragStartPos.x) < 100f) {
                 board.Spellcast();
             }
