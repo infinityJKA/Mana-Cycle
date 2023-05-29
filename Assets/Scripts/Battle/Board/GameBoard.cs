@@ -1855,10 +1855,6 @@ namespace Battle.Board {
 
             SoundManager.Instance.PauseBGM();
             PlaySFX("win");
-
-            // start preloading the scenes the player will possibly go to
-            if (Storage.gamemode == Storage.GameMode.Versus) ScenePreloader.Preload(mobile ? "MobileCharSelect" : "CharSelect", this);
-            else if (Storage.gamemode == Storage.GameMode.Solo) ScenePreloader.Preload(mobile ? "MobileSoloMenu" : "MobileSoloMenu", this);
         }
 
         /** Refreshed the objectives list. Will grant win to this player if all objectives met */

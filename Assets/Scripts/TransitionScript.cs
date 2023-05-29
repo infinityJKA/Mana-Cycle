@@ -17,6 +17,11 @@ public class TransitionScript : MonoBehaviour
     private static bool wipingOut = false;
     private static bool inverted;
 
+    /// <summary>
+    /// use to open a pre-loaded scene when transition is completed instead of a passed name.
+    /// </summary>
+    private static AsyncOperation sceneLoadOp;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,7 +44,12 @@ public class TransitionScript : MonoBehaviour
             if (timePassed >= inTime){
                 wipingOut = true;
 
-                ScenePreloader.Load(gotoScene);
+                if (sceneLoadOp != null) {
+                    Debug.Log("allowing scene activation");
+                    sceneLoadOp.allowSceneActivation = true;
+                } else {
+                    SceneManager.LoadScene(gotoScene);
+                }
                 
                 // when WipeOut is called here, it runs before the Start method and causes silly activity
                 // WipeOut();
@@ -54,7 +64,7 @@ public class TransitionScript : MonoBehaviour
 
     }
 
-    public void WipeToScene(string scene, float inTime=0.5f, float outTime=0.5f, bool reverse=false)
+    public void WipeToScene(string scene = "", AsyncOperation sceneLoadOp = null, float inTime=0.5f, float outTime=0.5f, bool reverse=false)
     {
 
         // dont start a transition if one is already in progress
@@ -75,6 +85,7 @@ public class TransitionScript : MonoBehaviour
         timePassed = 0;
         transitionState = "in";
         gotoScene = scene;
+        TransitionScript.sceneLoadOp = sceneLoadOp;
     }
 
     public void WipeOut()

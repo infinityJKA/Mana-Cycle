@@ -65,14 +65,6 @@ namespace VersusMode {
             transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
 
             RefreshStartButton();
-
-            // if in versus mode, preload the main menu in case player exits back to it
-            if (Storage.gamemode == Storage.GameMode.Versus) {
-                ScenePreloader.Preload(mobile ? "MobileMainMenu" : "MainMenu", this);
-            }
-
-            // incase battle isn't already preloading, preload it (this call won't do anything if already preloading)
-            ScenePreloader.Preload(mobile ? "MobileManaCycle" : "ManaCycle", this);
         }
 
         bool ready { 
@@ -129,10 +121,6 @@ namespace VersusMode {
                 Debug.LogError("Transition handler not found in scene!");
                 return;
             }
-
-            // player is guaranteed going into battle; unload unneeded scenes
-            ScenePreloader.Unload(mobile ? "MobileMainMenu" : "MainMenu");
-            ScenePreloader.Unload(mobile ? "MobileSoloMenu" : "SoloMenu");
 
             transitionHandler.WipeToScene(mobile ? "MobileManaCycle" : "ManaCycle");
         }
