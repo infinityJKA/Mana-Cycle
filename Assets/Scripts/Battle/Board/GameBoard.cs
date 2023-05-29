@@ -95,8 +95,7 @@ namespace Battle.Board {
         private float lastPlaceTime;
 
         /** Win/lose text that appears over the board */
-        [SerializeField] private GameObject winTextObj;
-        private TMPro.TextMeshProUGUI winText;
+        [SerializeField] private TMPro.TextMeshProUGUI winText;
 
         /** Starting HP of this character. */
         public int maxHp { get; private set; }
@@ -160,8 +159,8 @@ namespace Battle.Board {
         private bool cycleInitialized;
         public bool postGame { get; private set; } = false;
 
-        public Pause.PauseMenu pauseMenu { get; private set; }
-        public PostGameMenu winMenu { get; private set;}
+        public Pause.PauseMenu pauseMenu;
+        public PostGameMenu winMenu;
 
         /** Prefab for damage shoots, spawned when dealing damage. */
         [SerializeField] private GameObject damageShootPrefab;
@@ -302,12 +301,6 @@ namespace Battle.Board {
                 if (enemyBoard != null) enemyBoard.gameObject.SetActive(true);
                 if (objectiveList != null) objectiveList.gameObject.SetActive(false);
             }
-
-            // Cache stuff
-            pauseMenu = GameObject.FindObjectOfType<Pause.PauseMenu>();
-
-            winText = winTextObj.GetComponent<TMPro.TextMeshProUGUI>();
-            winMenu = GameObject.Find("PostGameMenu").GetComponent<PostGameMenu>();
 
             shake = GetComponent<Shake>();
 
@@ -1825,7 +1818,7 @@ namespace Battle.Board {
             }
 
             // pieceBoard.SetActive(false);
-            winTextObj.SetActive(true);
+            winText.gameObject.SetActive(true);
             winText.text = "LOSE";
 
             boardDefeatFall.StartFall();
@@ -1833,7 +1826,7 @@ namespace Battle.Board {
             if (!singlePlayer) enemyBoard.Win();
 
             if (level != null) {
-                winMenu.AppearAfterDelay(this);
+                winMenu.AppearAfterDelay();
                 PlaySFX("lose");
                 SoundManager.Instance.PauseBGM();
             }
@@ -1853,10 +1846,10 @@ namespace Battle.Board {
                 incoming.SetDamage(0);
             }
 
-            winTextObj.SetActive(true);
+            winText.gameObject.SetActive(true);
             winText.text = "WIN";
 
-            winMenu.AppearAfterDelay(this);
+            winMenu.AppearAfterDelay();
 
             StartCoroutine(CheckMidConvoAfterDelay());
 
