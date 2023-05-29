@@ -16,6 +16,8 @@ namespace Pause {
         public bool paused  { get; set; }
         [SerializeField] private GameObject PauseUI;
         [SerializeField] private Transform buttonsTransform;
+
+        [SerializeField] private bool mobile;
         
         // Start is called before the first frame update
         void Start()
@@ -74,10 +76,12 @@ namespace Pause {
                 //     }
                 // }
 
-                // clear selected menu button
-                EventSystem.current.SetSelectedGameObject(null);
-                // set first selected button
-                EventSystem.current.SetSelectedGameObject(buttonsTransform.GetChild(0).gameObject);
+                if (!mobile) {
+                    // clear selected menu button
+                    EventSystem.current.SetSelectedGameObject(null);
+                    // set first selected button
+                    EventSystem.current.SetSelectedGameObject(buttonsTransform.GetChild(0).gameObject);
+                }
 
                 PauseUI.SetActive(true);
             }

@@ -24,7 +24,7 @@ namespace PostGame {
         private TransitionScript transitionHandler;
 
         /** player 1 if solo mode, otherwise winning board in versus */
-        private GameBoard board;
+        [SerializeField] private GameBoard board;
 
         // if this post game menu has been displayed
         private bool displayed = false;
@@ -179,14 +179,15 @@ namespace PostGame {
                 // rematchTextGUI.text = "Rematch";
             }
 
-            EventSystem.current.SetSelectedGameObject(null);
-            EventSystem.current.SetSelectedGameObject(buttonsTransform.GetChild(0).gameObject);
+            if (!board.Mobile) {
+                EventSystem.current.SetSelectedGameObject(null);
+                EventSystem.current.SetSelectedGameObject(buttonsTransform.GetChild(0).gameObject);
+            }
         }
 
-        public void AppearAfterDelay(GameBoard board)
+        public void AppearAfterDelay()
         {
             if (timerRunning || displayed) return;
-            this.board = board;
             appearTime = 3d;
             timerRunning = true;
         }

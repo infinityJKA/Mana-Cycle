@@ -89,7 +89,7 @@ RectTransform:
   - {fileID: 6647794107243349722}
   - {fileID: 5772421829298210278}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -143,9 +143,11 @@ MonoBehaviour:
   lightConnectedMana: 1
   fallTime: 0.8
   slideTime: 0.6
-  winTextObj: {fileID: 2225117465364027543}
+  winText: {fileID: 6675283090129832128}
   doPieceFalling: 1
   pieceSpawned: 0
+  pauseMenu: {fileID: 0}
+  winMenu: {fileID: 0}
   damageShootPrefab: {fileID: 7061708752994457915, guid: f06a653b035c546668c3141a11501e75, type: 3}
   level: {fileID: 0}
   objectiveList: {fileID: 0}
@@ -832,7 +834,7 @@ GameObject:
   - component: {fileID: 3991282061193599352}
   - component: {fileID: 6675283090129832128}
   m_Layer: 5
-  m_Name: WinDisp
+  m_Name: WinText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
