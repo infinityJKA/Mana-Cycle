@@ -33,16 +33,9 @@ namespace Sound {
             soundManager.ChangeSFXVolume(value);
         }
 
-        static float clipPreviewDelay = 0.5f;
-        float nextClipTime = 0f;
-        /// <summary>play a sound from the slider at the selected volume
-        /// If mobile, plays once per set delay to not spam volume</summary>
         public void PlaySound(AudioClip clip)
         {
-            if (Time.time >= nextClipTime) {
-                soundManager.PlaySound(clip, 1f);
-                nextClipTime = Time.time + clipPreviewDelay;
-            }
+            soundManager.PlaySound(clip, 1f);
         }
     }
 }
