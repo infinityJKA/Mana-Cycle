@@ -304,43 +304,7 @@ namespace VersusMode {
 
             if (Input.GetKeyDown(inputScript.Pause)) 
             {
-                // close ability info/settings menu if it is open
-                if (!menu.Mobile && abilityInfoDisplayed) ToggleAbilityInfo();
-                else if (!menu.Mobile && settingsDisplayed) ToggleSettings();
-
-                // stop selecting cpu level if selecting
-                else if (selectingCpuLevel && !menu.Mobile) {
-                    selectingCpuLevel = false;
-                    RefreshLockVisuals();
-                }
                 
-                // unlock in when pause pressed
-                else if (lockedIn) ToggleLock();
-
-                // if this is the CPU cursor (player vs cpu only), return active state to the player and re-disable this
-                else if (isCpuCursor && !isPlayer1) {
-                    Active = false;
-                    opponentSelector.Active = true;
-                    if (Storage.isPlayerControlled1) {
-                        selectedIcon.SetCPUHovered(true, true);
-                    } else {
-                        selectedIcon.SetSelected(isPlayer1, true, true);
-                    }
-                }
-
-                // or go back to menu if not locked in
-                else {
-                    if (!transitionHandler) {
-                        Debug.LogError("Transition handler not found in scene!");
-                        return;
-                    }
-                    if (Storage.gamemode != Storage.GameMode.Solo) {
-                        transitionHandler.WipeToScene(menu.Mobile ? "MobileMainMenu" : "MainMenu", reverse: true);
-                    } else {
-                        transitionHandler.WipeToScene(menu.Mobile ? "MobileSoloMenu" : "SoloMenu", reverse: true);
-                    }
-                    
-                }
             }
 
             // show/hide ability info when rotate CCW is pressed
@@ -448,6 +412,48 @@ namespace VersusMode {
 
             RefreshLockVisuals();
             menu.RefreshStartButton();
+        }
+
+        /// <summary>Is run when the pause button is pressed while controlled
+        /// Also called when back button is pressed</summary>
+        public void Back() {
+            // close ability info/settings menu if it is open
+            if (!menu.Mobile && abilityInfoDisplayed) ToggleAbilityInfo();
+            else if (!menu.Mobile && settingsDisplayed) ToggleSettings();
+
+            // stop selecting cpu level if selecting
+            else if (selectingCpuLevel && !menu.Mobile) {
+                selectingCpuLevel = false;
+                RefreshLockVisuals();
+            }
+            
+            // unlock in when pause pressed
+            else if (lockedIn) ToggleLock();
+
+            // if this is the CPU cursor (player vs cpu only), return active state to the player and re-disable this
+            else if (isCpuCursor && !isPlayer1) {
+                Active = false;
+                opponentSelector.Active = true;
+                if (Storage.isPlayerControlled1) {
+                    selectedIcon.SetCPUHovered(true, true);
+                } else {
+                    selectedIcon.SetSelected(isPlayer1, true, true);
+                }
+            }
+
+            // or go back to menu if not locked in
+            else {
+                if (!transitionHandler) {
+                    Debug.LogError("Transition handler not found in scene!");
+                    return;
+                }
+                if (Storage.gamemode != Storage.GameMode.Solo) {
+                    transitionHandler.WipeToScene(menu.Mobile ? "MobileMainMenu" : "MainMenu", reverse: true);
+                } else {
+                    transitionHandler.WipeToScene(menu.Mobile ? "MobileSoloMenu" : "SoloMenu", reverse: true);
+                }
+                
+            }
         }
 
         void RefreshLockVisuals() {

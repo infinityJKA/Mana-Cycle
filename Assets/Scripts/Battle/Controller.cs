@@ -99,8 +99,12 @@ namespace Battle {
 
                         if (board.IsPlayerControlled() && board.GetPiece() != null) {
                             // don't set to false if already true
-                            board.quickFall = Input.GetKey(inputScript.Down) || board.quickFall; 
+                            board.quickFall = Input.GetKey(inputScript.Down) || board.quickFall;
                             board.instaDropThisFrame = Input.GetKeyDown(inputScript.Up);
+                        }
+
+                        if (board.Mobile && Input.GetKeyUp(inputScript.Down)) {
+                            board.quickFall = false;
                         }
                     }
                 }

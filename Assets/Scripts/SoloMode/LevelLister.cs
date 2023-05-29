@@ -175,8 +175,7 @@ namespace SoloMode {
                 // pause - go back to main menu
                 if (Input.GetKeyDown(inputScript.Pause))
                 {
-                    StoreSelections();
-                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(mobile ? "MobileMainMenu" : "MainMenu", reverse : true);
+                    Back();
                 }
 
                 // cast - open selected level
@@ -203,6 +202,11 @@ namespace SoloMode {
                     }
                 }
             }
+        }
+
+        public void Back() {
+            StoreSelections();
+            GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(mobile ? "MobileMainMenu" : "MainMenu", reverse : true);
         }
 
         public void ConfirmLevel(Level pressedLevel) {

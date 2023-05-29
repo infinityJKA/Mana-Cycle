@@ -155,11 +155,22 @@ namespace VersusMode {
                 if (Storage.gamemode == Storage.GameMode.Versus) {
                     p1Selector.ToggleLock();
                 } else {
+                    // solo mode - lock in and start
+                    p1Selector.ToggleLock();
                     StartIfReady();
                 }
             } else if (p2Selector.Active) {
+                // p2 is ready in versus mode, lock in and start
                 if (!p2Selector.lockedIn) p2Selector.ToggleLock();
                 StartIfReady();
+            }
+        }
+
+        public void BackButtonPressed() {
+            if (p1Selector.Active) {
+                p1Selector.Back();
+            } else {
+                p2Selector.Back();
             }
         }
 
