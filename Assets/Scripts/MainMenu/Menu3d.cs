@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System;
+using System.Collections;
 
 namespace MainMenu {
     /// <summary>
@@ -41,6 +43,9 @@ namespace MainMenu {
 
         [SerializeField] private bool mobile;
 
+        // asynchros operation to preload the solo menu since it's such a chonky scene
+        [SerializeField] private AsyncOperation soloMenuLoadOp;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -50,6 +55,20 @@ namespace MainMenu {
             UpdateTip();
 
             versionText.text = "v"+Application.version;
+
+            // start asynchrously loading level list scene, since it takes a while to load
+            StartCoroutine(LoadSoloMenuAsync());
+        }
+
+        IEnumerator LoadSoloMenuAsync() {
+            soloMenuLoadOp = SceneManager.LoadSceneAsync(mobile ? "MobileSoloMenu" : "SoloMenu");
+            soloMenuLoadOp.allowSceneActivation = false;
+
+            Debug.Log("Pre-loaded solomenu");
+
+            while (!soloMenuLoadOp.isDone) {
+                yield return null;
+            }
         }
 
         // Update is called once per frame
@@ -104,6 +123,10 @@ namespace MainMenu {
                 case 2: Storage.isPlayerControlled1 = false; Storage.isPlayerControlled2 = false; break;
                 default: Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = true; break;
             }
+            
+            // if solo menu was preloaded, unload it
+            SceneManager.UnloadSceneAsync(mobile ? "MobileSoloMenu" : "SoloMenu");
+
             TransitionHandler.WipeToScene(mobile ? "MobileCharSelect" : "CharSelect");
         }
 
@@ -142,7 +165,11 @@ namespace MainMenu {
         public void SelectSolo()
         {
             Storage.lastMainMenuItem = 1;
-            TransitionHandler.WipeToScene(mobile ? "MobileSoloMenu" : "SoloMenu");
+            if (soloMenuLoadOp != null) {
+                TransitionHandler.WipeToScene(sceneLoadOp: soloMenuLoadOp);
+            } else {
+                TransitionHandler.WipeToScene(mobile ? "MobileSoloMenu" : "SoloMenu");
+            }
         }
 
         public void UpdateTip()
