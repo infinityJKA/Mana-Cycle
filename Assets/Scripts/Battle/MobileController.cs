@@ -32,6 +32,10 @@ namespace Battle {
 
         private bool beingMouseDragged = false;
 
+        void Start() {
+            // automatically use a mouse if detected
+            // doMouse = Input.mousePresent;
+        }
 
         // Update is called once per frame
         void Update()
@@ -50,35 +54,37 @@ namespace Battle {
                 }
 
                 else if (touch.phase == TouchPhase.Moved) {
-                    Dragging();
+                    Drag(touch.position);
                 }
 
                 else if (touch.phase == TouchPhase.Ended) {
-                    DragRelease();
+                    Release(touch.position);
                 }
             }
 
             // Mouse controls - for use in editor
-            if (doMouse && Input.GetMouseButtonDown(0)) {
-                DragStartMouse();
-            }
+            if (doMouse) {
+                if (Input.GetMouseButtonDown(0)) {
+                    DragStartMouse();
+                }
 
-            else if (doMouse && beingMouseDragged) {
-                if (Input.GetMouseButtonUp(0)) {
-                    beingMouseDragged = false;
-                    DragMouseRelease();
-                } else {
-                    DraggingMouse();
+                else if (beingMouseDragged) {
+                    if (Input.GetMouseButtonUp(0)) {
+                        beingMouseDragged = false;
+                        Release(Input.mousePosition);
+                    } else {
+                        Drag(Input.mousePosition);
+                    }
                 }
             }
         }
 
         void DragStart() {
-            Debug.Log(touch);
             dragStartPos = touch.position;
             startCol = board.GetPiece().GetCol();
             deltaCol = 0;
             touchTime = Time.time;
+            beingMouseDragged = false;
         }
 
         void DragStartMouse() {
@@ -89,8 +95,9 @@ namespace Battle {
             beingMouseDragged = true;
         }
 
-        void Dragging() {
-            int targetDeltaCol = Mathf.RoundToInt(((Vector2)Input.mousePosition - dragStartPos).x * sensitivity * 0.01f);
+        void Drag(Vector2 touchPosition) {
+            Vector2 offset = touchPosition - dragStartPos;
+            int targetDeltaCol = Mathf.RoundToInt(offset.x * sensitivity * 0.01f);
 
             while (deltaCol < targetDeltaCol) {
                 if (board.MoveRight()) deltaCol++;
@@ -102,53 +109,28 @@ namespace Battle {
                 else break;
             }
 
-            board.quickFall = ((Vector2)Input.mousePosition - dragStartPos).y * sensitivity * 0.01f <= -0.65f;
+            // move about a tile's height down before quick falling (assuming sensitivity of ~0.5)
+            board.quickFall = offset.y * sensitivity * 0.01f <= -0.25f;
         }
 
-        void DraggingMouse() {
-            int targetDeltaCol = Mathf.RoundToInt(((Vector2)Input.mousePosition - dragStartPos).x * sensitivity * 0.01f);
+        void Release(Vector2 touchPosition) {
+            Vector2 offset = touchPosition - dragStartPos;
 
-            while (deltaCol < targetDeltaCol) {
-                if (board.MoveRight()) deltaCol++; 
-                else break;
-            }
-
-            while (deltaCol > targetDeltaCol) {
-                if (board.MoveLeft()) deltaCol--;
-                else break;
-            }
-
-            board.quickFall = ((Vector2)Input.mousePosition - dragStartPos).y * sensitivity * 0.01f <= -0.65f;
-        }
-
-        void DragRelease() {
             // only a tap and not a drag if finger moved less than half a tile's width, the minimum to move a tile left/right
-            if (Time.time - touchTime < 0.2f && (touch.position - dragStartPos).magnitude < 50f) {
+            if (Time.time - touchTime < 0.2f && offset.magnitude < 50f) {
                 board.RotateRight();
             }
-            // If finger swiped about a tile and a half's distance up quickly, spellcast
-            // tile must also have moved less than a tile's width horizontally
-            // possible future improvement: make based on angle instead of specific area
-            if (Time.time - touchTime < 0.5f && touch.position.y - dragStartPos.y > 150f && Mathf.Abs(touch.position.x - dragStartPos.x) < 100f) {
+
+            // If slope of y/|x| swipe distance is above a certain threshold, user swiped upwards, spellcast
+            // must have also swiped at least one tile's distance upwards (assuming sensitivity = 0.5f)
+            var slope = offset.y/Mathf.Abs(offset.x);
+            Debug.Log("slope="+slope);
+            if (Time.time - touchTime < 0.5f && offset.y*sensitivity > 0.5f && slope > 1.75f) {
                 board.Spellcast();
             }
 
             board.quickFall = false;
-        }
-
-        void DragMouseRelease() {
-            // only a tap and not a drag if mouse moved less than half a tile's width, the minimum to move a tile left/right
-            var dragDistance = ((Vector2)Input.mousePosition - dragStartPos).magnitude;
-            if (Time.time - touchTime < 0.2f && ((Vector2)Input.mousePosition - dragStartPos).magnitude < 50f) {
-                board.RotateRight();
-            }
-            // If mouse swiped up quickly, spellcast
-            Debug.Log(Input.mousePosition.x - dragStartPos.x);
-            if (Time.time - touchTime < 0.5f && Input.mousePosition.y - dragStartPos.y > 150f && Mathf.Abs(Input.mousePosition.x - dragStartPos.x) < 100f) {
-                board.Spellcast();
-            }
-
-            board.quickFall = false;
+            beingMouseDragged = false;
         }
     }
 }
