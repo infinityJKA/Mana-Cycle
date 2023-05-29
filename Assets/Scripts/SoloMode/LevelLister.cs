@@ -141,6 +141,9 @@ namespace SoloMode {
             RefreshTab();
             RefreshCursor();
             RefreshDescription();
+
+            // preload main menu, in case player exits back to it
+            ScenePreloader.Preload(mobile ? "MobileMainMenu" : "MainMenu", this);
         }
 
         // Update is called once per frame
@@ -226,6 +229,19 @@ namespace SoloMode {
             Storage.levelSelectedThisInput = true;
 
             gameObject.SetActive(false);
+
+            // start preloading stuff
+            // unload main menu, player is getting into battle
+            ScenePreloader.Unload(mobile ? "MobileMainMenu" : "MainMenu");
+            
+            // if level requires a charselect, start preloading that
+            if (Storage.level.availableBattlers.Count > 1)
+            {
+                ScenePreloader.Preload(mobile ? "MobileCharSelect" : "CharSelect", this);
+            }
+
+            // load the battle scene
+            ScenePreloader.Preload(mobile ? "MobileManaCycle" : "ManaCycle", this);
         }
 
         public void LeftTabArrow() {
