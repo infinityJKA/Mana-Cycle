@@ -304,7 +304,7 @@ namespace VersusMode {
 
             if (Input.GetKeyDown(inputScript.Pause)) 
             {
-                
+                Back();
             }
 
             // show/hide ability info when rotate CCW is pressed

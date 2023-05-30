@@ -73,7 +73,7 @@ namespace ConvoSystem {
                 
                 // skip rest of convo when pause pressed
                 else if (Input.GetKeyDown(inputScript.Pause)) {
-                    
+                    EndConvo();
                 }
             }
 

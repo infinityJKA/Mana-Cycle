@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.036
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.013998456, g: 0.011082142, b: 0.045964584, a: 0.036}
+  m_IndirectSpecularColor: {r: 0.013946134, g: 0.0110399565, b: 0.045794696, a: 0.036}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2173,6 +2173,14 @@ PrefabInstance:
       propertyPath: battler
       value: 
       objectReference: {fileID: 11400000, guid: 91c504e9689114ce0bf46b0f721e8f16, type: 2}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: winMenu
+      value: 
+      objectReference: {fileID: 1160508883}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: pauseMenu
+      value: 
+      objectReference: {fileID: 2237333923952321430}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: enemyBoard
       value: 
@@ -5513,6 +5521,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonsTransform: {fileID: 291048186}
   MenuUI: {fileID: 2014209335}
+  board: {fileID: 1918826929}
   retryButton: {fileID: 1336991435}
   defeatMusic: {fileID: 8300000, guid: ae71a099ecaf9284a99bea445a2b5637, type: 3}
   winMusic: {fileID: 8300000, guid: 03996181314134abcb39976668429734, type: 3}
@@ -8036,6 +8045,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 91c504e9689114ce0bf46b0f721e8f16, type: 2}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: winMenu
+      value: 
+      objectReference: {fileID: 1160508883}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: pauseMenu
+      value: 
+      objectReference: {fileID: 2237333923952321430}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: enemyBoard
       value: 
       objectReference: {fileID: 1327112842}
@@ -9097,6 +9114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PauseUI: {fileID: 4321311120628870816}
   buttonsTransform: {fileID: 1472663305}
+  mobile: 0
 --- !u!224 &2600962730657970978
 RectTransform:
   m_ObjectHideFlags: 0
