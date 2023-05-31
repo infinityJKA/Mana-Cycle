@@ -206,7 +206,7 @@ namespace SoloMode {
 
         public void Back() {
             StoreSelections();
-            GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene(mobile ? "MobileMainMenu" : "MainMenu", reverse : true);
+            GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("MainMenu", reverse : true);
         }
 
         public void ConfirmLevel(Level pressedLevel) {
