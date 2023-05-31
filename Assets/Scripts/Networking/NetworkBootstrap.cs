@@ -14,5 +14,6 @@ namespace Networking {
         {
             SceneManager.LoadScene("ManaCycle");
         }
+        
     }
 }
