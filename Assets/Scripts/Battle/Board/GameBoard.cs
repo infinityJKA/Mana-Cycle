@@ -29,8 +29,17 @@ namespace Battle.Board {
 
         // True if the player controls this board. */
         [SerializeField] private bool playerControlled;
+        // True if an AI should control this board. */
+        [SerializeField] private bool aiControlled;
+
         /// <summary>0 for left side, 1 for right side</summary>
         [SerializeField] private int playerSide;
+
+        /// <summary>
+        /// In online multiplayer, if this is a network client.
+        /// If also player controlled, the player will control this board.
+        /// </summary>
+        private bool isNetworkClient;
 
         /** Obect where pieces are drawn */
         [SerializeField] public Transform pieceBoard;
@@ -311,11 +320,13 @@ namespace Battle.Board {
                 {
                     battler = Storage.battler1;
                     playerControlled = Storage.isPlayerControlled1;
+                    aiControlled = !Storage.isPlayerControlled1;
                 }
                 else
                 {
                     battler = Storage.battler2;
                     playerControlled = Storage.isPlayerControlled2;
+                    aiControlled = !Storage.isPlayerControlled2;
                 }
             }
             else
@@ -519,10 +530,9 @@ namespace Battle.Board {
                             // If it can't be moved down,
                             // also check for sliding buffer, and place if beyond that
                             // don't use slide time if quick falling
-                            if (playerControlled && !quickFall && level) {
+                            if (!quickFall && level) {
                                 finalFallTime += (slideTime*level.slideTimeMult);
                             }
-
 
                             // true if time is up for the extra slide buffer
                             bool pastExtraSlide = (Time.time - previousFallTime) > finalFallTime;
@@ -770,6 +780,10 @@ namespace Battle.Board {
 
         public bool IsPlayerControlled(){
             return this.playerControlled;
+        }
+
+        public bool IsAiControlled(){
+            return this.aiControlled;
         }
 
         public void SetPlayerControlled(bool p){

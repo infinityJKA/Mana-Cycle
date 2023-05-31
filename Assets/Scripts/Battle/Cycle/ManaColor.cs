@@ -9,6 +9,7 @@ namespace Battle.Cycle {
         Multicolor,
         Colorless,
         None,
-        Any // only used by AI - prioritize parameter
+        Any, // only used by AI
+        Obscured // only for networking, only sending that the tile is obscured, not the actual color
     }
 }

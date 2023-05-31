@@ -153,8 +153,6 @@ namespace SoloMode {
     #if (UNITY_EDITOR)
     [CustomEditor(typeof(Level))]
     public class LevelListerEditor : Editor {
-        
-
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
 
