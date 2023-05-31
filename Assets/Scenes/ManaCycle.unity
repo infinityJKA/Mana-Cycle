@@ -2198,6 +2198,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 23e0fde6fd3784132844b12c502f8b20, type: 2}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: aiControlled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: singlePlayer
       value: 0
       objectReference: {fileID: 0}
@@ -5676,7 +5680,7 @@ GameObject:
   - component: {fileID: 1280025124}
   - component: {fileID: 1280025127}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Battle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6375,11 +6379,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2325366771608468769, guid: b619406261355b04589ac2863cf824a2, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2325366771608468769, guid: b619406261355b04589ac2863cf824a2, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2325366771608468769, guid: b619406261355b04589ac2863cf824a2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6411,11 +6415,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2325366771608468769, guid: b619406261355b04589ac2863cf824a2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 399.99997
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2325366771608468769, guid: b619406261355b04589ac2863cf824a2, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 184.75664
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2325366771608468769, guid: b619406261355b04589ac2863cf824a2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6427,6 +6431,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2325366771608468769, guid: b619406261355b04589ac2863cf824a2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2325366773014884887, guid: b619406261355b04589ac2863cf824a2, type: 3}
+      propertyPath: m_FillAmount
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
