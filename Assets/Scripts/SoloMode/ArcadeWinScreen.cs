@@ -23,7 +23,7 @@ namespace SoloMode
         {
             if (Input.anyKeyDown)
             {
-                transitionHandler.WipeToScene(mobile ? "MobileMainMenu" : "MainMenu", reverse:true);
+                transitionHandler.WipeToScene("MainMenu", reverse:true);
                 SoundManager.Instance.SetBGM(SoundManager.Instance.mainMenuMusic);
             }
         }

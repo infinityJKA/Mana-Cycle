@@ -122,7 +122,7 @@ namespace VersusMode {
                 return;
             }
 
-            transitionHandler.WipeToScene(mobile ? "MobileManaCycle" : "ManaCycle");
+            transitionHandler.WipeToScene("ManaCycle");
         }
 
         // ---- Mobile ----

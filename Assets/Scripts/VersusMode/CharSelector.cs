@@ -447,9 +447,9 @@ namespace VersusMode {
                     return;
                 }
                 if (Storage.gamemode != Storage.GameMode.Solo) {
-                    transitionHandler.WipeToScene(menu.Mobile ? "MobileMainMenu" : "MainMenu", reverse: true);
+                    transitionHandler.WipeToScene("MainMenu", reverse: true);
                 } else {
-                    transitionHandler.WipeToScene(menu.Mobile ? "MobileSoloMenu" : "SoloMenu", reverse: true);
+                    transitionHandler.WipeToScene("SoloMenu", reverse: true);
                 }
                 
             }

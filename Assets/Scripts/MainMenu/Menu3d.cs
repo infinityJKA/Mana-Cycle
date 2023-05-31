@@ -104,7 +104,7 @@ namespace MainMenu {
                 case 2: Storage.isPlayerControlled1 = false; Storage.isPlayerControlled2 = false; break;
                 default: Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = true; break;
             }
-            TransitionHandler.WipeToScene(mobile ? "MobileCharSelect" : "CharSelect");
+            TransitionHandler.WipeToScene("CharSelect");
         }
 
         public void SelectHTP()
@@ -142,7 +142,7 @@ namespace MainMenu {
         public void SelectSolo()
         {
             Storage.lastMainMenuItem = 1;
-            TransitionHandler.WipeToScene(mobile ? "MobileSoloMenu" : "SoloMenu");
+            TransitionHandler.WipeToScene("SoloMenu");
         }
 
         public void UpdateTip()
