@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6538489649017240961}
-  - component: {fileID: 5463618586843240291}
   - component: {fileID: 8800305660382723300}
+  - component: {fileID: -8333118507257277078}
+  - component: {fileID: -4144988654859722000}
   m_Layer: 0
   m_Name: PlayerNetworkBoard
   m_TagString: Untagged
@@ -31,25 +32,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5463618586843240291
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8980812436308185824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d403f49b6a51114bb9973d42da94984, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  board: {fileID: 0}
-  hp:
-    m_InternalValue: 1000
-  incoming:
-    m_InternalValue: 000000000000000000000000000000000000000000000000
 --- !u!114 &8800305660382723300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,3 +53,29 @@ MonoBehaviour:
   SceneMigrationSynchronization: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &-8333118507257277078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8980812436308185824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33b820ea673b35b44948b713e02ccd31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-4144988654859722000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8980812436308185824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d403f49b6a51114bb9973d42da94984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  board: {fileID: 0}
+  username: Player One
