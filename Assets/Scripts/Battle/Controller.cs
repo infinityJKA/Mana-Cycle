@@ -11,6 +11,9 @@ using Battle.Board;
 using Battle.AI;
 
 namespace Battle {
+    /// <summary>
+    /// Allows the player to control a board with keyboard inputs.
+    /// </summary>
     public class Controller : MonoBehaviour
     {
         // the board being controlled by this script
@@ -19,14 +22,21 @@ namespace Battle {
         // Update is called once per frame
         void Update()
         {
-            // stop movement while not player controlled, uninitialized, paused, post game or dialogue
-            if (!board.IsPlayerControlled() || !board.isInitialized() || board.convoPaused) return;
+            // stop movement while uninitialized, paused, post game or dialogue
+            if (!board.isInitialized() || board.convoPaused) return;
+            // note that this doesn't check if boaard is player controlled
+            // this is so the player can control the menu in AI vs AI mode
 
             // these will be set to true if any of the input scripts trigger it
-            if (!board.Mobile) board.quickFall = false;
-            board.instaDropThisFrame = false; 
+            if (board.IsPlayerControlled()) {
+                if (!board.Mobile) board.quickFall = false;
+                board.instaDropThisFrame = false; 
+            }
 
             foreach (InputScript inputScript in board.inputScripts) {
+                // if not player controlled AND not player one, skip, only allow player 1 to control menus even if AI
+                if (!board.IsPlayerControlled() && board.GetPlayerSide() == 1) continue;
+ 
                 if (inputScript != null)
                 {
                     if (Input.GetKeyDown(inputScript.Pause) && !board.postGame && !Storage.convoEndedThisInput)
@@ -66,8 +76,7 @@ namespace Battle {
                         }
                     }
 
-                    // don't evaulate any branches below this if in recovery mode - only menus
-                    // also don't control if the player isn't controlling the board
+                    // don't evaulate any branches below this if in recovery mode - only menus above this willl be evaluated
                     else if (board.recoveryMode || !board.IsPlayerControlled()) continue;
                     
                     // If not pausemenu paused, do piece movements if not dialogue paused and not in postgame

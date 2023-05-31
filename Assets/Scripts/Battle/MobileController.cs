@@ -7,6 +7,10 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using Battle.Board;
 
 namespace Battle {
+    /// <summary>
+    /// Allows the player to control the board using mobile touch-screen inputs.
+    /// Also works with mouse for PC debugging, but is disabled in mobile because it conflicts with the touchscreen controls.
+    /// </summary>
     public class MobileController : MonoBehaviour
     {
         /// <summary>The board being controlled by this script</summary>

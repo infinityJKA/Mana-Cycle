@@ -69,8 +69,8 @@ namespace Battle.AI {
         // when true, insta-drop on next movement tick
         bool readyToInstaDrop = true;
         void Update() {
-            // stop while not player controlled, uninitialized, paused, post game or dialogue
-            if (board.IsPlayerControlled() || !board.isInitialized() || board.isPaused() || board.isPostGame() || board.convoPaused || board.recoveryMode) return;
+            // stop piece decision making while uninitialized, paused, post game, dialogue, recovering, or not AI controlled (should be disabled anyways)
+            if (!board.isInitialized() || board.isPaused() || board.isPostGame() || board.convoPaused || board.recoveryMode || !board.IsAiControlled()) return;
 
             // Will be run the frame a piece is spawned
             if (board.pieceSpawned && board.GetPiece()){

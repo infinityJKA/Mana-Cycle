@@ -301,7 +301,6 @@ namespace VersusMode {
                 }
             }
 
-
             if (Input.GetKeyDown(inputScript.Pause)) 
             {
                 Back();
