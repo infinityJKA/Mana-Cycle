@@ -8,6 +8,7 @@ using TMPro;
 
 using Battle.Board;
 using Sound;
+using SoloMode;
 
 namespace PostGame {
     public class PostGameMenu : MonoBehaviour
@@ -41,6 +42,8 @@ namespace PostGame {
         // arcade mode info, hidden outside of arcade mode
         [SerializeField] private GameObject arcadeInfoPannel;
         [SerializeField] private TMPro.TextMeshProUGUI arcadeInfoText;
+
+        [SerializeField] private LevelGenerator levelGenerator;
 
         // Start is called before the first frame update
         void Start()
@@ -130,7 +133,7 @@ namespace PostGame {
                     
 
                     // if in level series, replay button -> continue button
-                    if (Storage.level.nextSeriesLevel && cleared)
+                    if (Storage.level.nextSeriesLevel && cleared && !Storage.level.generateNextLevel)
                     {
                         retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Continue";
                         var ev = new Button.ButtonClickedEvent();
@@ -144,6 +147,26 @@ namespace PostGame {
                         // set info pannel visibility and text
                         arcadeInfoPannel.SetActive(true);
                         arcadeInfoText.text = String.Format("{0} more to go\nnext up: {1}", Storage.level.GetAheadCount(), Storage.level.nextSeriesLevel.levelName);
+                    }
+
+                    // arcade endless
+                    if (Storage.level.generateNextLevel && cleared)
+                    {
+                        Debug.Log("Curious");
+                        retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Continue";
+                        var ev = new Button.ButtonClickedEvent();
+                        ev.AddListener(() => GotoEndlessLevelSelect());
+                        retryButton.onClick = ev;
+
+                        buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(true);
+                        buttonsTransform.Find("CharSelectButton").gameObject.SetActive(false);
+
+                        // setup next level list for arcade endless scene
+                        Storage.nextLevelChoices = new List<Level>();
+                        for (int i = 0; i < 3; i++)
+                        {
+                            Storage.nextLevelChoices.Add(levelGenerator.Generate(difficulty: Storage.level.aiDifficulty));
+                        }
                     }
                 }
 
@@ -277,6 +300,14 @@ namespace PostGame {
             Storage.lives = board.recoveryMode ? 2000 : board.lives;
             Storage.hp = board.hp;
             transitionHandler.WipeToScene("ManaCycle");
+        }
+
+        public void GotoEndlessLevelSelect()
+        {
+            Time.timeScale = 1f;
+            Storage.lives = board.recoveryMode ? 2000 : board.lives;
+            Storage.hp = board.hp;
+            transitionHandler.WipeToScene("SelectNextLevel");
         }
 
 

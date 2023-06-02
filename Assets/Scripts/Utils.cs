@@ -2,8 +2,11 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
+using Battle;
+
 public class Utils : MonoBehaviour
 {
+
     public static void Shuffle<T>(List<T> list)  
     {  
         int n = list.Count;  
