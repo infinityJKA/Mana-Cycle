@@ -10,6 +10,7 @@ namespace SoloMode
 {
     public class LevelCardManager : MonoBehaviour
     {
+        [SerializeField] private InputScript inputScript;
         // the level this card represents.
         [SerializeField] public GameObject levelCardPrefab;
 
@@ -26,6 +27,14 @@ namespace SoloMode
             }
 
             EventSystem.current.SetSelectedGameObject(transform.GetChild(1 + (Storage.nextLevelChoices != null ? 3 : 0) ).gameObject);
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(inputScript.Cast))
+            {
+                EventSystem.current.currentSelectedGameObject.GetComponent<Button>().onClick.Invoke();
+            }
         }
     }
 }

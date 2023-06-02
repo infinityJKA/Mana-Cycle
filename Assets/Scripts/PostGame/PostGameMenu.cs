@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using TMPro;
+using Random=UnityEngine.Random;
 
 using Battle.Board;
 using Sound;
@@ -83,7 +84,7 @@ namespace PostGame {
             
             // solo mode in series: retry -> continue
 
-            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && Storage.level.availableBattlers.Count > 1))
+            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level != null && Storage.level.availableBattlers != null && Storage.level.availableBattlers.Count > 1))
             {
                 buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(false);
                 buttonsTransform.Find("CharSelectButton").gameObject.SetActive(true);
@@ -165,13 +166,13 @@ namespace PostGame {
                         Storage.nextLevelChoices = new List<Level>();
                         for (int i = 0; i < 3; i++)
                         {
-                            Storage.nextLevelChoices.Add(levelGenerator.Generate(difficulty: Storage.level.aiDifficulty, battler: Storage.level.battler));
+                            Storage.nextLevelChoices.Add(levelGenerator.Generate(difficulty: Storage.level.aiDifficulty + Random.Range(0.01f,0.05f), battler: Storage.level.battler));
                         }
                     }
                 }
 
                 // if reached the end of a solo level, go to win screen
-                if (Storage.level.nextSeriesLevel == null && Storage.level.lastSeriesLevel != null)
+                if (Storage.level.nextSeriesLevel == null && Storage.level.lastSeriesLevel != null && !Storage.level.generateNextLevel)
                 {
                     Time.timeScale = 1f;
                     MenuUI.SetActive(false);

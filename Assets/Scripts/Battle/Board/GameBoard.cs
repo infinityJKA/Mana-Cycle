@@ -283,7 +283,7 @@ namespace Battle.Board {
             {
                 level = Storage.level;
             }
-            if (level != null) {
+            if (level != null && level.midLevelConversations != null) {
                 midLevelConvos = new List<MidLevelConversation>(level.midLevelConversations);
             } else {
                 midLevelConvos = new List<MidLevelConversation>();
