@@ -45,4 +45,7 @@ public class Storage
     public static bool convoEndedThisInput;
     // true when hitting pause during a midlevelconvo, to prevent pausing menu
     public static bool convoSkippedThisInput;
+
+    // used in arcade endless
+    public static List<SoloMode.Level> nextLevelChoices;
 }

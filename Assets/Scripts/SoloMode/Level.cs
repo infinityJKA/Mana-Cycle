@@ -68,6 +68,9 @@ namespace SoloMode {
 
         public Battle.Battler opponent;
 
+        // whether or not clearing this level will generate levels and take you to the arcade endless selection screen
+        public bool generateNextLevel = false;
+
         // dictates AIController values. 1 is hardest, 0 is worst
         [Range(0,1)]
         public float aiDifficulty = 1;

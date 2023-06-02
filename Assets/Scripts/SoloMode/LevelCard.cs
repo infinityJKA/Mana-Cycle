@@ -11,7 +11,7 @@ namespace SoloMode
     public class LevelCard : MonoBehaviour
     {
         // the level this card represents.
-        [SerializeField] Level level;
+        [SerializeField] public Level level;
         // all the text gameobjects on the card, used for displaying level info
         [SerializeField] TextMeshProUGUI timeText;
         [SerializeField] TextMeshProUGUI nameText;
@@ -19,7 +19,12 @@ namespace SoloMode
 
         void Start()
         {
-            timeText.text = Utils.FormatTime(level.time);
+            setCardInfo();
+        }
+
+        public void setCardInfo()
+        {
+            timeText.text = "Time: " + Utils.FormatTime(level.time);
             nameText.text = level.levelName;
             descriptionText.text = level.description;
         }
