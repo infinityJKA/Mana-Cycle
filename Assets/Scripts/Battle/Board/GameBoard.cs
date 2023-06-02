@@ -465,6 +465,12 @@ namespace Battle.Board {
                 }
             }
 
+            // debug thing
+            if (Application.isEditor && Input.GetKey(KeyCode.F1) && playerSide == 0)
+            {
+                enemyBoard.TakeDamage(100);
+            }
+
             // TRASH DAMAGE TIMER
             // if above 0, tick down
             // If not in a level or level is against an AI, take trash damage
