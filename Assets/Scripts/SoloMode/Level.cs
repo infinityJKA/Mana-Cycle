@@ -121,6 +121,20 @@ namespace SoloMode {
             return count;
         }
 
+        /// <summary> get amount of levels behind this one in the series </summary>
+        public int GetBehindCount()
+        {
+            int count = 0;
+            Level refLevel = this;
+            while (refLevel.lastSeriesLevel != null) 
+            {
+                count++;
+                refLevel = refLevel.lastSeriesLevel;
+            }
+
+            return count;
+        }
+
         /// <summary> return first level in series </summary>
         public Level GetRootLevel()
         {

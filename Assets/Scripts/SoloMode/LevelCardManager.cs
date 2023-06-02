@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 // using Sound;
 
@@ -13,6 +14,10 @@ namespace SoloMode
         [SerializeField] private InputScript inputScript;
         // the level this card represents.
         [SerializeField] public GameObject levelCardPrefab;
+
+        // text at the top of the screen
+        [SerializeField] private TextMeshProUGUI matchText; 
+
 
         void Start()
         {
@@ -29,6 +34,9 @@ namespace SoloMode
             // auto select middle card.
             // 3 test cards can be hidden / unhidden from scene for testing. if the scene is not being tested, add 3 to skip those cards in children order.
             EventSystem.current.SetSelectedGameObject(transform.GetChild(1 + (Storage.nextLevelChoices != null ? 3 : 0) ).gameObject);
+
+            // update text
+            if (Storage.level != null) matchText.text = "-= Match " + (Storage.level.GetBehindCount() + 1) + " =-";
         }
 
         void Update()

@@ -15,7 +15,7 @@ namespace SoloMode
         [SerializeField] private List<Battle.Battler> usableBattlerList;
         [SerializeField] private Conversation defaultConvo;
 
-        public Level Generate(float difficulty = 0.5f, bool VersusLevelsEnabled = true, bool SoloLevelsEnabled = false, Battler battler = null)
+        public Level Generate(float difficulty = 0.5f, bool VersusLevelsEnabled = true, bool SoloLevelsEnabled = false, Battler battler = null, Level lastLevel = null)
         {
             Level newLevel = ScriptableObject.CreateInstance<Level>();
 
@@ -30,6 +30,7 @@ namespace SoloMode
             newLevel.description = "Default generated level description";
             newLevel.conversation = defaultConvo;
             newLevel.generateNextLevel = true;
+            newLevel.lastSeriesLevel = lastLevel;
             // lowest difficutly = 8 minute timer, every .1 increase of difficulty will subtract 30 seconds. 
             newLevel.time = (8 * 60) - ((int) (difficulty*10))*30;
             // also randomly add from 0-2 minutes in 30sec increments
