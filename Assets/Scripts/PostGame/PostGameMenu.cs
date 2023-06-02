@@ -165,7 +165,7 @@ namespace PostGame {
                         Storage.nextLevelChoices = new List<Level>();
                         for (int i = 0; i < 3; i++)
                         {
-                            Storage.nextLevelChoices.Add(levelGenerator.Generate(difficulty: Storage.level.aiDifficulty));
+                            Storage.nextLevelChoices.Add(levelGenerator.Generate(difficulty: Storage.level.aiDifficulty, battler: Storage.level.battler));
                         }
                     }
                 }

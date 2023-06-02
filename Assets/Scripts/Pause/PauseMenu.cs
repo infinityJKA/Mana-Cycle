@@ -32,7 +32,7 @@ namespace Pause {
                     .text = "Rematch";
             }
             
-            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && Storage.level.availableBattlers.Count > 1)) {
+            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && Storage.level.availableBattlers != null && Storage.level.availableBattlers.Count > 1)) {
                 buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(false);
                 buttonsTransform.Find("CharSelectButton").gameObject.SetActive(true);
             }

@@ -17,9 +17,12 @@ namespace SoloMode
         [SerializeField] TextMeshProUGUI nameText;
         [SerializeField] TextMeshProUGUI descriptionText;
 
+        TransitionScript transitionHandler;
+
         void Start()
         {
             setCardInfo();
+            transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
         }
 
         public void setCardInfo()
@@ -27,6 +30,12 @@ namespace SoloMode
             timeText.text = "Time: " + Utils.FormatTime(level.time);
             nameText.text = level.levelName;
             descriptionText.text = level.description;
+        }
+
+        public void LoadLevel()
+        {
+            Storage.level = level;
+            transitionHandler.WipeToScene("ManaCycle");
         }
         
     }
