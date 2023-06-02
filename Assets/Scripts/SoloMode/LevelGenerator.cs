@@ -5,13 +5,17 @@ using UnityEngine.UI;
 
 using Random=UnityEngine.Random;
 
+using Battle;
+using ConvoSystem;
+
 namespace SoloMode
 {
     public class LevelGenerator : MonoBehaviour
     {
         [SerializeField] private List<Battle.Battler> usableBattlerList;
+        [SerializeField] private Conversation defaultConvo;
 
-        public Level Generate(float difficulty = 0.5f, bool VersusLevelsEnabled = true, bool SoloLevelsEnabled = false)
+        public Level Generate(float difficulty = 0.5f, bool VersusLevelsEnabled = true, bool SoloLevelsEnabled = false, Battler battler = null)
         {
             Level newLevel = ScriptableObject.CreateInstance<Level>();
 
@@ -24,10 +28,14 @@ namespace SoloMode
 
             newLevel.levelName = "Generated level";
             newLevel.description = "Default generated level description";
+            newLevel.conversation = defaultConvo;
             // lowest difficutly = 8 minute timer, every .1 increase of difficulty will subtract 30 seconds. 
             newLevel.time = (8 * 60) - ((int) (difficulty*10))*30;
             // also randomly add from 0-2 minutes in 30sec increments
             newLevel.time += Random.Range(0,4) * 30;
+
+            // if battler is given by method caller, set level battler. otherwise make battler random
+            newLevel.battler = (battler != null) ? battler : usableBattlerList[(int) Random.Range(0, usableBattlerList.Count-1)];
 
             // generate an ai battle level
             if (VersusLevelsEnabled)
