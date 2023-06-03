@@ -13,6 +13,8 @@ namespace SoloMode {
         public ObjectiveCondition condition;
         /** Value, depends on the condition */
         public int value;
+        // if not null, replaces the status message displayed on the objective list
+        public string statusOverride = null;
 
         // lose if condition is met
         public bool inverted = false;
@@ -36,6 +38,7 @@ namespace SoloMode {
             }
         }
         public string Status(GameBoard board) {
+            if (statusOverride != null) return statusOverride;
             if (!inverted) {
                 switch (condition) {
                 case ObjectiveCondition.PointTotal: return board.hp+"/"+value+" Points";

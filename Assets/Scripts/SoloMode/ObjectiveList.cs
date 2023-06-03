@@ -33,6 +33,8 @@ namespace SoloMode {
             if (level.survivalWin) {
                 Objective surviveObjective = new Objective();
                 surviveObjective.condition = ObjectiveCondition.Survive;
+                // rename survive objective if in endless arcade
+                if (Storage.level.generateNextLevel) surviveObjective.statusOverride = "Get as many points as possible!";
 
                 var survivalItem = Instantiate(objectiveListItemPrefab, objectiveListLayout.transform);
                 survivalItem.objective = surviveObjective;
