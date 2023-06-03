@@ -22,11 +22,14 @@ namespace SoloMode
         [SerializeField] private Battle.Board.HealthBar hpBar;
         [SerializeField] private TextMeshProUGUI hpText;
 
+        // life container and prefab to display lives
+        [SerializeField] GameObject lifeContainer;
+        [SerializeField] GameObject lifePrefab;
 
         void Start()
         {
             // if first match, keep hp (determined by previous level) within bounds
-            if (Storage.level.GetBehindCount() == 0)
+            if (Storage.level != null && Storage.level.GetBehindCount() == 0)
             {
                 Storage.hp = Mathf.Clamp(Storage.hp, 100, 2000);
             }
@@ -48,6 +51,12 @@ namespace SoloMode
             // update hpbar and hptext
             hpText.text = Storage.hp + " / 2000 HP";
             hpBar.Refresh();
+
+            // set life display
+            for (int i = 0; i < Storage.lives; i++)
+            {
+                Instantiate(lifePrefab.transform, lifeContainer.transform);
+            }
 
             // update text
             if (Storage.level != null) matchText.text = "-= Match " + (Storage.level.GetBehindCount() + 1) + " =-";
