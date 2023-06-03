@@ -30,6 +30,14 @@ namespace SoloMode
 
         void Start()
         {
+            // hide debug cards if not debugging
+            if (Storage.level != null)
+            {
+                transform.GetChild(0).gameObject.SetActive(false);
+                transform.GetChild(1).gameObject.SetActive(false);
+                transform.GetChild(2).gameObject.SetActive(false);
+            }
+            
             // if first match, keep hp (determined by previous level) within bounds
             if (Storage.level != null && Storage.level.GetBehindCount() == 0)
             {
