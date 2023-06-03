@@ -18,6 +18,10 @@ namespace SoloMode
         // text at the top of the screen
         [SerializeField] private TextMeshProUGUI matchText; 
 
+        // hp bar and text used to show hp between stages 
+        [SerializeField] private Battle.Board.HealthBar hpBar;
+        [SerializeField] private TextMeshProUGUI hpText;
+
 
         void Start()
         {
@@ -34,6 +38,10 @@ namespace SoloMode
             // auto select middle card.
             // 3 test cards can be hidden / unhidden from scene for testing. if the scene is not being tested, add 3 to skip those cards in children order.
             EventSystem.current.SetSelectedGameObject(transform.GetChild(1 + (Storage.nextLevelChoices != null ? 3 : 0) ).gameObject);
+
+            // update hpbar and hptext
+            hpText.text = Storage.hp + " / 2000 HP";
+            hpBar.Refresh();
 
             // update text
             if (Storage.level != null) matchText.text = "-= Match " + (Storage.level.GetBehindCount() + 1) + " =-";
