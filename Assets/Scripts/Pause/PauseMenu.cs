@@ -49,6 +49,11 @@ namespace Pause {
                 buttonsTransform.Find("RetryButton").GetChild(0).GetComponent<TextMeshProUGUI>()
                     .text = "Restart";
             }
+
+            if (Storage.level.generateNextLevel && Storage.level.lastSeriesLevel != null)
+            {
+                buttonsTransform.Find("RetryButton").gameObject.SetActive(false);
+            }
         }
 
         public void TogglePause()
