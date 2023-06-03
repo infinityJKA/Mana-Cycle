@@ -26,6 +26,8 @@ namespace SoloMode
         [SerializeField] GameObject lifeContainer;
         [SerializeField] GameObject lifePrefab;
 
+        [SerializeField] TransitionScript transitionHandler;
+
         void Start()
         {
             // if first match, keep hp (determined by previous level) within bounds
@@ -68,6 +70,11 @@ namespace SoloMode
             {
                 EventSystem.current.currentSelectedGameObject.GetComponent<Button>().onClick.Invoke();
             }
+        }
+
+        public void SelectQuit()
+        {
+            transitionHandler.WipeToScene("SoloMenu", reverse: true);
         }
     }
 }
