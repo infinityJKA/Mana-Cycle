@@ -17,6 +17,8 @@ public class Storage
     public static int lives = 3;
     // in arcade mode- persist HP between matches
     public static int hp;
+    // maxhp in arcade endless, could be changed by items in the future
+    public static int maxHp = 2000;
 
     /** level that the player selected */
     public static SoloMode.Level level;

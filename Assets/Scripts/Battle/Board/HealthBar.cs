@@ -34,9 +34,13 @@ namespace Battle.Board {
         // The number displaying the shield hp amount
         public TMPro.TextMeshProUGUI shieldNumText;
 
+        // enable/disable for actual game functionality
+        [SerializeField] private bool displayOnly = false;
+
         // Start is called before the first frame update
         void Start()
         {   
+            if (displayOnly) return;
             incDmgBarList = new List<GameObject>();
 
             foreach (IncomingDamage incoming in damageQueue)
@@ -92,8 +96,12 @@ namespace Battle.Board {
 
         public void Refresh()
         {
-            hpNum.SetHealth(board.hp);
-            hpImage.fillAmount = 1f * board.hp / board.maxHp;
+            if (hpNum != null) hpNum.SetHealth(board.hp);
+            // if no board setup, use storage.cs hp value
+            if (this.board != null) hpImage.fillAmount = 1f * board.hp / board.maxHp;
+            else hpImage.fillAmount = 1f * Storage.hp / Storage.maxHp;
+
+            if (displayOnly) return;
 
             // set inc damage bar amounts
             for (int i = 0; i < incDmgBarList.Count; i++)
