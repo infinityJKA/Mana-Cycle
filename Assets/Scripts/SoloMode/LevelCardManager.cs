@@ -25,6 +25,12 @@ namespace SoloMode
 
         void Start()
         {
+            // if first match, keep hp (determined by previous level) within bounds
+            if (Storage.level.GetBehindCount() == 0)
+            {
+                Storage.hp = Mathf.Clamp(Storage.hp, 100, 2000);
+            }
+
             if (Storage.nextLevelChoices != null)
             {
                 foreach (Level level in Storage.nextLevelChoices)
