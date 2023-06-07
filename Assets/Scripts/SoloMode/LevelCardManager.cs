@@ -22,6 +22,8 @@ namespace SoloMode
         [SerializeField] private Battle.Board.HealthBar hpBar;
         [SerializeField] private TextMeshProUGUI hpText;
 
+        [SerializeField] private TextMeshProUGUI currencyText;
+
         // life container and prefab to display lives
         [SerializeField] GameObject lifeContainer;
         [SerializeField] GameObject lifePrefab;
@@ -68,7 +70,9 @@ namespace SoloMode
                 Instantiate(lifePrefab.transform, lifeContainer.transform);
             }
 
-            // update text
+            currencyText.text = "" + Storage.arcadeMoneyAmount;
+
+            // update title text
             if (Storage.level != null) matchText.text = "-= Match " + (Storage.level.GetBehindCount() + 1) + " =-";
         }
 

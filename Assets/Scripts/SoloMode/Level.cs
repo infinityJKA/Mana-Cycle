@@ -70,6 +70,8 @@ namespace SoloMode {
 
         // whether or not clearing this level will generate levels and take you to the arcade endless selection screen
         public bool generateNextLevel = false;
+        // reward amount to give in arcade endless
+        [NonSerialized] public int rewardAmount = 0;
 
         // dictates AIController values. 1 is hardest, 0 is worst
         [Range(0,1)]
@@ -164,6 +166,12 @@ namespace SoloMode {
 
         public bool IsEndless() {
             return time == -1 && scoreGoal == 0;
+        }
+
+        public void CalculateRewardAmount()
+        {
+            // to be balanced
+            rewardAmount = (int) (aiDifficulty / time * 100000);
         }
     }
 
