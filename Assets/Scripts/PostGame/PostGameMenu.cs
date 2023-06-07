@@ -150,7 +150,7 @@ namespace PostGame {
                         arcadeInfoText.text = String.Format("{0} more to go\nnext up: {1}", Storage.level.GetAheadCount(), Storage.level.nextSeriesLevel.levelName);
                     }
 
-                    // arcade endless
+                    // arcade endless level won
                     if (Storage.level.generateNextLevel && cleared)
                     {
                         Debug.Log("Curious");
@@ -170,6 +170,9 @@ namespace PostGame {
                             battler: Storage.level.battler,
                             lastLevel: Storage.level));
                         }
+
+                        // add reward of level to total
+                        Storage.arcadeMoneyAmount += Storage.level.rewardAmount;
                     }
                 }
 

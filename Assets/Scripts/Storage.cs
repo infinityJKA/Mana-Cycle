@@ -19,6 +19,8 @@ public class Storage
     public static int hp;
     // maxhp in arcade endless, could be changed by items in the future
     public static int maxHp = 2000;
+    // currency amount in arcade endless
+    public static int arcadeMoneyAmount = 0;
 
     /** level that the player selected */
     public static SoloMode.Level level;

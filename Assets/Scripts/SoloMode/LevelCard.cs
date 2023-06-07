@@ -16,6 +16,7 @@ namespace SoloMode
         [SerializeField] TextMeshProUGUI timeText;
         [SerializeField] TextMeshProUGUI nameText;
         [SerializeField] TextMeshProUGUI descriptionText;
+        [SerializeField] TextMeshProUGUI rewardText;
 
         TransitionScript transitionHandler;
 
@@ -30,6 +31,7 @@ namespace SoloMode
             timeText.text = "Time: " + Utils.FormatTime(level.time);
             nameText.text = level.levelName;
             descriptionText.text = level.description;
+            rewardText.text = "+" + level.rewardAmount;
         }
 
         public void LoadLevel()

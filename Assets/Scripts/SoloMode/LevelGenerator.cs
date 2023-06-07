@@ -48,13 +48,13 @@ namespace SoloMode
                 newLevel.aiDifficulty = difficulty;
                 newLevel.levelName = "Vs. " + newLevel.opponent.displayName;
                 newLevel.description = "Fight a Level " + ((int) (newLevel.aiDifficulty*10f)) + " " + newLevel.opponent.displayName + "!";
+                newLevel.CalculateRewardAmount();
             }
             // generate a solo level with objectives
             else if (SoloLevelsEnabled)
             {
                 // not implemented yet
             }
-
 
 
             return newLevel;
