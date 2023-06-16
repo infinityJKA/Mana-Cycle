@@ -124,10 +124,10 @@ namespace Battle.Board {
 
         /** Dimensions of the board */
         public static readonly int width = 8;
-        public static readonly int height = 18;
+        public static readonly int height = 20;
         // Visual size of the board; excludes top buffer rows incase piece is somehow moved up there; 
         // and starting position is probably there too
-        public static readonly int physicalHeight = 14;
+        public static readonly int physicalHeight = 16;
 
         /** The last time that the current piece fell down a tile. */
         private float previousFallTime;
@@ -245,7 +245,7 @@ namespace Battle.Board {
         // the number in the center of the board when in recovery mode
         [SerializeField] private TMPro.TextMeshProUGUI recoveryText;
 
-        private static readonly float recoveryDelay = 5f;
+        private static readonly float recoveryDelay = 3f;
 
         // MANAGERS
         [SerializeField] public AbilityManager abilityManager;
@@ -493,7 +493,7 @@ namespace Battle.Board {
                     // if there are tiles, damage and reset the timer.
                     // if no tiles, set timer to 0 (not running)
                     if (trashDamage > 0) {
-                        TakeDamage(trashDamage, 0.333f);
+                        TakeDamage(trashDamage, 0.333f, canDamageShield: true);
                         trashDamageTimer = trashDamageTimerDuration;
                     } else {
                         trashDamageTimer = 0;
@@ -510,7 +510,7 @@ namespace Battle.Board {
                 if (instaDropThisFrame && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
                     PlacePiece();
                 } else {
-                    fallTimeMult = quickFall ? 0.1f : 1f;
+                    fallTimeMult = quickFall ? 0.125f : 1f;
 
                     // Get the time that has passed since the previous piece fall.
                     // If it is greater than fall time (or fallTime/10 if holding down),
@@ -825,11 +825,14 @@ namespace Battle.Board {
         private int rowFallCount = 0;
 
         private void PlacePiece() {
+            if (!piece) return;
+            // The piece will only advance the damage cycle when placed if it does not have a special ability
+            bool advanceDamage = piece.effect == Battler.ActiveAbilityEffect.None;
+
             // Place the piece
             PlaceTilesOnBoard();
 
-            // Move self damage cycle
-            DamageCycle();
+            if (advanceDamage) DamageCycle();
 
             RefreshObjectives();
 
@@ -1175,10 +1178,10 @@ namespace Battle.Board {
                 }
 
                 // if no incoming damage/enemy shield was found, send straight to opponent
-                if (enemyBoard.recoveryMode) {
-                    Destroy(shoot.gameObject);
-                    return;
-                }
+                // if (enemyBoard.recoveryMode) {
+                //     Destroy(shoot.gameObject);
+                //    return;
+                // }
                 shoot.target = enemyBoard;
                 shoot.mode = DamageShoot.Mode.Attacking;
                 shoot.destination = enemyBoard.hpBar.DamageQueue[0].transform.position;
@@ -1207,7 +1210,7 @@ namespace Battle.Board {
             hpBar.AdvanceDamageQueue();
         }
 
-        public void TakeDamage(int damage, float intensity) {
+        public void TakeDamage(int damage, float intensity, bool canDamageShield = false) {
             // shake the board and portrait when damaged
             shake.StartShake(intensity);
             portrait.GetComponent<Shake>().StartShake(intensity);
@@ -1217,6 +1220,12 @@ namespace Battle.Board {
             PlaySFX("damageTaken");
 
             // subtract from hp
+            if (canDamageShield)
+            {
+                int damageToShield = Math.Min(damage, shield);
+                shield -= damageToShield;
+                damage -= damageToShield;
+            }
             hp -= damage;
             hpBar.Refresh();
 
@@ -1233,6 +1242,7 @@ namespace Battle.Board {
         public void UpdateShield() {
             hpBar.shieldNumText.text = shield+"";
             hpBar.shieldObject.SetActive( shield > 0 );
+            hpBar.Refresh();
         }
 
         public void SetShield(int shield) {

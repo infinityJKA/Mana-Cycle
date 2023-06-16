@@ -95,10 +95,10 @@ namespace Battle {
                 // default: deal damage to target
                 else {
                     // target is invincible while in recovery mode
-                    if (target.recoveryMode) {
-                        Destroy(this.gameObject); 
-                        return;
-                    }
+                    // if (target.recoveryMode) {
+                    //     Destroy(this.gameObject); 
+                    //     return;
+                    // }
 
                     target.EnqueueDamage(damage);
                     Destroy(this.gameObject);
@@ -107,7 +107,7 @@ namespace Battle {
             }
         }
 
-        void Attack(Battle.Board.GameBoard target) {
+        void Attack(Board.GameBoard target) {
             this.target = target;
 
             if (target.shield > 0) {
