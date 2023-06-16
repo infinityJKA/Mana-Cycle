@@ -9,7 +9,12 @@ public class MoneyDisp : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currencyText.text = "" + Storage.arcadeMoneyAmount;
+        RefreshText();
+    }
+
+    public void RefreshText()
+    {
+        this.currencyText.text = "" + Storage.arcadeMoneyAmount;
     }
 
 }

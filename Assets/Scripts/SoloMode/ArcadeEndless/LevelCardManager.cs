@@ -32,6 +32,8 @@ namespace SoloMode
 
         void Start()
         {
+            if (Storage.level == null) Storage.arcadeInventory = new List<Item>();
+
             // hide debug cards if not debugging
             if (Storage.level != null)
             {
@@ -44,6 +46,9 @@ namespace SoloMode
             if (Storage.level != null && Storage.level.GetBehindCount() == 0)
             {
                 Storage.hp = Mathf.Clamp(Storage.hp, 100, 2000);
+
+                // init player inventory
+                Storage.arcadeInventory = new List<Item>();
             }
 
             if (Storage.nextLevelChoices != null)

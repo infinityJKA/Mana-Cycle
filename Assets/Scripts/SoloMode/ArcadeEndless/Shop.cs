@@ -16,6 +16,8 @@ public class Shop : MonoBehaviour
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private TextMeshProUGUI typeText;
 
+    [SerializeField] List<MoneyDisp> moneyDisplays;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,14 +36,32 @@ public class Shop : MonoBehaviour
 
             // add OnSelect functionality, RefreshInfo function
             EventTrigger eTrigger = newDisp.GetComponent<EventTrigger>();
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = EventTriggerType.Select;
-            entry.callback.AddListener((data) => {RefreshInfo((BaseEventData)data); });
-            eTrigger.triggers.Add(entry);
+            EventTrigger.Entry selectEntry = new EventTrigger.Entry();
+            selectEntry.eventID = EventTriggerType.Select;
+            selectEntry.callback.AddListener((data) => {RefreshInfo((BaseEventData)data); });
+            eTrigger.triggers.Add(selectEntry);
+
+            // add submit functionality
+            EventTrigger.Entry submitEntry = new EventTrigger.Entry();
+            submitEntry.eventID = EventTriggerType.Submit;
+            submitEntry.callback.AddListener((data) => {BuyItem((BaseEventData)data); });
+            eTrigger.triggers.Add(submitEntry);
         }
 
         // set selectOnOpen to first item in shop list
         GetComponent<WindowPannel>().selectOnOpen = (itemDisplayParent.transform.GetChild(0).gameObject);
+    }
+
+    void Update()
+    {
+        // debug
+        if (Application.isEditor && Input.GetKeyDown(KeyCode.F1))
+            {
+                // Debug.Log("a");
+                Storage.arcadeMoneyAmount += 500;
+                refreshAllDisplays();
+                Debug.Log(string.Join(",", Storage.arcadeInventory));
+            }
     }
 
     public void RefreshInfo(BaseEventData data)
@@ -57,5 +77,38 @@ public class Shop : MonoBehaviour
         descriptionText.text = item.description;
         typeText.text = item.UseTypeToString();
 
+    }
+
+    public void BuyItem(BaseEventData data)
+    {
+        GameObject selection = EventSystem.current.currentSelectedGameObject;
+        Item item = selection.GetComponent<ItemDisplay>().item;
+
+        Debug.Log(item.itemName + " purchase attempt");
+
+        if (Storage.arcadeMoneyAmount >= item.cost)
+        {
+            // buy item
+            Debug.Log("purchase win");
+
+            Storage.arcadeMoneyAmount -= item.cost;
+            Storage.arcadeInventory.Add(item);
+            refreshAllDisplays();
+
+        }
+        else
+        {
+            // cant buy item
+            Debug.Log("purchase fail");
+        }
+
+    }
+
+    private void refreshAllDisplays()
+    {
+        foreach (MoneyDisp m in moneyDisplays)
+        {
+            m.RefreshText();
+        }
     }
 }
