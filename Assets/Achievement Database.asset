@@ -85,13 +85,13 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
     requirements: []
-  - displayName: something sinister is occurring...
+  - displayName: something sinister is brewing...
     id: ArcadeWin_zman
     description: Win Arcade Mode as z?man.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
     requirements: []
-  - displayName: 'Unstoppable '
+  - displayName: Mana Sesh
     id: ArcadeWin_zman
     description: Score 10000+ points in Endless Mode.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
@@ -108,6 +108,18 @@ MonoBehaviour:
       value: 10000
       stringValue: Endless_01, Endless_02, Endless_03, Endless D1, Endless D2, Endless
         D3, Endless D4
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+  - displayName: We Love Casting Spells
+    id: Spellcast35
+    description: Spellcast 35 times in one battle.
+    icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    progressStat: 13
+    requirements:
+    - condition: 3
+      value: 35
+      stringValue: 
       boolValue: 0
       statusOverride: 
       inverted: 0

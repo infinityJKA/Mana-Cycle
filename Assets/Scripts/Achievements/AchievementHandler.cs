@@ -97,6 +97,9 @@ namespace Achievements
                 // skip if already unlocked
                 if (achievement.unlocked) continue;
 
+                // If objectives list is empty do not unlcok it - it probably has to be unloced via another script
+                if (achievement.requirements.Count == 0) continue;
+
                 // check all objectives
                 bool objectivesComplete = true;
                 foreach (var objective in achievement.requirements)
