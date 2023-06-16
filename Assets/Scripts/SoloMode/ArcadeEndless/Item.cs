@@ -54,4 +54,15 @@ public class Item : ScriptableObject
         IncreaseMaxHP, // for equipables / perm upgrades
     }
 
+    public string UseTypeToString()
+    {
+        switch (useType)
+        {
+            case UseType.Consume: return "Consumable";
+            case UseType.Equip: return "Equipable"; 
+            case UseType.UseOnObtain: return "Upgrade"; 
+            default: return "-"; 
+        }
+    }
+
 }
