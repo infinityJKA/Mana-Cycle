@@ -31,18 +31,29 @@ public class Shop : MonoBehaviour
             newDisp.item = i;
             newDisp.showCost = true;
             newDisp.windowObject = gameObject;
+
+            // add OnSelect functionality, RefreshInfo function
+            EventTrigger eTrigger = newDisp.GetComponent<EventTrigger>();
+            EventTrigger.Entry entry = new EventTrigger.Entry();
+            entry.eventID = EventTriggerType.Select;
+            entry.callback.AddListener((data) => {RefreshInfo((BaseEventData)data); });
+            eTrigger.triggers.Add(entry);
         }
 
         // set selectOnOpen to first item in shop list
         GetComponent<WindowPannel>().selectOnOpen = (itemDisplayParent.transform.GetChild(0).gameObject);
     }
 
-    public void RefreshInfo(Item item)
+    public void RefreshInfo(BaseEventData data)
     {
+        GameObject selection = EventSystem.current.currentSelectedGameObject;
+        Item item = selection.GetComponent<ItemDisplay>().item;
+        // Debug.Log(data);
+        // Debug.Log(this);
         // set item to first in list if not given
         if (item == null) item = itemDisplayParent.transform.GetChild(0).gameObject.GetComponent<ItemDisplay>().item;
 
-        Debug.Log("is work :)");
+        // Debug.Log("is work :)");
         descriptionText.text = item.description;
         typeText.text = item.UseTypeToString();
 
