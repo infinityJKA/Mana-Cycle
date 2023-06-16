@@ -12,12 +12,6 @@ public class WindowPannel : MonoBehaviour
     // will also re-enable on close
     [SerializeField] private GameObject disableOnOpen;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -40,10 +34,5 @@ public class WindowPannel : MonoBehaviour
         disableOnOpen.SetActive(true);
         EventSystem.current.SetSelectedGameObject(selectOnClose);
     }
-
-    // public void SetOnOpen(GameObject g)
-    // {
-    //     selectOnOpen = g;
-    // }
 
 }
