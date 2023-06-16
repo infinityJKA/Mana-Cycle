@@ -31,6 +31,7 @@ namespace SoloMode
             newLevel.conversation = defaultConvo;
             newLevel.generateNextLevel = true;
             newLevel.lastSeriesLevel = lastLevel;
+            newLevel.levelDifficulty = difficulty;
             // lowest difficutly = 8 minute timer, every .1 increase of difficulty will subtract 30 seconds. 
             newLevel.time = (8 * 60) - ((int) (difficulty*10))*30;
             // also randomly add from 0-2 minutes in 30sec increments
