@@ -71,6 +71,18 @@ namespace Achievements
             achievementNotifyQueue.Enqueue(achievement);
         }
 
+        public void UnlockAchievement(string id)
+        {
+            foreach (Achievement achievement in database.achievements)
+            {
+                if (achievement.id == id)
+                {
+                    UnlockAchievement(achievement);
+                    return;
+                }
+            }
+        }
+
         /// <summary>
         /// To be run after a game is completed.
         /// Check all achievements in the database to see if it has been unlocked

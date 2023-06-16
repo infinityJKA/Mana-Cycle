@@ -1,6 +1,9 @@
 using UnityEngine;
 using Achievements;
 using System.Collections.Generic;
+using System.Collections;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace MainMenu {
     /// <summary>
@@ -8,7 +11,7 @@ namespace MainMenu {
     /// </summary>
     public class AchievementsMenu : MonoBehaviour
     {
-        [SerializeField] private InputScript inputScript;
+        [SerializeField] private List<InputScript> inputScripts;
         [SerializeField] private GameObject settingsWindow;
 
         [SerializeField] public AchievementNotification achievementPrefab;
@@ -17,11 +20,29 @@ namespace MainMenu {
 
         [SerializeField] public Transform contentTransform;
 
+        [SerializeField] public ScrollRect scrollRect;
+
+        [SerializeField] public float scrollSpeed = 1f;
+
         public void Update()
         {
-            if (Input.GetKeyDown(inputScript.Pause))
+            foreach (InputScript inputScript in inputScripts)
             {
-                HideMenu();
+                if (Input.GetKeyDown(inputScript.Pause))
+                {
+                    HideMenu();
+                    return;
+                }
+
+                if (Input.GetKey(inputScript.Down))
+                {
+                    scrollRect.verticalNormalizedPosition -= scrollSpeed * Time.deltaTime;
+                }
+
+                if (Input.GetKey(inputScript.Up))
+                {
+                    scrollRect.verticalNormalizedPosition += scrollSpeed * Time.deltaTime;
+                }
             }
         }
 
@@ -42,12 +63,17 @@ namespace MainMenu {
         {
             foreach (Transform child in contentTransform) Destroy(child.gameObject);
 
-            // sort achievements by unlocked first
-            var achievementList = new List<Achievement>(handler.database.achievements);
-            achievementList.Sort((ach1, ach2) => ach2.unlocked.CompareTo(ach1.unlocked));
-
-            foreach (var achievement in achievementList)
+            // List unlocked achievements first and then locked
+            foreach (var achievement in handler.database.achievements)
             {
+                if (!achievement.unlocked) continue;
+                var newAchv = Instantiate(achievementPrefab, contentTransform);
+                newAchv.ShowAchievement(achievement);
+            }
+
+            foreach (var achievement in handler.database.achievements)
+            {
+                if (achievement.unlocked) continue;
                 var newAchv = Instantiate(achievementPrefab, contentTransform);
                 newAchv.ShowAchievement(achievement);
             }

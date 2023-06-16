@@ -4,6 +4,7 @@ using System;
 using UnityEngine.UI;
 
 using Sound;
+using Achievements;
 
 namespace SoloMode
 {
@@ -16,7 +17,12 @@ namespace SoloMode
         void Start()
         {
             transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
-            if (Storage.level != null) portrait.sprite = Storage.level.battler.sprite;
+            if (Storage.level != null)
+            {
+                portrait.sprite = Storage.level.battler.sprite;
+
+                AchievementHandler.Instance.UnlockAchievement("ArcadeWin_" + Storage.level.battler.name);
+            }
         }
 
         void Update()
