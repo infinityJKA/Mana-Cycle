@@ -51,6 +51,7 @@ public class Item : ScriptableObject
     {
         IncreaseHpPercent, // increase player hp by percent of max hp (yiik reference)
         IncreaseHpFlat, // increase hp by flat amount
+        IncreaseMaxHP, // for equipables / perm upgrades
     }
 
 }

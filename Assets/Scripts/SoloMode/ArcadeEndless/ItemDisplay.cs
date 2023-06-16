@@ -7,7 +7,7 @@ using TMPro;
 public class ItemDisplay : MonoBehaviour
 {
     // the item this display represents
-    [SerializeField] private Item item;
+    [SerializeField] public Item item;
 
     [SerializeField] private Image displayImage;
     [SerializeField] private TextMeshProUGUI nameText;

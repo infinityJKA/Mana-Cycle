@@ -18,7 +18,8 @@ public class Shop : MonoBehaviour
         // add display prefabs for each item in shop inventory
         foreach (Item i in shopItems)
         {
-            Instantiate(itemDisplayPrefab.transform, itemDisplayParent.transform);
+            GameObject newDisp = Instantiate(itemDisplayPrefab.transform, itemDisplayParent.transform).gameObject;
+            newDisp.GetComponent<ItemDisplay>().item = i;
         }
 
         // set selectOnOpen to first item in shop list
@@ -30,5 +31,10 @@ public class Shop : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void UpdateSelected()
+    {
+        Debug.Log("is work :)");
     }
 }
