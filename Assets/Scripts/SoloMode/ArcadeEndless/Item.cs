@@ -51,6 +51,18 @@ public class Item : ScriptableObject
     {
         IncreaseHpPercent, // increase player hp by percent of max hp (yiik reference)
         IncreaseHpFlat, // increase hp by flat amount
+        IncreaseMaxHP, // for equipables / perm upgrades
+    }
+
+    public string UseTypeToString()
+    {
+        switch (useType)
+        {
+            case UseType.Consume: return "Consumable";
+            case UseType.Equip: return "Equipable"; 
+            case UseType.UseOnObtain: return "Upgrade"; 
+            default: return "-"; 
+        }
     }
 
 }
