@@ -43,6 +43,8 @@ namespace SoloMode {
                 case ObjectiveCondition.TopCascade: return board.GetHighestCascade() >= value;
                 case ObjectiveCondition.LevelName: return stringValue.Split(", ").Contains(board.level.name);
                 case ObjectiveCondition.BattlerName: return stringValue.Split(", ").Contains(board.Battler.displayName);
+                case ObjectiveCondition.HighestSingleDamage: return board.highestSingleDamage >= value;
+                case ObjectiveCondition.Lives: return board.lives >= value;
                 default: return false;
             }
         }
@@ -86,6 +88,9 @@ namespace SoloMode {
         LevelName, // level's name must match string value, used in achievements
         BattlerName, // battler name must match, used in achievements
         None, // used for progress stat var value if achievement should not track progress
+
+        HighestSingleDamage,
+        Lives
     }
 
     #if (UNITY_EDITOR)

@@ -196,14 +196,14 @@ namespace Battle.Board {
         private int totalManaCleared;
         /** Total amount of spellcasts this player has performed */
         private int totalSpellcasts;
-        /** Total amount of blobs currently lined up for the current color */
-        private int totalBlobs;
         /** Highest combo scored by the player */
         private int highestCombo;
         /** Highest combo scored by the player */
         private int highestCascade;
         /** Total amount of spellcasts this player has performed from manual key presses */
         private int totalManualSpellcasts;
+        /** Highest single damage spellcast achieved during the battle **/
+        public int highestSingleDamage { get; private set; }
 
 
         // use gameobject for sounds so it can be saved as prefab and shared between boards
@@ -1454,6 +1454,9 @@ namespace Battle.Board {
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.
                         int damage = (int)( (totalPointMult * damagePerMana) * (1 + (chain-1)*0.5f) * (Math.Pow(3,cascade) / 3f));
+
+                        highestSingleDamage = Math.Max(highestSingleDamage, damage);
+
                         // Send the damage over. Will counter incoming damage first.
                         DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
 
