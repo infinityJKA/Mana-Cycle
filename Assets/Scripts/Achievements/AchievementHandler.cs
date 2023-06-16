@@ -34,22 +34,24 @@ namespace Achievements
         /// </summary>
         public AchievementNotification notification;
 
-        public void ShowNotification(int index)
-        {
-            Achievement achievement = database.achievements[index];
-            notification.ShowAchievement(achievement);
-        }
-
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.U))
             {
-                ShowNotification(1);
+                UnlockAchievement(database.achievements[1]);
             }
             if (Input.GetKeyDown(KeyCode.I))
             {
-                ShowNotification(2);
+                UnlockAchievement(database.achievements[2]);
             }
+        }
+
+        public void UnlockAchievement(Achievement achievement)
+        {
+            if (achievement.unlocked) return;
+            achievement.Unlock();
+            Debug.Log("Unlocked " + achievement.id + ": " + achievement.displayName);
+            notification.ShowAchievement(achievement);
         }
     }
 }
