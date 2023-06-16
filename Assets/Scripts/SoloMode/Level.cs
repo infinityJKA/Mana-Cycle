@@ -10,7 +10,7 @@ using ConvoSystem;
 using Battle;
 
 namespace SoloMode {
-    [CreateAssetMenu(fileName = "Level", menuName = "ManaCycle/Levels")]
+    [CreateAssetMenu(fileName = "Level", menuName = "ManaCycle/Level")]
     public class Level : ScriptableObject {
         [SerializeField] public string levelName = "Level";
         [SerializeField] public string description = "One of the levels of time";
