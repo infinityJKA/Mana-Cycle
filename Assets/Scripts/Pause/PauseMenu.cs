@@ -50,7 +50,7 @@ namespace Pause {
                     .text = "Restart";
             }
 
-            if (Storage.level.generateNextLevel && Storage.level.lastSeriesLevel != null)
+            if (Storage.level && Storage.level.generateNextLevel && Storage.level.lastSeriesLevel != null)
             {
                 buttonsTransform.Find("RetryButton").gameObject.SetActive(false);
             }
