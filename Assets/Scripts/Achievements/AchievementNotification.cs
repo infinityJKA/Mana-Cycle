@@ -17,7 +17,7 @@ namespace Achievements
         /// This field will not be used if this is in the Achievements menu; only for notifications
         /// if in achievements menu this will be null, SHowAchievement will ignore animation if animator not present
         /// </summary>
-        [SerializeField] private Animator animator;
+        [SerializeField] public Animator animator;
 
         private void Awake()
         {

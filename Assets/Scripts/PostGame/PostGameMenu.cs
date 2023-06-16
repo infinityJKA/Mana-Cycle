@@ -10,6 +10,7 @@ using Random=UnityEngine.Random;
 using Battle.Board;
 using Sound;
 using SoloMode;
+using Achievements;
 
 namespace PostGame {
     public class PostGameMenu : MonoBehaviour
@@ -210,6 +211,11 @@ namespace PostGame {
 
                 // rematchTextGUI.text = "Rematch";
             }
+
+            // update achievements
+            AchievementHandler achievementHandler = FindAnyObjectByType<AchievementHandler>();
+            achievementHandler.CheckAchievements(board);
+            if (Storage.gamemode == Storage.GameMode.Versus) achievementHandler.CheckAchievements(board.enemyBoard);
 
             if (!board.Mobile) {
                 EventSystem.current.SetSelectedGameObject(null);
