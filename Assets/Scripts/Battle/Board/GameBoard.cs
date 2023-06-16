@@ -124,10 +124,10 @@ namespace Battle.Board {
 
         /** Dimensions of the board */
         public static readonly int width = 8;
-        public static readonly int height = 18;
+        public static readonly int height = 20;
         // Visual size of the board; excludes top buffer rows incase piece is somehow moved up there; 
         // and starting position is probably there too
-        public static readonly int physicalHeight = 14;
+        public static readonly int physicalHeight = 16;
 
         /** The last time that the current piece fell down a tile. */
         private float previousFallTime;
@@ -510,7 +510,7 @@ namespace Battle.Board {
                 if (instaDropThisFrame && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
                     PlacePiece();
                 } else {
-                    fallTimeMult = quickFall ? 0.1f : 1f;
+                    fallTimeMult = quickFall ? 0.125f : 1f;
 
                     // Get the time that has passed since the previous piece fall.
                     // If it is greater than fall time (or fallTime/10 if holding down),
