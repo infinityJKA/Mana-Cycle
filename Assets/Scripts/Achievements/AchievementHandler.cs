@@ -18,5 +18,7 @@ namespace Achievements
                 Destroy(gameObject);
             }
         }
+
+        public List<Achievement> achievements;
     }
 }

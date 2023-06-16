@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Linq;
 #if (UNITY_EDITOR)
 using UnityEditor;
 #endif
@@ -14,8 +15,8 @@ namespace SoloMode {
 
         /** Value, depends on the condition */
         public int value;
-        /** String value, used by level name / battler name objectives **/
-        public string stringValue;
+        /** String value, can contain comma seperatesd lists, used by level name / battler name objectives **/
+        public string stringValue = "Item1, Item2";
         /** Bool value, used by defeated/won objective **/
         public bool boolValue = true;
 
@@ -40,8 +41,8 @@ namespace SoloMode {
                 case ObjectiveCondition.Defeated: return !board.IsDefeated() ^ boolValue;
                 case ObjectiveCondition.Won: return !board.WonAndNotCasting() ^ boolValue;
                 case ObjectiveCondition.TopCascade: return board.GetHighestCascade() >= value;
-                case ObjectiveCondition.LevelName: return board.level.levelName == stringValue;
-                case ObjectiveCondition.BattlerName: return board.Battler.name == stringValue;
+                case ObjectiveCondition.LevelName: return stringValue.Split(", ").Contains(board.level.levelName);
+                case ObjectiveCondition.BattlerName: return stringValue.Split(", ").Contains(board.Battler.displayName);
                 default: return false;
             }
         }
