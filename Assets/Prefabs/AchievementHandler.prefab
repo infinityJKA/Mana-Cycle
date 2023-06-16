@@ -45,8 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8ada0aa10bdce54baaf00cbf2203f4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  achievements:
-  - {fileID: 11400000, guid: 8c361dd01388e1e409a251ac8e6bcc61, type: 2}
+  database: {fileID: 11400000, guid: 680d4fa8a928db344a7ac1a58f6b09a0, type: 2}
+  achievementNotifyQueue: []
+  notification: {fileID: 1478631271423434284}
 --- !u!1 &4664746320570215922
 GameObject:
   m_ObjectHideFlags: 0
@@ -256,3 +257,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5463043200756337008, guid: a57d8728a0593c34ab4a3a3e9aead91f, type: 3}
   m_PrefabInstance: {fileID: 5414209339930325207}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1478631271423434284 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6892202858970377979, guid: a57d8728a0593c34ab4a3a3e9aead91f, type: 3}
+  m_PrefabInstance: {fileID: 5414209339930325207}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ec9e41fbccdb4d4b8b2fb100dd6cb1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
