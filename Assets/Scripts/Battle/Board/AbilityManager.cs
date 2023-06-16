@@ -49,8 +49,9 @@ namespace Battle.Board {
             if (!enabled || !board || !board.Battler) return;
             // set height based on mana required for battler - 7px per mana
             manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, board.Battler.activeAbilityMana*7f);
-            // For now, all battlers start with ability ready
-            mana = board.Battler.activeAbilityMana;
+
+            mana = board.Battler.startAtFullMana ? board.Battler.activeAbilityMana : 0;
+
             RefreshManaBar();
         }
 

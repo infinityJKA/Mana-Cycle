@@ -114,7 +114,7 @@ namespace Battle.Board {
 
         /// Amount of shield this battler has. As of rn Pyro is the only character to gain shield
         public int shield {get; private set;} = 0;
-        public int maxShield {get; private set;} = 300;
+        public int maxShield { get { return 300 + 50 * cycleLevel; } }
 
         /** Stores the ManaCycle in this scene. (on start) */
         public ManaCycle cycle { get; private set; }
