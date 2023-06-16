@@ -31,27 +31,28 @@ public class ItemDisplay : MonoBehaviour
 
         if (!showCost) costDisplayObject.SetActive(false);
 
+        // MOVED TO SHOP.CS
         // assigns the OnItemSelect function to when this gameobject's button component is selected
-        EventTrigger eTrigger = GetComponent<EventTrigger>();
-        EventTrigger.Entry entry = new EventTrigger.Entry();
-        entry.eventID = EventTriggerType.Select;
-        entry.callback.AddListener((data) => {OnItemSelect((BaseEventData)data); });
-        eTrigger.triggers.Add(entry);
+        // EventTrigger eTrigger = GetComponent<EventTrigger>();
+        // EventTrigger.Entry entry = new EventTrigger.Entry();
+        // entry.eventID = EventTriggerType.Select;
+        // entry.callback.AddListener((data) => {OnItemSelect((BaseEventData)data); });
+        // eTrigger.triggers.Add(entry);
     }
 
     // when the item is hovered in the menu, not when it is pressed
-    public void OnItemSelect(BaseEventData data)
-    {
-        // i feel like theres probably a better way to implement something like this but i cant think of it atm
-        if (windowObject.GetComponent<Shop>() != null)
-        {
-            windowObject.GetComponent<Shop>().RefreshInfo(item);
-        }
-        // else if (windowObject.GetComponent<Inventory>() != null)
-        // {
-        //     windowObject.GetComponent<Inventory>().RefreshInfo();
-        // }
+    // public void OnItemSelect(BaseEventData data)
+    // {
+    //     // i feel like theres probably a better way to implement something like this but i cant think of it atm
+    //     if (windowObject.GetComponent<Shop>() != null)
+    //     {
+    //         windowObject.GetComponent<Shop>().RefreshInfo(item);
+    //     }
+    //     // else if (windowObject.GetComponent<Inventory>() != null)
+    //     // {
+    //     //     windowObject.GetComponent<Inventory>().RefreshInfo();
+    //     // }
 
-    }
+    // }
 
 }
