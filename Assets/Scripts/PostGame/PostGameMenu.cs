@@ -164,12 +164,15 @@ namespace PostGame {
 
                         // setup next level list for arcade endless scene
                         Storage.nextLevelChoices = new List<Level>();
+                        // add 3 levels with difficutly based on current match in AE. add between 0-0.1 to difficulty for variety
                         for (int i = 0; i < 3; i++)
                         {
-                            Storage.nextLevelChoices.Add(levelGenerator.Generate(difficulty: Storage.level.aiDifficulty + Random.Range(0.01f,0.05f), 
+                            Storage.nextLevelChoices.Add(levelGenerator.Generate(
+                            difficulty: ((Storage.level.GetBehindCount() + 1) * 0.05f) + (i * 0.05f) + 0.05f,
                             battler: Storage.level.battler,
                             lastLevel: Storage.level));
                         }
+                        Utils.Shuffle(Storage.nextLevelChoices);
 
                         // add reward of level to total
                         Storage.arcadeMoneyAmount += Storage.level.rewardAmount;
