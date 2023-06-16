@@ -174,7 +174,7 @@ namespace SoloMode {
         public void CalculateRewardAmount()
         {
             // to be balanced
-            rewardAmount = (int) (aiDifficulty / time * 100000);
+            rewardAmount = (int) (aiDifficulty / time * 150000);
         }
     }
 
