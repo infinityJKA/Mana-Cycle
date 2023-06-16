@@ -37,6 +37,9 @@ namespace Battle {
             GoldMine,
             ZBlind
         }
+
+        /// <summary>If true, this battler will start at full mana</summary>
+        public bool startAtFullMana;
             
         /// <summary>Name of this character's active ability</summary>
         [SerializeField] public String activeAbilityName;
