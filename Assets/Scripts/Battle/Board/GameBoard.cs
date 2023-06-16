@@ -466,10 +466,12 @@ namespace Battle.Board {
                 }
             }
 
-            // debug thing
-            if (Application.isEditor && Input.GetKey(KeyCode.F1) && playerSide == 0)
+            // debug things
+            if (Application.isEditor)
             {
-                enemyBoard.TakeDamage(100);
+                if (Input.GetKey(KeyCode.F1) && playerSide == 0) enemyBoard.TakeDamage(100);
+                if (Input.GetKey(KeyCode.F2) && playerSide == 0) abilityManager.GainMana(100);
+                if (Input.GetKeyDown(KeyCode.F3) && playerSide == 1) DealDamage(50, Vector3.zero, 0, 1);
             }
 
             // TRASH DAMAGE TIMER
