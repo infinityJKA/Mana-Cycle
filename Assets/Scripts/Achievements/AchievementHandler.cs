@@ -35,10 +35,14 @@ namespace Achievements
         /// </summary>
         private Queue<Achievement> achievementNotifyQueue = new Queue<Achievement>();
 
+
         private void Update()
         {
-            // If achievement animation is done and returned to default state, show the next achievement if there is one
-            if (achievementNotifyQueue.Count > 0 && !notification.animator.GetCurrentAnimatorStateInfo(0).IsName("AchievementNotificationAppear"))
+            // If achievement animation is done and returned to default state, show the next achievement in the queue if there is one
+            // do not advance queue while transition is happening
+            if (achievementNotifyQueue.Count > 0 
+                && !notification.animator.GetCurrentAnimatorStateInfo(0).IsName("AchievementNotificationAppear")
+                && TransitionScript.transitionState == "none")
             {
                 notification.ShowAchievement(achievementNotifyQueue.Dequeue());
             }
@@ -63,15 +67,8 @@ namespace Achievements
             if (achievement.unlocked) return;
             achievement.Unlock();
             Debug.Log("Unlocked " + achievement.id + ": " + achievement.displayName);
-            
-            // If animating right now, add to the queue to animate later. If not animting, show notification now
-            if (notification.animator.GetCurrentAnimatorStateInfo(0).IsName("AchievementNotificationAppear"))
-            {
-                achievementNotifyQueue.Enqueue(achievement);
-            } else
-            {
-                notification.ShowAchievement(achievement);
-            }
+
+            achievementNotifyQueue.Enqueue(achievement);
         }
 
         /// <summary>

@@ -212,7 +212,6 @@ namespace PostGame {
                 // rematchTextGUI.text = "Rematch";
             }
 
-            // update achievements
             AchievementHandler achievementHandler = FindAnyObjectByType<AchievementHandler>();
             achievementHandler.CheckAchievements(board);
             if (Storage.gamemode == Storage.GameMode.Versus) achievementHandler.CheckAchievements(board.enemyBoard);
