@@ -30,15 +30,19 @@ namespace Achievements
             titleLabel.text = achievement.displayName;
             iconImage.sprite = achievement.icon;
 
-            // TODO: implement achievement locked/unlocked system.
-            if (achievement.displayName != "Let Me Be Clear")
+            // If this is a not a notification and is in the achievmeents list having a bkgd, change icon and bgkd color if not unlocked
+            if (backgroundImage)
             {
-                backgroundImage.color = unlockedBgColor;
-                iconImage.color = unlockedIconColor;
-            } else
-            {
-                backgroundImage.color = lockedBgColor;
-                iconImage.color = lockedIconColor;
+                if (achievement.unlocked)
+                {
+                    backgroundImage.color = unlockedBgColor;
+                    iconImage.color = unlockedIconColor;
+                }
+                else
+                {
+                    backgroundImage.color = lockedBgColor;
+                    iconImage.color = lockedIconColor;
+                }
             }
 
             if (descLabel) descLabel.text = achievement.description;

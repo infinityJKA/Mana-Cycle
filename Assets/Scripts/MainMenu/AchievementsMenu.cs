@@ -1,12 +1,6 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-using System.Linq;
-using UnityEngine.EventSystems;
 using Achievements;
-
-#if (UNITY_EDITOR)
-using UnityEditor;
-#endif
+using System.Collections.Generic;
 
 namespace MainMenu {
     /// <summary>
@@ -23,11 +17,6 @@ namespace MainMenu {
 
         [SerializeField] public Transform contentTransform;
 
-        public void Start()
-        {
-            GenerateAchivementList();
-        }
-
         public void Update()
         {
             if (Input.GetKeyDown(inputScript.Pause))
@@ -40,6 +29,7 @@ namespace MainMenu {
         {
             settingsWindow.SetActive(false);
             gameObject.SetActive(true);
+            LoadAchievementsTable();
         }
 
         public void HideMenu()
@@ -48,11 +38,15 @@ namespace MainMenu {
             settingsWindow.SetActive(true);
         }
 
-        public void GenerateAchivementList()
+        public void LoadAchievementsTable()
         {
             foreach (Transform child in contentTransform) Destroy(child.gameObject);
 
-            foreach (var achievement in handler.database.achievements)
+            // sort achievements by unlocked first
+            var achievementList = new List<Achievement>(handler.database.achievements);
+            achievementList.Sort((ach1, ach2) => ach2.unlocked.CompareTo(ach1.unlocked));
+
+            foreach (var achievement in achievementList)
             {
                 var newAchv = Instantiate(achievementPrefab, contentTransform);
                 newAchv.ShowAchievement(achievement);

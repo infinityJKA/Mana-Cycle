@@ -7,6 +7,8 @@ using UnityEngine;
 // #endif
 
 using SoloMode;
+using UnityEngine.SocialPlatforms.Impl;
+using System.Globalization;
 
 namespace Achievements {
     [System.Serializable]
@@ -16,6 +18,11 @@ namespace Achievements {
         /// Name that is shown to the user in the achievments list.
         /// </summary>
         public string displayName;
+
+        /// <summary>
+        /// Internal ID used to track the progress of this achievement
+        /// </summary>
+        public string id;
 
         /// <summary>
         /// Single sentence or longer description describing this achievement's requirements.
@@ -36,5 +43,21 @@ namespace Achievements {
         /// All requirements that must pass as true to earn this achievement
         /// </summary>
         public List<Objective> requirements;
+
+        /// <summary>
+        /// Returns true if this achievement is shown as unlcoked from the PlayerPrefs.
+        /// </summary>
+        public bool unlocked 
+        { 
+            get 
+            { 
+                return PlayerPrefs.GetInt("ACH_" + id, 0) == 1;
+            }
+        }
+
+        public void Unlock()
+        {
+            PlayerPrefs.SetInt("ACH_" + id, 1);
+        }
     }
 }
