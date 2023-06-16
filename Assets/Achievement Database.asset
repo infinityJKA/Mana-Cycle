@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ab58baf7f9b4b14f976fa541a6bca64, type: 3}
+  m_Name: Achievement Database
+  m_EditorClassIdentifier: 
+  achievements:
+  - displayName: Learning
+    description: Clear level 1.
+    icon: {fileID: 0}
+    progressStat: 13
+    requirements:
+    - condition: 11
+      value: 0
+      stringValue: Level1
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+    - condition: 10
+      value: 0
+      stringValue: 
+      boolValue: 1
+      statusOverride: 
+      inverted: 0
+  - displayName: Betrayed
+    description: Clear level 13.
+    icon: {fileID: 0}
+    progressStat: 13
+    requirements:
+    - condition: 11
+      value: 0
+      stringValue: Level13
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+    - condition: 10
+      value: 0
+      stringValue: 
+      boolValue: 1
+      statusOverride: 
+      inverted: 0
+  - displayName: Let Me Be Clear
+    description: Clear 50 mana in one game.
+    icon: {fileID: 0}
+    progressStat: 2
+    requirements:
+    - condition: 2
+      value: 50
+      stringValue: 
+      boolValue: 1
+      statusOverride: 
+      inverted: 0
