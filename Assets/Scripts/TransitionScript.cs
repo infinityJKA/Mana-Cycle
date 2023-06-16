@@ -9,7 +9,7 @@ public class TransitionScript : MonoBehaviour
 {
     [SerializeField] private GameObject wipeObj;
     [SerializeField] private Image wipeImg;
-    private static string transitionState = "none";
+    public static string transitionState { get; private set; } = "none";
     private static float inTime;
     private static float outTime;
     private static float timePassed;
@@ -47,6 +47,10 @@ public class TransitionScript : MonoBehaviour
         else if (transitionState == "out")
         {
             wipeImg.fillAmount = Mathf.Pow(timePassed  / outTime, 2) * -1 + 1;
+            if (wipeImg.fillAmount <= 0)
+            {
+                transitionState = "none";
+            }
         }
         
 
