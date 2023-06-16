@@ -35,6 +35,11 @@ public class Item : ScriptableObject
     /// </summary>
     public float effectValue;
 
+    /// <summary>
+    /// cost to purchase in shop
+    /// </summary>
+    public int cost;
+
     public enum UseType
     {
         Consume, // lost when used, like a health potion
