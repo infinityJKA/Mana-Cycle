@@ -1402,8 +1402,8 @@ namespace Battle.Board {
                     while (totalBlobMana > 0) {
                         // If this is cascading off the same color more than once, short delay between
                         if (cascade > 0) {
-                            GlowBlobs(0.5f);
-                            yield return new WaitForSeconds(0.5f);
+                            GlowBlobs(0.6f);
+                            yield return new WaitForSeconds(0.6f);
 
                             if (defeated)
 
