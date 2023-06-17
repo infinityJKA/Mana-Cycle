@@ -21,20 +21,17 @@ public class Inventory : MonoBehaviour
 
     [SerializeField] private GameObject descriptionObject;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     void OnEnable()
     {
-        RefreshItemList();
+        BuildItemList();
         RefreshInfo();
     }
 
-    private void RefreshItemList()
+    private void BuildItemList()
     {
+        GameObject selection = EventSystem.current.currentSelectedGameObject;
+        int selectionIndex = selection.transform.GetSiblingIndex(); 
+
         // destroy old item prefabs
         foreach (Transform t in itemDisplayParent.transform)
         {
@@ -66,6 +63,21 @@ public class Inventory : MonoBehaviour
             submitEntry.eventID = EventTriggerType.Submit;
             submitEntry.callback.AddListener((data) => {SelectItem((BaseEventData)data); });
             eTrigger.triggers.Add(submitEntry);
+        }
+
+        // we've reset all item display prefabs, so we need to set selection again. use sibling index to keep selection in the same place
+        Debug.Log("child at index " + selectionIndex + " is " + itemDisplayParent.transform.GetChild(selectionIndex).gameObject);
+        EventSystem.current.SetSelectedGameObject(null);
+        StartCoroutine(SetSelectedItem(selectionIndex));
+    }
+
+    private void RefreshItemList()
+    {
+        foreach (Transform t in itemDisplayParent.transform)
+        {
+            ItemDisplay disp = t.gameObject.GetComponent<ItemDisplay>();
+            disp.Refresh();
+            if (Storage.arcadeInventory[disp.item] <= 0) BuildItemList();
         }
     }
 
@@ -127,10 +139,6 @@ public class Inventory : MonoBehaviour
         RefreshItemList();
         RefreshInfo();
 
-        // we've reset all item display prefabs, so we need to set selection again. use sibling index to keep selection in the same place
-        Debug.Log("child at index " + selectionIndex + " is " + itemDisplayParent.transform.GetChild(selectionIndex).gameObject);
-        EventSystem.current.SetSelectedGameObject(null);
-        StartCoroutine(SetSelectedItem(selectionIndex));
     }
 
     private IEnumerator SetSelectedItem(int i)
