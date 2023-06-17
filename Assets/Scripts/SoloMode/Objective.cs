@@ -34,7 +34,7 @@ namespace SoloMode {
                 case ObjectiveCondition.PointTotal: return board.hp >= value;
                 case ObjectiveCondition.ManaClearedTotal: return board.GetTotalManaCleared() >= value;
                 case ObjectiveCondition.SpellcastTotal: return board.GetTotalSpellcasts() >= value;
-                case ObjectiveCondition.ManualSpellcastTotal: return board.GetManualSpellcasts() >= value;
+                case ObjectiveCondition.ManualSpellcastTotal: return board.GetManualSpellcasts() >= value && !board.IsCasting(); // wait for spellcast to end to apply incremented count completion
                 case ObjectiveCondition.TopCombo: return board.GetHighestCombo() >= value;
                 case ObjectiveCondition.BlobCount: return board.GetBlobCount() >= value;
                 case ObjectiveCondition.Survive: return !(board.timer.TimeUp() || board.IsWinner()) ^ boolValue;
@@ -64,7 +64,7 @@ namespace SoloMode {
             }
             else {
                 switch (condition) {
-                    case ObjectiveCondition.ManualSpellcastTotal: return "Spellcast only " + board.GetManualSpellcasts()+"/"+(value-1) + (value <= 2 ? " time" : "times");
+                    case ObjectiveCondition.ManualSpellcastTotal: return "Spellcast only " + board.GetManualSpellcasts()+"/"+value + (value == 1 ? " time" : "times");
                     default: return "evil objective gang";
                 }
             }
