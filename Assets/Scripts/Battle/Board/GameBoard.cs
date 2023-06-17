@@ -1465,7 +1465,7 @@ namespace Battle.Board {
 
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.
-                        int damage = (int)( (totalPointMult * damagePerMana) * (1 + (chain-1)*0.5f) * (Math.Pow(3,cascade) / 3f));
+                        int damage = (int)( (totalPointMult * damagePerMana) * chain * (Math.Pow(3,cascade) / 3f));
 
                         highestSingleDamage = Math.Max(highestSingleDamage, damage);
 

@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: z4
   m_EditorClassIdentifier: 
   levelName: z-4
-  description: In 50 seconds with increased drop speed, score a 5 cascade!
+  description: In 60 seconds with increased drop speed, score a 5 cascade!
   conversation: {fileID: 11400000, guid: bcc7eb7d6da2ff64480e10b9e00a3b46, type: 2}
   midLevelConversations: []
-  time: 50
+  time: 60
   scoreGoal: 0
   lives: 1
   cycleLength: 7
@@ -29,7 +29,7 @@ MonoBehaviour:
   objectives:
   - condition: 6
     value: 5
-    stringValue: Item1, Item2
+    stringValue: asadasdasd
     boolValue: 1
     statusOverride: 
     inverted: 0
@@ -37,7 +37,7 @@ MonoBehaviour:
   nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
-  opponent: {fileID: 0}
+  opponent: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
   generateNextLevel: 0
   aiDifficulty: 1
   levelDifficulty: 0
