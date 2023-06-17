@@ -50,75 +50,55 @@ MonoBehaviour:
       statusOverride: 
       inverted: 0
   - displayName: Undefeatable, probably
-    id: ArcadeWin_Infinity
+    id: ArcadeWinInfinity
     description: Win Arcade Mode as Infinity.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
     requirements: []
   - displayName: Uncapturable, probably
-    id: ArcadeWin_Aqua
+    id: ArcadeWinAqua
     description: Win Arcade Mode as Aqua.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
     requirements: []
   - displayName: Pyromania
-    id: ArcadeWin_Pyro
+    id: ArcadeWinPyro
     description: Win Arcade Mode as Pyro.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
     requirements: []
   - displayName: Mind Games
-    id: ArcadeWin_Psychic
+    id: ArcadeWinPsychic
     description: Win Arcade Mode as Psychic.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
     requirements: []
   - displayName: Wallhack
-    id: ArcadeWin_Trainbot
+    id: ArcadeWinTrainbot
     description: Win Arcade Mode as Trainbot.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
     requirements: []
   - displayName: High School Dropout
-    id: ArcadeWin_Geo
+    id: ArcadeWinGeo
     description: Win Arcade Mode as Geo.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
     requirements: []
   - displayName: something sinister is brewing...
-    id: ArcadeWin_zman
+    id: ArcadeWinzman
     description: Win Arcade Mode as z?man.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
     requirements: []
-  - displayName: Mana Sesh
-    id: ArcadeWin_zman
-    description: Score 10000+ points in Endless Mode.
-    icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
-    progressStat: 13
-    requirements:
-    - condition: 11
-      value: 0
-      stringValue: Endless_01, Endless_02, Endless_03, Endless D1, Endless D2, Endless
-        D3, Endless D4
-      boolValue: 0
-      statusOverride: 
-      inverted: 0
-    - condition: 1
-      value: 10000
-      stringValue: Endless_01, Endless_02, Endless_03, Endless D1, Endless D2, Endless
-        D3, Endless D4
-      boolValue: 0
-      statusOverride: 
-      inverted: 0
   - displayName: We Love Casting Spells
-    id: Spellcast35
-    description: Spellcast 35 times in one battle.
+    id: Spellcast50
+    description: Spellcast 50 times in one battle.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
     requirements:
     - condition: 3
-      value: 35
+      value: 50
       stringValue: 
       boolValue: 0
       statusOverride: 
@@ -167,18 +147,42 @@ MonoBehaviour:
       statusOverride: 
       inverted: 0
   - displayName: A blessing from Light Infinity
-    id: Combo18
-    description: Achieve a chain of at least 18.
+    id: Combo17
+    description: Achieve a chain of at least 17.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
     requirements:
     - condition: 5
-      value: 18
+      value: 17
       stringValue: Level01
       boolValue: 0
       statusOverride: 
       inverted: 0
-  - displayName: YEOWCH!!!
+  - displayName: Missile Crisis
+    id: Cascade4
+    description: Achieve a cascade of 4 or higher.
+    icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    progressStat: 13
+    requirements:
+    - condition: 6
+      value: 4
+      stringValue: 
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+  - displayName: Stairway to Heaven
+    id: Cascade7
+    description: Achieve a cascade of 7 or higher.
+    icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    progressStat: 13
+    requirements:
+    - condition: 6
+      value: 7
+      stringValue: 
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+  - displayName: Overkill
     id: SingleDamage4000
     description: Deal over 4000 damage in a single hit.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
@@ -187,6 +191,58 @@ MonoBehaviour:
     - condition: 14
       value: 4000
       stringValue: Level01
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+  - displayName: YEOWCH!!!
+    id: SingleDamage20000
+    description: Deal over 20000 damage in a single hit.
+    icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    progressStat: 13
+    requirements:
+    - condition: 14
+      value: 20000
+      stringValue: Level01
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+  - displayName: Mana Sesh
+    id: Endless10000
+    description: Score 10000+ points in Endless Mode.
+    icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    progressStat: 13
+    requirements:
+    - condition: 11
+      value: 0
+      stringValue: Endless_01, Endless_02, Endless_03, Endless D1, Endless D2, Endless
+        D3, Endless D4
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+    - condition: 1
+      value: 10000
+      stringValue: Endless_01, Endless_02, Endless_03, Endless D1, Endless D2, Endless
+        D3, Endless D4
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+  - displayName: Mana Addict
+    id: Endless100000
+    description: Score 100000+ points in Endless Mode.
+    icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    progressStat: 13
+    requirements:
+    - condition: 11
+      value: 0
+      stringValue: Endless_01, Endless_02, Endless_03, Endless D1, Endless D2, Endless
+        D3, Endless D4
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+    - condition: 1
+      value: 100000
+      stringValue: Endless_01, Endless_02, Endless_03, Endless D1, Endless D2, Endless
+        D3, Endless D4
       boolValue: 0
       statusOverride: 
       inverted: 0
@@ -209,7 +265,7 @@ MonoBehaviour:
       statusOverride: 
       inverted: 0
   - displayName: Element Master
-    id: ArcadeWin
+    id: ArcadeWinHard
     description: Complete Arcade Mode in Hard mode.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
@@ -226,8 +282,8 @@ MonoBehaviour:
       boolValue: 1
       statusOverride: 
       inverted: 0
-  - displayName: Champion
-    id: ArcadeWin
+  - displayName: Planet Knight
+    id: ArcadeWinUltimate
     description: Complete Arcade Mode in Ultimate mode.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
     progressStat: 13
@@ -274,7 +330,7 @@ MonoBehaviour:
       boolValue: 1
       statusOverride: 
       inverted: 0
-  - displayName: Untouchable
+  - displayName: Champion
     id: ArcadeWinHardNoDamage
     description: Complete Arcade Mode on Hard difficulty without taking any damage.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
@@ -304,7 +360,7 @@ MonoBehaviour:
       boolValue: 1
       statusOverride: 
       inverted: 0
-  - displayName: Ultimate Champion
+  - displayName: Overlord
     id: ArcadeWinUltimateNoDamage
     description: Complete Arcade Mode on Ultimate difficulty without taking any damage.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}

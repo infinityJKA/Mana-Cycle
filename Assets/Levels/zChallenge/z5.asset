@@ -18,6 +18,7 @@ MonoBehaviour:
   midLevelConversations: []
   time: 180
   scoreGoal: 0
+  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
   lockPieceColors: 1
@@ -28,15 +29,23 @@ MonoBehaviour:
   objectives:
   - condition: 1
     value: 8000
+    stringValue: Item1, Item2
+    boolValue: 1
+    statusOverride: 
     inverted: 0
   - condition: 4
-    value: 2
+    value: 1
+    stringValue: Item1, Item2
+    boolValue: 1
+    statusOverride: 
     inverted: 1
   levelRequirement: {fileID: 11400000, guid: 214540ac681394d849e1837e1228f9a5, type: 2}
   nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
+  generateNextLevel: 0
   aiDifficulty: 1
+  levelDifficulty: 0
   trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: ae4319d602fb7c545a36366596510a7c, type: 3}
