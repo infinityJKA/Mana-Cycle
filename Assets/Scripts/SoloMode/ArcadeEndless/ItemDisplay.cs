@@ -14,10 +14,15 @@ public class ItemDisplay : MonoBehaviour
     [SerializeField] private Image displayImage;
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI costText;
+    [SerializeField] private TextMeshProUGUI amountText;
     [SerializeField] private GameObject costDisplayObject;
+    [SerializeField] private GameObject amountDisplayObject;
     
     // true in shop, false in inventory
-    public bool showCost;
+    public bool showCost = false;
+
+    // amount of an item owned, shown in inventory
+    public bool showOwnedAmount = false;
 
     // the gameobject that should have the "main" script of whatever menu this item is shown in.
     [NonSerialized] public GameObject windowObject;
@@ -28,8 +33,10 @@ public class ItemDisplay : MonoBehaviour
         displayImage.sprite = item.icon;
         nameText.text = item.itemName;
         costText.text = "" + item.cost;
+        if (Storage.arcadeInventory.ContainsKey(item)) amountText.text = "x" + Storage.arcadeInventory[item];
 
-        if (!showCost) costDisplayObject.SetActive(false);
+        if (showCost) costDisplayObject.SetActive(true);
+        if (showOwnedAmount) amountDisplayObject.SetActive(true);
 
         // MOVED TO SHOP.CS
         // assigns the OnItemSelect function to when this gameobject's button component is selected

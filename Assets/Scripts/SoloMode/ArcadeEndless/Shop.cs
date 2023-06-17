@@ -15,13 +15,15 @@ public class Shop : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private TextMeshProUGUI typeText;
+    [SerializeField] private TextMeshProUGUI ownedText;
 
+    // every object in scene that displays money count
     [SerializeField] List<MoneyDisp> moneyDisplays;
 
     // Start is called before the first frame update
     void Start()
     {
-        RefreshInfo(null);
+        RefreshText();
     }
 
     void Awake()
@@ -38,7 +40,7 @@ public class Shop : MonoBehaviour
             EventTrigger eTrigger = newDisp.GetComponent<EventTrigger>();
             EventTrigger.Entry selectEntry = new EventTrigger.Entry();
             selectEntry.eventID = EventTriggerType.Select;
-            selectEntry.callback.AddListener((data) => {RefreshInfo((BaseEventData)data); });
+            selectEntry.callback.AddListener((data) => {MoveSelection((BaseEventData)data); });
             eTrigger.triggers.Add(selectEntry);
 
             // add submit functionality
@@ -57,14 +59,13 @@ public class Shop : MonoBehaviour
         // debug
         if (Application.isEditor && Input.GetKeyDown(KeyCode.F1))
             {
-                // Debug.Log("a");
                 Storage.arcadeMoneyAmount += 500;
-                refreshAllDisplays();
-                Debug.Log(string.Join(",", Storage.arcadeInventory));
+                RefreshAllDisplays();
+                // Debug.Log(string.Join(",", Storage.arcadeInventory));
             }
     }
 
-    public void RefreshInfo(BaseEventData data)
+    public void MoveSelection(BaseEventData data)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
         Item item = selection.GetComponent<ItemDisplay>().item;
@@ -73,10 +74,19 @@ public class Shop : MonoBehaviour
         // set item to first in list if not given
         if (item == null) item = itemDisplayParent.transform.GetChild(0).gameObject.GetComponent<ItemDisplay>().item;
 
-        // Debug.Log("is work :)");
+        RefreshText();
+
+    }
+
+    public void RefreshText()
+    {
+        GameObject selection = EventSystem.current.currentSelectedGameObject;
+        Item item = selection.GetComponent<ItemDisplay>().item;
+
         descriptionText.text = item.description;
         typeText.text = item.UseTypeToString();
-
+        if (Storage.arcadeInventory.ContainsKey(item)) ownedText.text = "" + Storage.arcadeInventory[item] + " owned";
+        else ownedText.text = "Unowned";
     }
 
     public void BuyItem(BaseEventData data)
@@ -92,9 +102,10 @@ public class Shop : MonoBehaviour
             Debug.Log("purchase win");
 
             Storage.arcadeMoneyAmount -= item.cost;
-            Storage.arcadeInventory.Add(item);
-            refreshAllDisplays();
-
+            Inventory.AddItem(item);
+            // update money counters
+            RefreshAllDisplays();
+            RefreshText();
         }
         else
         {
@@ -104,7 +115,7 @@ public class Shop : MonoBehaviour
 
     }
 
-    private void refreshAllDisplays()
+    private void RefreshAllDisplays()
     {
         foreach (MoneyDisp m in moneyDisplays)
         {
