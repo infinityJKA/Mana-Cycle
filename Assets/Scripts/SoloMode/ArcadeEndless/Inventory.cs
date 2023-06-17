@@ -38,7 +38,7 @@ public class Inventory : MonoBehaviour
             EventTrigger eTrigger = newDisp.GetComponent<EventTrigger>();
             EventTrigger.Entry selectEntry = new EventTrigger.Entry();
             selectEntry.eventID = EventTriggerType.Select;
-            selectEntry.callback.AddListener((data) => {RefreshInfo((BaseEventData)data); });
+            selectEntry.callback.AddListener((data) => {MoveSelection((BaseEventData)data); });
             eTrigger.triggers.Add(selectEntry);
 
             // add submit functionality, use item
@@ -56,11 +56,20 @@ public class Inventory : MonoBehaviour
         
     }
 
-    public void RefreshInfo(BaseEventData data)
+    public void MoveSelection(BaseEventData data)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
         Item item = selection.GetComponent<ItemDisplay>().item;
+
+        
     } 
+
+    public void RefreshInfo()
+    {
+        // // update hpbar and hptext
+        // hpText.text = Storage.hp + " / 2000 HP";
+        // hpBar.Refresh();
+    }
 
     public void SelectItem(BaseEventData data)
     {
