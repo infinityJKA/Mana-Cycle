@@ -21,8 +21,8 @@ public class Storage
     public static int maxHp = 2000;
     // currency amount in arcade endless
     public static int arcadeMoneyAmount = 0;
-    // player's items in arcade endless
-    public static List<Item> arcadeInventory;
+    // player's items in arcade endless. key is item, value is amount owned
+    public static Dictionary<Item, int> arcadeInventory;
 
     /** level that the player selected */
     public static SoloMode.Level level;
