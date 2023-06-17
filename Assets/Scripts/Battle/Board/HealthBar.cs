@@ -96,11 +96,12 @@ namespace Battle.Board {
 
         public void Refresh()
         {
-            if (!board) return;
-            if (hpNum != null) hpNum.SetHealth(board.hp);
             // if no board setup, use storage.cs hp value
             if (this.board != null) hpImage.fillAmount = 1f * board.hp / board.maxHp;
             else hpImage.fillAmount = 1f * Storage.hp / Storage.maxHp;
+
+            if (!board) return;
+            if (hpNum != null) hpNum.SetHealth(board.hp);
 
             if (displayOnly) return;
 
