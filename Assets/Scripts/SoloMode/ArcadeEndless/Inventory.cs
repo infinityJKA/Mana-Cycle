@@ -28,6 +28,7 @@ public class Inventory : MonoBehaviour
     void OnEnable()
     {
         RefreshItemList();
+        RefreshInfo();
     }
 
     private void RefreshItemList()
@@ -76,15 +77,24 @@ public class Inventory : MonoBehaviour
 
     public void RefreshInfo()
     {
-        GameObject selection = EventSystem.current.currentSelectedGameObject;
-        Item item = selection.GetComponent<ItemDisplay>().item;
-
         // update hpbar and hptext
         hpText.text = Storage.hp + " / " + Storage.maxHp + " HP";
         hpBar.Refresh();
 
-        descriptionText.text = item.description;
-        typeText.text = item.UseTypeToString();
+        GameObject selection = EventSystem.current.currentSelectedGameObject;
+        if (selection == null) return;
+
+        ItemDisplay disp = selection.GetComponent<ItemDisplay>();
+        if (disp == null) return;
+
+        Item item = disp.item;
+
+        if (disp != null)
+        {
+            descriptionText.text = item.description;
+            typeText.text = item.UseTypeToString();
+        }
+        
     }
 
     public void SelectItem(BaseEventData data)
