@@ -62,7 +62,7 @@ namespace SoloMode {
 
             foreach (ObjectiveListItem objListItem in objectiveItems) {
                 bool completed = objListItem.Refresh(board);
-                if (!completed) allObjectivesComplete = false;
+                if (!completed && !objListItem.objective.inverted) allObjectivesComplete = false;
 
                 // if an inverted condition is met, die
                 if (objListItem.objective.inverted && completed) board.Defeat();
