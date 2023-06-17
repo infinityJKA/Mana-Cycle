@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
  [CreateAssetMenu(fileName = "Item", menuName = "ManaCycle/Item")]
 public class Item : ScriptableObject
@@ -63,6 +64,24 @@ public class Item : ScriptableObject
             case UseType.UseOnObtain: return "Upgrade"; 
             default: return "-"; 
         }
+    }
+
+    public void ActivateEffect()
+    {
+        Debug.Log("used " + itemName);
+
+        switch (effectType)
+        {
+            case EffectType.IncreaseHpPercent: GainHP((int) (Storage.maxHp * effectValue)); break;
+            case EffectType.IncreaseHpFlat: GainHP ((int) effectValue); break;
+            case EffectType.IncreaseMaxHP: Storage.maxHp += (int) effectValue; GainHP((int) effectValue); break;
+            default: Debug.Log("Effect Type Not Handled! :("); break;
+        }
+    }
+
+    public void GainHP(int gain)
+    {
+        Storage.hp = Math.Min(Storage.hp + gain, Storage.maxHp);
     }
 
 }

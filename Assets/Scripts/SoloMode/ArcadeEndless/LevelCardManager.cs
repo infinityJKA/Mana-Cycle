@@ -32,7 +32,7 @@ namespace SoloMode
 
         void Start()
         {
-            if (Storage.level == null) Storage.arcadeInventory = new List<Item>();
+            if (Storage.level == null) Storage.arcadeInventory = new Dictionary<Item, int>();
 
             // hide debug cards if not debugging
             if (Storage.level != null)
@@ -45,10 +45,11 @@ namespace SoloMode
             // if first match, keep hp (determined by previous level) within bounds
             if (Storage.level != null && Storage.level.GetBehindCount() == 0)
             {
-                Storage.hp = Mathf.Clamp(Storage.hp, 100, 2000);
+                Storage.maxHp = 2000;
+                Storage.hp = Mathf.Clamp(Storage.hp, 100, Storage.maxHp);
 
                 // init player inventory
-                Storage.arcadeInventory = new List<Item>();
+                Storage.arcadeInventory = new Dictionary<Item, int>();
             }
 
             if (Storage.nextLevelChoices != null)
@@ -66,19 +67,17 @@ namespace SoloMode
             EventSystem.current.SetSelectedGameObject(transform.GetChild(1 + (Storage.nextLevelChoices != null ? 3 : 0) ).gameObject);
 
             // update hpbar and hptext
-            hpText.text = Storage.hp + " / 2000 HP";
-            hpBar.Refresh();
-
-            // set life display
-            for (int i = 0; i < Storage.lives; i++)
-            {
-                Instantiate(lifePrefab.transform, lifeContainer.transform);
-            }
+            RefreshInfo();
 
             // currencyText.text = "" + Storage.arcadeMoneyAmount;
 
             // update title text
             if (Storage.level != null) matchText.text = "-= Match " + (Storage.level.GetBehindCount() + 1) + " =-";
+        }
+
+        void OnEnable()
+        {
+            RefreshInfo();
         }
 
         void Update()
@@ -92,6 +91,25 @@ namespace SoloMode
         public void SelectQuit()
         {
             transitionHandler.WipeToScene("SoloMenu", reverse: true);
+        }
+
+        public void RefreshInfo()
+        {
+            hpText.text = Storage.hp + " / " + Storage.maxHp + " HP";
+            hpBar.Refresh();
+
+            // set life display
+
+            foreach (Transform t in lifeContainer.transform)
+            {
+                Destroy(t.gameObject);
+            }
+
+
+            for (int i = 0; i < Storage.lives; i++)
+            {
+                Instantiate(lifePrefab.transform, lifeContainer.transform);
+            }
         }
     }
 }
