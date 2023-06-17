@@ -21,7 +21,7 @@ namespace SoloMode {
         public bool boolValue = true;
 
         // if not null, replaces the status message displayed on the objective list
-        public string statusOverride = null;
+        public string statusOverride = "";
 
         // lose if condition is met
         public bool inverted = false;
@@ -50,7 +50,7 @@ namespace SoloMode {
         }
 
         public string Status(GameBoard board) {
-            if (statusOverride != null) return statusOverride;
+            if (statusOverride.Length > 0) return statusOverride;
             if (!inverted) {
                 switch (condition) {
                     case ObjectiveCondition.PointTotal: return board.hp+"/"+value+" Points";
@@ -148,6 +148,10 @@ namespace SoloMode {
                 position.width *= 0.7f;
                 EditorGUI.PropertyField(position, property.FindPropertyRelative("inverted"), GUIContent.none);
             }
+
+            // position.x += position.width + 4;
+            // position.width *= 0.7f;
+            // EditorGUI.PropertyField(position, property.FindPropertyRelative("statusOverride"), GUIContent.none);
 
             EditorGUI.EndProperty();
         }
