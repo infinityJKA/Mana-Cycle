@@ -66,7 +66,6 @@ public class Inventory : MonoBehaviour
         }
 
         // we've reset all item display prefabs, so we need to set selection again. use sibling index to keep selection in the same place
-        Debug.Log("child at index " + selectionIndex + " is " + itemDisplayParent.transform.GetChild(selectionIndex).gameObject);
         EventSystem.current.SetSelectedGameObject(null);
         StartCoroutine(SetSelectedItem(selectionIndex));
     }
