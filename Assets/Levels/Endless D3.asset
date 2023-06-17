@@ -19,6 +19,7 @@ MonoBehaviour:
   midLevelConversations: []
   time: -1
   scoreGoal: 0
+  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
   lockPieceColors: 1
@@ -30,6 +31,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 91c504e9689114ce0bf46b0f721e8f16, type: 2}
   - {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
   - {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+  - {fileID: 11400000, guid: 1c93cc654a75a784a838ad03a98b9304, type: 2}
   - {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
   - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
   - {fileID: 11400000, guid: 2e37b36be2db849e9a8b3a10ee09f403, type: 2}
@@ -39,6 +41,8 @@ MonoBehaviour:
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
+  generateNextLevel: 0
   aiDifficulty: 1
+  levelDifficulty: 0
   trashSendRate: 1
   battleMusic: {fileID: 8300000, guid: fa7aa6f54222729439721ede2c7f430e, type: 3}
