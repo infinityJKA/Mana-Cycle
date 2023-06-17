@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class Inventory : MonoBehaviour
 {
@@ -10,6 +11,14 @@ public class Inventory : MonoBehaviour
     // vert layout for item displays
     [SerializeField] private GameObject itemDisplayParent;
 
+    // description and type of hovered item
+    [SerializeField] private TextMeshProUGUI descriptionText;
+    [SerializeField] private TextMeshProUGUI typeText;
+
+    // hp bar and text used to show hp in inv
+    [SerializeField] private Battle.Board.HealthBar hpBar;
+    [SerializeField] private TextMeshProUGUI hpText;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +26,11 @@ public class Inventory : MonoBehaviour
     }
 
     void OnEnable()
+    {
+        RefreshItemList();
+    }
+
+    private void RefreshItemList()
     {
         // destroy old item prefabs
         foreach (Transform t in itemDisplayParent.transform)
@@ -28,6 +42,9 @@ public class Inventory : MonoBehaviour
         foreach (var kvp in Storage.arcadeInventory)
         {
             Item i = kvp.Key;
+
+            // if 0 of this item is owned, don't show it in inventory
+            if (Storage.arcadeInventory[i] <= 0) continue;
 
             ItemDisplay newDisp = Instantiate(itemDisplayPrefab.transform, itemDisplayParent.transform).gameObject.GetComponent<ItemDisplay>();  
             newDisp.item = i;
@@ -47,39 +64,84 @@ public class Inventory : MonoBehaviour
             submitEntry.callback.AddListener((data) => {SelectItem((BaseEventData)data); });
             eTrigger.triggers.Add(submitEntry);
         }
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void MoveSelection(BaseEventData data)
     {
-        GameObject selection = EventSystem.current.currentSelectedGameObject;
-        Item item = selection.GetComponent<ItemDisplay>().item;
+        // GameObject selection = EventSystem.current.currentSelectedGameObject;
+        // Item item = selection.GetComponent<ItemDisplay>().item;
 
-        
+        RefreshInfo();
     } 
 
     public void RefreshInfo()
     {
-        // // update hpbar and hptext
-        // hpText.text = Storage.hp + " / 2000 HP";
-        // hpBar.Refresh();
+        GameObject selection = EventSystem.current.currentSelectedGameObject;
+        Item item = selection.GetComponent<ItemDisplay>().item;
+
+        // update hpbar and hptext
+        hpText.text = Storage.hp + " / " + Storage.maxHp + " HP";
+        hpBar.Refresh();
+
+        descriptionText.text = item.description;
+        typeText.text = item.UseTypeToString();
     }
 
     public void SelectItem(BaseEventData data)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
+        int selectionIndex = selection.transform.GetSiblingIndex(); 
         Item item = selection.GetComponent<ItemDisplay>().item;
+
+        // Using item
+        switch (item.useType)
+        {
+            case Item.UseType.Consume:
+                item.ActivateEffect(); Storage.arcadeInventory[item] -= 1; break;
+
+            case Item.UseType.Equip: 
+                break; // not implemented yet
+
+            default: 
+                item.ActivateEffect(); Storage.arcadeInventory[item] -= 1; break;
+        }
+
+        RefreshItemList();
+        RefreshInfo();
+
+        // we've reset all item display prefabs, so we need to set selection again. use sibling index to keep selection in the same place
+        Debug.Log("child at index " + selectionIndex + " is " + itemDisplayParent.transform.GetChild(selectionIndex).gameObject);
+        EventSystem.current.SetSelectedGameObject(null);
+        StartCoroutine(SetSelectedItem(selectionIndex));
+    }
+
+    private IEnumerator SetSelectedItem(int i)
+    {
+        yield return new WaitForEndOfFrame();
+
+        // try to select item in the same place as prev. selection if it no longer exists, select one above. if no items, select close button
+        try
+        {
+            EventSystem.current.SetSelectedGameObject(itemDisplayParent.transform.GetChild(i).gameObject);
+        }
+        catch
+        {
+            if (itemDisplayParent.transform.childCount < 0) EventSystem.current.SetSelectedGameObject(itemDisplayParent.transform.GetChild(i-1).gameObject);
+            else EventSystem.current.SetSelectedGameObject(GetComponent<WindowPannel>().selectOnOpen);
+        }
+        
+        yield return null;
     }
 
     // used by any script that gives player items, like shop or level rewards (soon)
     public static void AddItem(Item item)
     {
+        if (item.useType == Item.UseType.UseOnObtain)
+        {
+            item.ActivateEffect(); 
+            return;
+        }
+        
         // if the inventory dict already contains an instance of this item, just add to its amount. if not, add to dict
         if (!Storage.arcadeInventory.ContainsKey(item))
         {

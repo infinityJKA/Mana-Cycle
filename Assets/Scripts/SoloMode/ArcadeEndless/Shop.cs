@@ -94,12 +94,12 @@ public class Shop : MonoBehaviour
         GameObject selection = EventSystem.current.currentSelectedGameObject;
         Item item = selection.GetComponent<ItemDisplay>().item;
 
-        Debug.Log(item.itemName + " purchase attempt");
+        // Debug.Log(item.itemName + " purchase attempt");
 
         if (Storage.arcadeMoneyAmount >= item.cost)
         {
             // buy item
-            Debug.Log("purchase win");
+            // Debug.Log("purchase win");
 
             Storage.arcadeMoneyAmount -= item.cost;
             Inventory.AddItem(item);

@@ -65,4 +65,9 @@ public class Item : ScriptableObject
         }
     }
 
+    public void ActivateEffect()
+    {
+        Debug.Log("used " + itemName);
+    }
+
 }
