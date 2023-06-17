@@ -66,7 +66,7 @@ namespace SoloMode
             EventSystem.current.SetSelectedGameObject(transform.GetChild(1 + (Storage.nextLevelChoices != null ? 3 : 0) ).gameObject);
 
             // update hpbar and hptext
-            hpText.text = Storage.hp + " / 2000 HP";
+            hpText.text = Storage.hp + " / " + Storage.maxHp + " HP";
             hpBar.Refresh();
 
             // set life display

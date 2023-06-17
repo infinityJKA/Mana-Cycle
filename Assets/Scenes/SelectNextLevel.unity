@@ -1190,6 +1190,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemDisplayPrefab: {fileID: 3913695854040387670, guid: 53342456d4def3f41b72d71180153fb8, type: 3}
   itemDisplayParent: {fileID: 1740786467}
+  descriptionText: {fileID: 1156703207}
+  typeText: {fileID: 1506963405}
+  hpBar: {fileID: 1674677172}
+  hpText: {fileID: 961202361}
 --- !u!1 &419756206
 GameObject:
   m_ObjectHideFlags: 0
@@ -1944,7 +1948,7 @@ GameObject:
   - component: {fileID: 583563661}
   - component: {fileID: 583563660}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TitleText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4982,7 +4986,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -35, y: -125}
+  m_AnchoredPosition: {x: -35, y: -100}
   m_SizeDelta: {x: 15, y: 300}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1674677172
