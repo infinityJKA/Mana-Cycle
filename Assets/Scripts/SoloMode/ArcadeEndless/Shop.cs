@@ -17,6 +17,8 @@ public class Shop : MonoBehaviour
     [SerializeField] private TextMeshProUGUI typeText;
     [SerializeField] private TextMeshProUGUI ownedText;
 
+    [SerializeField] private GameObject descriptionObject;
+
     // every object in scene that displays money count
     [SerializeField] List<MoneyDisp> moneyDisplays;
 
@@ -81,6 +83,15 @@ public class Shop : MonoBehaviour
     public void RefreshText()
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
+
+        // if not hovering an item, hide item description box
+        if ((selection.GetComponent<ItemDisplay>()) == null)
+        {
+            descriptionObject.SetActive(false);
+            return;
+        }
+        else descriptionObject.SetActive(true);
+
         Item item = selection.GetComponent<ItemDisplay>().item;
 
         descriptionText.text = item.description;

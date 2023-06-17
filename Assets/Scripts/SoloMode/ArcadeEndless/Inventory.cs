@@ -19,6 +19,8 @@ public class Inventory : MonoBehaviour
     [SerializeField] private Battle.Board.HealthBar hpBar;
     [SerializeField] private TextMeshProUGUI hpText;
 
+    [SerializeField] private GameObject descriptionObject;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -85,7 +87,13 @@ public class Inventory : MonoBehaviour
         if (selection == null) return;
 
         ItemDisplay disp = selection.GetComponent<ItemDisplay>();
-        if (disp == null) return;
+        // if not hovering an item, hide item description box
+        if (disp == null)
+        {
+            descriptionObject.SetActive(false);
+            return;
+        }
+        else descriptionObject.SetActive(true);
 
         Item item = disp.item;
 
