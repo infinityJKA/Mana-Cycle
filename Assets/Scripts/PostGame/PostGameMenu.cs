@@ -117,8 +117,15 @@ namespace PostGame {
                 
                 // if first clear (and not in series or endless), immediately exit back to solomenu; otherwise, open menu
                 if (!clearedBefore && cleared && Storage.level.nextSeriesLevel == null && Storage.level.time != -1) {
-                    transitionHandler.WipeToScene("SoloMenu", reverse:true);
-                    setMenuSong();
+                    // if reached the end of a solo level, go to win screen
+                    if (Storage.level.nextSeriesLevel == null && Storage.level.lastSeriesLevel != null && !Storage.level.generateNextLevel)
+                    {
+                        transitionHandler.WipeToScene("ArcadeWin");
+                    } else
+                    {
+                        transitionHandler.WipeToScene("SoloMenu", reverse: true);
+                        setMenuSong();
+                    }
                 } 
                 else
                 {
@@ -186,7 +193,7 @@ namespace PostGame {
                     Time.timeScale = 1f;
                     MenuUI.SetActive(false);
                     transitionHandler.WipeToScene("ArcadeWin");
-                } 
+                }
 
                 // Debug.Log("why did this stop working :((");
                 // Debug.Log(Storage.level.nextSeriesLevel);
