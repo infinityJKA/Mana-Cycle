@@ -38,7 +38,7 @@ public class ItemDisplay : MonoBehaviour
         displayImage.sprite = item.icon;
         nameText.text = item.itemName;
         costText.text = "" + item.cost;
-        if (Storage.arcadeInventory.ContainsKey(item)) amountText.text = "x" + Storage.arcadeInventory[item];
+        if (ArcadeStats.inventory.ContainsKey(item)) amountText.text = "x" + ArcadeStats.inventory[item];
 
         if (showCost) costDisplayObject.SetActive(true);
         if (showOwnedAmount) amountDisplayObject.SetActive(true);

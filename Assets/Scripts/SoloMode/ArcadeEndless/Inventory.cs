@@ -39,12 +39,12 @@ public class Inventory : MonoBehaviour
         }
 
         // add display prefabs for each item in inventory
-        foreach (var kvp in Storage.arcadeInventory)
+        foreach (var kvp in ArcadeStats.inventory)
         {
             Item i = kvp.Key;
 
             // if 0 of this item is owned, don't show it in inventory
-            if (Storage.arcadeInventory[i] <= 0) continue;
+            if (ArcadeStats.inventory[i] <= 0) continue;
 
             ItemDisplay newDisp = Instantiate(itemDisplayPrefab.transform, itemDisplayParent.transform).gameObject.GetComponent<ItemDisplay>();  
             newDisp.item = i;
@@ -76,7 +76,7 @@ public class Inventory : MonoBehaviour
         {
             ItemDisplay disp = t.gameObject.GetComponent<ItemDisplay>();
             disp.Refresh();
-            if (Storage.arcadeInventory[disp.item] <= 0) BuildItemList();
+            if (ArcadeStats.inventory[disp.item] <= 0) BuildItemList();
         }
     }
 
@@ -91,7 +91,7 @@ public class Inventory : MonoBehaviour
     public void RefreshInfo()
     {
         // update hpbar and hptext
-        hpText.text = Storage.hp + " / " + Storage.maxHp + " HP";
+        hpText.text = Storage.hp + " / " + ArcadeStats.maxHp + " HP";
         hpBar.Refresh();
 
         GameObject selection = EventSystem.current.currentSelectedGameObject;
@@ -126,13 +126,13 @@ public class Inventory : MonoBehaviour
         switch (item.useType)
         {
             case Item.UseType.Consume:
-                item.ActivateEffect(); Storage.arcadeInventory[item] -= 1; break;
+                item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;
 
             case Item.UseType.Equip: 
                 break; // not implemented yet
 
             default: 
-                item.ActivateEffect(); Storage.arcadeInventory[item] -= 1; break;
+                item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;
         }
 
         RefreshItemList();
@@ -168,11 +168,11 @@ public class Inventory : MonoBehaviour
         }
         
         // if the inventory dict already contains an instance of this item, just add to its amount. if not, add to dict
-        if (!Storage.arcadeInventory.ContainsKey(item))
+        if (!ArcadeStats.inventory.ContainsKey(item))
         {
-            Storage.arcadeInventory.Add(item, 0);
+            ArcadeStats.inventory.Add(item, 0);
             
         }
-        Storage.arcadeInventory[item] += 1;
+        ArcadeStats.inventory[item] += 1;
     }
 }

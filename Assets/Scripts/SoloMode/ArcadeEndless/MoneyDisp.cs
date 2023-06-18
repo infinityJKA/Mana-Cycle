@@ -14,7 +14,7 @@ public class MoneyDisp : MonoBehaviour
 
     public void RefreshText()
     {
-        this.currencyText.text = "" + Storage.arcadeMoneyAmount;
+        this.currencyText.text = "" + ArcadeStats.moneyAmount;
     }
 
 }
