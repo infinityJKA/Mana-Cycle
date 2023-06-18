@@ -22,9 +22,9 @@ public class ArcadeStats
         {Stat.Damage_Mult, 1f},
         {Stat.Starting_Special, 0f},
         {Stat.Special_Gain_Mult, 1f},
-        {Stat.Starting_Cycle_Mult, 1f},
-        {Stat.Cycle_Mult_Increase, 2f},
-        {Stat.Quick_Drop_Speed, 2f},
+        {Stat.Starting_Cycle_Mult, 1f}, // not implemented yet
+        {Stat.Cycle_Mult_Increase, 0.2f}, // not implemented yet
+        {Stat.Quick_Drop_Speed, 0.125f}, // not implemented yet
 
     };
 
