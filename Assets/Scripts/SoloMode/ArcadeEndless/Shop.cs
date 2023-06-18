@@ -97,7 +97,7 @@ public class Shop : MonoBehaviour
         descriptionText.text = item.description;
         typeText.text = item.UseTypeToString();
         if (ArcadeStats.inventory.ContainsKey(item)) ownedText.text = "" + ArcadeStats.inventory[item] + " owned";
-        else ownedText.text = "Unowned";
+        else ownedText.text = item.useType == Item.UseType.UseOnObtain ? "" : "Unowned";
     }
 
     public void BuyItem(BaseEventData data)
