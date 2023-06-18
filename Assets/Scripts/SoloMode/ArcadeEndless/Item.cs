@@ -72,16 +72,16 @@ public class Item : ScriptableObject
 
         switch (effectType)
         {
-            case EffectType.IncreaseHpPercent: GainHP((int) (Storage.maxHp * effectValue)); break;
+            case EffectType.IncreaseHpPercent: GainHP((int) (ArcadeStats.maxHp * effectValue)); break;
             case EffectType.IncreaseHpFlat: GainHP ((int) effectValue); break;
-            case EffectType.IncreaseMaxHP: Storage.maxHp += (int) effectValue; GainHP((int) effectValue); break;
+            case EffectType.IncreaseMaxHP: ArcadeStats.maxHp += (int) effectValue; GainHP((int) effectValue); break;
             default: Debug.Log("Effect Type Not Handled! :("); break;
         }
     }
 
     public void GainHP(int gain)
     {
-        Storage.hp = Math.Min(Storage.hp + gain, Storage.maxHp);
+        Storage.hp = Math.Min(Storage.hp + gain, ArcadeStats.maxHp);
     }
 
 }
