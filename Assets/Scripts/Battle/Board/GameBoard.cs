@@ -14,6 +14,9 @@ using Sound;
 using Battle.AI;
 using Achievements;
 
+// may be a bad idea to namespace this, could be changed later
+using static ArcadeStats.Stat;
+
 namespace Battle.Board {
     public class GameBoard : MonoBehaviour
     {
@@ -252,6 +255,9 @@ namespace Battle.Board {
 
         [SerializeField] public RngManager rngManager;
 
+        // dict for some game stats, set depending on mode
+        public Dictionary<ArcadeStats.Stat, float> boardStats;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -289,6 +295,20 @@ namespace Battle.Board {
             } else {
                 midLevelConvos = new List<MidLevelConversation>();
             }
+
+            // load stats dict
+            if (Storage.level == null || Storage.level.generateNextLevel)
+            {
+                // if not in arcade endless, use default stats
+                boardStats = ArcadeStats.defaultStats;
+            }
+            else 
+            {
+                // otherwise, use player stats
+                boardStats = ArcadeStats.playerStats;
+            }
+
+            // boostPerCycleClear = (int) (boardStats[Cycle_Mult_Increase] * 10);
 
             if (playerSide == 0) {
                 // Debug.Log("stopping bgm");
@@ -1436,7 +1456,7 @@ namespace Battle.Board {
 
                         totalSpellcasts++;
                         totalManaCleared += totalBlobMana;
-                        abilityManager.GainMana(totalBlobMana);
+                        abilityManager.GainMana((int) (totalBlobMana * boardStats[Special_Gain_Mult]));
 
                         highestCombo = Math.Max(highestCombo, chain);
                         highestCascade = Math.Max(highestCascade, cascade);
@@ -1465,7 +1485,7 @@ namespace Battle.Board {
 
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.
-                        int damage = (int)( (totalPointMult * damagePerMana) * chain * (Math.Pow(3,cascade) / 3f));
+                        int damage = (int)( (totalPointMult * damagePerMana) * chain * (Math.Pow(3,cascade) / 3f) * boardStats[Damage_Mult]);
 
                         highestSingleDamage = Math.Max(highestSingleDamage, damage);
 

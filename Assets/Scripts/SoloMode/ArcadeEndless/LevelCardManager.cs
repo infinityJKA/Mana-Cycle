@@ -50,6 +50,8 @@ namespace SoloMode
 
                 ArcadeStats.inventory = new Dictionary<Item, int>();
                 ArcadeStats.moneyAmount = 0;
+
+                ArcadeStats.playerStats = ArcadeStats.defaultStats;
             }
 
             if (Storage.nextLevelChoices != null)
