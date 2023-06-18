@@ -10,9 +10,11 @@ namespace Battle.Cycle {
 
         [SerializeField] private Color[] cycleLevelColors;
 
+        [SerializeField] private Board.GameBoard board;
+
         public void Set(int label)
         {
-            this.label.text = (1 + (0.2f * label)) + "x";
+            this.label.text = (1 + (board.boostPerCycleClear / 10f * label + board.boardStats[ArcadeStats.Stat.Starting_Cycle_Modifier])) + "x";
             this.GetComponent<Image>().color = cycleLevelColors[ Mathf.Min(label, cycleLevelColors.Length-1)];
         }
     }

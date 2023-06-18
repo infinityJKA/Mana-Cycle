@@ -16,26 +16,26 @@ public class ArcadeStats
     public static Dictionary<Stat, float> playerStats = new Dictionary<Stat, float>();
 
     // stat defaults, used in all other gamemodes
-    // TODO GameBoard doesn't actually read from this yet
     public static Dictionary<Stat, float> defaultStats = new Dictionary<Stat, float>()
     {
         {Stat.Damage_Mult, 1f},
         {Stat.Starting_Special, 0f},
         {Stat.Special_Gain_Mult, 1f},
-        {Stat.Starting_Cycle_Mult, 1f}, // not implemented yet
-        {Stat.Cycle_Mult_Increase, 0.2f}, // not implemented yet
+        {Stat.Starting_Cycle_Modifier, 0f}, 
+        {Stat.Cycle_Mult_Increase, 0.2f},
         {Stat.Quick_Drop_Speed, 0.125f}, // not implemented yet
 
     };
 
     // types of stats / multipliers to be applied in gameboard scene
+    // more types to be added if item concepts need them
     public enum Stat
     {
         Damage_Mult, // damage multiplier 
         Starting_Special, // how much meter you start with as a percent of max meter (0-1f)
         Special_Gain_Mult, // multiplier for how much mana you gain
-        Starting_Cycle_Mult, // the cycle multiplier you have at the beginning of the match. normally 1x
-        Cycle_Mult_Increase, // how much the multiplier increases each full cycle.
+        Starting_Cycle_Modifier, // extra cycle multiplier you have at the beginning of the match. normally 0x, can be negative
+        Cycle_Mult_Increase, // how much the multiplier increases each full cycle. normally 0.2
         Quick_Drop_Speed, // the quick drop delay, normally 0.125
     }
 
