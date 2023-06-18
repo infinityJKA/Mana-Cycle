@@ -32,7 +32,7 @@ namespace SoloMode
 
         void Start()
         {
-            if (Storage.level == null) Storage.arcadeInventory = new Dictionary<Item, int>();
+            if (Storage.level == null) ArcadeStats.inventory = new Dictionary<Item, int>();
 
             // hide debug cards if not debugging
             if (Storage.level != null)
@@ -42,14 +42,14 @@ namespace SoloMode
                 transform.GetChild(2).gameObject.SetActive(false);
             }
             
-            // if first match, keep hp (determined by previous level) within bounds
+            // if first match, init player stats and keep hp (determined by previous level) within bounds
             if (Storage.level != null && Storage.level.GetBehindCount() == 0)
             {
-                Storage.maxHp = 2000;
-                Storage.hp = Mathf.Clamp(Storage.hp, 100, Storage.maxHp);
+                ArcadeStats.maxHp = 2000;
+                Storage.hp = Mathf.Clamp(Storage.hp, 100, ArcadeStats.maxHp);
 
-                // init player inventory
-                Storage.arcadeInventory = new Dictionary<Item, int>();
+                ArcadeStats.inventory = new Dictionary<Item, int>();
+                ArcadeStats.moneyAmount = 0;
             }
 
             if (Storage.nextLevelChoices != null)
@@ -95,7 +95,7 @@ namespace SoloMode
 
         public void RefreshInfo()
         {
-            hpText.text = Storage.hp + " / " + Storage.maxHp + " HP";
+            hpText.text = Storage.hp + " / " + ArcadeStats.maxHp + " HP";
             hpBar.Refresh();
 
             // set life display
