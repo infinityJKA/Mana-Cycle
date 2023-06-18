@@ -17,6 +17,8 @@ public class Shop : MonoBehaviour
     [SerializeField] private TextMeshProUGUI typeText;
     [SerializeField] private TextMeshProUGUI ownedText;
 
+    [SerializeField] private GameObject descriptionObject;
+
     // every object in scene that displays money count
     [SerializeField] List<MoneyDisp> moneyDisplays;
 
@@ -59,9 +61,9 @@ public class Shop : MonoBehaviour
         // debug
         if (Application.isEditor && Input.GetKeyDown(KeyCode.F1))
             {
-                Storage.arcadeMoneyAmount += 500;
+                ArcadeStats.moneyAmount += 500;
                 RefreshAllDisplays();
-                // Debug.Log(string.Join(",", Storage.arcadeInventory));
+                // Debug.Log(string.Join(",", ArcadeStats.inventory));
             }
     }
 
@@ -81,11 +83,20 @@ public class Shop : MonoBehaviour
     public void RefreshText()
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
+
+        // if not hovering an item, hide item description box
+        if ((selection.GetComponent<ItemDisplay>()) == null)
+        {
+            descriptionObject.SetActive(false);
+            return;
+        }
+        else descriptionObject.SetActive(true);
+
         Item item = selection.GetComponent<ItemDisplay>().item;
 
         descriptionText.text = item.description;
         typeText.text = item.UseTypeToString();
-        if (Storage.arcadeInventory.ContainsKey(item)) ownedText.text = "" + Storage.arcadeInventory[item] + " owned";
+        if (ArcadeStats.inventory.ContainsKey(item)) ownedText.text = "" + ArcadeStats.inventory[item] + " owned";
         else ownedText.text = "Unowned";
     }
 
@@ -96,12 +107,12 @@ public class Shop : MonoBehaviour
 
         // Debug.Log(item.itemName + " purchase attempt");
 
-        if (Storage.arcadeMoneyAmount >= item.cost)
+        if (ArcadeStats.moneyAmount >= item.cost)
         {
             // buy item
             // Debug.Log("purchase win");
 
-            Storage.arcadeMoneyAmount -= item.cost;
+            ArcadeStats.moneyAmount -= item.cost;
             Inventory.AddItem(item);
             // update money counters
             RefreshAllDisplays();

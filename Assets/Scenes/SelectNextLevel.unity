@@ -342,6 +342,7 @@ RectTransform:
   - {fileID: 1747857337}
   - {fileID: 1293426282}
   - {fileID: 588548162}
+  - {fileID: 1307332660}
   m_Father: {fileID: 1732954277}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -424,6 +425,7 @@ MonoBehaviour:
   descriptionText: {fileID: 746165699}
   typeText: {fileID: 1778753622}
   ownedText: {fileID: 1394918395}
+  descriptionObject: {fileID: 379386830}
   moneyDisplays:
   - {fileID: 1873724355}
   - {fileID: 1854764203}
@@ -1194,6 +1196,7 @@ MonoBehaviour:
   typeText: {fileID: 1506963405}
   hpBar: {fileID: 1674677172}
   hpText: {fileID: 961202361}
+  descriptionObject: {fileID: 1021486710}
 --- !u!1 &419756206
 GameObject:
   m_ObjectHideFlags: 0
@@ -1436,7 +1439,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1778753621}
-  - {fileID: 1307332660}
   m_Father: {fileID: 379386831}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4338,10 +4340,10 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: MainMenu.Menu3d, Assembly-CSharp
-          m_MethodName: setVersusDescription
-          m_Mode: 5
+        - m_Target: {fileID: 133690322}
+          m_TargetAssemblyTypeName: Shop, Assembly-CSharp
+          m_MethodName: RefreshText
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4350,6 +4352,10 @@ MonoBehaviour:
             m_StringArgument: Two players go against each other!
             m_BoolArgument: 0
           m_CallState: 2
+  - eventID: 8
+    callback:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!114 &1293426284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4450,7 +4456,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 451539387}
+    m_TransformParent: {fileID: 133690318}
     m_Modifications:
     - target: {fileID: 5640298902343975780, guid: 18790e6546d8f4941bc20b369986e80d, type: 3}
       propertyPath: m_Pivot.x
@@ -4518,23 +4524,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5640298902343975780, guid: 18790e6546d8f4941bc20b369986e80d, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5640298902343975780, guid: 18790e6546d8f4941bc20b369986e80d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5640298902343975780, guid: 18790e6546d8f4941bc20b369986e80d, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5640298902343975780, guid: 18790e6546d8f4941bc20b369986e80d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 212.5
       objectReference: {fileID: 0}
     - target: {fileID: 5640298902343975780, guid: 18790e6546d8f4941bc20b369986e80d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -10
+      value: 67.55397
       objectReference: {fileID: 0}
     - target: {fileID: 5640298902343975780, guid: 18790e6546d8f4941bc20b369986e80d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6278,10 +6284,10 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: MainMenu.Menu3d, Assembly-CSharp
-          m_MethodName: setVersusDescription
-          m_Mode: 5
+        - m_Target: {fileID: 384109335}
+          m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
+          m_MethodName: RefreshInfo
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

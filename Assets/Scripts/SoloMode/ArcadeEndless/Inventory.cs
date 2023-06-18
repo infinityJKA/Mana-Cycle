@@ -19,19 +19,19 @@ public class Inventory : MonoBehaviour
     [SerializeField] private Battle.Board.HealthBar hpBar;
     [SerializeField] private TextMeshProUGUI hpText;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private GameObject descriptionObject;
 
     void OnEnable()
     {
-        RefreshItemList();
+        BuildItemList();
+        RefreshInfo();
     }
 
-    private void RefreshItemList()
+    private void BuildItemList()
     {
+        GameObject selection = EventSystem.current.currentSelectedGameObject;
+        int selectionIndex = selection.transform.GetSiblingIndex(); 
+
         // destroy old item prefabs
         foreach (Transform t in itemDisplayParent.transform)
         {
@@ -39,12 +39,12 @@ public class Inventory : MonoBehaviour
         }
 
         // add display prefabs for each item in inventory
-        foreach (var kvp in Storage.arcadeInventory)
+        foreach (var kvp in ArcadeStats.inventory)
         {
             Item i = kvp.Key;
 
             // if 0 of this item is owned, don't show it in inventory
-            if (Storage.arcadeInventory[i] <= 0) continue;
+            if (ArcadeStats.inventory[i] <= 0) continue;
 
             ItemDisplay newDisp = Instantiate(itemDisplayPrefab.transform, itemDisplayParent.transform).gameObject.GetComponent<ItemDisplay>();  
             newDisp.item = i;
@@ -64,6 +64,20 @@ public class Inventory : MonoBehaviour
             submitEntry.callback.AddListener((data) => {SelectItem((BaseEventData)data); });
             eTrigger.triggers.Add(submitEntry);
         }
+
+        // we've reset all item display prefabs, so we need to set selection again. use sibling index to keep selection in the same place
+        EventSystem.current.SetSelectedGameObject(null);
+        StartCoroutine(SetSelectedItem(selectionIndex));
+    }
+
+    private void RefreshItemList()
+    {
+        foreach (Transform t in itemDisplayParent.transform)
+        {
+            ItemDisplay disp = t.gameObject.GetComponent<ItemDisplay>();
+            disp.Refresh();
+            if (ArcadeStats.inventory[disp.item] <= 0) BuildItemList();
+        }
     }
 
     public void MoveSelection(BaseEventData data)
@@ -76,15 +90,30 @@ public class Inventory : MonoBehaviour
 
     public void RefreshInfo()
     {
-        GameObject selection = EventSystem.current.currentSelectedGameObject;
-        Item item = selection.GetComponent<ItemDisplay>().item;
-
         // update hpbar and hptext
-        hpText.text = Storage.hp + " / " + Storage.maxHp + " HP";
+        hpText.text = Storage.hp + " / " + ArcadeStats.maxHp + " HP";
         hpBar.Refresh();
 
-        descriptionText.text = item.description;
-        typeText.text = item.UseTypeToString();
+        GameObject selection = EventSystem.current.currentSelectedGameObject;
+        if (selection == null) return;
+
+        ItemDisplay disp = selection.GetComponent<ItemDisplay>();
+        // if not hovering an item, hide item description box
+        if (disp == null)
+        {
+            descriptionObject.SetActive(false);
+            return;
+        }
+        else descriptionObject.SetActive(true);
+
+        Item item = disp.item;
+
+        if (disp != null)
+        {
+            descriptionText.text = item.description;
+            typeText.text = item.UseTypeToString();
+        }
+        
     }
 
     public void SelectItem(BaseEventData data)
@@ -97,22 +126,18 @@ public class Inventory : MonoBehaviour
         switch (item.useType)
         {
             case Item.UseType.Consume:
-                item.ActivateEffect(); Storage.arcadeInventory[item] -= 1; break;
+                item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;
 
             case Item.UseType.Equip: 
                 break; // not implemented yet
 
             default: 
-                item.ActivateEffect(); Storage.arcadeInventory[item] -= 1; break;
+                item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;
         }
 
         RefreshItemList();
         RefreshInfo();
 
-        // we've reset all item display prefabs, so we need to set selection again. use sibling index to keep selection in the same place
-        Debug.Log("child at index " + selectionIndex + " is " + itemDisplayParent.transform.GetChild(selectionIndex).gameObject);
-        EventSystem.current.SetSelectedGameObject(null);
-        StartCoroutine(SetSelectedItem(selectionIndex));
     }
 
     private IEnumerator SetSelectedItem(int i)
@@ -143,11 +168,11 @@ public class Inventory : MonoBehaviour
         }
         
         // if the inventory dict already contains an instance of this item, just add to its amount. if not, add to dict
-        if (!Storage.arcadeInventory.ContainsKey(item))
+        if (!ArcadeStats.inventory.ContainsKey(item))
         {
-            Storage.arcadeInventory.Add(item, 0);
+            ArcadeStats.inventory.Add(item, 0);
             
         }
-        Storage.arcadeInventory[item] += 1;
+        ArcadeStats.inventory[item] += 1;
     }
 }
