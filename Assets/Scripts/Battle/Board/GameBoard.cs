@@ -2002,7 +2002,7 @@ namespace Battle.Board {
         public void PlaySFX(string key, float pitch = 1, float pan = 0.75f, float volumeScale = 1f, bool important = true)
         {
             // flip stereo pan to left side if player1
-            if (enemyBoard.enabled) {
+            if (enemyBoard.pointer.activeSelf) {
                 if (playerSide == 0) pan = -pan;
             }
             // if no enemy, don't pan
