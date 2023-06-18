@@ -148,7 +148,9 @@ namespace Battle.AI {
 
                         if (inPosition) {
                             readyToInstaDrop = true;
-                            nextMoveTime = Time.time + UnityEngine.Random.Range(moveDelay*0.3f, moveDelay*0.9f);
+                            // give the player some extra mercy, instadrop kinda op
+                            nextMoveTime = Time.time + UnityEngine.Random.Range(moveDelay*0.75f, moveDelay*2f);
+                           
                         }
                     } else {
                         if (!job.willKill) board.quickFall = true;
