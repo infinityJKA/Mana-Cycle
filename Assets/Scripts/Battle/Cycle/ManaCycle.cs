@@ -17,7 +17,6 @@ namespace Battle.Cycle {
         // Color to light mana tiles when they are shown as connected to the ghost piece.
         [SerializeField] private List<Color> litManaColors;
 
-
         // String representations of the mana color
         [SerializeField] public List<string> manaColorStrings;
 

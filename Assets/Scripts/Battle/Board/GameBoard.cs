@@ -297,7 +297,7 @@ namespace Battle.Board {
             }
 
             // load stats dict
-            if (Storage.level == null || Storage.level.generateNextLevel)
+            if (Storage.level == null || Storage.level.generateNextLevel || playerSide == 1)
             {
                 // if not in arcade endless, use default stats
                 boardStats = ArcadeStats.defaultStats;
@@ -308,7 +308,8 @@ namespace Battle.Board {
                 boardStats = ArcadeStats.playerStats;
             }
 
-            // boostPerCycleClear = (int) (boardStats[Cycle_Mult_Increase] * 10);
+            boostPerCycleClear = (int) (boardStats[Cycle_Mult_Increase] * 10);
+            Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
 
             if (playerSide == 0) {
                 // Debug.Log("stopping bgm");
@@ -431,7 +432,9 @@ namespace Battle.Board {
             }
 
             tilesInBlobs = new bool[height, width];
-        }
+
+            cycleLevelDisplay.Set(cycleLevel);
+        } // close Start()
 
         void InitBattler() {
             portrait.sprite = battler.sprite;
@@ -1526,7 +1529,7 @@ namespace Battle.Board {
             PointerReposition();
         }
 
-        public int damagePerMana {get {return 10 + cycleLevel*boostPerCycleClear;}}
+        public int damagePerMana {get {return 10 + (int)((cycleLevel + boardStats[Starting_Cycle_Modifier]) * boostPerCycleClear);}}
 
         IEnumerator CheckMidConvoAfterDelay() {
             yield return new WaitForSeconds(0.4f);
