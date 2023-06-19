@@ -297,15 +297,17 @@ namespace Battle.Board {
             }
 
             // load stats dict
-            if (Storage.level == null || Storage.level.generateNextLevel || playerSide == 1)
+            if (Storage.level == null || !Storage.level.generateNextLevel || playerSide == 1)
             {
                 // if not in arcade endless, use default stats
                 boardStats = ArcadeStats.defaultStats;
             }
             else 
             {
-                // otherwise, use player stats
+                // otherwise, use player stats.
                 boardStats = ArcadeStats.playerStats;
+                Debug.Log("using AE stats");
+                
             }
 
             boostPerCycleClear = (int) (boardStats[CycleMultIncrease] * 10);
