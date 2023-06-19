@@ -54,9 +54,25 @@ public class Item : ScriptableObject
     [SerializeField] List<Effect> effects;
 
     /// <summary>
-    /// cost to purchase in shop
+    /// base cost to purchase in shop
     /// </summary>
-    public int cost;
+    public int baseCost;
+
+    /// <summary>
+    /// cost after multipliers
+    /// </summary>
+    [NonSerialized] public int cost;
+
+    public void OnEnable()
+    {
+        cost = baseCost;
+        // Debug.Log(itemName + " " + cost);
+    }
+
+    /// <summary>
+    /// cost increase after being purchased in the shop as a multiplier of base cost
+    /// </summary>
+    public float costIncreaseMult = 1f;
 
     public enum UseType
     {

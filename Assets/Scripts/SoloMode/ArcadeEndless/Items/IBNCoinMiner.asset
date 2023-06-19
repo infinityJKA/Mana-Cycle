@@ -10,15 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 034c5d9ed6c933747b0235628e1a5862, type: 3}
-  m_Name: TestEquipable
+  m_Name: IBNCoinMiner
   m_EditorClassIdentifier: 
-  itemName: Equipment :)
-  description: desolation
+  itemName: IBNCoin Miner
+  description: Reduces damage by 25% and increases money earned by 25%.
   icon: {fileID: 21300000, guid: e47d53c8c57e4422f8c285c78faa6038, type: 3}
   useType: 1
   effects:
-  - type: 2
-    value: 500
+  - type: 3
+    value: 0.8
     key: 0
-  baseCost: 1
+  - type: 3
+    value: 0.2
+    key: 4
+  baseCost: 100
   costIncreaseMult: 1

@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 034c5d9ed6c933747b0235628e1a5862, type: 3}
-  m_Name: TestEquipable
+  m_Name: Healing2
   m_EditorClassIdentifier: 
-  itemName: Equipment :)
-  description: desolation
-  icon: {fileID: 21300000, guid: e47d53c8c57e4422f8c285c78faa6038, type: 3}
-  useType: 1
+  itemName: J-Fuel
+  description: Restores 400 health points and refeuls J-Power to max.
+  icon: {fileID: -2413806693520163455, guid: 2760c77e69b9401439d913b805b15e2f, type: 3}
+  useType: 0
   effects:
-  - type: 2
-    value: 500
+  - type: 1
+    value: 400
     key: 0
-  baseCost: 1
+  baseCost: 400
   costIncreaseMult: 1

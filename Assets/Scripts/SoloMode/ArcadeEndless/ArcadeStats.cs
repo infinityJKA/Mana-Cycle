@@ -29,6 +29,7 @@ public class ArcadeStats
         {Stat.StartingCycleModifier, 0f}, 
         {Stat.CycleMultIncrease, 0.2f},
         {Stat.QuickDropSpeed, 0.125f}, // not implemented yet
+        {Stat.MoneyMult, 1f},
 
     };
 
@@ -45,6 +46,7 @@ public class ArcadeStats
         StartingCycleModifier, // extra cycle multiplier you have at the beginning of the match. normally 0x, can be negative
         CycleMultIncrease, // how much the multiplier increases each full cycle. normally 0.2
         QuickDropSpeed, // the quick drop delay, normally 0.125
+        MoneyMult, // multiplier for money gained in AE. starts at 1x
     }
 
 
