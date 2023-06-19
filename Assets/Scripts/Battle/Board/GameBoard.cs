@@ -301,6 +301,7 @@ namespace Battle.Board {
             {
                 // if not in arcade endless, use default stats
                 boardStats = ArcadeStats.defaultStats;
+                Debug.Log(string.Join("\n",boardStats));
             }
             else 
             {
@@ -309,6 +310,8 @@ namespace Battle.Board {
                 Debug.Log("using AE stats");
                 
             }
+
+            // if (playerSide == 1) boardStats = ArcadeStats.defaultStats;
 
             boostPerCycleClear = (int) (boardStats[CycleMultIncrease] * 10);
             Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
