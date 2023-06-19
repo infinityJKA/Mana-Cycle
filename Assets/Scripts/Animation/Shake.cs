@@ -51,7 +51,7 @@ namespace Animation {
         }
 
         public void StartShake() {
-            if (shaking) transform.position = center;;
+            if (shaking) transform.position = center;
             StartShake(1);
         }
 
