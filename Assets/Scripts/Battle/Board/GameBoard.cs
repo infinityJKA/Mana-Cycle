@@ -308,7 +308,7 @@ namespace Battle.Board {
                 boardStats = ArcadeStats.playerStats;
             }
 
-            boostPerCycleClear = (int) (boardStats[Cycle_Mult_Increase] * 10);
+            boostPerCycleClear = (int) (boardStats[CycleMultIncrease] * 10);
             Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
 
             if (playerSide == 0) {
@@ -1459,7 +1459,7 @@ namespace Battle.Board {
 
                         totalSpellcasts++;
                         totalManaCleared += totalBlobMana;
-                        abilityManager.GainMana((int) (totalBlobMana * boardStats[Special_Gain_Mult]));
+                        abilityManager.GainMana((int) (totalBlobMana * boardStats[SpecialGainMult]));
 
                         highestCombo = Math.Max(highestCombo, chain);
                         highestCascade = Math.Max(highestCascade, cascade);
@@ -1488,7 +1488,7 @@ namespace Battle.Board {
 
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.
-                        int damage = (int)( (totalPointMult * damagePerMana) * chain * (Math.Pow(3,cascade) / 3f) * boardStats[Damage_Mult]);
+                        int damage = (int)( (totalPointMult * damagePerMana) * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult]);
 
                         highestSingleDamage = Math.Max(highestSingleDamage, damage);
 
@@ -1529,7 +1529,7 @@ namespace Battle.Board {
             PointerReposition();
         }
 
-        public int damagePerMana {get {return 10 + (int)((cycleLevel + boardStats[Starting_Cycle_Modifier]) * boostPerCycleClear);}}
+        public int damagePerMana {get {return 10 + (int)((cycleLevel + boardStats[StartingCycleModifier]) * boostPerCycleClear);}}
 
         IEnumerator CheckMidConvoAfterDelay() {
             yield return new WaitForSeconds(0.4f);

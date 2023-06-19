@@ -26,12 +26,12 @@ public class ArcadeStats
     // stat defaults, used in all other gamemodes
     public static Dictionary<Stat, float> defaultStats = new Dictionary<Stat, float>()
     {
-        {Stat.Damage_Mult, 1f},
-        {Stat.Starting_Special, 0f},
-        {Stat.Special_Gain_Mult, 1f},
-        {Stat.Starting_Cycle_Modifier, 0f}, 
-        {Stat.Cycle_Mult_Increase, 0.2f},
-        {Stat.Quick_Drop_Speed, 0.125f}, // not implemented yet
+        {Stat.DamageMult, 1f},
+        {Stat.StartingSpecial, 0f},
+        {Stat.SpecialGainMult, 1f},
+        {Stat.StartingCycleModifier, 0f}, 
+        {Stat.CycleMultIncrease, 0.2f},
+        {Stat.QuickDropSpeed, 0.125f}, // not implemented yet
 
     };
 
@@ -39,12 +39,12 @@ public class ArcadeStats
     // more types to be added if item concepts need them
     public enum Stat
     {
-        Damage_Mult, // damage multiplier 
-        Starting_Special, // how much meter you start with as a percent of max meter (0-1f)
-        Special_Gain_Mult, // multiplier for how much mana you gain
-        Starting_Cycle_Modifier, // extra cycle multiplier you have at the beginning of the match. normally 0x, can be negative
-        Cycle_Mult_Increase, // how much the multiplier increases each full cycle. normally 0.2
-        Quick_Drop_Speed, // the quick drop delay, normally 0.125
+        DamageMult, // damage multiplier 
+        StartingSpecial, // how much meter you start with as a percent of max meter (0-1f)
+        SpecialGainMult, // multiplier for how much mana you gain
+        StartingCycleModifier, // extra cycle multiplier you have at the beginning of the match. normally 0x, can be negative
+        CycleMultIncrease, // how much the multiplier increases each full cycle. normally 0.2
+        QuickDropSpeed, // the quick drop delay, normally 0.125
     }
 
 

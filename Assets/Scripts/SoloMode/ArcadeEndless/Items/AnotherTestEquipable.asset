@@ -10,14 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 034c5d9ed6c933747b0235628e1a5862, type: 3}
-  m_Name: HPUpgrade
+  m_Name: AnotherTestEquipable
   m_EditorClassIdentifier: 
-  itemName: HP+
-  description: Permanently increases your max HP by 250.
-  icon: {fileID: 21300000, guid: 78ca81de301aba147ac031e778df681e, type: 3}
-  useType: 2
+  itemName: Cool item
+  description: doubles damage but reduces hp by 1500. pretty awesome
+  icon: {fileID: 21300000, guid: 8ae4c3d0f0193434daa1ae92174bcbec, type: 3}
+  useType: 1
   effects:
   - type: 3
-    value: 0
-    key: 5
-  cost: 2000
+    value: 1
+    key: 0
+  - type: 2
+    value: -1500
+    key: 0
+  cost: 1
