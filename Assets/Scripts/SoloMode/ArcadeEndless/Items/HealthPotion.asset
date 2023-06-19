@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: HealthPotion
   m_EditorClassIdentifier: 
   itemName: Health Potion
-  description: Heals 10% of Max HP.
+  description: Heals 15% of Max HP.
   icon: {fileID: -2413806693520163455, guid: 2760c77e69b9401439d913b805b15e2f, type: 3}
   useType: 0
-  effectType: 0
-  effectValue: 0.1
+  effects:
+  - type: 0
+    value: 15
+    key: 0
   cost: 300

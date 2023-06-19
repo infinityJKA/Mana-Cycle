@@ -14,6 +14,9 @@ using Sound;
 using Battle.AI;
 using Achievements;
 
+// may be a bad idea to namespace this, could be changed later
+using static ArcadeStats.Stat;
+
 namespace Battle.Board {
     public class GameBoard : MonoBehaviour
     {
@@ -252,6 +255,9 @@ namespace Battle.Board {
 
         [SerializeField] public RngManager rngManager;
 
+        // dict for some game stats, set depending on mode
+        public Dictionary<ArcadeStats.Stat, float> boardStats;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -289,6 +295,21 @@ namespace Battle.Board {
             } else {
                 midLevelConvos = new List<MidLevelConversation>();
             }
+
+            // load stats dict
+            if (Storage.level == null || Storage.level.generateNextLevel || playerSide == 1)
+            {
+                // if not in arcade endless, use default stats
+                boardStats = ArcadeStats.defaultStats;
+            }
+            else 
+            {
+                // otherwise, use player stats
+                boardStats = ArcadeStats.playerStats;
+            }
+
+            boostPerCycleClear = (int) (boardStats[CycleMultIncrease] * 10);
+            Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
 
             if (playerSide == 0) {
                 // Debug.Log("stopping bgm");
@@ -411,7 +432,9 @@ namespace Battle.Board {
             }
 
             tilesInBlobs = new bool[height, width];
-        }
+
+            cycleLevelDisplay.Set(cycleLevel);
+        } // close Start()
 
         void InitBattler() {
             portrait.sprite = battler.sprite;
@@ -1436,7 +1459,7 @@ namespace Battle.Board {
 
                         totalSpellcasts++;
                         totalManaCleared += totalBlobMana;
-                        abilityManager.GainMana(totalBlobMana);
+                        abilityManager.GainMana((int) (totalBlobMana * boardStats[SpecialGainMult]));
 
                         highestCombo = Math.Max(highestCombo, chain);
                         highestCascade = Math.Max(highestCascade, cascade);
@@ -1465,7 +1488,7 @@ namespace Battle.Board {
 
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.
-                        int damage = (int)( (totalPointMult * damagePerMana) * chain * (Math.Pow(3,cascade) / 3f));
+                        int damage = (int)( (totalPointMult * damagePerMana) * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult]);
 
                         highestSingleDamage = Math.Max(highestSingleDamage, damage);
 
@@ -1506,7 +1529,7 @@ namespace Battle.Board {
             PointerReposition();
         }
 
-        public int damagePerMana {get {return 10 + cycleLevel*boostPerCycleClear;}}
+        public int damagePerMana {get {return 10 + (int)((cycleLevel + boardStats[StartingCycleModifier]) * boostPerCycleClear);}}
 
         IEnumerator CheckMidConvoAfterDelay() {
             yield return new WaitForSeconds(0.4f);
