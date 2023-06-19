@@ -8,6 +8,7 @@ using UnityEditor;
 
 using ConvoSystem;
 using Battle;
+using Random=UnityEngine.Random;
 
 namespace SoloMode {
     [CreateAssetMenu(fileName = "Level", menuName = "ManaCycle/Level")]
@@ -72,6 +73,7 @@ namespace SoloMode {
         public bool generateNextLevel = false;
         // reward amount to give in arcade endless
         [NonSerialized] public int rewardAmount = 0;
+        [NonSerialized] public Item itemReward = null;
 
         // dictates AIController values. 1 is hardest, 0 is worst
         [Range(0,1)]
@@ -174,7 +176,8 @@ namespace SoloMode {
         public void CalculateRewardAmount()
         {
             // to be balanced
-            rewardAmount = (int) (aiDifficulty / time * 150000);
+            // decrease amount if level has item reward set in generator
+            rewardAmount = (int) ((aiDifficulty / time * 150000) * (itemReward == null ? 1 : 0.5));
         }
     }
 

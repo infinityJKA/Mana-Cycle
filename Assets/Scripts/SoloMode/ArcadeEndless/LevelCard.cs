@@ -16,7 +16,9 @@ namespace SoloMode
         [SerializeField] TextMeshProUGUI timeText;
         [SerializeField] TextMeshProUGUI nameText;
         [SerializeField] TextMeshProUGUI descriptionText;
-        [SerializeField] TextMeshProUGUI rewardText;
+        [SerializeField] TextMeshProUGUI moneyRewardText;
+        [SerializeField] GameObject itemRewardObject;
+        [SerializeField] TextMeshProUGUI itemRewardText;
 
         TransitionScript transitionHandler;
 
@@ -31,7 +33,11 @@ namespace SoloMode
             timeText.text = "Time: " + Utils.FormatTime(level.time);
             nameText.text = level.levelName;
             descriptionText.text = level.description;
-            rewardText.text = "+" + level.rewardAmount;
+            moneyRewardText.text = "+" + level.rewardAmount;
+
+            if (level.itemReward != null) itemRewardText.text = "+" + level.itemReward.UseTypeToString() + " Item";
+            else itemRewardObject.SetActive(false);
+
         }
 
         public void LoadLevel()

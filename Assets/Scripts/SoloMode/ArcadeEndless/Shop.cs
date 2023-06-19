@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.UI;
 
 public class Shop : MonoBehaviour
 {
@@ -98,8 +99,9 @@ public class Shop : MonoBehaviour
 
         descriptionText.text = item.description;
         typeText.text = item.UseTypeToString();
-        if (ArcadeStats.inventory.ContainsKey(item)) ownedText.text = "" + ArcadeStats.inventory[item] + " owned";
+        if (ArcadeStats.inventory.ContainsKey(item)) ownedText.text = "" + (item.useType != Item.UseType.Equip ? ArcadeStats.inventory[item] : "Already") + " owned";
         else ownedText.text = item.useType == Item.UseType.UseOnObtain ? "" : "Unowned";
+
     }
 
     public void BuyItem(BaseEventData ev)
@@ -108,8 +110,10 @@ public class Shop : MonoBehaviour
         Item item = selection.GetComponent<ItemDisplay>().item;
 
         // Debug.Log(item.itemName + " purchase attempt");
+        // only buy 1 of each equipable
+        bool equipOwnedCheck = (item.useType == Item.UseType.Equip && ArcadeStats.inventory.ContainsKey(item) && ArcadeStats.inventory[item] > 0);
 
-        if (ArcadeStats.moneyAmount >= item.cost)
+        if (ArcadeStats.moneyAmount >= item.cost && !equipOwnedCheck)
         {
             // buy item
             // Debug.Log("purchase win");
@@ -124,6 +128,10 @@ public class Shop : MonoBehaviour
         {
             // cant buy item
             Debug.Log("purchase fail");
+            if (ArcadeStats.moneyAmount < item.cost) moneyDisplays[0].GetComponent<Animation.Shake>().StartShake();
+            if (equipOwnedCheck) ownedText.GetComponent<Animation.ColorFlash>().Flash(0.75f);
+            
+            
         }
 
     }
