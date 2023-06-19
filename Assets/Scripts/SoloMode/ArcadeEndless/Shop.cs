@@ -32,23 +32,26 @@ public class Shop : MonoBehaviour
         // add display prefabs for each item in shop inventory
         foreach (Item i in shopItems)
         {
-            ItemDisplay newDisp = Instantiate(itemDisplayPrefab.transform, itemDisplayParent.transform).gameObject.GetComponent<ItemDisplay>();
-            newDisp.item = i;
-            newDisp.showCost = true;
-            newDisp.windowObject = gameObject;
+            // Create a new item display & initialize its values
+            ItemDisplay itemDisp = Instantiate(itemDisplayPrefab.transform, itemDisplayParent.transform).gameObject.GetComponent<ItemDisplay>();
+            itemDisp.item = i;
+            itemDisp.showCost = true;
+            itemDisp.windowObject = gameObject;
 
             // add OnSelect functionality, RefreshInfo function
-            EventTrigger eTrigger = newDisp.GetComponent<EventTrigger>();
+            EventTrigger itemEventTrigger = itemDisp.GetComponent<EventTrigger>();
+
+            // select functionality
             EventTrigger.Entry selectEntry = new EventTrigger.Entry();
             selectEntry.eventID = EventTriggerType.Select;
-            selectEntry.callback.AddListener((data) => {MoveSelection((BaseEventData)data); });
-            eTrigger.triggers.Add(selectEntry);
+            selectEntry.callback.AddListener(ev => RefreshSelection(ev));
+            itemEventTrigger.triggers.Add(selectEntry);
 
             // add submit functionality
             EventTrigger.Entry submitEntry = new EventTrigger.Entry();
             submitEntry.eventID = EventTriggerType.Submit;
-            submitEntry.callback.AddListener((data) => {BuyItem((BaseEventData)data); });
-            eTrigger.triggers.Add(submitEntry);
+            submitEntry.callback.AddListener(ev => BuyItem(ev));
+            itemEventTrigger.triggers.Add(submitEntry);
         }
 
         // set selectOnOpen to first item in shop list
@@ -66,14 +69,14 @@ public class Shop : MonoBehaviour
             }
     }
 
-    public void MoveSelection(BaseEventData data)
+    public void RefreshSelection(BaseEventData ev)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
         Item item = selection.GetComponent<ItemDisplay>().item;
         // Debug.Log(data);
         // Debug.Log(this);
         // set item to first in list if not given
-        if (item == null) item = itemDisplayParent.transform.GetChild(0).gameObject.GetComponent<ItemDisplay>().item;
+        // if (item == null) item = itemDisplayParent.transform.GetChild(0).gameObject.GetComponent<ItemDisplay>().item;
 
         RefreshText();
 
@@ -99,7 +102,7 @@ public class Shop : MonoBehaviour
         else ownedText.text = item.useType == Item.UseType.UseOnObtain ? "" : "Unowned";
     }
 
-    public void BuyItem(BaseEventData data)
+    public void BuyItem(BaseEventData ev)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
         Item item = selection.GetComponent<ItemDisplay>().item;
