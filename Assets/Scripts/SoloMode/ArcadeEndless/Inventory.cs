@@ -57,13 +57,13 @@ public class Inventory : MonoBehaviour
             // add OnSelect functionality, RefreshInfo function
             EventTrigger.Entry selectEntry = new EventTrigger.Entry();
             selectEntry.eventID = EventTriggerType.Select;
-            selectEntry.callback.AddListener(data => OnMoveSelection(data));
+            selectEntry.callback.AddListener(ev => RefreshSelection(ev));
             itemEventTrigger.triggers.Add(selectEntry);
 
             // add submit functionality, use item
             EventTrigger.Entry submitEntry = new EventTrigger.Entry();
             submitEntry.eventID = EventTriggerType.Submit;
-            submitEntry.callback.AddListener(data => SelectCurrentItem(data));
+            submitEntry.callback.AddListener(ev => SelectCurrentItem(ev));
             itemEventTrigger.triggers.Add(submitEntry);
         }
 
@@ -89,7 +89,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void OnMoveSelection(BaseEventData data)
+    public void RefreshSelection(BaseEventData ev)
     {
         // GameObject selection = EventSystem.current.currentSelectedGameObject;
         // Item item = selection.GetComponent<ItemDisplay>().item;
@@ -127,7 +127,7 @@ public class Inventory : MonoBehaviour
         
     }
 
-    public void SelectCurrentItem(BaseEventData data)
+    public void SelectCurrentItem(BaseEventData ev)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
         // int selectionIndex = selection.transform.GetSiblingIndex();
