@@ -30,11 +30,11 @@ public class Shop : MonoBehaviour
     void Awake()
     {
         // add display prefabs for each item in shop inventory
-        foreach (Item i in shopItems)
+        foreach (Item item in shopItems)
         {
             // Create a new item display & initialize its values
             ItemDisplay itemDisp = Instantiate(itemDisplayPrefab.transform, itemDisplayParent.transform).gameObject.GetComponent<ItemDisplay>();
-            itemDisp.item = i;
+            itemDisp.item = item;
             itemDisp.showCost = true;
             itemDisp.windowObject = gameObject;
 

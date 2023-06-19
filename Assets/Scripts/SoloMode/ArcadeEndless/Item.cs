@@ -1,8 +1,10 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if (UNITY_EDITOR)
 using UnityEditor;
-using System;
+#endif
 
  [CreateAssetMenu(fileName = "Item", menuName = "ManaCycle/Item")]
 public class Item : ScriptableObject
@@ -44,57 +46,6 @@ public class Item : ScriptableObject
         /// key used if the effect needs access to the stats dict
         /// </summary>
         public ArcadeStats.Stat key;
-    }
-
-    [CustomPropertyDrawer(typeof(Effect))]
-    public class EffectDrawer : PropertyDrawer
-    {
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            var typeProperty = property.FindPropertyRelative("type");
-
-            // make property taller if the stat key box needs to be drawn
-            return typeProperty.enumNames[typeProperty.enumValueIndex].Equals(nameof(EffectType.AddToStat)) ? 40 : 20;
-        }
-
-        // draw property in rect
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            EditorGUI.BeginProperty(position, label, property);
-
-            // draw label
-            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
-
-            // declare rects
-            Rect typeRect;
-            Rect valRect;
-
-            var typeProperty = property.FindPropertyRelative("type");
-            // Debug.Log(typeProperty.enumNames[typeProperty.enumValueIndex]);
-            if (typeProperty.enumNames[typeProperty.enumValueIndex].Equals(nameof(EffectType.AddToStat)))
-            {
-                // when dict key is needed, show key enum selector in gui
-                Rect statRect = new Rect(position.x, position.y + 20, position.width/2, position.height/2);
-                typeRect = new Rect(position.x, position.y, position.width/2, position.height/2);
-                valRect = new Rect(position.x*2f, position.y + 20, 50, position.height/2);
-
-                // draw fields 
-                EditorGUI.PropertyField(typeRect, property.FindPropertyRelative("type"), GUIContent.none);
-                EditorGUI.PropertyField(valRect, property.FindPropertyRelative("value"), GUIContent.none);
-                EditorGUI.PropertyField(statRect, property.FindPropertyRelative("key"), GUIContent.none);
-            }
-            else
-            {
-                typeRect = new Rect(position.x, position.y, position.width/2, position.height);
-                valRect = new Rect(position.x*2f, position.y, 50, position.height);
-
-                EditorGUI.PropertyField(typeRect, property.FindPropertyRelative("type"), GUIContent.none);
-                EditorGUI.PropertyField(valRect, property.FindPropertyRelative("value"), GUIContent.none);
-            }
-
-            EditorGUI.EndProperty();
-        }
-
     }
 
     /// <summary>
@@ -192,4 +143,55 @@ public class Item : ScriptableObject
         Storage.hp = Math.Min(Storage.hp + gain, ArcadeStats.maxHp);
     }
 
+    #if (UNITY_EDITOR)
+    [CustomPropertyDrawer(typeof(Effect))]
+    public class EffectDrawer : PropertyDrawer
+    {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            var typeProperty = property.FindPropertyRelative("type");
+
+            // make property taller if the stat key box needs to be drawn
+            return typeProperty.enumNames[typeProperty.enumValueIndex].Equals(nameof(EffectType.AddToStat)) ? 40 : 20;
+        }
+
+        // draw property in rect
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            EditorGUI.BeginProperty(position, label, property);
+
+            // draw label
+            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+
+            // declare rects
+            Rect typeRect;
+            Rect valRect;
+
+            var typeProperty = property.FindPropertyRelative("type");
+            // Debug.Log(typeProperty.enumNames[typeProperty.enumValueIndex]);
+            if (typeProperty.enumNames[typeProperty.enumValueIndex].Equals(nameof(EffectType.AddToStat)))
+            {
+                // when dict key is needed, show key enum selector in gui
+                Rect statRect = new Rect(position.x, position.y + 20, position.width / 2, position.height / 2);
+                typeRect = new Rect(position.x, position.y, position.width / 2, position.height / 2);
+                valRect = new Rect(position.x * 2f, position.y + 20, 50, position.height / 2);
+
+                // draw fields 
+                EditorGUI.PropertyField(typeRect, property.FindPropertyRelative("type"), GUIContent.none);
+                EditorGUI.PropertyField(valRect, property.FindPropertyRelative("value"), GUIContent.none);
+                EditorGUI.PropertyField(statRect, property.FindPropertyRelative("key"), GUIContent.none);
+            }
+            else
+            {
+                typeRect = new Rect(position.x, position.y, position.width / 2, position.height);
+                valRect = new Rect(position.x * 2f, position.y, 50, position.height);
+
+                EditorGUI.PropertyField(typeRect, property.FindPropertyRelative("type"), GUIContent.none);
+                EditorGUI.PropertyField(valRect, property.FindPropertyRelative("value"), GUIContent.none);
+            }
+
+            EditorGUI.EndProperty();
+        }
+    }
+    #endif
 }
