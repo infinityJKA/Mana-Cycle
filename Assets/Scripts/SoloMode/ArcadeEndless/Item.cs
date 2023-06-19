@@ -9,7 +9,7 @@ public class Item : ScriptableObject
     /// <summary>
     /// name of item shown in shop and player inventory
     /// </summary>
-    public string itemName = "Unamed Item";
+    public string itemName = "Unnamed Item";
 
     /// <summary>
     /// description of what the item does

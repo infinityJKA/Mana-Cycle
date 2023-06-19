@@ -21,7 +21,7 @@ namespace SoloMode
             {
                 portrait.sprite = Storage.level.battler.sprite;
 
-                AchievementHandler.Instance.UnlockAchievement("ArcadeWin_" + Storage.level.battler.name);
+                AchievementHandler.Instance.UnlockAchievement("ArcadeWin" + Storage.level.battler.name);
             }
         }
 

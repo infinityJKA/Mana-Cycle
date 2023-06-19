@@ -14,8 +14,8 @@ namespace SoloMode {
         public ObjectiveCondition condition;
 
         /** Value, depends on the condition */
-        public int value;
-        /** String value, can contain comma seperatesd lists, used by level name / battler name objectives **/
+        public int value = 0;
+        /** String value, can contain comma seperated lists, used by level name / battler name objectives **/
         public string stringValue = "Item1, Item2";
         /** Bool value, used by defeated/won objective **/
         public bool boolValue = true;

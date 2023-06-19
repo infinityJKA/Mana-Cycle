@@ -7,7 +7,7 @@ namespace Achievements
     {
         [SerializeField] TMPro.TextMeshProUGUI titleLabel;
 
-        [SerializeField] TMPro.TextMeshProUGUI descLabel; // only used in achievements menu
+        [SerializeField] TMPro.TextMeshProUGUI descLabel;
 
         [SerializeField] Image backgroundImage, iconImage;
 
