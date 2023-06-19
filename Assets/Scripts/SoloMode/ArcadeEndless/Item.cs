@@ -26,15 +26,21 @@ public class Item : ScriptableObject
     /// </summary>
     public UseType useType;
 
-    /// <summary>
-    /// what this item does when interacted with
-    /// </summary>
-    public EffectType effectType;
+    [Serializable]
+    class Effect
+    {
+        /// <summary>
+        /// what this item does when interacted with
+        /// </summary>
+        public EffectType type;
 
-    /// <summary>
-    /// value used by some effects, like hp recovery amount
-    /// </summary>
-    public float effectValue;
+        /// <summary>
+        /// value used by some effects, like hp recovery amount
+        /// </summary>
+        public float value;
+    }
+
+    [SerializeField] List<Effect> effects;
 
     /// <summary>
     /// cost to purchase in shop
@@ -91,22 +97,31 @@ public class Item : ScriptableObject
             
         }
 
-        switch (effectType)
+        foreach (Effect e in effects)
         {
-            case EffectType.IncreaseHpPercent: GainHP((int) (ArcadeStats.maxHp * effectValue)); break;
-            case EffectType.IncreaseHpFlat: GainHP ((int) effectValue); break;
-            case EffectType.IncreaseMaxHP: ArcadeStats.maxHp += (int) effectValue; /*GainHP((int) effectValue);*/ break;
-            default: Debug.Log("Effect Type Not Handled! :("); break;
+            switch (e.type)
+            {
+                case EffectType.IncreaseHpPercent: GainHP((int) (ArcadeStats.maxHp * e.value)); break;
+                case EffectType.IncreaseHpFlat: GainHP ((int) e.value); break;
+                case EffectType.IncreaseMaxHP: ArcadeStats.maxHp += (int) e.value; /*GainHP((int) effectValue);*/ break;
+                default: Debug.Log("Effect Type Not Handled! :("); break;
+            }
         }
+
     }
 
     public void UnequipEffect()
     {
-        switch (effectType)
+
+        foreach (Effect e in effects)
         {
-            case EffectType.IncreaseMaxHP: ArcadeStats.maxHp -= (int) effectValue; break;
-            default: Debug.Log("Unhandled Unequip"); break; // note some effects don't need to be handled here as they don't really make sense to be on an equipable
+            switch (e.type)
+            {
+                case EffectType.IncreaseMaxHP: ArcadeStats.maxHp -= (int) e.value; break;
+                default: Debug.Log("Unhandled Unequip"); break; // note some effects don't need to be handled here as they don't really make sense to be on an equipable
+            }
         }
+
     }
 
     public void GainHP(int gain)
