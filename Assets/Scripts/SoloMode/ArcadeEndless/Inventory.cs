@@ -74,8 +74,10 @@ public class Inventory : MonoBehaviour
 
     private void RefreshItemList()
     {
-        foreach (ItemDisplay itemDisp in itemDisplayParent.transform)
+        foreach (Transform itemDispTransform in itemDisplayParent.transform)
         {
+            ItemDisplay itemDisp = itemDispTransform.gameObject.GetComponent<ItemDisplay>();
+             
             if (!itemDisp) continue;
             if (ArcadeStats.inventory[itemDisp.item] <= 0)
             {
