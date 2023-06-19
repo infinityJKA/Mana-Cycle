@@ -125,7 +125,7 @@ public class Inventory : MonoBehaviour
         
     }
 
-    public void SelectItem(BaseEventData data)
+    public void SelectCurrentItem(BaseEventData data)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
         // int selectionIndex = selection.transform.GetSiblingIndex();

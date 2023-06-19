@@ -45,7 +45,6 @@ namespace Battle {
             if (ReachedDestination()) {
                 if (mode == Mode.Countering) {
                     // Counter incoming
-                    // ive just started making fields public idc at this point
                     int residualDamage = target.hpBar.CounterIncoming(damage);
 
                     // If there is any leftover damage, travel to enemy board and damage them
