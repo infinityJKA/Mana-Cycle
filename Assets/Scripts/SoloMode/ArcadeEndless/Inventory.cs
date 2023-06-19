@@ -129,7 +129,7 @@ public class Inventory : MonoBehaviour
                 item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;
 
             case Item.UseType.Equip: 
-                break; // not implemented yet
+                item.ActivateEffect(); break;
 
             default: 
                 item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;

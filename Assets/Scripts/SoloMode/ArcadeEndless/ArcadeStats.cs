@@ -12,6 +12,9 @@ public class ArcadeStats
     // player's items in arcade endless. key is item, value is amount owned
     public static Dictionary<Item, int> inventory;
 
+    // items the player has equiped. items are not removed from inventory when equip
+    public static List<Item> equipedItems;
+
     // the stats of the player, to be modified in AE
     public static Dictionary<Stat, float> playerStats = new Dictionary<Stat, float>();
 
