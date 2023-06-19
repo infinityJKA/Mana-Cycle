@@ -14,6 +14,7 @@ public class Inventory : MonoBehaviour
     // description and type of hovered item
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private TextMeshProUGUI typeText;
+    [SerializeField] private TextMeshProUGUI equipText;
 
     // hp bar and text used to show hp in inv
     [SerializeField] private Battle.Board.HealthBar hpBar;
@@ -113,6 +114,8 @@ public class Inventory : MonoBehaviour
             descriptionText.text = item.description;
             typeText.text = item.UseTypeToString();
         }
+
+        equipText.text = string.Format("Equiped: {0} / {1}", ArcadeStats.usedEquipSlots, ArcadeStats.maxEquipSlots);
         
     }
 

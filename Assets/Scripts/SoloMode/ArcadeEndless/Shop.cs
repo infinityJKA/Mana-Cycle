@@ -16,7 +16,6 @@ public class Shop : MonoBehaviour
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private TextMeshProUGUI typeText;
     [SerializeField] private TextMeshProUGUI ownedText;
-
     [SerializeField] private GameObject descriptionObject;
 
     // every object in scene that displays money count

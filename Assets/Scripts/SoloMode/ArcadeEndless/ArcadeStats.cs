@@ -15,6 +15,11 @@ public class ArcadeStats
     // items the player has equiped. items are not removed from inventory when equip
     public static List<Item> equipedItems;
 
+    // max equipables you can have on at once. can be increased during gameplay
+    public static int maxEquipSlots = 3;
+
+    public static int usedEquipSlots = 0;
+
     // the stats of the player, to be modified in AE
     public static Dictionary<Stat, float> playerStats = new Dictionary<Stat, float>();
 

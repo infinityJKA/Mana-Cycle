@@ -52,6 +52,8 @@ namespace SoloMode
                 ArcadeStats.inventory = new Dictionary<Item, int>();
                 ArcadeStats.equipedItems = new List<Item>();
                 ArcadeStats.moneyAmount = 0;
+                ArcadeStats.maxEquipSlots = 3;
+                ArcadeStats.usedEquipSlots = 0;
 
                 ArcadeStats.playerStats = ArcadeStats.defaultStats;
             }

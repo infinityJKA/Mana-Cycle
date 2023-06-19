@@ -74,17 +74,21 @@ public class Item : ScriptableObject
         {
             if (!ArcadeStats.equipedItems.Contains(this))
             {
+                // return early if trying to equip over max slots
+                if (ArcadeStats.usedEquipSlots >= ArcadeStats.maxEquipSlots) return;
                 // equiping the item
                 ArcadeStats.equipedItems.Add(this);
+                ArcadeStats.usedEquipSlots = ArcadeStats.equipedItems.Count;
             }
             else
             {
                 // unequip the item, note only one copy of an item should be in list at a time
                 ArcadeStats.equipedItems.Remove(this);
                 UnequipEffect();
+                ArcadeStats.usedEquipSlots = ArcadeStats.equipedItems.Count;
                 return;
             }
-
+            
         }
 
         switch (effectType)
