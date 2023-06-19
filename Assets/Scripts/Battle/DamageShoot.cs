@@ -115,7 +115,7 @@ namespace Battle {
                 destination = target.hpBar.shieldObject.transform.position;
             } else {
                 mode = Mode.Attacking;
-                destination = target.enemyBoard.hpBar.DamageQueue[0].transform.position;
+                destination = target.hpBar.DamageQueue[0].transform.position;
             }
 
             speed = initialSpeed;

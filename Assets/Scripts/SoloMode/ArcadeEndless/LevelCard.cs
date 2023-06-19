@@ -22,11 +22,11 @@ namespace SoloMode
 
         void Start()
         {
-            setCardInfo();
+            SetCardInfo();
             transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
         }
 
-        public void setCardInfo()
+        public void SetCardInfo()
         {
             timeText.text = "Time: " + Utils.FormatTime(level.time);
             nameText.text = level.levelName;

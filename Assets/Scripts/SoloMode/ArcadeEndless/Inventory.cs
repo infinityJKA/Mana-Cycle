@@ -39,30 +39,31 @@ public class Inventory : MonoBehaviour
         }
 
         // add display prefabs for each item in inventory
-        foreach (var kvp in ArcadeStats.inventory)
+        foreach (var itemKvp in ArcadeStats.inventory)
         {
-            Item i = kvp.Key;
+            Item item = itemKvp.Key;
 
             // if 0 of this item is owned, don't show it in inventory
-            if (ArcadeStats.inventory[i] <= 0) continue;
+            if (ArcadeStats.inventory[item] <= 0) continue;
 
-            ItemDisplay newDisp = Instantiate(itemDisplayPrefab.transform, itemDisplayParent.transform).gameObject.GetComponent<ItemDisplay>();  
-            newDisp.item = i;
-            newDisp.showOwnedAmount = true;
-            newDisp.windowObject = gameObject;
+            ItemDisplay itemDisp = Instantiate(itemDisplayPrefab.transform, itemDisplayParent.transform).gameObject.GetComponent<ItemDisplay>();  
+            itemDisp.item = item;
+            itemDisp.showOwnedAmount = true;
+            itemDisp.windowObject = gameObject;
+
+            EventTrigger itemEventTrigger = itemDisp.GetComponent<EventTrigger>();
 
             // add OnSelect functionality, RefreshInfo function
-            EventTrigger eTrigger = newDisp.GetComponent<EventTrigger>();
             EventTrigger.Entry selectEntry = new EventTrigger.Entry();
             selectEntry.eventID = EventTriggerType.Select;
-            selectEntry.callback.AddListener((data) => {MoveSelection((BaseEventData)data); });
-            eTrigger.triggers.Add(selectEntry);
+            selectEntry.callback.AddListener(data => OnMoveSelection(data));
+            itemEventTrigger.triggers.Add(selectEntry);
 
             // add submit functionality, use item
             EventTrigger.Entry submitEntry = new EventTrigger.Entry();
             submitEntry.eventID = EventTriggerType.Submit;
-            submitEntry.callback.AddListener((data) => {SelectItem((BaseEventData)data); });
-            eTrigger.triggers.Add(submitEntry);
+            submitEntry.callback.AddListener(data => SelectCurrentItem(data));
+            itemEventTrigger.triggers.Add(submitEntry);
         }
 
         // we've reset all item display prefabs, so we need to set selection again. use sibling index to keep selection in the same place
@@ -72,15 +73,20 @@ public class Inventory : MonoBehaviour
 
     private void RefreshItemList()
     {
-        foreach (Transform t in itemDisplayParent.transform)
+        foreach (ItemDisplay itemDisp in itemDisplayParent.transform)
         {
-            ItemDisplay disp = t.gameObject.GetComponent<ItemDisplay>();
-            disp.Refresh();
-            if (ArcadeStats.inventory[disp.item] <= 0) BuildItemList();
+            if (!itemDisp) continue;
+            if (ArcadeStats.inventory[itemDisp.item] <= 0)
+            {
+                // entire list refresh needed; rebuild the list which will show the refreshed values
+                BuildItemList();
+                return;
+            }
+            itemDisp.Refresh();
         }
     }
 
-    public void MoveSelection(BaseEventData data)
+    public void OnMoveSelection(BaseEventData data)
     {
         // GameObject selection = EventSystem.current.currentSelectedGameObject;
         // Item item = selection.GetComponent<ItemDisplay>().item;
@@ -104,22 +110,17 @@ public class Inventory : MonoBehaviour
             descriptionObject.SetActive(false);
             return;
         }
-        else descriptionObject.SetActive(true);
 
+        descriptionObject.SetActive(true);
         Item item = disp.item;
-
-        if (disp != null)
-        {
-            descriptionText.text = item.description;
-            typeText.text = item.UseTypeToString();
-        }
-        
+        descriptionText.text = item.description;
+        typeText.text = item.UseTypeToString();
     }
 
-    public void SelectItem(BaseEventData data)
+    public void SelectCurrentItem(BaseEventData data)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
-        int selectionIndex = selection.transform.GetSiblingIndex(); 
+        // int selectionIndex = selection.transform.GetSiblingIndex();
         Item item = selection.GetComponent<ItemDisplay>().item;
 
         // Using item
@@ -140,18 +141,18 @@ public class Inventory : MonoBehaviour
 
     }
 
-    private IEnumerator SetSelectedItem(int i)
+    private IEnumerator SetSelectedItem(int index)
     {
         yield return new WaitForEndOfFrame();
 
         // try to select item in the same place as prev. selection if it no longer exists, select one above. if no items, select close button
         try
         {
-            EventSystem.current.SetSelectedGameObject(itemDisplayParent.transform.GetChild(i).gameObject);
+            EventSystem.current.SetSelectedGameObject(itemDisplayParent.transform.GetChild(index).gameObject);
         }
         catch
         {
-            if (itemDisplayParent.transform.childCount < 0) EventSystem.current.SetSelectedGameObject(itemDisplayParent.transform.GetChild(i-1).gameObject);
+            if (itemDisplayParent.transform.childCount < 0) EventSystem.current.SetSelectedGameObject(itemDisplayParent.transform.GetChild(index-1).gameObject);
             else EventSystem.current.SetSelectedGameObject(GetComponent<WindowPannel>().selectOnOpen);
         }
         
@@ -159,7 +160,7 @@ public class Inventory : MonoBehaviour
     }
 
     // used by any script that gives player items, like shop or level rewards (soon)
-    public static void AddItem(Item item)
+    public static void ObtainItem(Item item)
     {
         if (item.useType == Item.UseType.UseOnObtain)
         {

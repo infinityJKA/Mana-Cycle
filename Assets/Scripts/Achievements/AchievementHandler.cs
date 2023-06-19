@@ -46,15 +46,6 @@ namespace Achievements
             {
                 notification.ShowAchievement(achievementNotifyQueue.Dequeue());
             }
-
-            if (Input.GetKeyDown(KeyCode.U))
-            {
-                UnlockAchievement(database.achievements[1]);
-            }
-            if (Input.GetKeyDown(KeyCode.I))
-            {
-                UnlockAchievement(database.achievements[2]);
-            }
         }
 
         /// <summary>
@@ -97,7 +88,7 @@ namespace Achievements
                 // skip if already unlocked
                 if (achievement.unlocked) continue;
 
-                // If objectives list is empty do not unlcok it - it probably has to be unloced via another script
+                // If objectives list is empty do not unlock it - it must be unlocked via another script
                 if (achievement.requirements.Count == 0) continue;
 
                 // check all objectives

@@ -113,7 +113,7 @@ public class Shop : MonoBehaviour
             // Debug.Log("purchase win");
 
             ArcadeStats.moneyAmount -= item.cost;
-            Inventory.AddItem(item);
+            Inventory.ObtainItem(item);
             // update money counters
             RefreshAllDisplays();
             RefreshText();
