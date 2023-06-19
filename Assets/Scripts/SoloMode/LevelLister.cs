@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 using TMPro;
 
@@ -13,8 +12,6 @@ using UnityEditor;
 namespace SoloMode {
     public class LevelLister : MonoBehaviour
     {
-        // morgan please comment your code in the future :(
-
         /** Conversation handler, to run conversation when level is selected */
         [SerializeField] private ConvoHandler convoHandler;
 
@@ -76,11 +73,11 @@ namespace SoloMode {
         // Transform of all pre-computed lists of levels, computed on start
         [SerializeField] protected Transform levelTabTransform;
         // Prefab containing a listed level - default text is a flavor line
-        [SerializeField] private TextMeshProUGUI listedLevelPrefab;
+        [SerializeField] private GameObject listedLevelPrefab;
         // Prefab for the container of all the listed levels in a tab
         [SerializeField] private GameObject tabLevelsPrefab;
         // Prefab containing the name of a tab
-        [SerializeField] private TextMeshProUGUI tabNamePrefab;
+        [SerializeField] private GameObject tabNamePrefab;
         // Used in mobile mode. Tab is centered instead of hugging the edge of the solo level menu
         [SerializeField] private bool centerTab;
         // If the target color of tabs should be animated instead of instantly set.
@@ -254,8 +251,8 @@ namespace SoloMode {
             // tabText.text = newTabText;
 
             // Generate each tab
-            foreach (Transform child in tabTransform) DestroyImmediate(child.gameObject);
-            foreach (Transform child in levelTabTransform) DestroyImmediate(child.gameObject);
+            foreach (Transform child in tabTransform) Destroy(child.gameObject);
+            foreach (Transform child in levelTabTransform) Destroy(child.gameObject);
 
             tabTexts = new TextMeshProUGUI[tabs.Length];
             if (animateTabColors) {
@@ -268,7 +265,7 @@ namespace SoloMode {
             for (int t=0; t<tabs.Length; t++) {
                 SoloMenuTab tab = tabs[t];
 
-                var tabName = Instantiate<TextMeshProUGUI>(tabNamePrefab, tabTransform);
+                var tabName = Instantiate(tabNamePrefab, tabTransform).GetComponent<TextMeshProUGUI>();
                 tabTexts[t] = tabName;
                 if (animateTabColors) {
                     tabColors[t] = tabColor;
@@ -293,11 +290,11 @@ namespace SoloMode {
                 for (int i = 0; i < tab.levelsList.Length; i++) {
                     Level level = tab.levelsList[i];
 
-                    var listedLevel = Instantiate<TextMeshProUGUI>(listedLevelPrefab, tabLevelsObject.transform);
-                    listedLevel.rectTransform.localPosition = offset;
+                    var listedLevel = Instantiate(listedLevelPrefab, tabLevelsObject.transform);
+                    listedLevel.transform.localPosition = offset;
 
                     bool selected = i == selectedLevelIndexes[selectedTabIndex];
-                    RefreshListedLevelText(level, listedLevel, selected);
+                    RefreshListedLevelText(level, listedLevel.GetComponent<TextMeshProUGUI>(), selected);
 
                     if (levelsClickable) {
                         var button = listedLevel.gameObject.GetComponent<UnityEngine.UI.Button>();
@@ -327,7 +324,7 @@ namespace SoloMode {
 
         void MakeFlavorLines(Transform parent, ref Vector2 offset) {
             for (int i=0; i<flavorLineCount; i++) {
-                var flavorLine = Instantiate(listedLevelPrefab, parent);
+                var flavorLine = Instantiate(listedLevelPrefab, parent).GetComponent<TextMeshProUGUI>();
                 if (levelsClickable) flavorLine.gameObject.GetComponent<UnityEngine.UI.Button>().enabled = false;
                 flavorLine.color = levelColor;
                 flavorLine.rectTransform.localPosition = offset;

@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEditor;
 
 namespace Battle {
     [CreateAssetMenu(fileName = "Battler", menuName = "ManaCycle/Battler")]
