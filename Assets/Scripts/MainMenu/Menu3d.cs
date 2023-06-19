@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
+using UnityEngine.InputSystem;
 
 namespace MainMenu {
     /// <summary>
@@ -41,15 +42,15 @@ namespace MainMenu {
 
         [SerializeField] private bool mobile;
 
+        // [SerializeField] PlayerInput playerInput;
+
         // Start is called before the first frame update
         void Start()
         {
             // Select the last item selected by the player in previous menu. Defaults to solo mode button if game was just launched
-            if (!mobile) EventSystem.current.SetSelectedGameObject( buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject );
+            // if (!mobile) EventSystem.current.SetSelectedGameObject( buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject );
 
             UpdateTip();
-
-            versionText.text = "v"+Application.version;
         }
 
         // Update is called once per frame
@@ -153,6 +154,13 @@ namespace MainMenu {
         public void UpdateTip()
         {
             tipText.text = String.Format("[Arrow Keys] to move cursor\n[{0}] to select", Utils.KeySymbol(inputScripts[0].Cast));
+        }
+
+        private void OnValidate()
+        {
+            // playerInput = GetComponent<PlayerInput>();
+
+            versionText.text = "v" + Application.version;
         }
     }
 }

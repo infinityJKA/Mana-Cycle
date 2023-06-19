@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace MainMenu {
@@ -7,9 +8,11 @@ namespace MainMenu {
     /// </summary>
     public class SettingsMenu : MonoBehaviour
     {
-        [SerializeField] private InputScript inputScript;
         [SerializeField] private Toggle ghostPieceToggle;
         [SerializeField] private Button closeButton;
+        [SerializeField] public GameObject achievementsButton;
+
+        [SerializeField] private PlayerInput playerInput;
         
         void Start() {
             if (ghostPieceToggle) {
@@ -20,7 +23,7 @@ namespace MainMenu {
 
         void Update()
         {
-            if (Input.GetKeyDown(inputScript.Pause)) {
+            if (playerInput.actions["Cancel"].WasPressedThisFrame()) {
                 closeButton.onClick.Invoke();
             }
         }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace MainMenu {
@@ -12,8 +13,8 @@ namespace MainMenu {
         [SerializeField] private Image currentImg;
         [SerializeField] private TMPro.TextMeshProUGUI pageText;
 
-        [SerializeField] private InputScript inputScript;
-        [SerializeField] private UnityEngine.UI.Button closeButton;
+        [SerializeField] private PlayerInput playerInput;
+        [SerializeField] private Button closeButton;
 
         public void Init()
         {
@@ -23,7 +24,7 @@ namespace MainMenu {
 
         void Update()
         {
-            if (Input.GetKeyDown(inputScript.Pause)) {
+            if (playerInput.actions["Cancel"].WasPressedThisFrame()) {
                 closeButton.onClick.Invoke();
             }
         }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 namespace MainMenu {
     /// <summary>
@@ -11,8 +12,8 @@ namespace MainMenu {
     /// </summary>
     public class AchievementsMenu : MonoBehaviour
     {
-        [SerializeField] private List<InputScript> inputScripts;
-        [SerializeField] private GameObject settingsWindow;
+        [SerializeField] private PlayerInput input;
+        [SerializeField] private SettingsMenu settingsWindow;
 
         [SerializeField] public AchievementNotification achievementPrefab;
 
@@ -26,37 +27,26 @@ namespace MainMenu {
 
         public void Update()
         {
-            foreach (InputScript inputScript in inputScripts)
+            if (input.actions["Cancel"].WasPressedThisFrame())
             {
-                if (Input.GetKeyDown(inputScript.Pause))
-                {
-                    HideMenu();
-                    return;
-                }
-
-                if (Input.GetKey(inputScript.Down))
-                {
-                    scrollRect.verticalNormalizedPosition -= scrollSpeed * Time.deltaTime;
-                }
-
-                if (Input.GetKey(inputScript.Up))
-                {
-                    scrollRect.verticalNormalizedPosition += scrollSpeed * Time.deltaTime;
-                }
+                HideMenu();
+                return;
             }
         }
 
         public void ShowMenu()
         {
-            settingsWindow.SetActive(false);
+            settingsWindow.gameObject.SetActive(false);
             gameObject.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(scrollRect.gameObject);
             LoadAchievementsTable();
         }
 
         public void HideMenu()
         {
             gameObject.SetActive(false);
-            settingsWindow.SetActive(true);
+            settingsWindow.gameObject.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(settingsWindow.achievementsButton);
         }
 
         public void LoadAchievementsTable()
