@@ -55,7 +55,7 @@ namespace SoloMode
                 ArcadeStats.maxEquipSlots = 3;
                 ArcadeStats.usedEquipSlots = 0;
 
-                ArcadeStats.playerStats = ArcadeStats.defaultStats;
+                ArcadeStats.playerStats = new Dictionary<ArcadeStats.Stat, float>(ArcadeStats.defaultStats);
             }
 
             if (Storage.nextLevelChoices != null)

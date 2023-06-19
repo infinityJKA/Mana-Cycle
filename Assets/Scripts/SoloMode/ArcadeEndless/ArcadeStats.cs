@@ -35,6 +35,9 @@ public class ArcadeStats
 
     };
 
+    // the stats of the player, to be modified in AE
+    public static Dictionary<Stat, float> playerStats = new Dictionary<Stat, float>(defaultStats);
+
     // types of stats / multipliers to be applied in gameboard scene
     // more types to be added if item concepts need them
     public enum Stat
