@@ -12,31 +12,39 @@ public class ArcadeStats
     // player's items in arcade endless. key is item, value is amount owned
     public static Dictionary<Item, int> inventory;
 
+    // items the player has equiped. items are not removed from inventory when equip
+    public static List<Item> equipedItems;
+
+    // max equipables you can have on at once. can be increased during gameplay
+    public static int maxEquipSlots = 3;
+
+    public static int usedEquipSlots = 0;
+
     // the stats of the player, to be modified in AE
     public static Dictionary<Stat, float> playerStats = new Dictionary<Stat, float>();
 
     // stat defaults, used in all other gamemodes
-    // TODO GameBoard doesn't actually read from this yet
     public static Dictionary<Stat, float> defaultStats = new Dictionary<Stat, float>()
     {
-        {Stat.Damage_Mult, 1f},
-        {Stat.Starting_Special, 0f},
-        {Stat.Special_Gain_Mult, 1f},
-        {Stat.Starting_Cycle_Mult, 1f},
-        {Stat.Cycle_Mult_Increase, 2f},
-        {Stat.Quick_Drop_Speed, 2f},
+        {Stat.DamageMult, 1f},
+        {Stat.StartingSpecial, 0f},
+        {Stat.SpecialGainMult, 1f},
+        {Stat.StartingCycleModifier, 0f}, 
+        {Stat.CycleMultIncrease, 0.2f},
+        {Stat.QuickDropSpeed, 0.125f}, // not implemented yet
 
     };
 
     // types of stats / multipliers to be applied in gameboard scene
+    // more types to be added if item concepts need them
     public enum Stat
     {
-        Damage_Mult, // damage multiplier 
-        Starting_Special, // how much meter you start with as a percent of max meter (0-1f)
-        Special_Gain_Mult, // multiplier for how much mana you gain
-        Starting_Cycle_Mult, // the cycle multiplier you have at the beginning of the match. normally 1x
-        Cycle_Mult_Increase, // how much the multiplier increases each full cycle.
-        Quick_Drop_Speed, // the quick drop delay, normally 0.125
+        DamageMult, // damage multiplier 
+        StartingSpecial, // how much meter you start with as a percent of max meter (0-1f)
+        SpecialGainMult, // multiplier for how much mana you gain
+        StartingCycleModifier, // extra cycle multiplier you have at the beginning of the match. normally 0x, can be negative
+        CycleMultIncrease, // how much the multiplier increases each full cycle. normally 0.2
+        QuickDropSpeed, // the quick drop delay, normally 0.125
     }
 
 

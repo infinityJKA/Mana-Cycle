@@ -14,6 +14,7 @@ public class Inventory : MonoBehaviour
     // description and type of hovered item
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private TextMeshProUGUI typeText;
+    [SerializeField] private TextMeshProUGUI equipText;
 
     // hp bar and text used to show hp in inv
     [SerializeField] private Battle.Board.HealthBar hpBar;
@@ -113,11 +114,18 @@ public class Inventory : MonoBehaviour
 
         descriptionObject.SetActive(true);
         Item item = disp.item;
-        descriptionText.text = item.description;
-        typeText.text = item.UseTypeToString();
+
+        if (disp != null)
+        {
+            descriptionText.text = item.description;
+            typeText.text = item.UseTypeToString();
+        }
+
+        equipText.text = string.Format("Equiped: {0} / {1}", ArcadeStats.usedEquipSlots, ArcadeStats.maxEquipSlots);
+        
     }
 
-    public void SelectCurrentItem(BaseEventData data)
+    public void SelectItem(BaseEventData data)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
         // int selectionIndex = selection.transform.GetSiblingIndex();
@@ -130,7 +138,7 @@ public class Inventory : MonoBehaviour
                 item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;
 
             case Item.UseType.Equip: 
-                break; // not implemented yet
+                item.ActivateEffect(); break;
 
             default: 
                 item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;

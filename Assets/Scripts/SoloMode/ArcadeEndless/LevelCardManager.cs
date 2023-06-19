@@ -43,13 +43,19 @@ namespace SoloMode
             }
             
             // if first match, init player stats and keep hp (determined by previous level) within bounds
-            if (Storage.level != null && Storage.level.GetBehindCount() == 0)
+            // second null check is for debug
+            if ((Storage.level != null && Storage.level.GetBehindCount() == 0) || Storage.level == null)
             {
                 ArcadeStats.maxHp = 2000;
                 Storage.hp = Mathf.Clamp(Storage.hp, 100, ArcadeStats.maxHp);
 
                 ArcadeStats.inventory = new Dictionary<Item, int>();
+                ArcadeStats.equipedItems = new List<Item>();
                 ArcadeStats.moneyAmount = 0;
+                ArcadeStats.maxEquipSlots = 3;
+                ArcadeStats.usedEquipSlots = 0;
+
+                ArcadeStats.playerStats = ArcadeStats.defaultStats;
             }
 
             if (Storage.nextLevelChoices != null)

@@ -16,7 +16,6 @@ public class Shop : MonoBehaviour
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private TextMeshProUGUI typeText;
     [SerializeField] private TextMeshProUGUI ownedText;
-
     [SerializeField] private GameObject descriptionObject;
 
     // every object in scene that displays money count
@@ -97,7 +96,7 @@ public class Shop : MonoBehaviour
         descriptionText.text = item.description;
         typeText.text = item.UseTypeToString();
         if (ArcadeStats.inventory.ContainsKey(item)) ownedText.text = "" + ArcadeStats.inventory[item] + " owned";
-        else ownedText.text = "Unowned";
+        else ownedText.text = item.useType == Item.UseType.UseOnObtain ? "" : "Unowned";
     }
 
     public void BuyItem(BaseEventData data)
