@@ -86,14 +86,6 @@ namespace SoloMode
             RefreshInfo();
         }
 
-        void Update()
-        {
-            // if (Input.GetKeyDown(inputScript.Cast))
-            // {
-            //     EventSystem.current.currentSelectedGameObject.GetComponent<Button>().onClick.Invoke();
-            // }
-        }
-
         public void SelectQuit()
         {
             transitionHandler.WipeToScene("SoloMenu", reverse: true);

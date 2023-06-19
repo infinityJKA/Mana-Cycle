@@ -37,9 +37,7 @@ public class UIHandler : MonoBehaviour
     {
         if (Input.GetKeyDown(inputScript.Cast))
         {
-            // Debug.Log("oq3kds");
             Button button = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-            // if (button) button.onClick.Invoke();
             ExecuteEvents.Execute(button.gameObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
         }
 
@@ -53,7 +51,7 @@ public class UIHandler : MonoBehaviour
             Move(MoveDirection.Right);
         }
 
-                if (Input.GetKeyDown(inputScript.Up))
+        if (Input.GetKeyDown(inputScript.Up))
         {
             Move(MoveDirection.Up);
         }
