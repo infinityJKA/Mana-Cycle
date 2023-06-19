@@ -88,10 +88,10 @@ namespace SoloMode
 
         void Update()
         {
-            if (Input.GetKeyDown(inputScript.Cast))
-            {
-                EventSystem.current.currentSelectedGameObject.GetComponent<Button>().onClick.Invoke();
-            }
+            // if (Input.GetKeyDown(inputScript.Cast))
+            // {
+            //     EventSystem.current.currentSelectedGameObject.GetComponent<Button>().onClick.Invoke();
+            // }
         }
 
         public void SelectQuit()
