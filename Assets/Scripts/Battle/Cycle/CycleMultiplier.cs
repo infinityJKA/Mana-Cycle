@@ -14,7 +14,7 @@ namespace Battle.Cycle {
 
         public void Set(int label)
         {
-            this.label.text = (1 + (board.boostPerCycleClear / 10f * label + board.boardStats[ArcadeStats.Stat.Starting_Cycle_Modifier])) + "x";
+            this.label.text = (1 + (board.boostPerCycleClear / 10f * label + board.boardStats[ArcadeStats.Stat.StartingCycleModifier])) + "x";
             this.GetComponent<Image>().color = cycleLevelColors[ Mathf.Min(label, cycleLevelColors.Length-1)];
         }
     }
