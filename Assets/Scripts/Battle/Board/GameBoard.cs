@@ -301,12 +301,15 @@ namespace Battle.Board {
             {
                 // if not in arcade endless, use default stats
                 boardStats = ArcadeStats.defaultStats;
+                Debug.Log(string.Join("\n",boardStats));
             }
             else 
             {
                 // otherwise, use player stats
                 boardStats = ArcadeStats.playerStats;
             }
+
+            // if (playerSide == 1) boardStats = ArcadeStats.defaultStats;
 
             boostPerCycleClear = (int) (boardStats[CycleMultIncrease] * 10);
             Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
