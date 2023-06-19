@@ -17,6 +17,7 @@ public class ItemDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI amountText;
     [SerializeField] private GameObject costDisplayObject;
     [SerializeField] private GameObject amountDisplayObject;
+    [SerializeField] private GameObject equipDisplayObject;
     
     // true in shop, false in inventory
     public bool showCost = false;
@@ -41,7 +42,9 @@ public class ItemDisplay : MonoBehaviour
         if (ArcadeStats.inventory.ContainsKey(item)) amountText.text = "x" + ArcadeStats.inventory[item];
 
         if (showCost) costDisplayObject.SetActive(true);
-        if (showOwnedAmount) amountDisplayObject.SetActive(true);
+        if (showOwnedAmount && ! (item.useType == Item.UseType.Equip)) amountDisplayObject.SetActive(true);
+        if (showOwnedAmount && ArcadeStats.equipedItems.Contains(item)) equipDisplayObject.SetActive(true);
+        else equipDisplayObject.SetActive(false);
     }
 
 }

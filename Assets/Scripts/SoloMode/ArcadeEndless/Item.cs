@@ -70,12 +70,38 @@ public class Item : ScriptableObject
     {
         Debug.Log("used " + itemName);
 
+        if (useType == UseType.Equip) 
+        {
+            if (!ArcadeStats.equipedItems.Contains(this))
+            {
+                // equiping the item
+                ArcadeStats.equipedItems.Add(this);
+            }
+            else
+            {
+                // unequip the item, note only one copy of an item should be in list at a time
+                ArcadeStats.equipedItems.Remove(this);
+                UnequipEffect();
+                return;
+            }
+
+        }
+
         switch (effectType)
         {
             case EffectType.IncreaseHpPercent: GainHP((int) (ArcadeStats.maxHp * effectValue)); break;
             case EffectType.IncreaseHpFlat: GainHP ((int) effectValue); break;
-            case EffectType.IncreaseMaxHP: ArcadeStats.maxHp += (int) effectValue; GainHP((int) effectValue); break;
+            case EffectType.IncreaseMaxHP: ArcadeStats.maxHp += (int) effectValue; /*GainHP((int) effectValue);*/ break;
             default: Debug.Log("Effect Type Not Handled! :("); break;
+        }
+    }
+
+    public void UnequipEffect()
+    {
+        switch (effectType)
+        {
+            case EffectType.IncreaseMaxHP: ArcadeStats.maxHp -= (int) effectValue; break;
+            default: Debug.Log("Unhandled Unequip"); break; // note some effects don't need to be handled here as they don't really make sense to be on an equipable
         }
     }
 
