@@ -22,6 +22,9 @@ public class Shop : MonoBehaviour
     // every object in scene that displays money count
     [SerializeField] List<MoneyDisp> moneyDisplays;
 
+    [SerializeField] public ScrollRect scrollRect;
+    [SerializeField] public float scrollSpeed = 1f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,7 +48,7 @@ public class Shop : MonoBehaviour
             // select functionality
             EventTrigger.Entry selectEntry = new EventTrigger.Entry();
             selectEntry.eventID = EventTriggerType.Select;
-            selectEntry.callback.AddListener(ev => RefreshSelection(ev));
+            selectEntry.callback.AddListener(ev => MoveSelection(ev));
             itemEventTrigger.triggers.Add(selectEntry);
 
             // add submit functionality
@@ -70,7 +73,7 @@ public class Shop : MonoBehaviour
             }
     }
 
-    public void RefreshSelection(BaseEventData ev)
+    public void MoveSelection(BaseEventData ev)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
         Item item = selection.GetComponent<ItemDisplay>().item;

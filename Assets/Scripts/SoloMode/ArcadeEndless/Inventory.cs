@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class Inventory : MonoBehaviour
     [SerializeField] private TextMeshProUGUI hpText;
 
     [SerializeField] private GameObject descriptionObject;
+
+    [SerializeField] public ScrollRect scrollRect;
+    [SerializeField] public float scrollSpeed = 1f;
 
     void OnEnable()
     {
@@ -57,7 +61,7 @@ public class Inventory : MonoBehaviour
             // add OnSelect functionality, RefreshInfo function
             EventTrigger.Entry selectEntry = new EventTrigger.Entry();
             selectEntry.eventID = EventTriggerType.Select;
-            selectEntry.callback.AddListener(ev => RefreshSelection(ev));
+            selectEntry.callback.AddListener(ev => MoveSelection(ev));
             itemEventTrigger.triggers.Add(selectEntry);
 
             // add submit functionality, use item
@@ -89,7 +93,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void RefreshSelection(BaseEventData ev)
+    public void MoveSelection(BaseEventData ev)
     {
         // GameObject selection = EventSystem.current.currentSelectedGameObject;
         // Item item = selection.GetComponent<ItemDisplay>().item;
