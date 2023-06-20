@@ -104,7 +104,7 @@ public class Inventory : MonoBehaviour
 
         // scoll logic
         scrollRect.verticalNormalizedPosition = 1f - (selection.transform.GetSiblingIndex() * 1f) / (itemDisplayParent.transform.childCount-1);
-        Debug.Log(scrollRect.verticalNormalizedPosition);
+        // Debug.Log(scrollRect.verticalNormalizedPosition);
     } 
 
     public void RefreshInfo()
