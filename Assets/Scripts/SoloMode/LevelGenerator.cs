@@ -13,7 +13,7 @@ namespace SoloMode
     public class LevelGenerator : MonoBehaviour
     {
         [SerializeField] private List<Battle.Battler> usableBattlerList;
-        [SerializeField] private List<Item> itemRewardPool;
+        // [SerializeField] public List<Item> itemRewardPool;
         [SerializeField] private Conversation defaultConvo;
 
         public Level Generate(float difficulty = 0.5f, bool VersusLevelsEnabled = true, bool SoloLevelsEnabled = false, Battler battler = null, Level lastLevel = null)
@@ -44,7 +44,7 @@ namespace SoloMode
             // 30% chance of item reward. TODO add item weights / rarities
             if (Random.value <= 0.3)
             {
-                newLevel.itemReward = itemRewardPool[Random.Range(0,itemRewardPool.Count)];
+                newLevel.itemReward = ArcadeStats.itemRewardPool[Random.Range(0,ArcadeStats.itemRewardPool.Count)];
             }
 
             // generate an ai battle level

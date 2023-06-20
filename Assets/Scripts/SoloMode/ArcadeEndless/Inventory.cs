@@ -177,6 +177,12 @@ public class Inventory : MonoBehaviour
             item.ActivateEffect(); 
             return;
         }
+
+        // don't allow equipables that are already owned to appear in pool
+        if (item.useType == Item.UseType.Equip)
+        {
+            ArcadeStats.itemRewardPool.Remove(item);
+        }
         
         // if the inventory dict already contains an instance of this item, just add to its amount. if not, add to dict
         if (!ArcadeStats.inventory.ContainsKey(item))

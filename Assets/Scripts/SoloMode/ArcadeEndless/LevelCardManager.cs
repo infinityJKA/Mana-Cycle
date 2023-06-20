@@ -28,6 +28,9 @@ namespace SoloMode
         [SerializeField] GameObject lifeContainer;
         [SerializeField] GameObject lifePrefab;
 
+        [SerializeField] public List<Item> itemRewardPool;
+        [SerializeField] public List<Item> startingInventory;
+
         [SerializeField] TransitionScript transitionHandler;
 
         void Start()
@@ -56,6 +59,9 @@ namespace SoloMode
                 ArcadeStats.usedEquipSlots = 0;
 
                 ArcadeStats.playerStats = new Dictionary<ArcadeStats.Stat, float>(ArcadeStats.defaultStats);
+                ArcadeStats.itemRewardPool = itemRewardPool;
+
+                foreach (Item item in startingInventory) Inventory.ObtainItem(item);
             }
 
             if (Storage.nextLevelChoices != null)

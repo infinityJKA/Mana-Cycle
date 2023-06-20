@@ -20,6 +20,9 @@ public class ArcadeStats
 
     public static int usedEquipSlots = 0;
 
+    // set by levelCardManager
+    public static List<Item> itemRewardPool;
+
     // stat defaults, used in all other gamemodes
     public static Dictionary<Stat, float> defaultStats = new Dictionary<Stat, float>()
     {
