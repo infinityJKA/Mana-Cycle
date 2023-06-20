@@ -24,12 +24,14 @@ public class Inventory : MonoBehaviour
     [SerializeField] private GameObject descriptionObject;
 
     [SerializeField] public ScrollRect scrollRect;
-    [SerializeField] public float scrollSpeed = 1f;
+
+    // private float scrollPosTarget = 1f;
 
     void OnEnable()
     {
         BuildItemList();
         RefreshInfo();
+
     }
 
     private void BuildItemList()
@@ -95,10 +97,14 @@ public class Inventory : MonoBehaviour
 
     public void MoveSelection(BaseEventData ev)
     {
-        // GameObject selection = EventSystem.current.currentSelectedGameObject;
+        GameObject selection = EventSystem.current.currentSelectedGameObject;
         // Item item = selection.GetComponent<ItemDisplay>().item;
 
         RefreshInfo();
+
+        // scoll logic
+        scrollRect.verticalNormalizedPosition = 1f - (selection.transform.GetSiblingIndex() * 1f) / (itemDisplayParent.transform.childCount-1);
+        Debug.Log(scrollRect.verticalNormalizedPosition);
     } 
 
     public void RefreshInfo()

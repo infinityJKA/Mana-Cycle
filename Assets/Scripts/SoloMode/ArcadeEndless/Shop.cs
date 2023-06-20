@@ -23,7 +23,7 @@ public class Shop : MonoBehaviour
     [SerializeField] List<MoneyDisp> moneyDisplays;
 
     [SerializeField] public ScrollRect scrollRect;
-    [SerializeField] public float scrollSpeed = 1f;
+    [SerializeField] public float scrollAmount = 0.1f;
 
     // Start is called before the first frame update
     void Start()
