@@ -540,7 +540,7 @@ namespace Battle.Board {
                 if (instaDropThisFrame && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
                     PlacePiece();
                 } else {
-                    fallTimeMult = quickFall ? 0.125f : 1f;
+                    fallTimeMult = quickFall ? boardStats[QuickDropSpeed] : 1f;
 
                     // Get the time that has passed since the previous piece fall.
                     // If it is greater than fall time (or fallTime/10 if holding down),

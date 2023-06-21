@@ -31,7 +31,7 @@ public class ArcadeStats
         {Stat.SpecialGainMult, 1f},
         {Stat.StartingCycleModifier, 0f}, 
         {Stat.CycleMultIncrease, 0.2f},
-        {Stat.QuickDropSpeed, 0.125f}, // not implemented yet
+        {Stat.QuickDropSpeed, 0.125f},
         {Stat.MoneyMult, 1f},
 
     };
