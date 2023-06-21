@@ -13,19 +13,22 @@ MonoBehaviour:
   m_Name: BruteForce
   m_EditorClassIdentifier: 
   itemName: Brute Force
-  description: Increase damage by 20% and makes mana quickdrop faster. Completely
+  description: Increase damage by 15% and makes mana quickdrop faster. Completely
     disables special meter gain.
   icon: {fileID: 21300000, guid: e47d53c8c57e4422f8c285c78faa6038, type: 3}
   useType: 1
   effects:
   - type: 3
-    value: 0.2
+    value: 0.15
     key: 0
+    deferType: 0
   - type: 3
-    value: -0.15
+    value: -0.1
     key: 5
+    deferType: 0
   - type: 3
     value: -9999
     key: 2
+    deferType: 0
   baseCost: 600
   costIncreaseMult: 1
