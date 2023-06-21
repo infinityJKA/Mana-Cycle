@@ -46,6 +46,11 @@ public class Item : ScriptableObject
         /// key used if the effect needs access to the stats dict
         /// </summary>
         public ArcadeStats.Stat key;
+
+        /// <summary>
+        /// when the effect is refered to (if at all)
+        /// </summary>
+        public DeferType deferType = DeferType.None;
     }
 
     /// <summary>
@@ -89,6 +94,17 @@ public class Item : ScriptableObject
         AddToStat, // adds to a stat on the stats dict with a given key
     }
 
+    public enum DeferType
+    {
+        None, // used like a regular item
+        PostGame, // activated on post game screen
+        OnCast, // to be implemented 
+        OnFullCycle, // to be implemented 
+        OnDamageDealt, // to be implemented 
+        OnDamageTaken, // to be implemented 
+        OnSpecialUsed, // to be implemented 
+    }
+
     public string UseTypeToString()
     {
         switch (useType)
@@ -100,33 +116,41 @@ public class Item : ScriptableObject
         }
     }
 
-    public void ActivateEffect()
+    public void ActivateEffect(DeferType deferType = DeferType.None)
     {
         Debug.Log("used " + itemName);
-
-        if (useType == UseType.Equip) 
+        
+        // none defer type means used in menu, so run equip / unequip logic
+        if (deferType == DeferType.None)
         {
-            if (!ArcadeStats.equipedItems.Contains(this))
+            if (useType == UseType.Equip) 
             {
-                // return early if trying to equip over max slots
-                if (ArcadeStats.usedEquipSlots >= ArcadeStats.maxEquipSlots) return;
-                // equiping the item
-                ArcadeStats.equipedItems.Add(this);
-                ArcadeStats.usedEquipSlots = ArcadeStats.equipedItems.Count;
+                if (!ArcadeStats.equipedItems.Contains(this))
+                {
+                    // return early if trying to equip over max slots
+                    if (ArcadeStats.usedEquipSlots >= ArcadeStats.maxEquipSlots) return;
+                    // equiping the item
+                    ArcadeStats.equipedItems.Add(this);
+                    ArcadeStats.usedEquipSlots = ArcadeStats.equipedItems.Count;
+                }
+                else
+                {
+                    // unequip the item, note only one copy of an item should be in list at a time
+                    ArcadeStats.equipedItems.Remove(this);
+                    UnequipEffect();
+                    ArcadeStats.usedEquipSlots = ArcadeStats.equipedItems.Count;
+                    return;
+                }
+                
             }
-            else
-            {
-                // unequip the item, note only one copy of an item should be in list at a time
-                ArcadeStats.equipedItems.Remove(this);
-                UnequipEffect();
-                ArcadeStats.usedEquipSlots = ArcadeStats.equipedItems.Count;
-                return;
-            }
-            
         }
 
+        // apply effects
         foreach (Effect e in effects)
         {
+            // skip if not correct defer type
+            if (e.deferType != deferType) continue;
+
             switch (e.type)
             {
                 case EffectType.IncreaseHpPercent: GainHP((int) (ArcadeStats.maxHp * e.value)); break;
@@ -168,7 +192,7 @@ public class Item : ScriptableObject
             var typeProperty = property.FindPropertyRelative("type");
 
             // make property taller if the stat key box needs to be drawn
-            return typeProperty.enumNames[typeProperty.enumValueIndex].Equals(nameof(EffectType.AddToStat)) ? 40 : 20;
+            return typeProperty.enumNames[typeProperty.enumValueIndex].Equals(nameof(EffectType.AddToStat)) ? 60 : 40;
         }
 
         // draw property in rect
@@ -182,29 +206,33 @@ public class Item : ScriptableObject
             // declare rects
             Rect typeRect;
             Rect valRect;
+            Rect deferRect;
 
             var typeProperty = property.FindPropertyRelative("type");
             // Debug.Log(typeProperty.enumNames[typeProperty.enumValueIndex]);
             if (typeProperty.enumNames[typeProperty.enumValueIndex].Equals(nameof(EffectType.AddToStat)))
             {
                 // when dict key is needed, show key enum selector in gui
-                Rect statRect = new Rect(position.x, position.y + 20, position.width / 2, position.height / 2);
-                typeRect = new Rect(position.x, position.y, position.width / 2, position.height / 2);
-                valRect = new Rect(position.x * 2f, position.y + 20, 50, position.height / 2);
+                Rect statRect = new Rect(position.x, position.y + 20, position.width / 2, position.height / 3);
+                typeRect = new Rect(position.x, position.y, position.width / 2, position.height / 3);
+                valRect = new Rect(position.x * 2f, position.y + 20, 50, position.height / 3);
+                deferRect = new Rect(position.x, position.y + 40, 50, position.height / 3);
 
-                // draw fields 
-                EditorGUI.PropertyField(typeRect, property.FindPropertyRelative("type"), GUIContent.none);
-                EditorGUI.PropertyField(valRect, property.FindPropertyRelative("value"), GUIContent.none);
                 EditorGUI.PropertyField(statRect, property.FindPropertyRelative("key"), GUIContent.none);
+
             }
             else
             {
-                typeRect = new Rect(position.x, position.y, position.width / 2, position.height);
-                valRect = new Rect(position.x * 2f, position.y, 50, position.height);
+                typeRect = new Rect(position.x, position.y, position.width / 2, position.height / 2);
+                valRect = new Rect(position.x * 2f, position.y, 50, position.height / 2);
+                deferRect = new Rect(position.x, position.y + 20, 50, position.height / 2);
 
-                EditorGUI.PropertyField(typeRect, property.FindPropertyRelative("type"), GUIContent.none);
-                EditorGUI.PropertyField(valRect, property.FindPropertyRelative("value"), GUIContent.none);
             }
+
+            // draw fields 
+            EditorGUI.PropertyField(valRect, property.FindPropertyRelative("value"), GUIContent.none);
+            EditorGUI.PropertyField(typeRect, property.FindPropertyRelative("type"), GUIContent.none);
+            EditorGUI.PropertyField(deferRect, property.FindPropertyRelative("deferType"), GUIContent.none);
 
             EditorGUI.EndProperty();
         }
