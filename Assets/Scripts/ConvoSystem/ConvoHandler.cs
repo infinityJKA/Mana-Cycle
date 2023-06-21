@@ -172,12 +172,7 @@ namespace ConvoSystem {
             else
             {
                 convoUI.SetActive(false);
-
-                // look for level list it and select if it exists, it won't if in manaCycle scene
-                var levelLister = GameObject.Find("LevelLister");
-                if (levelLister != null) {
-                    levelLister.GetComponent<LevelLister>().SetFocus(true);
-                }
+                GameObject.Find("LevelLister").SetActive(true);
             }
             level = null;
 

@@ -800,12 +800,12 @@
             "actions": [
                 {
                     "name": "Move",
-                    "type": "PassThrough",
+                    "type": "Value",
                     "id": "e0d4ba38-1b8c-4f5d-9b32-d9994a06ba87",
                     "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "Hold",
-                    "initialStateCheck": false
+                    "processors": "StickDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "HoldMove",
