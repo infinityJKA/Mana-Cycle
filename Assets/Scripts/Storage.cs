@@ -40,7 +40,7 @@ public class Storage
     }
 
     // true when R is pressed to select single player level, so convo doesnt skip first line
-    public static bool levelSelectedThisInput;
+    public static bool levelSelectedThisFrame;
     // true when R is pressed to prevent input for convo being used in postgamemenu
     public static bool convoEndedThisInput;
     // true when hitting pause during a midlevelconvo, to prevent pausing menu

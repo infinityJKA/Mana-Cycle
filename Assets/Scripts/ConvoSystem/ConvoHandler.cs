@@ -6,6 +6,7 @@ using Random=UnityEngine.Random;
 
 using SoloMode;
 using Battle.Board;
+using UnityEngine.InputSystem;
 
 namespace ConvoSystem {
     public class ConvoHandler : MonoBehaviour
@@ -19,7 +20,7 @@ namespace ConvoSystem {
         private Conversation convo;
 
         /** inputs for controlling the conversation */
-        [SerializeField] private InputScript[] inputScripts;
+        [SerializeField] private InputActionReference advanceInput, skipInput;
 
         /** object containing the conversation UI */
         [SerializeField] private GameObject convoUI;
@@ -64,21 +65,18 @@ namespace ConvoSystem {
         {
             if (!convoUI.activeSelf) return;
 
-            foreach (InputScript inputScript in inputScripts) {
-
-                if (Input.GetKeyDown(inputScript.Cast) && !Storage.levelSelectedThisInput)
-                {
-                    Advance();
-                } 
-                
-                // skip rest of convo when pause pressed
-                else if (Input.GetKeyDown(inputScript.Pause)) {
-                    EndConvo();
-                }
+            if (advanceInput.action.WasPerformedThisFrame() && !Storage.levelSelectedThisFrame)
+            {
+                Advance();
             }
 
+            // skip rest of convo when pause pressed
+            if (skipInput.action.WasPerformedThisFrame())
+            {
+                EndConvo();
+            }
 
-            Storage.levelSelectedThisInput = false;
+            Storage.levelSelectedThisFrame = false;
         }
 
         /// <summary>
