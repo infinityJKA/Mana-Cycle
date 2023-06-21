@@ -85,7 +85,7 @@ namespace SoloMode {
         // Prefab for the container of all the listed levels in a tab
         [SerializeField] private GameObject tabLevelListPrefab;
         // Prefab containing the name of a tab
-        [SerializeField] private GameObject tabNamePrefab;
+        [SerializeField] private TabName tabNamePrefab;
         // Used in mobile mode. Tab is centered instead of hugging the edge of the solo level menu
         [SerializeField] private bool centerTab;
         // If the target color of tabs should be animated instead of instantly set.
@@ -278,6 +278,8 @@ namespace SoloMode {
                 SoloMenuTab tab = tabs[t];
 
                 var tabName = Instantiate(tabNamePrefab, tabTransform);
+                tabName.levelLister = this;
+                tabName.index = t;
                 tabTexts[t] = tabName.GetComponentInChildren<TextMeshProUGUI>();
                 if (animateTabColors) {
                     tabColors[t] = tabColor;
@@ -390,8 +392,9 @@ namespace SoloMode {
             SetTabCursor(selectedTabIndex + delta);
         }
 
-        void SetTabCursor(int index)
+        public void SetTabCursor(int index)
         {
+            if (selectedTabIndex == index) return;
             levelTabTransform.GetChild(selectedTabIndex).gameObject.SetActive(false);
             if (animateTabColors)
             {
