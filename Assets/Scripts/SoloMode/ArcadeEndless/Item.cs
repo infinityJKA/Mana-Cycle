@@ -116,6 +116,12 @@ public class Item : ScriptableObject
         }
     }
 
+    public static void Proc(DeferType deferType = DeferType.None)
+    {
+        Debug.Log("procing with type " + deferType);
+        foreach (Item i in ArcadeStats.equipedItems) i.ActivateEffect(deferType);
+    }
+
     public void ActivateEffect(DeferType deferType = DeferType.None)
     {
         Debug.Log("used " + itemName);
@@ -149,7 +155,11 @@ public class Item : ScriptableObject
         foreach (Effect e in effects)
         {
             // skip if not correct defer type
-            if (e.deferType != deferType) continue;
+            if (e.deferType != deferType)
+            {
+                Debug.Log("Incorrect defer type. Skipping!");
+                continue;
+            } 
 
             switch (e.type)
             {
@@ -216,7 +226,7 @@ public class Item : ScriptableObject
                 Rect statRect = new Rect(position.x, position.y + 20, position.width / 2, position.height / 3);
                 typeRect = new Rect(position.x, position.y, position.width / 2, position.height / 3);
                 valRect = new Rect(position.x * 2f, position.y + 20, 50, position.height / 3);
-                deferRect = new Rect(position.x, position.y + 40, 50, position.height / 3);
+                deferRect = new Rect(position.x, position.y + 40, 150, position.height / 3);
 
                 EditorGUI.PropertyField(statRect, property.FindPropertyRelative("key"), GUIContent.none);
 
@@ -225,7 +235,7 @@ public class Item : ScriptableObject
             {
                 typeRect = new Rect(position.x, position.y, position.width / 2, position.height / 2);
                 valRect = new Rect(position.x * 2f, position.y, 50, position.height / 2);
-                deferRect = new Rect(position.x, position.y + 20, 50, position.height / 2);
+                deferRect = new Rect(position.x, position.y + 20, 150, position.height / 2);
 
             }
 
