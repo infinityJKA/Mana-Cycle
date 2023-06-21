@@ -12,7 +12,7 @@ namespace MainMenu {
         [SerializeField] private Button closeButton;
         [SerializeField] public GameObject achievementsButton;
 
-        [SerializeField] private PlayerInput playerInput;
+        [SerializeField] private InputActionReference cancelInput;
         
         void Start() {
             if (ghostPieceToggle) {
@@ -23,7 +23,7 @@ namespace MainMenu {
 
         void Update()
         {
-            if (playerInput.actions["Cancel"].WasPressedThisFrame()) {
+            if (cancelInput && cancelInput.action.WasPerformedThisFrame()) {
                 closeButton.onClick.Invoke();
             }
         }

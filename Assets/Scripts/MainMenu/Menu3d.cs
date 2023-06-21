@@ -153,7 +153,8 @@ namespace MainMenu {
 
         public void UpdateTip()
         {
-            tipText.text = String.Format("[Arrow Keys] to move cursor\n[{0}] to select", Utils.KeySymbol(inputScripts[0].Cast));
+            // TODO fix to match new input system somehow
+            tipText.text = String.Format("[Arrow Keys] to move cursor\n[E] to select");
         }
 
         private void OnValidate()

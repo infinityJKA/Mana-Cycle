@@ -4,6 +4,8 @@ using UnityEngine.EventSystems;
 using TMPro;
 
 using Sound;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 
 namespace VersusMode {
     /// <summary>
@@ -21,9 +23,8 @@ namespace VersusMode {
         [SerializeField] public CharSelector opponentSelector;
 
         ///<summary>Input script used to move the cursor and select character</summary>
-        [SerializeField] private InputScript inputScript;
-        // set as the inputScript when in solo mode
-        [SerializeField] private InputScript soloInputScript;
+        [SerializeField] private PlayerInput playerInput;
+        [SerializeField] public InputActionAsset soloActions;
 
         [SerializeField] private Image portrait;
         [SerializeField] private TextMeshProUGUI nameText;
@@ -101,8 +102,8 @@ namespace VersusMode {
                 if (active) {
                     portrait.enabled = true;
                     nameText.enabled = true;
-                    SetSelection(selectedIcon.selectable);
-                    selectedIcon.cursorImage.color = Color.white;
+                    // SetSelection(selectedIcon.selectable);
+                    // selectedIcon.cursorImage.color = Color.white;
                 }
                 // if not active (player vs. cpu only): dimmed cursor if p1, hide if p2
                 else {
@@ -175,7 +176,11 @@ namespace VersusMode {
 
             tipText.gameObject.SetActive(!menu.Mobile);
             gameObject.SetActive(true);
-            transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
+            transitionHandler = FindObjectOfType<TransitionScript>();
+
+            ghostPieceToggle.interactable = false;
+            abilityToggle.interactable = false;
+            livesSelectable.interactable = false;
         }
 
         void Update() {
@@ -239,88 +244,106 @@ namespace VersusMode {
 
             if (settingsDisplayed) {
                 // Look for a new icon to select in inputted directions, select if found
-                if (Input.GetKeyDown(inputScript.Left)) SettingsCursorLeft();
-                else if (Input.GetKeyDown(inputScript.Right)) SettingsCursorRight();
-                else if (Input.GetKeyDown(inputScript.Up)) SetSettingsSelection(settingsSelection.FindSelectableOnUp());
-                else if (Input.GetKeyDown(inputScript.Down)) SetSettingsSelection(settingsSelection.FindSelectableOnDown());
+                //if (Input.GetKeyDown(inputScript.Left)) SettingsCursorLeft();
+                //else if (Input.GetKeyDown(inputScript.Right)) SettingsCursorRight();
+                //else if (Input.GetKeyDown(inputScript.Up)) SetSettingsSelection(settingsSelection.FindSelectableOnUp());
+                //else if (Input.GetKeyDown(inputScript.Down)) SetSettingsSelection(settingsSelection.FindSelectableOnDown());
             }
 
             // if cpu, adjust cpu level while locked in
             else if (isCpuCursor && lockedIn) {
-                if (Input.GetKeyDown(inputScript.Left)) {
-                    if (CpuLevel > minCpuLevel) { CpuLevel--; RefreshCpuLevel(); }
-                }
-                else if (Input.GetKeyDown(inputScript.Right)) {
-                    if (CpuLevel < maxCpuLevel) { CpuLevel++; RefreshCpuLevel(); }
-                }
+                //if (Input.GetKeyDown(inputScript.Left)) {
+                //    if (CpuLevel > minCpuLevel) { CpuLevel--; RefreshCpuLevel(); }
+                //}
+                //else if (Input.GetKeyDown(inputScript.Right)) {
+                //    if (CpuLevel < maxCpuLevel) { CpuLevel++; RefreshCpuLevel(); }
+                //}
             }
 
             // Move cursor if not locked in and not controlling settings menu
             else if (!lockedIn) 
             {
                 // Look for a new icon to select in inputted directions, select if found
-                if (Input.GetKeyDown(inputScript.Left)) SetSelection(selectedIcon.selectable.FindSelectableOnLeft());
-                else if (Input.GetKeyDown(inputScript.Right)) SetSelection(selectedIcon.selectable.FindSelectableOnRight());
-                else if (Input.GetKeyDown(inputScript.Up)) SetSelection(selectedIcon.selectable.FindSelectableOnUp());
-                else if (Input.GetKeyDown(inputScript.Down)) SetSelection(selectedIcon.selectable.FindSelectableOnDown());
+                //if (Input.GetKeyDown(inputScript.Left)) SetSelection(selectedIcon.selectable.FindSelectableOnLeft());
+                //else if (Input.GetKeyDown(inputScript.Right)) SetSelection(selectedIcon.selectable.FindSelectableOnRight());
+                //else if (Input.GetKeyDown(inputScript.Up)) SetSelection(selectedIcon.selectable.FindSelectableOnUp());
+                //else if (Input.GetKeyDown(inputScript.Down)) SetSelection(selectedIcon.selectable.FindSelectableOnDown());
             }
-            
-            if (Input.GetKeyDown(inputScript.Cast)) {
+
+            if (playerInput.actions["Submit"].WasPerformedThisFrame())
+            {
                 // when in settings menu, cast will toggle the current toggle, press the current button, etc..
-                if (settingsDisplayed) {
+                if (settingsDisplayed)
+                {
                     var toggle = settingsSelection.GetComponent<Toggle>();
-                    if (toggle) {
+                    if (toggle)
+                    {
                         toggle.isOn = !toggle.isOn;
                         SoundManager.Instance.PlaySound(settingsToggleSFX);
                     }
 
                     // if any battle preferences were just toggled, update its state in Storage and the other player's settings toggle
-                    if (settingsSelection == abilityToggle) {
+                    if (settingsSelection == abilityToggle)
+                    {
                         PlayerPrefs.SetInt("enableAbilities", abilityToggle.isOn ? 1 : 0);
                         opponentSelector.abilityToggle.isOn = abilityToggle.isOn;
                     }
                 }
 
                 // if this is CPU and locked into selecting CPU level, give control to other board
-                else if (selectingCpuLevel && !menu.Mobile) {
+                else if (selectingCpuLevel && !menu.Mobile)
+                {
                     selectingCpuLevel = false;
                     SoundManager.Instance.PlaySound(selectSFX);
                     Active = false;
                     opponentSelector.Active = true;
-                    RefreshLockVisuals();
+                    RefreshCharacterVisuals();
                 }
 
                 // If aready locked in, start match if other player is also locked in
-                else if (lockedIn) {
-                    menu.StartIfReady();
+                // if they are not locked in, un-lock in
+                else if (lockedIn)
+                {
+                    if (opponentSelector.lockedIn) menu.StartIfReady();
+                    else ToggleLock();
                 }
 
                 // otherwise, lock in this character
-                else {
+                else
+                {
                     ToggleLock();
                 }
             }
 
-            if (Input.GetKeyDown(inputScript.Pause)) 
+            if (playerInput.actions["Cancel"].WasPerformedThisFrame())
             {
                 Back();
             }
 
-            // show/hide ability info when rotate CCW is pressed
-            if (Input.GetKeyDown(inputScript.RotateCCW))
-            {
-                if (!menu.Mobile) ToggleAbilityInfo();
-            }
-            if (Input.GetKeyDown(inputScript.RotateCW))
-            {
-                if (!menu.Mobile) ToggleSettings();
-            }
+            //// show/hide ability info when rotate CCW is pressed
+            //if (Input.GetKeyDown(inputScript.RotateCCW))
+            //{
+            //    if (!menu.Mobile) ToggleAbilityInfo();
+            //}
+            //if (Input.GetKeyDown(inputScript.RotateCW))
+            //{
+            //    if (!menu.Mobile) ToggleSettings();
+            //}
         }
 
         public void MenuInit() {
-            RefreshLockVisuals();
+            // If no input devices are available, use the keyboard - even if the other player inputuser is also paired to it
+            if (playerInput.devices.Count == 0)
+            {
+                playerInput.SwitchCurrentControlScheme(playerInput.defaultControlScheme, Keyboard.current);
+            }
 
-            // Set cpu cursor to true if in Versus: player vs. opponent only. set to cpu cursor and false if this is p2
+            playerInput.uiInputModule.enabled = false;
+            playerInput.uiInputModule.enabled = true;
+
+            Debug.Log(EventSystem.current.gameObject);
+
+            // Set cpu cursor to true if in Versus: PvC and CvC only only. set to cpu cursor and false if this is p2
             if (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2 && Storage.level == null) {
                 if (!isPlayer1) {
                     isCpuCursor = true;
@@ -329,21 +352,22 @@ namespace VersusMode {
                 } else {
                     if (!Storage.isPlayerControlled1) isCpuCursor = true;
                     // inputs should be solo inputs scripts, as the player will play in the game
-                    inputScript = soloInputScript;
-                    opponentSelector.inputScript = soloInputScript;
-                    tipText.SetInputs(inputScript);
+                    // playerInput.actions = soloActions;
+                    // opponentSelector.playerInput.actions = soloActions;
+                    // tipText.SetInputs(inputScript);
                     Active = true;
                 }
             } else {
                 Active = true;
             }
             
+            // in solo mode, use solo inputs
             if (Storage.gamemode == Storage.GameMode.Solo || (isPlayer1 && (!Storage.isPlayerControlled2 && Storage.level != null)))
             {
                 // set solo mode inputs 
                 // TODO change tip text depending on inputs
-                inputScript = soloInputScript;
-                tipText.SetInputs(inputScript);
+                // playerInput.actions = soloActions;
+                // tipText.SetInputs(inputScript);
 
                 // hide p2 elements in in solo mode
                 if (!isPlayer1)
@@ -370,6 +394,8 @@ namespace VersusMode {
             } else {
                 cpuLevelObject.SetActive(false);
             }
+
+            RefreshCharacterVisuals();
 
             SetSettingsSelection(ghostPieceToggle);
             ghostPieceToggle.isOn = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
@@ -409,7 +435,7 @@ namespace VersusMode {
                 if (cpuLevelObject.activeInHierarchy) RefreshCpuLevel();
             }
 
-            RefreshLockVisuals();
+            RefreshCharacterVisuals();
             menu.RefreshStartButton();
         }
 
@@ -423,7 +449,7 @@ namespace VersusMode {
             // stop selecting cpu level if selecting
             else if (selectingCpuLevel && !menu.Mobile) {
                 selectingCpuLevel = false;
-                RefreshLockVisuals();
+                RefreshCharacterVisuals();
             }
             
             // unlock in when pause pressed
@@ -434,9 +460,9 @@ namespace VersusMode {
                 Active = false;
                 opponentSelector.Active = true;
                 if (Storage.isPlayerControlled1) {
-                    selectedIcon.SetCPUHovered(true, true);
+                    // selectedIcon.SetCPUHovered(true, true);
                 } else {
-                    selectedIcon.SetSelected(isPlayer1, true, true);
+                    // selectedIcon.SetSelected(isPlayer1, true, true);
                 }
             }
 
@@ -455,7 +481,7 @@ namespace VersusMode {
             }
         }
 
-        void RefreshLockVisuals() {
+        public void RefreshCharacterVisuals() {
             if (lockedIn){
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, (selectingCpuLevel && !menu.Mobile) ? 0.65f : 1f);
                 nameText.text = selectedBattler.displayName;
@@ -464,7 +490,7 @@ namespace VersusMode {
             else {
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
                 nameText.fontStyle = TMPro.FontStyles.Normal;
-                nameText.text = (selectedIcon.battler.displayName == "Random") ? "Random" : selectedBattler.displayName;
+                if (selectedIcon) nameText.text = (selectedIcon.battler.displayName == "Random") ? "Random" : selectedBattler.displayName;
             }
         }
 
@@ -488,6 +514,9 @@ namespace VersusMode {
             settingsAnimating = true;
             // selectedIcon.cursorImage.color = new Color(1f, 1f, 1f, settingsDisplayed ? 0.5f : 1f);
             SoundManager.Instance.PlaySound(settingsDisplayed ? infoOpenSFX : infoCloseSFX);
+            ghostPieceToggle.interactable = settingsDisplayed;
+            abilityToggle.interactable = settingsDisplayed;
+            livesSelectable.interactable = settingsDisplayed;
         }
 
         static int minLives = 1, maxLives = 15;
@@ -537,32 +566,25 @@ namespace VersusMode {
             settingsSelection.OnSelect(null);
         }
 
-        public void SetSelection(Selectable newSelection) {
-            if (!newSelection) {
+        public void SetSelection(CharacterIcon newSelectedIcon) {
+            if (!newSelectedIcon) {
                 if (Application.isPlaying) SoundManager.Instance.PlaySound(noswitchSFX, 2.5f);
                 return;
             }
-
-            CharacterIcon newSelectedIcon = newSelection.GetComponent<CharacterIcon>();
-            if (!newSelectedIcon) {
-                // Debug.LogError("CharacterIcon component not found on new cursor selectable");
-                return;
-            }
-
-            if (isCpuCursor) {
-                if (!Storage.isPlayerControlled1) {
-                    if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
-                    newSelectedIcon.SetSelected(isPlayer1, true);
-                } else {
-                    if (selectedIcon) selectedIcon.SetCPUHovered(false);
-                    newSelectedIcon.SetCPUHovered(true);
-                }
-            } else {
-                if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
-                newSelectedIcon.SetSelected(isPlayer1, true);
-            }
-
             SoundManager.Instance.PlaySound(switchSFX, 2.5f);
+
+            //if (isCpuCursor) {
+            //    if (!Storage.isPlayerControlled1) {
+            //        if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
+            //        newSelectedIcon.SetSelected(isPlayer1, true);
+            //    } else {
+            //        if (selectedIcon) selectedIcon.SetCPUHovered(false);
+            //        newSelectedIcon.SetCPUHovered(true);
+            //    }
+            //} else {
+            //    if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
+            //    newSelectedIcon.SetSelected(isPlayer1, true);
+            //}
 
             selectedIcon = newSelectedIcon;
 
@@ -581,10 +603,12 @@ namespace VersusMode {
                     + selectedBattler.activeAbilityDesc;
                 }
             }
+
+            RefreshCharacterVisuals();
         }
 
         public void HideSelection() {
-            selectedIcon.SetSelected(isPlayer1, false);
+            // selectedIcon.SetSelected(isPlayer1, false);
         }
 
         // used by CharSelectMenu to receive player pereference decisions

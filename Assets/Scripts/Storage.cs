@@ -9,9 +9,9 @@ public class Storage
     public static Battle.Battler battler1;
     public static Battle.Battler battler2;
     
-    // player/cpu state selected by players
-    public static bool isPlayerControlled1;
-    public static bool isPlayerControlled2;
+    // player/cpu state selected by player
+    public static bool isPlayerControlled1 = true;
+    public static bool isPlayerControlled2 = true;
 
     // amount of lives players will start with. used for persistence between arcade levels, and also set via versus mode settings
     public static int lives = 3;
@@ -32,7 +32,7 @@ public class Storage
     public static int lastTabSelectedIndex = -1;
 
     /** current gamemode selected by player */
-    public static GameMode gamemode;
+    public static GameMode gamemode = GameMode.Versus;
     public enum GameMode {
         Default,
         Solo,

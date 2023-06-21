@@ -37,8 +37,7 @@ namespace VersusMode {
         // Start is called before the first frame update
         void Start()
         {
-            Selectable firstSelection = grid.GetChild(0).GetComponent<Selectable>();
-
+            CharacterIcon firstSelection = grid.GetChild(0).GetComponent<CharacterIcon>();
             p2Selector.SetSelection(firstSelection);
             p1Selector.SetSelection(firstSelection);
 
@@ -62,7 +61,7 @@ namespace VersusMode {
                 p2Selector.CpuLevel = PlayerPrefs.GetInt("CpuLevel", 5);
             }
 
-            transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
+            transitionHandler = FindObjectOfType<TransitionScript>();
 
             RefreshStartButton();
         }
@@ -139,13 +138,13 @@ namespace VersusMode {
         }
 
         // Called when character icons are pressed from the grid
-        public void SetSelection(Selectable selectable) {
-            if (p1Selector.Active) {
-                p1Selector.SetSelection(selectable);
-            } else {
-                p2Selector.SetSelection(selectable);
-            }
-        }
+        //public void SetSelection(Selectable selectable) {
+        //    if (p1Selector.Active) {
+        //        p1Selector.SetSelection(selectable);
+        //    } else {
+        //        p2Selector.SetSelection(selectable);
+        //    }
+        //}
 
         // Called when the start/select button is pressed in mobile. 
         // Locks in current character if p1 and p2 also has to select;
