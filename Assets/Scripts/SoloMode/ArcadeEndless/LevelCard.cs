@@ -4,7 +4,7 @@ using System;
 using UnityEngine.UI;
 using TMPro;
 
-// using Sound;
+using Sound;
 
 namespace SoloMode
 {
@@ -19,6 +19,9 @@ namespace SoloMode
         [SerializeField] TextMeshProUGUI moneyRewardText;
         [SerializeField] GameObject itemRewardObject;
         [SerializeField] TextMeshProUGUI itemRewardText;
+
+        [SerializeField] AudioClip selectSFX;
+        [SerializeField] AudioClip submitSFX;
 
         TransitionScript transitionHandler;
 
@@ -42,8 +45,14 @@ namespace SoloMode
 
         public void LoadLevel()
         {
+            SoundManager.Instance.PlaySound(submitSFX);
             Storage.level = level;
             transitionHandler.WipeToScene("ManaCycle");
+        }
+
+        public void OnSelect()
+        {
+            SoundManager.Instance.PlaySound(selectSFX, pitch: 1.3f);
         }
         
     }
