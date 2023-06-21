@@ -20,13 +20,7 @@ namespace VersusMode {
         //<summary>Image for the battler portrait</summary>
         [SerializeField] private Image portrait;
         //<summary>Images for the players & cpu cursor overlayed on this icon.</summary>
-        [SerializeField] public UnityEngine.UI.Image cursorImage, cpuCursorImage;
-
-        // serialized refs to all the different cursor sprites
-        [SerializeField] private Sprite p1CursorSprite, p2CursorSprite, bothCursorSprite, cpuCursorSprite;
-        
-        ///<summary>Whether or not p1/p2 is currently hovered over.</summary>
-        private bool p1hovered, p2hovered, cpuHovered;
+        // [SerializeField] public Image cursorImage, cpuCursorImage;
 
         ///<summary>Selectable, used to find adjacent icons to select</summary>
         public Button selectable {get; private set;}

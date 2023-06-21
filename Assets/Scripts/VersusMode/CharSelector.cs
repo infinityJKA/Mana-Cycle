@@ -69,6 +69,13 @@ namespace VersusMode {
         /// character grid gameobject used to hide unavailable battlers
         [SerializeField] private GameObject battlerGrid;
 
+        /// Cursor gameobject that folows the selected icon object when not in settings menu
+        [SerializeField] private Image cursorImage;
+        private Vector2 cursorVelocity;
+
+        /// cursor sprites
+        [SerializeField] private Sprite cursorSprite, bothCursorSprite, cpuCursorSprite;
+
         ///<summary>If the ability info screen is currently being displayed</summary>
         private bool abilityInfoDisplayed = false;
         ///<summary>If the ability info screen is currently being displayed</summary>
@@ -103,12 +110,12 @@ namespace VersusMode {
                     portrait.enabled = true;
                     nameText.enabled = true;
                     // SetSelection(selectedIcon.selectable);
-                    // selectedIcon.cursorImage.color = Color.white;
+                    cursorImage.color = Color.white;
                 }
                 // if not active (player vs. cpu only): dimmed cursor if p1, hide if p2
                 else {
                     if (isPlayer1) {
-                        selectedIcon.cursorImage.color = new Color(1f, 1f, 1f, 0.5f);
+                        cursorImage.color = new Color(1f, 1f, 1f, 0.5f);
                     } else {
                         portrait.color = new Color(1f, 1f, 1f, 0.5f);
                         nameText.enabled = false;
@@ -178,9 +185,12 @@ namespace VersusMode {
             gameObject.SetActive(true);
             transitionHandler = FindObjectOfType<TransitionScript>();
 
-            ghostPieceToggle.interactable = false;
-            abilityToggle.interactable = false;
-            livesSelectable.interactable = false;
+            ghostPieceToggle.interactable = abilityToggle.interactable = livesSelectable.interactable = false;
+
+            // Cursor image starts on infinity icon
+            CharacterIcon startingIcon = GetComponent<MultiplayerEventSystem>().firstSelectedGameObject.GetComponent<CharacterIcon>();
+            SetSelection(startingIcon);
+            cursorImage.transform.position = startingIcon.transform.position;
         }
 
         void Update() {
@@ -242,33 +252,33 @@ namespace VersusMode {
             // don't accept input if not active
             if (!Active) return;
 
-            if (settingsDisplayed) {
-                // Look for a new icon to select in inputted directions, select if found
-                //if (Input.GetKeyDown(inputScript.Left)) SettingsCursorLeft();
-                //else if (Input.GetKeyDown(inputScript.Right)) SettingsCursorRight();
-                //else if (Input.GetKeyDown(inputScript.Up)) SetSettingsSelection(settingsSelection.FindSelectableOnUp());
-                //else if (Input.GetKeyDown(inputScript.Down)) SetSettingsSelection(settingsSelection.FindSelectableOnDown());
-            }
+            //if (settingsDisplayed) {
+            //    // Look for a new icon to select in inputted directions, select if found
+            //    //if (Input.GetKeyDown(inputScript.Left)) SettingsCursorLeft();
+            //    //else if (Input.GetKeyDown(inputScript.Right)) SettingsCursorRight();
+            //    //else if (Input.GetKeyDown(inputScript.Up)) SetSettingsSelection(settingsSelection.FindSelectableOnUp());
+            //    //else if (Input.GetKeyDown(inputScript.Down)) SetSettingsSelection(settingsSelection.FindSelectableOnDown());
+            //}
 
-            // if cpu, adjust cpu level while locked in
-            else if (isCpuCursor && lockedIn) {
-                //if (Input.GetKeyDown(inputScript.Left)) {
-                //    if (CpuLevel > minCpuLevel) { CpuLevel--; RefreshCpuLevel(); }
-                //}
-                //else if (Input.GetKeyDown(inputScript.Right)) {
-                //    if (CpuLevel < maxCpuLevel) { CpuLevel++; RefreshCpuLevel(); }
-                //}
-            }
+            //// if cpu, adjust cpu level while locked in
+            //else if (isCpuCursor && lockedIn) {
+            //    //if (Input.GetKeyDown(inputScript.Left)) {
+            //    //    if (CpuLevel > minCpuLevel) { CpuLevel--; RefreshCpuLevel(); }
+            //    //}
+            //    //else if (Input.GetKeyDown(inputScript.Right)) {
+            //    //    if (CpuLevel < maxCpuLevel) { CpuLevel++; RefreshCpuLevel(); }
+            //    //}
+            //}
 
-            // Move cursor if not locked in and not controlling settings menu
-            else if (!lockedIn) 
-            {
-                // Look for a new icon to select in inputted directions, select if found
-                //if (Input.GetKeyDown(inputScript.Left)) SetSelection(selectedIcon.selectable.FindSelectableOnLeft());
-                //else if (Input.GetKeyDown(inputScript.Right)) SetSelection(selectedIcon.selectable.FindSelectableOnRight());
-                //else if (Input.GetKeyDown(inputScript.Up)) SetSelection(selectedIcon.selectable.FindSelectableOnUp());
-                //else if (Input.GetKeyDown(inputScript.Down)) SetSelection(selectedIcon.selectable.FindSelectableOnDown());
-            }
+            //// Move cursor if not locked in and not controlling settings menu
+            //else if (!lockedIn) 
+            //{
+            //    // Look for a new icon to select in inputted directions, select if found
+            //    //if (Input.GetKeyDown(inputScript.Left)) SetSelection(selectedIcon.selectable.FindSelectableOnLeft());
+            //    //else if (Input.GetKeyDown(inputScript.Right)) SetSelection(selectedIcon.selectable.FindSelectableOnRight());
+            //    //else if (Input.GetKeyDown(inputScript.Up)) SetSelection(selectedIcon.selectable.FindSelectableOnUp());
+            //    //else if (Input.GetKeyDown(inputScript.Down)) SetSelection(selectedIcon.selectable.FindSelectableOnDown());
+            //}
 
             if (playerInput.actions["Submit"].WasPerformedThisFrame())
             {
@@ -320,15 +330,22 @@ namespace VersusMode {
                 Back();
             }
 
-            //// show/hide ability info when rotate CCW is pressed
-            //if (Input.GetKeyDown(inputScript.RotateCCW))
-            //{
-            //    if (!menu.Mobile) ToggleAbilityInfo();
-            //}
-            //if (Input.GetKeyDown(inputScript.RotateCW))
-            //{
-            //    if (!menu.Mobile) ToggleSettings();
-            //}
+            // show/hide ability info when rotate CCW is pressed
+            if (playerInput.actions["AbilityInfo"].WasPerformedThisFrame())
+            {
+                if (!menu.Mobile) ToggleAbilityInfo();
+            }
+            if (playerInput.actions["Settings"].WasPerformedThisFrame())
+            {
+                if (!menu.Mobile) ToggleSettings();
+            }
+
+            cursorImage.transform.position = Vector2.SmoothDamp(
+                cursorImage.transform.position,
+                selectedIcon.transform.position,
+                ref cursorVelocity,
+                0.05f
+                );
         }
 
         public void MenuInit() {
@@ -340,8 +357,6 @@ namespace VersusMode {
 
             playerInput.uiInputModule.enabled = false;
             playerInput.uiInputModule.enabled = true;
-
-            Debug.Log(EventSystem.current.gameObject);
 
             // Set cpu cursor to true if in Versus: PvC and CvC only only. set to cpu cursor and false if this is p2
             if (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2 && Storage.level == null) {
@@ -512,11 +527,14 @@ namespace VersusMode {
             if (abilityInfoDisplayed) ToggleAbilityInfo();
             settingsDisplayed = !settingsDisplayed;
             settingsAnimating = true;
+
             // selectedIcon.cursorImage.color = new Color(1f, 1f, 1f, settingsDisplayed ? 0.5f : 1f);
             SoundManager.Instance.PlaySound(settingsDisplayed ? infoOpenSFX : infoCloseSFX);
             ghostPieceToggle.interactable = settingsDisplayed;
             abilityToggle.interactable = settingsDisplayed;
             livesSelectable.interactable = settingsDisplayed;
+
+
         }
 
         static int minLives = 1, maxLives = 15;
@@ -586,7 +604,19 @@ namespace VersusMode {
             //    newSelectedIcon.SetSelected(isPlayer1, true);
             //}
 
+            if (opponentSelector.Active && opponentSelector.selectedIcon == selectedIcon)
+            {
+                cursorImage.sprite = cursorSprite;
+                opponentSelector.cursorImage.sprite = opponentSelector.cursorSprite;
+            }
+
             selectedIcon = newSelectedIcon;
+
+            if (opponentSelector.Active && opponentSelector.selectedIcon == selectedIcon)
+            {
+                cursorImage.sprite = bothCursorSprite;
+                opponentSelector.cursorImage.sprite = opponentSelector.bothCursorSprite;
+            }
 
             portrait.sprite = selectedBattler.sprite;
             nameText.text = (selectedIcon.battler.displayName == "Random") ? "Random" : selectedBattler.displayName;
@@ -603,6 +633,8 @@ namespace VersusMode {
                     + selectedBattler.activeAbilityDesc;
                 }
             }
+
+
 
             RefreshCharacterVisuals();
         }
