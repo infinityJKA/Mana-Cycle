@@ -10,19 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 034c5d9ed6c933747b0235628e1a5862, type: 3}
-  m_Name: CycleAccelerator
+  m_Name: BruteForce
   m_EditorClassIdentifier: 
-  itemName: Cycle Accelerator
-  description: Your starting cycle multiplier is reduced, but the boost after a full
-    cycle is doubled.
+  itemName: Brute Force
+  description: Increase damage by 20% and makes mana quickdrop faster. Completely
+    disables special meter gain.
   icon: {fileID: 21300000, guid: e47d53c8c57e4422f8c285c78faa6038, type: 3}
   useType: 1
   effects:
   - type: 3
-    value: -0.6
-    key: 3
-  - type: 3
     value: 0.2
-    key: 4
+    key: 0
+  - type: 3
+    value: -0.15
+    key: 5
+  - type: 3
+    value: -9999
+    key: 2
   baseCost: 600
   costIncreaseMult: 1

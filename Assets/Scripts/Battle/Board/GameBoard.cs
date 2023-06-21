@@ -308,6 +308,7 @@ namespace Battle.Board {
                 // otherwise, use player stats.
                 boardStats = ArcadeStats.playerStats;
                 Debug.Log("using AE stats");
+                Debug.Log(string.Join("\n",boardStats));
                 
             }
 
