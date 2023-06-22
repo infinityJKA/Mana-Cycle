@@ -48,8 +48,7 @@ namespace SoloMode {
         [SerializeField] private GameObject highScoreBG;
         [SerializeField] private TextMeshProUGUI highScoreText;
 
-        /** Inputs that control the level list */
-        [SerializeField] private PlayerInput input;
+        [SerializeField] private InputActionReference cancelInput;
 
         /** Initial offset of the list, saved on start from anchored position */
         public Vector2 scrollPositionTargetOffset;
@@ -179,11 +178,11 @@ namespace SoloMode {
             //    RightTabArrow();
             //}
 
-            //// pause - go back to main menu
-            //if (Input.GetKeyDown(inputScript.Pause))
-            //{
-            //    Back();
-            //}
+            // pause - go back to main menu
+            if (cancelInput.action.WasPerformedThisFrame())
+            {
+                Back();
+            }
 
             //// cast - open selected level
             //if (Input.GetKeyDown(inputScript.Cast))
