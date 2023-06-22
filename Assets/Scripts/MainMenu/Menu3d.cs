@@ -29,9 +29,6 @@ namespace MainMenu {
 
         [SerializeField] private TMPro.TextMeshProUGUI versusDescription;
 
-        // p1 input script so that R to submit works in menu
-        [SerializeField] private InputScript[] inputScripts;
-
         [SerializeField] private TMPro.TextMeshProUGUI tipText;
 
         ///<summary>GameObject that holds all the Button objects in the scene</summary>
@@ -57,30 +54,6 @@ namespace MainMenu {
         // Commented out because this is currently handled with unity's built in system, doing it in this script at the same time can double inputs
         // (Not noticable for the versus/solo buttons but is noticable for settings and HTP menus)
 
-        //void Update()
-        //{
-        //    foreach (InputScript inputScript in inputScripts)
-        //    {
-        //        if (Input.GetKeyDown(inputScript.Cast))
-        //        {
-        //            var selection = EventSystem.current.currentSelectedGameObject;
-        //            Debug.Log(selection);
-        //            if (selection)
-        //            {
-        //                Storage.lastMainMenuItem = selection.transform.GetSiblingIndex();
-        //                Debug.Log(Storage.lastMainMenuItem);
-
-        //                Button button = selection.GetComponent<Button>();
-        //                if (button) button.onClick.Invoke();
-
-        //                Toggle toggle = selection.GetComponent<Toggle>();
-        //                if (toggle) toggle.isOn = !toggle.isOn;
-        //            }
-        //            break;
-        //        }
-        //    }
-        //}
-
         public void SelectVersus()
         {
             VersusWindow.SetActive(true);
@@ -96,7 +69,7 @@ namespace MainMenu {
             if (!mobile) EventSystem.current.SetSelectedGameObject(VersusButton);
         }
 
-        public void setVersusDescription(string newText)
+        public void SetVersusDescription(string newText)
         {
             versusDescription.text = newText;
         }
