@@ -808,6 +808,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Quickdrop",
+                    "type": "Value",
+                    "id": "e0a2701c-3e0c-476d-a8b1-cd851c814687",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "UseAbility",
                     "type": "Button",
                     "id": "5908206a-5b78-4976-a93b-95274445ed8b",
@@ -1040,6 +1049,28 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "7af2d439-c8ed-4107-ba7c-798274d5d4b2",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Quickdrop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9eac4510-e95d-4479-aa83-67b2f7a9cfc1",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Quickdrop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

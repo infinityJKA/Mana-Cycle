@@ -173,7 +173,7 @@ namespace Battle.Board {
         }
             
         // Rotate this piece to the right about the center.
-        public void RotateRight()
+        public void RotateCounterClockwise()
         {
             switch (orientation)
             {
@@ -190,7 +190,7 @@ namespace Battle.Board {
         }
 
         // Rotate this piece to the left about the center.
-        public void RotateLeft()
+        public void RotateClockwise()
         {
             switch (orientation)
             {

@@ -730,6 +730,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Quickdrop",
+                    "type": "Button",
+                    "id": "6e8a8ba2-38e8-4844-9e28-1344643f57c3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "UseAbility",
                     "type": "Button",
                     "id": "5908206a-5b78-4976-a93b-95274445ed8b",
@@ -789,6 +798,28 @@
                 },
                 {
                     "name": "",
+                    "id": "6f1c26ea-5fc7-43d4-9931-1b06da43e8be",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer1",
+                    "action": "RotateCounterClockwise",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e8499f9d-79ea-4a8c-bd44-79e4e486e39e",
+                    "path": "<Keyboard>/comma",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer2",
+                    "action": "RotateCounterClockwise",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "285f2298-cb77-4235-b279-75bece697a47",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
@@ -811,11 +842,55 @@
                 },
                 {
                     "name": "",
+                    "id": "6368474b-2f3b-4829-bff6-ed138ab6f01f",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer1",
+                    "action": "Spellcast",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5034cf0a-c16c-447b-8f5f-57432b09711a",
+                    "path": "<Keyboard>/slash",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer2",
+                    "action": "Spellcast",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "42a353cb-710b-47b8-919f-e9d21226553e",
                     "path": "<Gamepad>/select",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4d4d7a2a-9793-4499-81e7-86cb6b4ca836",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer1",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b99fd252-dd69-4552-b527-7f77b1a43050",
+                    "path": "<Keyboard>/backspace",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer2",
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -832,7 +907,29 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "RDFG",
+                    "name": "",
+                    "id": "42bde335-4fec-4b28-966e-576a89c32b6e",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer1",
+                    "action": "UseAbility",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1e054dbd-b472-4d5b-aab1-27a39dc4797f",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer2",
+                    "action": "UseAbility",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "RDFG (P1)",
                     "id": "b6c9c3db-874d-42a5-a3d6-5f7225e7f68d",
                     "path": "2DVector",
                     "interactions": "",
@@ -848,7 +945,7 @@
                     "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "KeyboardPlayer1",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -859,7 +956,7 @@
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "KeyboardPlayer1",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -870,7 +967,7 @@
                     "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "KeyboardPlayer1",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -881,7 +978,7 @@
                     "path": "<Keyboard>/g",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "KeyboardPlayer1",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -916,6 +1013,116 @@
                     "processors": "",
                     "groups": "Joystick",
                     "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "19d2f864-5442-4743-9932-19c0805252c1",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer1",
+                    "action": "Quickdrop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aaf2b278-c004-4754-87a6-a6bb36d4a027",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer2",
+                    "action": "Quickdrop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4c9f9759-cd42-43e8-9c21-e3c69debb26b",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Quickdrop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Arrows (P2)",
+                    "id": "22d8dd95-fb71-4608-8dcb-3ae5f7b2be7a",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "d3f605cb-d5d6-442c-9be5-3343b66992dd",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer2",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "4dc243ac-cbf7-4a97-9e9f-978a35028f0d",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer2",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "c63b60a0-595d-45f5-9b82-d5d59092bcec",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer2",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "a1bcb60a-7beb-4a02-ae55-407d2bf0c525",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer2",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "5b9857d2-2e43-42da-adb2-cc3c8b5def21",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer1",
+                    "action": "RotateClockwise",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "90ea48b6-2dac-44d1-8383-044552052274",
+                    "path": "<Keyboard>/period",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardPlayer2",
+                    "action": "RotateClockwise",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

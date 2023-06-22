@@ -16,6 +16,7 @@ using Achievements;
 
 // may be a bad idea to namespace this, could be changed later
 using static ArcadeStats.Stat;
+using UnityEngine.InputSystem;
 
 namespace Battle.Board {
     public class GameBoard : MonoBehaviour
@@ -52,12 +53,6 @@ namespace Battle.Board {
         /// Transform where ghost tiles are parented to
         /// </summary>
         [SerializeField] public Transform ghostPieceBoard;
-
-        /** Input mapping for this board */
-        [SerializeField] public InputScript[] inputScripts;
-
-        /** Inputs that replace inputScripts list if solo mode */
-        [SerializeField] public InputScript[] soloInputScripts;
 
         /** ControlsGraphic that will show the input keys */
         [SerializeField] public Battle.ControlsDisplaySystem.ControlsGraphic controlsGraphic;
@@ -266,8 +261,8 @@ namespace Battle.Board {
             
             // if in solo mode, add solo additional inputs
             // also use in player vs. ai
-            if ((Storage.gamemode == Storage.GameMode.Solo) 
-            || (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2)) inputScripts = soloInputScripts;
+            //if ((Storage.gamemode == Storage.GameMode.Solo) 
+            //|| (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2)) inputScripts = soloInputScripts;
 
             // get sfx as regular dict
             serializedSoundDict = sfxObject.GetComponent<SFXDict>().sfxDictionary;
@@ -282,8 +277,8 @@ namespace Battle.Board {
             }
 
             // don't show controls for player2 if singleplayer and player 2
-            if (mobile) controlsGraphic.gameObject.SetActive(false);
-            else if ((playerSide == 0 || !singlePlayer) && inputScripts.Length > 0 && inputScripts[0] != null) controlsGraphic.SetInputs(inputScripts[0]);
+            //if (mobile) controlsGraphic.gameObject.SetActive(false);
+            //else if ((playerSide == 0 || !singlePlayer) && inputScripts.Length > 0 && inputScripts[0] != null) controlsGraphic.SetInputs(inputScripts[0]);
 
             // load level if applicable
             if (Storage.level != null)
@@ -494,9 +489,9 @@ namespace Battle.Board {
             // debug things
             if (Application.isEditor)
             {
-                if (Input.GetKey(KeyCode.F1) && playerSide == 0) enemyBoard.TakeDamage(100);
-                if (Input.GetKey(KeyCode.F2) && playerSide == 0) abilityManager.GainMana(100);
-                if (Input.GetKeyDown(KeyCode.F3) && playerSide == 1) DealDamage(50, Vector3.zero, 0, 1);
+                //if (Input.GetKey(KeyCode.F1) && playerSide == 0) enemyBoard.TakeDamage(100);
+                //if (Input.GetKey(KeyCode.F2) && playerSide == 0) abilityManager.GainMana(100);
+                //if (Input.GetKeyDown(KeyCode.F3) && playerSide == 1) DealDamage(50, Vector3.zero, 0, 1);
             }
 
             // TRASH DAMAGE TIMER
@@ -663,74 +658,153 @@ namespace Battle.Board {
         }
 
 
-        public void RotateLeft(){
-            if (!piece.IsRotatable) return;
-            piece.RotateLeft();
+        public void RotateClockwise(InputAction.CallbackContext ctx)
+        {
+            RotateClockwise();
+        }
 
-            if(!ValidPlacement()){
+        public void RotateClockwise()
+        {
+            if (!CanControlPiece()) return;
+
+            if (!piece.IsRotatable) return;
+            piece.RotateClockwise();
+
+            if (!ValidPlacement())
+            {
                 // try nudging left, then right, then up. If none work, undo the rotation
                 // only bump up if row fallen to 3 or less times
-                if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
+                if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateCounterClockwise();
             }
 
             RefreshGhostPiece();
 
-            PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f), important: false);
+            PlaySFX("rotate", pitch: Random.Range(0.75f, 1.25f), important: false);
         }
 
-        public void RotateRight(){
+        public void RotateCounterClockwise(InputAction.CallbackContext ctx)
+        {
+            RotateCounterClockwise();
+        }
+
+        public void RotateCounterClockwise()
+        {
+            if (!CanControlPiece()) return;
+
             if (!piece.IsRotatable) return;
-            piece.RotateRight();
+            piece.RotateCounterClockwise();
 
-            if(!ValidPlacement()){
+            if (!ValidPlacement())
+            {
                 // try nudging right, then left, then up. If none work, undo the rotation
-                if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
+                if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateClockwise();
             }
 
             RefreshGhostPiece();
 
-            PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f), important: false);
+            PlaySFX("rotate", pitch: Random.Range(0.75f, 1.25f), important: false);
         }
 
-        public bool MoveLeft(){
-            if (MovePiece(-1, 0)) {
-                PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
+        public bool MoveLeft(InputAction.CallbackContext ctx)
+        {
+            return MoveLeft();
+        }
+
+        public bool MoveLeft()
+        {
+            if (!CanControlPiece()) return false;
+
+            if (MovePiece(-1, 0))
+            {
+                PlaySFX("move", pitch: Random.Range(0.9f, 1.1f), important: false);
                 return true;
             }
             return false;
         }
 
-        public bool MoveRight() {
-            if (MovePiece(1, 0)) {
-                PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
+        public bool MoveRight(InputAction.CallbackContext ctx) {
+            return MoveRight();
+        }
+
+        public bool MoveRight()
+        {
+            if (!CanControlPiece()) return false;
+
+            if (MovePiece(1, 0))
+            {
+                PlaySFX("move", pitch: Random.Range(0.9f, 1.1f), important: false);
                 return true;
             }
             return false;
         }
 
-        public void Spellcast(){
+        public bool CanControlPiece()
+        {
+            return IsInitialized() && !convoPaused && !recoveryMode && !IsPaused() && !IsPostGame();
+        }
+
+        public void Spellcast(InputAction.CallbackContext ctx)
+        {
+            Spellcast();
+        }
+
+        public void Spellcast()
+        {
+            if (!CanControlPiece()) return;
+
             // get current mana color from cycle, and clear that color
             // start at chain of 1
             // canCast is true if a spellcast is currently in process.
             RefreshBlobs();
-            if (!casting && blobs.Count != 0) {
+            if (!casting && blobs.Count != 0)
+            {
                 var shake = pointer.GetComponent<Shake>();
                 if (shake != null) shake.StopShake();
                 Spellcast(1);
                 totalManualSpellcasts++;
             }
-            else {
+            else
+            {
                 PlaySFX("failedCast", pan: 0.3f);
                 var shake = pointer.GetComponent<Shake>();
                 if (shake != null) shake.StartShake();
             }
         }
 
-        public void UseAbility(){
-            if (abilityManager.enabled) {
+        public void UseAbility(InputAction.CallbackContext ctx)
+        {
+            UseAbility();
+        }
+
+        public void UseAbility()
+        {
+            if (!CanControlPiece()) return;
+
+            if (abilityManager.enabled)
+            {
                 abilityManager.UseAbility();
                 RefreshGhostPiece();
             }
+        }
+
+        public void StartQuickdrop(InputAction.CallbackContext ctx)
+        {
+            // Debug.Log("quickdropping :)");
+            quickFall = true;
+            instaDropThisFrame = true;
+        }
+
+        public void EndQuickdrop(InputAction.CallbackContext ctx)
+        {
+            // Debug.Log("not quickdropping :(");
+            quickFall = false;
+        }
+
+        public void TogglePause(InputAction.CallbackContext ctx)
+        {
+            Debug.Log("toggling pause");
+            pauseMenu.TogglePause();
+            PlaySFX("pause", pan: 0);
         }
 
         public ManaColor PullColorFromBag() {
@@ -1818,12 +1892,12 @@ namespace Battle.Board {
             return battler.pieceRng;
         }
 
-        public bool isPaused()
+        public bool IsPaused()
         {
             return pauseMenu.paused;
         }
 
-        public bool isPostGame()
+        public bool IsPostGame()
         {
             return postGame;
         }
@@ -1964,7 +2038,7 @@ namespace Battle.Board {
             return l;
         }
 
-        public bool isInitialized()
+        public bool IsInitialized()
         {
             return cycleInitialized;
         }

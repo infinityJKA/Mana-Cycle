@@ -63,7 +63,7 @@ namespace PostGame {
                 appearTime -= Time.unscaledDeltaTime;
 
                 // wait for spellcasts and convos to finish
-                if (appearTime <= 0 && !board.IsCasting() && !board.convoPaused && board.isPostGame())
+                if (appearTime <= 0 && !board.IsCasting() && !board.convoPaused && board.IsPostGame())
                 {
                     // Play convos if amy are remaining
                     bool convoPlayed = board.CheckMidLevelConversations();

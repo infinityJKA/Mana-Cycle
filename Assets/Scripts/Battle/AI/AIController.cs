@@ -70,7 +70,7 @@ namespace Battle.AI {
         bool readyToInstaDrop = true;
         void Update() {
             // stop piece decision making while uninitialized, paused, post game, dialogue, recovering, or not AI controlled (should be disabled anyways)
-            if (!board.isInitialized() || board.isPaused() || board.isPostGame() || board.convoPaused || board.recoveryMode || !board.IsAiControlled()) return;
+            if (!board.IsInitialized() || board.IsPaused() || board.IsPostGame() || board.convoPaused || board.recoveryMode || !board.IsAiControlled()) return;
 
             // Will be run the frame a piece is spawned
             if (board.pieceSpawned && board.GetPiece()){
@@ -96,7 +96,7 @@ namespace Battle.AI {
                 // rotate piece to target rot
                 bool reachedTargetRot = (int)board.GetPiece().getRot() == this.targetRot;
                 if (!reachedTargetRot){
-                    board.RotateLeft();
+                    board.RotateClockwise();
                 }
                 
                 // move the piece to our target col, only if rot is met (or if concurrent actions is enabled)

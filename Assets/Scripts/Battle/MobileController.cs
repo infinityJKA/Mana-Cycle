@@ -45,9 +45,9 @@ namespace Battle {
         void Update()
         {
             // stop everything while not player controlled, uninitialized, paused, post game or dialogue
-            if ( !board.IsPlayerControlled() || !board.isInitialized() || board.convoPaused
+            if ( !board.IsPlayerControlled() || !board.IsInitialized() || board.convoPaused
                 // menu controls above here if ever any
-                || board.recoveryMode || board.isPaused() && board.isPostGame() || !board.Mobile ) return;
+                || board.recoveryMode || board.IsPaused() && board.IsPostGame() || !board.Mobile ) return;
 
             // ---- Piece movement ----
             if (Input.touchCount > 0) {
@@ -122,7 +122,7 @@ namespace Battle {
 
             // only a tap and not a drag if finger moved less than half a tile's width, the minimum to move a tile left/right
             if (Time.time - touchTime < 0.2f && offset.magnitude < 50f) {
-                board.RotateRight();
+                board.RotateCounterClockwise();
             }
 
             // If slope of y/|x| swipe distance is above a certain threshold, user swiped upwards, spellcast
