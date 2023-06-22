@@ -270,11 +270,7 @@ namespace Battle.Board {
             
             blobs = new List<Blob>();
 
-            if (Storage.gamemode != Storage.GameMode.Default && playerSide == 0) {
-                singlePlayer = (Storage.gamemode == Storage.GameMode.Solo);
-            } else {
-                singlePlayer = false;
-            }
+            singlePlayer = IsSinglePlayer();
 
             // don't show controls for player2 if singleplayer and player 2
             //if (mobile) controlsGraphic.gameObject.SetActive(false);
@@ -437,6 +433,11 @@ namespace Battle.Board {
             portrait.sprite = battler.sprite;
             portrait.GetComponent<RectTransform>().anchoredPosition = portrait.GetComponent<RectTransform>().anchoredPosition + battler.portraitOffset;
             attackPopup.SetBattler(battler);
+        }
+
+        public bool IsSinglePlayer()
+        {
+            return playerSide == 0 && Storage.gamemode == Storage.GameMode.Solo;
         }
 
         void SetAIDifficulty(float difficulty) {
@@ -705,9 +706,9 @@ namespace Battle.Board {
             PlaySFX("rotate", pitch: Random.Range(0.75f, 1.25f), important: false);
         }
 
-        public bool MoveLeft(InputAction.CallbackContext ctx)
+        public void MoveLeft(InputAction.CallbackContext ctx)
         {
-            return MoveLeft();
+            MoveLeft();
         }
 
         public bool MoveLeft()
@@ -722,8 +723,8 @@ namespace Battle.Board {
             return false;
         }
 
-        public bool MoveRight(InputAction.CallbackContext ctx) {
-            return MoveRight();
+        public void MoveRight(InputAction.CallbackContext ctx) {
+            MoveRight();
         }
 
         public bool MoveRight()

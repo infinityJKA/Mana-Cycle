@@ -13,7 +13,7 @@ namespace ConvoSystem {
     {
         /** The level in which the current conversation is being played in.
         This level's game challenge will be ran after the convo is over. */
-        private Level level;
+        private Level levelStartAfterConvo;
 
         /** Current conversation being played, should be the only convo in the level, 
         unless things change in the future */
@@ -103,7 +103,7 @@ namespace ConvoSystem {
         }
 
         public void StartLevel(Level level) {
-            this.level = level;
+            this.levelStartAfterConvo = level;
             StartConvo(level.conversation);
         }
 
@@ -131,12 +131,13 @@ namespace ConvoSystem {
 
         public void StartConvo(Conversation convo, GameBoard board) {
             this.board = board;
+            board.convoPaused = true;
             StartConvo(convo);
         }
 
         public void EndConvo()
         {
-            if (board != null) {
+            if (board) {
                 // Try to automatically start the next conversation avaialble. If none are, move on
                 bool nextConvoPlayed = board.CheckMidLevelConversations();
                 if (nextConvoPlayed) return;
@@ -147,11 +148,11 @@ namespace ConvoSystem {
             foreach (GameObject obj in disableDuringConvo) {
                 obj.SetActive(true);
             }
-            
+
             // once the end of the convo is reached, transition to manacycle or char select scene
-            if (level != null)
+            if (levelStartAfterConvo)
             {
-                Storage.level = level;
+                Storage.level = levelStartAfterConvo;
                 Storage.lives = Storage.level.lives;
 
                 // if multiple chars can be chosen from, go to char select
@@ -165,19 +166,20 @@ namespace ConvoSystem {
                     Storage.level.battler = Storage.level.availableBattlers[0];
                     GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("ManaCycle");
                 }
-                
+                levelStartAfterConvo = null;
             }
             else
             {
                 convoUI.SetActive(false);
-                GameObject.Find("LevelLister").SetActive(true);
+                if (!board) GameObject.Find("LevelLister").SetActive(true);
             }
-            level = null;
 
-            if (board != null) {
+            if (board)
+            {
                 board.convoPaused = false;
                 Time.timeScale = 1;
                 board = null;
+                return;
             }
         }
 

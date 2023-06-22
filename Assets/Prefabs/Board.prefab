@@ -1011,7 +1011,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 1fed45c32f2609c4e87f1799105c89ec, type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 8296647615599692933}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -1023,18 +1023,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ActionEvents:
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 351f2ccd-1f9f-44bf-9bec-d62ac5c5f408
-    m_ActionName: Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 6b444451-8a00-4d00-a97e-f47457f736a8
-    m_ActionName: Player/Look[/Mouse/delta,/Pen/delta]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 6c2ab1b8-8984-453a-af3d-a3c78ae1679a
-    m_ActionName: Player/Fire[/Mouse/leftButton]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: c95b2375-e6d9-4b88-9c4c-c5e76515df4b
@@ -1072,83 +1060,23 @@ MonoBehaviour:
     m_ActionId: e0d4ba38-1b8c-4f5d-9b32-d9994a06ba87
     m_ActionName: Battle/Move[/Keyboard/r,/Keyboard/d,/Keyboard/f,/Keyboard/g]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2738482425047349209}
-        m_TargetAssemblyTypeName: Battle.Board.GameBoard, Assembly-CSharp
-        m_MethodName: UseAbility
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 5908206a-5b78-4976-a93b-95274445ed8b
     m_ActionName: Battle/UseAbility
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2738482425047349209}
-        m_TargetAssemblyTypeName: Battle.Board.GameBoard, Assembly-CSharp
-        m_MethodName: RotateCounterClockwise
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 2c89673a-2d78-48bd-88dc-30a644961c17
     m_ActionName: Battle/RotateCounterClockwise
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2738482425047349209}
-        m_TargetAssemblyTypeName: Battle.Board.GameBoard, Assembly-CSharp
-        m_MethodName: RotateClockwise
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 3bc87366-77f4-42bc-a342-a3b26aff5c04
     m_ActionName: Battle/RotateClockwise
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2738482425047349209}
-        m_TargetAssemblyTypeName: Battle.Board.GameBoard, Assembly-CSharp
-        m_MethodName: Spellcast
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 931bc6d9-2afa-4965-bc8c-00a4f1b887f4
     m_ActionName: Battle/Spellcast
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2738482425047349209}
-        m_TargetAssemblyTypeName: Battle.Board.GameBoard, Assembly-CSharp
-        m_MethodName: TogglePause
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: afd4d3a4-45e7-4ebf-8f7b-419f97e79846
     m_ActionName: Battle/Pause
   - m_PersistentCalls:
@@ -1219,7 +1147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 2738482425047349209}
-  soloActions: {fileID: -944628639613478452, guid: 1fed45c32f2609c4e87f1799105c89ec, type: 3}
+  soloActions: {fileID: -944628639613478452, guid: 2535d601ff88af34ab43267555c39622, type: 3}
 --- !u!114 &1901849431573290248
 MonoBehaviour:
   m_ObjectHideFlags: 0

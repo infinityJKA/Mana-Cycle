@@ -15,16 +15,16 @@ namespace Battle.ControlsDisplaySystem {
         [SerializeField] private Sprite pressedSprite;
 
         void Update() {
-            if (Input.GetKeyDown(keyCode)) {
-                keyImage.sprite = pressedSprite;
-            }
-            if (Input.GetKeyUp(keyCode)) {
-                keyImage.sprite = sprite;
-            }
+            //if (Input.GetKeyDown(keyCode)) {
+            //    keyImage.sprite = pressedSprite;
+            //}
+            //if (Input.GetKeyUp(keyCode)) {
+            //    keyImage.sprite = sprite;
+            //}
         }
 
         public void SetKeyCode(KeyCode code) {
-            this.keyCode = code;
+            keyCode = code;
             textGUI.text = Utils.KeySymbol(code);
         }
     }

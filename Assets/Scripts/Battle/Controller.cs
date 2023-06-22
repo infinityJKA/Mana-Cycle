@@ -16,7 +16,7 @@ namespace Battle {
     /// <summary>
     /// Allows the player to control a board with keyboard inputs.
     /// </summary>
-    public class Controller : MonoBehaviour, IMoveHandler
+    public class Controller : MonoBehaviour /**, IMoveHandler **/
     {
         // the board being controlled by this script
         [SerializeField] public GameBoard board;
@@ -27,6 +27,29 @@ namespace Battle {
 
         void Start()
         {
+            if (!board.IsPlayerControlled()) return;
+
+            if (board.IsSinglePlayer())
+            {
+                playerInput.actions = soloActions;
+                playerInput.defaultControlScheme = "Keyboard&Mouse";
+            }
+
+            playerInput.actions.FindActionMap("Battle").Enable();
+
+            // If no input devices are available, use the keyboard - even if the other player inputuser is also paired to it
+            if (playerInput.devices.Count == 0)
+            {
+                Debug.Log("no devices? :(");
+                playerInput.SwitchCurrentControlScheme(playerInput.defaultControlScheme, Keyboard.current);
+            }
+
+            playerInput.actions["MoveLeft"].performed += board.MoveLeft;
+
+            playerInput.actions["MoveRight"].performed += board.MoveRight;
+
+            playerInput.actions["Quickdrop"].performed += board.StartQuickdrop;
+
             playerInput.actions["Quickdrop"].performed += board.StartQuickdrop;
             playerInput.actions["Quickdrop"].canceled += board.EndQuickdrop;
 
@@ -155,17 +178,17 @@ namespace Battle {
             playerInput = GetComponent<PlayerInput>();
         }
 
-        public void OnMove(AxisEventData eventData)
-        {
-            switch(eventData.moveDir)
-            {
-                case MoveDirection.Left:
-                    board.MoveLeft();
-                    break;
-                case MoveDirection.Right:
-                    board.MoveRight();
-                    break;
-            }
-        }
+        //public void OnMove(AxisEventData eventData)
+        //{
+        //    switch(eventData.moveDir)
+        //    {
+        //        case MoveDirection.Left:
+        //            board.MoveLeft();
+        //            break;
+        //        case MoveDirection.Right:
+        //            board.MoveRight();
+        //            break;
+        //    }
+        //}
     }
 }
