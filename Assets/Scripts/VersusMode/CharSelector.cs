@@ -34,7 +34,7 @@ namespace VersusMode {
         [SerializeField] private GameObject cpuLevelLeftArrow, cpuLevelRightArrow;
 
         ///<summary>SFX played when interacting with menu</summary>
-        [SerializeField] private AudioClip switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX, settingsToggleSFX;
+        [SerializeField] private AudioClip switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX, settingsToggleSFX, settingsMoveSFX;
 
         /// Fade in/out speed for the ability info & settings box
         [SerializeField] private float fadeSpeed;
@@ -78,19 +78,19 @@ namespace VersusMode {
 
         ///<summary>If the ability info screen is currently being displayed</summary>
         private bool abilityInfoDisplayed = false;
-        ///<summary>If the ability info screen is currently being displayed</summary>
-        private bool settingsDisplayed = false;
+        ///<summary>If the setings screen is currently being displayed</summary>
+        public bool settingsDisplayed { get; private set; } = false;
         ///<summary>If the ability info box is currently animating in OR out</summary>
         private bool abilityInfoAnimating;
-        ///<summary>If the ability info box is currently animating in OR out</summary>
+        ///<summary>If the settings box is currently animating in OR out</summary>
         private bool settingsAnimating;
         ///<summary>Current percentage that the ability menu is faded in/out
         private float abilityInfoFadeAmount = 0;
-        ///<summary>Current percentage that the ability menu is faded in/out
+        ///<summary>Current percentage that the settings menu is faded in/out
         private float settingsFadeAmount = 0;
 
         ///<summary> Currently selected icon's Selectable component </summary>
-        private CharacterIcon selectedIcon;
+        public CharacterIcon selectedIcon { get; private set; }
         ///<summary> Currently selected selectable in the settings menu </summary>
         private Selectable settingsSelection; 
         
@@ -171,6 +171,7 @@ namespace VersusMode {
             }
         }
 
+        private MultiplayerEventSystem eventSystem;
 
         private Vector2 centerPosition;
         void Start() {
@@ -188,7 +189,8 @@ namespace VersusMode {
             ghostPieceToggle.interactable = abilityToggle.interactable = livesSelectable.interactable = false;
 
             // Cursor image starts on infinity icon
-            CharacterIcon startingIcon = GetComponent<MultiplayerEventSystem>().firstSelectedGameObject.GetComponent<CharacterIcon>();
+            eventSystem = GetComponent<MultiplayerEventSystem>();
+            var startingIcon = eventSystem.firstSelectedGameObject.GetComponent<CharacterIcon>();
             SetSelection(startingIcon);
             cursorImage.transform.position = startingIcon.transform.position;
         }
@@ -285,15 +287,8 @@ namespace VersusMode {
                 // when in settings menu, cast will toggle the current toggle, press the current button, etc..
                 if (settingsDisplayed)
                 {
-                    var toggle = settingsSelection.GetComponent<Toggle>();
-                    if (toggle)
-                    {
-                        toggle.isOn = !toggle.isOn;
-                        SoundManager.Instance.PlaySound(settingsToggleSFX);
-                    }
-
                     // if any battle preferences were just toggled, update its state in Storage and the other player's settings toggle
-                    if (settingsSelection == abilityToggle)
+                    if (eventSystem.currentSelectedGameObject == abilityToggle.gameObject)
                     {
                         PlayerPrefs.SetInt("enableAbilities", abilityToggle.isOn ? 1 : 0);
                         opponentSelector.abilityToggle.isOn = abilityToggle.isOn;
@@ -349,15 +344,6 @@ namespace VersusMode {
         }
 
         public void MenuInit() {
-            // If no input devices are available, use the keyboard - even if the other player inputuser is also paired to it
-            if (playerInput.devices.Count == 0)
-            {
-                playerInput.SwitchCurrentControlScheme(playerInput.defaultControlScheme, Keyboard.current);
-            }
-
-            playerInput.uiInputModule.enabled = false;
-            playerInput.uiInputModule.enabled = true;
-
             // Set cpu cursor to true if in Versus: PvC and CvC only only. set to cpu cursor and false if this is p2
             if (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2 && Storage.level == null) {
                 if (!isPlayer1) {
@@ -381,7 +367,7 @@ namespace VersusMode {
             {
                 // set solo mode inputs 
                 // TODO change tip text depending on inputs
-                // playerInput.actions = soloActions;
+                playerInput.actions = soloActions;
                 // tipText.SetInputs(inputScript);
 
                 // hide p2 elements in in solo mode
@@ -402,6 +388,15 @@ namespace VersusMode {
                     }
                 }
             }
+
+            // If no input devices are available, use the keyboard - even if the other player inputuser is also paired to it
+            if (playerInput.devices.Count == 0)
+            {
+                playerInput.SwitchCurrentControlScheme(playerInput.defaultControlScheme, Keyboard.current);
+            }
+
+            playerInput.uiInputModule.enabled = false;
+            playerInput.uiInputModule.enabled = true;
 
             if (menu.Mobile && isCpuCursor && Active) {
                 cpuLevelObject.SetActive(true);
@@ -534,7 +529,13 @@ namespace VersusMode {
             abilityToggle.interactable = settingsDisplayed;
             livesSelectable.interactable = settingsDisplayed;
 
-
+            if (settingsDisplayed)
+            {
+                eventSystem.SetSelectedGameObject(ghostPieceToggle.gameObject);
+            } else
+            {
+                eventSystem.SetSelectedGameObject(selectedIcon.gameObject);
+            }
         }
 
         static int minLives = 1, maxLives = 15;
@@ -561,20 +562,12 @@ namespace VersusMode {
             // RefreshCpuLevel(); // called in CpuLevel property
         }
 
-        void SettingsCursorLeft() {
-            if (settingsSelection == livesSelectable) {
-                AdjustLives(-1);
-            } else {
-                SetSettingsSelection(settingsSelection.FindSelectableOnLeft());
-            }
+        public void SettingsCursorLeft() {
+            AdjustLives(-1);
         }
 
-        void SettingsCursorRight() {
-            if (settingsSelection == livesSelectable) {
-                AdjustLives(1);
-            } else {
-                SetSettingsSelection(settingsSelection.FindSelectableOnRight());
-            }
+        public void SettingsCursorRight() {
+            AdjustLives(1);
         }
 
         public void SetSettingsSelection(Selectable selectable) {
@@ -585,6 +578,8 @@ namespace VersusMode {
         }
 
         public void SetSelection(CharacterIcon newSelectedIcon) {
+            if (newSelectedIcon == selectedIcon) return;
+
             if (!newSelectedIcon) {
                 if (Application.isPlaying) SoundManager.Instance.PlaySound(noswitchSFX, 2.5f);
                 return;
@@ -651,6 +646,11 @@ namespace VersusMode {
 
         public bool enableAbilities { 
             get { return abilityToggle.isOn; } 
+        }
+
+        public void PlaySettingsMoveSFX()
+        {
+            SoundManager.Instance.PlaySound(settingsMoveSFX, volumeScale: 0.8f);
         }
     }
 }

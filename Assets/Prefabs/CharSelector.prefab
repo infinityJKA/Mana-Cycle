@@ -735,6 +735,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6473480393472728593}
   - component: {fileID: 9184732515958813814}
+  - component: {fileID: 2347583733355993085}
   m_Layer: 5
   m_Name: AbiltiiesToggle
   m_TagString: Untagged
@@ -812,6 +813,18 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &2347583733355993085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611344644900885778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3326820af9d418c4da0519e6134a56ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2639505665067817935
 GameObject:
   m_ObjectHideFlags: 0
@@ -957,6 +970,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2469092160997191510}
   - component: {fileID: 1360921580818144791}
+  - component: {fileID: 6968397696142698723}
   m_Layer: 5
   m_Name: GhostPieceToggle
   m_TagString: Untagged
@@ -1034,6 +1048,18 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &6968397696142698723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3145067324716886397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3326820af9d418c4da0519e6134a56ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3420330452154719248
 GameObject:
   m_ObjectHideFlags: 0
@@ -1101,7 +1127,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bedd70b4fa41d4a8f889bf5a789697fa, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a0bd0ea2532920e4d9dad89183cbe5aa, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2023,6 +2049,7 @@ MonoBehaviour:
   infoOpenSFX: {fileID: 8300000, guid: 7b2f49b9e77fee244807cd657d5276ae, type: 3}
   infoCloseSFX: {fileID: 8300000, guid: 2ed614660d0f3f5418b8a9aa05a1f7d8, type: 3}
   settingsToggleSFX: {fileID: 8300000, guid: 1e0d785296ac5104f9d274582492c0f0, type: 3}
+  settingsMoveSFX: {fileID: 8300000, guid: 1e0d785296ac5104f9d274582492c0f0, type: 3}
   fadeSpeed: 5
   fadeDisplacement: {x: -300, y: 0}
   abilityInfoCanvasGroup: {fileID: 1723540617525936095}
@@ -2374,6 +2401,8 @@ GameObject:
   - component: {fileID: 5041563437519948606}
   - component: {fileID: 6285328811435644258}
   - component: {fileID: 6930728907287099318}
+  - component: {fileID: 2151821446725193234}
+  - component: {fileID: 3964002816456993138}
   m_Layer: 5
   m_Name: LivesSelector
   m_TagString: Untagged
@@ -2452,6 +2481,31 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 805716952574279570}
+--- !u!114 &2151821446725193234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6472919289496270997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3326820af9d418c4da0519e6134a56ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3964002816456993138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6472919289496270997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47308aad648bdeb43997d6a2c0c0970f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selector: {fileID: 5349231826878265137}
 --- !u!1 &6865850745828520129
 GameObject:
   m_ObjectHideFlags: 0
