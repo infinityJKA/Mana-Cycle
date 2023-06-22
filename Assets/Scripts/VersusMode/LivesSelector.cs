@@ -11,7 +11,7 @@ using VersusMode;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UIElements;
 
-namespace MainMenu {
+namespace VersusMode {
     /// <summary>
     /// Controls the cinemachine camera in the 3d menu.
     /// <summary>
