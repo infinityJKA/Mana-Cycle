@@ -5,6 +5,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 namespace MainMenu {
     /// <summary>
@@ -23,7 +24,11 @@ namespace MainMenu {
 
         [SerializeField] public ScrollRect scrollRect;
 
+        [SerializeField] public InputActionReference scrollInput;
+
         [SerializeField] public float scrollSpeed = 1f;
+
+        private Vector2 scrollDir;
 
         public void Update()
         {
@@ -32,6 +37,14 @@ namespace MainMenu {
                 HideMenu();
                 return;
             }
+
+            scrollRect.normalizedPosition += scrollDir * scrollSpeed * Time.deltaTime;
+
+            // scroll with navigation up/down
+            scrollInput.action.performed += ctx =>
+            {
+                scrollDir = ctx.ReadValue<Vector2>();
+            };
         }
 
         public void ShowMenu()
