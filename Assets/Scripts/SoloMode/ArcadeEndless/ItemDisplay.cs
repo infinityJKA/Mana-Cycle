@@ -52,8 +52,9 @@ public class ItemDisplay : MonoBehaviour
         else equipDisplayObject.SetActive(false);
     }
 
-    public void OnSelect()
+    public void OnSelect(BaseEventData data)
     {
+        Debug.Log(data);
         SoundManager.Instance.PlaySound(selectSFX, pitch: sfxPitch);
     }
 
