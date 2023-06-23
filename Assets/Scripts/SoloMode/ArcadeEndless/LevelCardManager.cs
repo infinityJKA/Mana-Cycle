@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-// using Sound;
+using Sound;
 
 namespace SoloMode
 {
@@ -98,6 +98,7 @@ namespace SoloMode
         public void SelectQuit()
         {
             transitionHandler.WipeToScene("SoloMenu", reverse: true);
+            SoundManager.Instance.SetBGM(SoundManager.Instance.mainMenuMusic);
         }
 
         public void RefreshInfo()
