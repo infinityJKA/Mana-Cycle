@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Sound;
+
 #if (UNITY_EDITOR)
 using UnityEditor;
 #endif
@@ -68,6 +70,9 @@ public class Item : ScriptableObject
     /// </summary>
     [NonSerialized] public int cost;
 
+    // use / equip sound
+    [SerializeField] private AudioClip useSFX;
+    [SerializeField] private float soundPitch = 1f;
     public void OnEnable()
     {
         cost = baseCost;
@@ -148,6 +153,11 @@ public class Item : ScriptableObject
                     return;
                 }
                 
+            }
+            else if (useType == UseType.Consume)
+            {
+                // play consumable sound serialized in this item. equip sounds are serialized in inventory
+                SoundManager.Instance.PlaySound(useSFX, pitch: soundPitch);
             }
         }
 

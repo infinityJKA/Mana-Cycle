@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.UI;
 
+using Sound;
+
 public class Inventory : MonoBehaviour
 {
     // prefab of item display
@@ -24,6 +26,9 @@ public class Inventory : MonoBehaviour
     [SerializeField] private GameObject descriptionObject;
 
     [SerializeField] public ScrollRect scrollRect;
+
+    [SerializeField] private AudioClip equipSFX;
+    [SerializeField] private AudioClip unequipSFX;
 
     // private float scrollPosTarget = 1f;
 
@@ -150,7 +155,9 @@ public class Inventory : MonoBehaviour
                 item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;
 
             case Item.UseType.Equip: 
-                item.ActivateEffect(); break;
+                item.ActivateEffect();
+                SoundManager.Instance.PlaySound(ArcadeStats.equipedItems.Contains(item) ? equipSFX : unequipSFX, volumeScale: 0.75f);
+                break;
 
             default: 
                 item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;

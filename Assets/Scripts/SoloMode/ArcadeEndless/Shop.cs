@@ -133,7 +133,7 @@ public class Shop : MonoBehaviour
             RefreshAllDisplays();
             RefreshText();
             selection.GetComponent<ItemDisplay>().Refresh();
-            SoundManager.Instance.PlaySound(puchaseSFX, pitch: 1.3f);
+            SoundManager.Instance.PlaySound(puchaseSFX, pitch: 1.1f, volumeScale: 0.75f);
         }
         else
         {
