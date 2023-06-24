@@ -16,6 +16,7 @@ using Achievements;
 
 // may be a bad idea to namespace this, could be changed later
 using static ArcadeStats.Stat;
+using static Item;
 
 namespace Battle.Board {
     public class GameBoard : MonoBehaviour
@@ -255,6 +256,9 @@ namespace Battle.Board {
 
         [SerializeField] public RngManager rngManager;
 
+        // Items this board should proc. currently set to empty when outside AE
+        public List<Item> items;
+
         // dict for some game stats, set depending on mode
         public Dictionary<ArcadeStats.Stat, float> boardStats;
 
@@ -299,18 +303,27 @@ namespace Battle.Board {
             // load stats dict
             if (Storage.level == null || !Storage.level.generateNextLevel || playerSide == 1)
             {
-                // if not in arcade endless, use default stats
+                // Not in arcade endless
+                // Use default stats
                 boardStats = ArcadeStats.defaultStats;
                 Debug.Log(string.Join("\n",boardStats));
+
+                items = new List<Item>();
             }
             else 
             {
-                // otherwise, use player stats.
+                // In arcade endless
+                // use player stats and load items
                 boardStats = ArcadeStats.playerStats;
                 Debug.Log("using AE stats");
                 Debug.Log(string.Join("\n",boardStats));
-                
+
+                items = new List<Item>(ArcadeStats.equipedItems);
             }
+
+            foreach (Item i in items) i.board = this;
+
+            // set board of each item
 
             // if (playerSide == 1) boardStats = ArcadeStats.defaultStats;
 
@@ -733,6 +746,7 @@ namespace Battle.Board {
         public void UseAbility(){
             if (abilityManager.enabled) {
                 abilityManager.UseAbility();
+                Item.Proc(items, deferType: DeferType.OnSpecialUsed);
                 RefreshGhostPiece();
             }
         }
@@ -1249,6 +1263,8 @@ namespace Battle.Board {
             portrait.GetComponent<ColorFlash>().Flash(intensity);
 
             PlaySFX("damageTaken");
+            Item.Proc(items, DeferType.OnDamageTaken);
+            Item.Proc(enemyBoard.items, DeferType.OnDamageDealt);
 
             // subtract from hp
             if (canDamageShield)
@@ -1529,6 +1545,7 @@ namespace Battle.Board {
             if (cyclePosition >= ManaCycle.cycleLength) {
                 cyclePosition = 0;
                 cycleLevel++;
+                Item.Proc(items, DeferType.OnFullCycle);
                 cycleLevelDisplay.Set(cycleLevel);
                 PlaySFX("cycle");
             }

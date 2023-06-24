@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Sound;
+using Battle.Board;
 
 #if (UNITY_EDITOR)
 using UnityEditor;
@@ -70,6 +71,11 @@ public class Item : ScriptableObject
     /// </summary>
     [NonSerialized] public int cost;
 
+    /// <summary>
+    /// set in GameBoard's start method. used for mid-game effects
+    /// </summary>
+    [NonSerialized] public GameBoard board;
+
     // use / equip sound
     [SerializeField] private AudioClip useSFX;
     [SerializeField] private float soundPitch = 1f;
@@ -97,17 +103,19 @@ public class Item : ScriptableObject
         IncreaseHpFlat, // increase hp by flat amount
         IncreaseMaxHP, // for equipables / perm upgrades
         AddToStat, // adds to a stat on the stats dict with a given key
+        TakeDamageFlat, // decrease hp by flat amount
+        DealDamageFlat, // deal damage to oppenent (mid-game only), to be implemented
     }
 
     public enum DeferType
     {
         None, // used like a regular item
         PostGame, // activated on post game screen
-        OnCast, // to be implemented 
-        OnFullCycle, // to be implemented 
-        OnDamageDealt, // to be implemented 
-        OnDamageTaken, // to be implemented 
-        OnSpecialUsed, // to be implemented 
+        OnCast, // to be implemented
+        OnFullCycle, // u already kno
+        OnDamageDealt, // when enemy board takes damage (not when added to damage cycle)
+        OnDamageTaken, // when player board takes damage (not when added to damage cycle)
+        OnSpecialUsed, // when active ability is used
     }
 
     public string UseTypeToString()
@@ -121,10 +129,10 @@ public class Item : ScriptableObject
         }
     }
 
-    public static void Proc(DeferType deferType = DeferType.None)
+    public static void Proc(List<Item> items, DeferType deferType = DeferType.None)
     {
         Debug.Log("procing with type " + deferType);
-        foreach (Item i in ArcadeStats.equipedItems) i.ActivateEffect(deferType);
+        foreach (Item i in items) i.ActivateEffect(deferType);
     }
 
     public void ActivateEffect(DeferType deferType = DeferType.None)
@@ -177,6 +185,7 @@ public class Item : ScriptableObject
                 case EffectType.IncreaseHpFlat: GainHP ((int) e.value); break;
                 case EffectType.IncreaseMaxHP: ArcadeStats.maxHp += (int) e.value; GainHP(0); break;
                 case EffectType.AddToStat: ArcadeStats.playerStats[e.key] += e.value; break;
+                case EffectType.TakeDamageFlat: board.TakeDamage((int) e.value); Debug.Log("hm."); break;
                 default: Debug.Log("Effect Type Not Handled! :("); break;
             }
         }
