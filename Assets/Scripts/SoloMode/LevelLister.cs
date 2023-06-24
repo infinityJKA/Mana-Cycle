@@ -8,7 +8,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using System.Collections;
 using UnityEngine.UI;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 #if (UNITY_EDITOR)
 using UnityEditor;
