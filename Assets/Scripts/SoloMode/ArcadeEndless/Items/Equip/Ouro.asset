@@ -10,17 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 034c5d9ed6c933747b0235628e1a5862, type: 3}
-  m_Name: TestEquipable
+  m_Name: Ouro
   m_EditorClassIdentifier: 
-  itemName: Equipment :)
-  description: really really long description for awesome and funny times and also
-    to test text autoscaling hoooorayyyy!!!
+  itemName: Ouroboros
+  description: Reduces damage dealt by 10%, but restores 10% HP after each match.
   icon: {fileID: 21300000, guid: e47d53c8c57e4422f8c285c78faa6038, type: 3}
   useType: 1
   effects:
-  - type: 2
-    value: 500
+  - type: 0
+    value: 0.1
+    key: 3
+    deferType: 1
+  - type: 3
+    value: -0.1
     key: 0
     deferType: 0
-  baseCost: 1
+  baseCost: 600
   costIncreaseMult: 1

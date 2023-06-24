@@ -10,17 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 034c5d9ed6c933747b0235628e1a5862, type: 3}
-  m_Name: AnotherTestEquipable
+  m_Name: CardOfDeath
   m_EditorClassIdentifier: 
-  itemName: Cool item
-  description: doubles damage but reduces hp by 1500. pretty awesome
-  icon: {fileID: 21300000, guid: 8ae4c3d0f0193434daa1ae92174bcbec, type: 3}
+  itemName: Card of Death
+  description: Increase mana charge by 30%, but take 50 damage each time you use
+    your ability.
+  icon: {fileID: 21300000, guid: e47d53c8c57e4422f8c285c78faa6038, type: 3}
   useType: 1
   effects:
+  - type: 4
+    value: 50
+    key: 3
+    deferType: 6
   - type: 3
-    value: 1
-    key: 0
-  - type: 2
-    value: -1500
-    key: 0
-  cost: 1
+    value: 0.3
+    key: 2
+    deferType: 0
+  baseCost: 600
+  useSFX: {fileID: 0}
+  soundPitch: 1
+  costIncreaseMult: 1

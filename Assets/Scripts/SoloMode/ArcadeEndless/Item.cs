@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Sound;
+using Battle.Board;
+
 #if (UNITY_EDITOR)
 using UnityEditor;
 #endif
@@ -46,6 +49,11 @@ public class Item : ScriptableObject
         /// key used if the effect needs access to the stats dict
         /// </summary>
         public ArcadeStats.Stat key;
+
+        /// <summary>
+        /// when the effect is refered to (if at all)
+        /// </summary>
+        public DeferType deferType = DeferType.None;
     }
 
     /// <summary>
@@ -54,9 +62,33 @@ public class Item : ScriptableObject
     [SerializeField] List<Effect> effects;
 
     /// <summary>
-    /// cost to purchase in shop
+    /// base cost to purchase in shop
     /// </summary>
-    public int cost;
+    public int baseCost;
+
+    /// <summary>
+    /// cost after multipliers
+    /// </summary>
+    [NonSerialized] public int cost;
+
+    /// <summary>
+    /// set in GameBoard's start method. used for mid-game effects
+    /// </summary>
+    [NonSerialized] public GameBoard board;
+
+    // use / equip sound
+    [SerializeField] private AudioClip useSFX;
+    [SerializeField] private float soundPitch = 1f;
+    public void OnEnable()
+    {
+        cost = baseCost;
+        // Debug.Log(itemName + " " + cost);
+    }
+
+    /// <summary>
+    /// cost increase after being purchased in the shop as a multiplier of base cost
+    /// </summary>
+    public float costIncreaseMult = 1f;
 
     public enum UseType
     {
@@ -71,6 +103,19 @@ public class Item : ScriptableObject
         IncreaseHpFlat, // increase hp by flat amount
         IncreaseMaxHP, // for equipables / perm upgrades
         AddToStat, // adds to a stat on the stats dict with a given key
+        TakeDamageFlat, // decrease hp by flat amount
+        DealDamageFlat, // deal damage to oppenent (mid-game only), to be implemented
+    }
+
+    public enum DeferType
+    {
+        None, // used like a regular item
+        PostGame, // activated on post game screen
+        OnCast, // to be implemented
+        OnFullCycle, // u already kno
+        OnDamageDealt, // when enemy board takes damage (not when added to damage cycle)
+        OnDamageTaken, // when player board takes damage (not when added to damage cycle)
+        OnSpecialUsed, // when active ability is used
     }
 
     public string UseTypeToString()
@@ -84,39 +129,63 @@ public class Item : ScriptableObject
         }
     }
 
-    public void ActivateEffect()
+    public static void Proc(List<Item> items, DeferType deferType = DeferType.None)
+    {
+        Debug.Log("procing with type " + deferType);
+        foreach (Item i in items) i.ActivateEffect(deferType);
+    }
+
+    public void ActivateEffect(DeferType deferType = DeferType.None)
     {
         Debug.Log("used " + itemName);
-
-        if (useType == UseType.Equip) 
+        
+        // none defer type means used in menu, so run equip / unequip logic
+        if (deferType == DeferType.None)
         {
-            if (!ArcadeStats.equipedItems.Contains(this))
+            if (useType == UseType.Equip) 
             {
-                // return early if trying to equip over max slots
-                if (ArcadeStats.usedEquipSlots >= ArcadeStats.maxEquipSlots) return;
-                // equiping the item
-                ArcadeStats.equipedItems.Add(this);
-                ArcadeStats.usedEquipSlots = ArcadeStats.equipedItems.Count;
+                if (!ArcadeStats.equipedItems.Contains(this))
+                {
+                    // return early if trying to equip over max slots
+                    if (ArcadeStats.usedEquipSlots >= ArcadeStats.maxEquipSlots) return;
+                    // equiping the item
+                    ArcadeStats.equipedItems.Add(this);
+                    ArcadeStats.usedEquipSlots = ArcadeStats.equipedItems.Count;
+                }
+                else
+                {
+                    // unequip the item, note only one copy of an item should be in list at a time
+                    ArcadeStats.equipedItems.Remove(this);
+                    UnequipEffect();
+                    ArcadeStats.usedEquipSlots = ArcadeStats.equipedItems.Count;
+                    return;
+                }
+                
             }
-            else
+            else if (useType == UseType.Consume)
             {
-                // unequip the item, note only one copy of an item should be in list at a time
-                ArcadeStats.equipedItems.Remove(this);
-                UnequipEffect();
-                ArcadeStats.usedEquipSlots = ArcadeStats.equipedItems.Count;
-                return;
+                // play consumable sound serialized in this item. equip sounds are serialized in inventory
+                SoundManager.Instance.PlaySound(useSFX, pitch: soundPitch);
             }
-            
         }
 
+        // apply effects
         foreach (Effect e in effects)
         {
+            // skip if not correct defer type
+            if (e.deferType != deferType)
+            {
+                Debug.Log("Incorrect defer type. Skipping!");
+                continue;
+            } 
+
             switch (e.type)
             {
                 case EffectType.IncreaseHpPercent: GainHP((int) (ArcadeStats.maxHp * e.value)); break;
                 case EffectType.IncreaseHpFlat: GainHP ((int) e.value); break;
                 case EffectType.IncreaseMaxHP: ArcadeStats.maxHp += (int) e.value; GainHP(0); break;
                 case EffectType.AddToStat: ArcadeStats.playerStats[e.key] += e.value; break;
+                case EffectType.TakeDamageFlat: board.TakeDamage((int) e.value); Debug.Log("hm."); break;
                 default: Debug.Log("Effect Type Not Handled! :("); break;
             }
         }
@@ -152,7 +221,7 @@ public class Item : ScriptableObject
             var typeProperty = property.FindPropertyRelative("type");
 
             // make property taller if the stat key box needs to be drawn
-            return typeProperty.enumNames[typeProperty.enumValueIndex].Equals(nameof(EffectType.AddToStat)) ? 40 : 20;
+            return typeProperty.enumNames[typeProperty.enumValueIndex].Equals(nameof(EffectType.AddToStat)) ? 60 : 40;
         }
 
         // draw property in rect
@@ -166,29 +235,33 @@ public class Item : ScriptableObject
             // declare rects
             Rect typeRect;
             Rect valRect;
+            Rect deferRect;
 
             var typeProperty = property.FindPropertyRelative("type");
             // Debug.Log(typeProperty.enumNames[typeProperty.enumValueIndex]);
             if (typeProperty.enumNames[typeProperty.enumValueIndex].Equals(nameof(EffectType.AddToStat)))
             {
                 // when dict key is needed, show key enum selector in gui
-                Rect statRect = new Rect(position.x, position.y + 20, position.width / 2, position.height / 2);
-                typeRect = new Rect(position.x, position.y, position.width / 2, position.height / 2);
-                valRect = new Rect(position.x * 2f, position.y + 20, 50, position.height / 2);
+                Rect statRect = new Rect(position.x, position.y + 20, position.width / 2, position.height / 3);
+                typeRect = new Rect(position.x, position.y, position.width / 2, position.height / 3);
+                valRect = new Rect(position.x * 2f, position.y + 20, 50, position.height / 3);
+                deferRect = new Rect(position.x, position.y + 40, 150, position.height / 3);
 
-                // draw fields 
-                EditorGUI.PropertyField(typeRect, property.FindPropertyRelative("type"), GUIContent.none);
-                EditorGUI.PropertyField(valRect, property.FindPropertyRelative("value"), GUIContent.none);
                 EditorGUI.PropertyField(statRect, property.FindPropertyRelative("key"), GUIContent.none);
+
             }
             else
             {
-                typeRect = new Rect(position.x, position.y, position.width / 2, position.height);
-                valRect = new Rect(position.x * 2f, position.y, 50, position.height);
+                typeRect = new Rect(position.x, position.y, position.width / 2, position.height / 2);
+                valRect = new Rect(position.x * 2f, position.y, 50, position.height / 2);
+                deferRect = new Rect(position.x, position.y + 20, 150, position.height / 2);
 
-                EditorGUI.PropertyField(typeRect, property.FindPropertyRelative("type"), GUIContent.none);
-                EditorGUI.PropertyField(valRect, property.FindPropertyRelative("value"), GUIContent.none);
             }
+
+            // draw fields 
+            EditorGUI.PropertyField(valRect, property.FindPropertyRelative("value"), GUIContent.none);
+            EditorGUI.PropertyField(typeRect, property.FindPropertyRelative("type"), GUIContent.none);
+            EditorGUI.PropertyField(deferRect, property.FindPropertyRelative("deferType"), GUIContent.none);
 
             EditorGUI.EndProperty();
         }

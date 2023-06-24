@@ -20,6 +20,9 @@ public class ArcadeStats
 
     public static int usedEquipSlots = 0;
 
+    // set by levelCardManager
+    public static List<Item> itemRewardPool;
+
     // stat defaults, used in all other gamemodes
     public static Dictionary<Stat, float> defaultStats = new Dictionary<Stat, float>()
     {
@@ -28,12 +31,13 @@ public class ArcadeStats
         {Stat.SpecialGainMult, 1f},
         {Stat.StartingCycleModifier, 0f}, 
         {Stat.CycleMultIncrease, 0.2f},
-        {Stat.QuickDropSpeed, 0.125f}, // not implemented yet
+        {Stat.QuickDropSpeed, 0.125f},
+        {Stat.MoneyMult, 1f},
 
     };
 
     // the stats of the player, to be modified in AE
-    public static Dictionary<Stat, float> playerStats = defaultStats;
+    public static Dictionary<Stat, float> playerStats = new Dictionary<Stat, float>(defaultStats);
 
     // types of stats / multipliers to be applied in gameboard scene
     // more types to be added if item concepts need them
@@ -45,6 +49,7 @@ public class ArcadeStats
         StartingCycleModifier, // extra cycle multiplier you have at the beginning of the match. normally 0x, can be negative
         CycleMultIncrease, // how much the multiplier increases each full cycle. normally 0.2
         QuickDropSpeed, // the quick drop delay, normally 0.125
+        MoneyMult, // multiplier for money gained in AE. starts at 1x
     }
 
 

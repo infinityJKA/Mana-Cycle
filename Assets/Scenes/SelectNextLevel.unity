@@ -123,6 +123,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &56786069 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9014667806472721673, guid: dbf488e4ac244b24fb1434aac9d55b4d, type: 3}
+  m_PrefabInstance: {fileID: 753883230}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aeb70653633e074f8f556cfd2681776, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &59071165
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -418,11 +429,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shopItems:
   - {fileID: 11400000, guid: f94e8471ea6817b44a7841631d2ae5e1, type: 2}
-  - {fileID: 11400000, guid: 8454ff114d6259b4abc85132e9e93a03, type: 2}
+  - {fileID: 11400000, guid: 22ae1997a25f7f84baf51f6a973607eb, type: 2}
+  - {fileID: 11400000, guid: ffee847803189904fae47c44b5386213, type: 2}
   - {fileID: 11400000, guid: 64dc70d2a7130a044aeae46c754be961, type: 2}
-  - {fileID: 11400000, guid: cf2e58d934dac7248b364f867ed50499, type: 2}
+  - {fileID: 11400000, guid: 38313a08ce3cadc47b6868cbb1cc67e0, type: 2}
+  - {fileID: 11400000, guid: 2aebe4eb9cbae9949a9a97b95ee7eac8, type: 2}
+  - {fileID: 11400000, guid: cd662d207009cd444a456b1f83d2ed16, type: 2}
   itemDisplayPrefab: {fileID: 3913695854040387670, guid: 53342456d4def3f41b72d71180153fb8, type: 3}
-  itemDisplayParent: {fileID: 1747857336}
+  itemDisplayParent: {fileID: 8433233913860026622}
   descriptionText: {fileID: 746165699}
   typeText: {fileID: 1778753622}
   ownedText: {fileID: 1394918395}
@@ -430,6 +444,10 @@ MonoBehaviour:
   moneyDisplays:
   - {fileID: 1854764203}
   - {fileID: 1873724355}
+  scrollRect: {fileID: 0}
+  scrollAmount: 0.1
+  puchaseSFX: {fileID: 8300000, guid: 288a75fcdae004e4f86fcf3a62532dec, type: 3}
+  failPuchaseSFX: {fileID: 8300000, guid: eecb1f7f73821c64b86f064f177d06cd, type: 3}
 --- !u!1 &143434817
 GameObject:
   m_ObjectHideFlags: 0
@@ -516,6 +534,18 @@ MonoBehaviour:
   hpText: {fileID: 603558003}
   lifeContainer: {fileID: 564651426}
   lifePrefab: {fileID: 7506047623504768559, guid: 58adc0e5267f1db41be8273b0c472c90, type: 3}
+  itemRewardPool:
+  - {fileID: 11400000, guid: f94e8471ea6817b44a7841631d2ae5e1, type: 2}
+  - {fileID: 11400000, guid: 22ae1997a25f7f84baf51f6a973607eb, type: 2}
+  - {fileID: 11400000, guid: a62e90d06ccfb43468ff2db7abaf208a, type: 2}
+  - {fileID: 11400000, guid: bee62556058600c48800a99c0e85bd9b, type: 2}
+  - {fileID: 11400000, guid: 7e474182a3709274c8f0912e4ed4bd16, type: 2}
+  - {fileID: 11400000, guid: 2d1e03294be3a584c8517cc95fa15a67, type: 2}
+  - {fileID: 11400000, guid: 1ac5f1f976f7d7c4885d0b83c172e93e, type: 2}
+  startingInventory:
+  - {fileID: 11400000, guid: f94e8471ea6817b44a7841631d2ae5e1, type: 2}
+  - {fileID: 11400000, guid: f94e8471ea6817b44a7841631d2ae5e1, type: 2}
+  - {fileID: 11400000, guid: 6696063b6e525f343896d2c450711b23, type: 2}
   transitionHandler: {fileID: 1727223277}
 --- !u!1001 &178826418
 PrefabInstance:
@@ -1272,13 +1302,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemDisplayPrefab: {fileID: 3913695854040387670, guid: 53342456d4def3f41b72d71180153fb8, type: 3}
-  itemDisplayParent: {fileID: 1740786467}
+  itemDisplayParent: {fileID: 856869461}
   descriptionText: {fileID: 1156703207}
   typeText: {fileID: 1506963405}
   equipText: {fileID: 1827963383}
   hpBar: {fileID: 1674677172}
   hpText: {fileID: 961202361}
   descriptionObject: {fileID: 1021486710}
+  scrollRect: {fileID: 1897364810}
+  equipSFX: {fileID: 8300000, guid: 6cd37d1ef6abb0949a50ff5f637f5295, type: 3}
+  unequipSFX: {fileID: 8300000, guid: 4588f34ff2c9f6346b62b5230dd93797, type: 3}
 --- !u!1 &419756206
 GameObject:
   m_ObjectHideFlags: 0
@@ -2772,9 +2805,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 22
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -2805,7 +2838,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: -101.09386}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3048,6 +3081,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &856869461 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8837614822234419685, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
+  m_PrefabInstance: {fileID: 1897364807}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &961202359
 GameObject:
   m_ObjectHideFlags: 0
@@ -3646,16 +3684,44 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: MainMenu.Menu3d, Assembly-CSharp
-          m_MethodName: setVersusDescription
-          m_Mode: 5
+        - m_Target: {fileID: 56786069}
+          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 5350ac1151c0d07459a7aa692b9e88da, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 15
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 56786069}
+          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 7b2f49b9e77fee244807cd657d5276ae, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 56786069}
+          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+          m_MethodName: PlayBGM
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: Two players go against each other!
+            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!114 &1064358332
@@ -3913,12 +3979,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
+  m_fontSize: 18
   m_fontSizeBase: 22
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 22
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -3949,7 +4015,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: -76.78011}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -4434,10 +4500,34 @@ MonoBehaviour:
             m_StringArgument: Two players go against each other!
             m_BoolArgument: 0
           m_CallState: 2
-  - eventID: 8
+        - m_Target: {fileID: 56786069}
+          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 5350ac1151c0d07459a7aa692b9e88da, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 15
     callback:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 56786069}
+          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 7b2f49b9e77fee244807cd657d5276ae, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!114 &1293426284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4912,10 +5002,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelCard
       objectReference: {fileID: 0}
-    - target: {fileID: 5435245132965250854, guid: abc9989e84248f54c82aacbc099e2009, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5280,16 +5366,32 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: MainMenu.Menu3d, Assembly-CSharp
-          m_MethodName: setVersusDescription
-          m_Mode: 5
+        - m_Target: {fileID: 56786069}
+          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
           m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_ObjectArgument: {fileID: 8300000, guid: 5350ac1151c0d07459a7aa692b9e88da, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: Two players go against each other!
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 15
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 56786069}
+          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 2ed614660d0f3f5418b8a9aa05a1f7d8, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!114 &1692377410
@@ -5502,16 +5604,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &1740786467 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1563583897856203542, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
-  m_PrefabInstance: {fileID: 1897364807}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1747857336 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1563583897856203542, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
-  m_PrefabInstance: {fileID: 8433233913860026621}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1747857337 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3416185320517791534, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
@@ -6106,6 +6198,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 384109331}
     m_Modifications:
+    - target: {fileID: 7386616255173750, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 1563583897856203542, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
       propertyPath: m_Name
       value: ItemList
@@ -6204,6 +6300,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3416185320517791534, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
   m_PrefabInstance: {fileID: 1897364807}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1897364810 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8795155703874008487, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
+  m_PrefabInstance: {fileID: 1897364807}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1964821034
 GameObject:
   m_ObjectHideFlags: 0
@@ -6422,6 +6529,34 @@ MonoBehaviour:
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: Two players go against each other!
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 56786069}
+          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 5350ac1151c0d07459a7aa692b9e88da, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 15
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 56786069}
+          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 7b2f49b9e77fee244807cd657d5276ae, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!114 &2039377181
@@ -6682,16 +6817,32 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: MainMenu.Menu3d, Assembly-CSharp
-          m_MethodName: setVersusDescription
-          m_Mode: 5
+        - m_Target: {fileID: 56786069}
+          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
           m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_ObjectArgument: {fileID: 8300000, guid: 5350ac1151c0d07459a7aa692b9e88da, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: Two players go against each other!
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 15
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 56786069}
+          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 2ed614660d0f3f5418b8a9aa05a1f7d8, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!114 &2112005476
@@ -7032,6 +7183,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 133690318}
     m_Modifications:
+    - target: {fileID: 7386616255173750, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 1563583897856203542, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
       propertyPath: m_Name
       value: ItemList
@@ -7125,3 +7280,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
+--- !u!1 &8433233913860026622 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8837614822234419685, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
+  m_PrefabInstance: {fileID: 8433233913860026621}
+  m_PrefabAsset: {fileID: 0}

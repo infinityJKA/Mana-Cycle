@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-// using Sound;
+using Sound;
 
 namespace SoloMode
 {
@@ -27,6 +27,9 @@ namespace SoloMode
         // life container and prefab to display lives
         [SerializeField] GameObject lifeContainer;
         [SerializeField] GameObject lifePrefab;
+
+        [SerializeField] public List<Item> itemRewardPool;
+        [SerializeField] public List<Item> startingInventory;
 
         [SerializeField] TransitionScript transitionHandler;
 
@@ -55,7 +58,10 @@ namespace SoloMode
                 ArcadeStats.maxEquipSlots = 3;
                 ArcadeStats.usedEquipSlots = 0;
 
-                ArcadeStats.playerStats = ArcadeStats.defaultStats;
+                ArcadeStats.playerStats = new Dictionary<ArcadeStats.Stat, float>(ArcadeStats.defaultStats);
+                ArcadeStats.itemRewardPool = itemRewardPool;
+
+                foreach (Item item in startingInventory) Inventory.ObtainItem(item);
             }
 
             if (Storage.nextLevelChoices != null)
@@ -67,6 +73,9 @@ namespace SoloMode
                     newCard.GetComponent<LevelCard>().level = level;
                 }
             }
+
+            // proc items with postGame, calling this in the actual postGame menu stores some values incorectly. overall effect is the same.
+            Item.Proc(ArcadeStats.equipedItems, deferType: Item.DeferType.PostGame);
 
             // auto select middle card.
             // 3 test cards can be hidden / unhidden from scene for testing. if the scene is not being tested, add 3 to skip those cards in children order.
@@ -89,6 +98,7 @@ namespace SoloMode
         public void SelectQuit()
         {
             transitionHandler.WipeToScene("SoloMenu", reverse: true);
+            SoundManager.Instance.SetBGM(SoundManager.Instance.mainMenuMusic);
         }
 
         public void RefreshInfo()

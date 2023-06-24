@@ -10,17 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 034c5d9ed6c933747b0235628e1a5862, type: 3}
-  m_Name: TestEquipable
+  m_Name: HealingMax
   m_EditorClassIdentifier: 
-  itemName: Equipment :)
-  description: really really long description for awesome and funny times and also
-    to test text autoscaling hoooorayyyy!!!
-  icon: {fileID: 21300000, guid: e47d53c8c57e4422f8c285c78faa6038, type: 3}
-  useType: 1
+  itemName: Oatmeal
+  description: Restores HP to MAX. Gets more expensive when bought.
+  icon: {fileID: -2413806693520163455, guid: 2760c77e69b9401439d913b805b15e2f, type: 3}
+  useType: 0
   effects:
-  - type: 2
-    value: 500
+  - type: 0
+    value: 100
     key: 0
     deferType: 0
-  baseCost: 1
-  costIncreaseMult: 1
+  baseCost: 300
+  useSFX: {fileID: 8300000, guid: 3ff003ab8cff094469d7661e87ff3b19, type: 3}
+  soundPitch: 1.2
+  costIncreaseMult: 1.5

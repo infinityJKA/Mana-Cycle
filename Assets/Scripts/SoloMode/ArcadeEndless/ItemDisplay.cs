@@ -6,6 +6,8 @@ using TMPro;
 using UnityEngine.EventSystems;
 using System;
 
+using Sound;
+
 public class ItemDisplay : MonoBehaviour
 {
     // the item this display represents
@@ -18,6 +20,9 @@ public class ItemDisplay : MonoBehaviour
     [SerializeField] private GameObject costDisplayObject;
     [SerializeField] private GameObject amountDisplayObject;
     [SerializeField] private GameObject equipDisplayObject;
+
+    [SerializeField] private AudioClip selectSFX;
+    [SerializeField] private float sfxPitch = 1f;
     
     // true in shop, false in inventory
     public bool showCost = false;
@@ -45,6 +50,12 @@ public class ItemDisplay : MonoBehaviour
         if (showOwnedAmount && ! (item.useType == Item.UseType.Equip)) amountDisplayObject.SetActive(true);
         if (showOwnedAmount && ArcadeStats.equipedItems.Contains(item)) equipDisplayObject.SetActive(true);
         else equipDisplayObject.SetActive(false);
+    }
+
+    public void OnSelect(BaseEventData data)
+    {
+        Debug.Log(data);
+        SoundManager.Instance.PlaySound(selectSFX, pitch: sfxPitch);
     }
 
 }

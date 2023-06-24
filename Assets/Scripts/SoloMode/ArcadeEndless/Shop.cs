@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.UI;
 
+using Sound;
+
 public class Shop : MonoBehaviour
 {
     // items being sold
@@ -21,6 +23,12 @@ public class Shop : MonoBehaviour
 
     // every object in scene that displays money count
     [SerializeField] List<MoneyDisp> moneyDisplays;
+
+    [SerializeField] public ScrollRect scrollRect;
+    [SerializeField] public float scrollAmount = 0.1f;
+
+    [SerializeField] AudioClip puchaseSFX;
+    [SerializeField] AudioClip failPuchaseSFX;
 
     // Start is called before the first frame update
     void Start()
@@ -45,7 +53,7 @@ public class Shop : MonoBehaviour
             // select functionality
             EventTrigger.Entry selectEntry = new EventTrigger.Entry();
             selectEntry.eventID = EventTriggerType.Select;
-            selectEntry.callback.AddListener(ev => RefreshSelection(ev));
+            selectEntry.callback.AddListener(ev => MoveSelection(ev));
             itemEventTrigger.triggers.Add(selectEntry);
 
             // add submit functionality
@@ -70,7 +78,7 @@ public class Shop : MonoBehaviour
             }
     }
 
-    public void RefreshSelection(BaseEventData ev)
+    public void MoveSelection(BaseEventData ev)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
         Item item = selection.GetComponent<ItemDisplay>().item;
@@ -119,10 +127,13 @@ public class Shop : MonoBehaviour
             // Debug.Log("purchase win");
 
             ArcadeStats.moneyAmount -= item.cost;
+            item.cost = (int) (item.cost * item.costIncreaseMult);
             Inventory.ObtainItem(item);
             // update money counters
             RefreshAllDisplays();
             RefreshText();
+            selection.GetComponent<ItemDisplay>().Refresh();
+            SoundManager.Instance.PlaySound(puchaseSFX, pitch: 1.1f, volumeScale: 0.75f);
         }
         else
         {
@@ -130,8 +141,7 @@ public class Shop : MonoBehaviour
             Debug.Log("purchase fail");
             if (ArcadeStats.moneyAmount < item.cost) moneyDisplays[0].GetComponent<Animation.Shake>().StartShake();
             if (equipOwnedCheck) ownedText.GetComponent<Animation.ColorFlash>().Flash(0.75f);
-            
-            
+            SoundManager.Instance.PlaySound(failPuchaseSFX, pitch: 1f);
         }
 
     }

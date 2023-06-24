@@ -13,7 +13,7 @@ namespace SoloMode
     public class LevelGenerator : MonoBehaviour
     {
         [SerializeField] private List<Battle.Battler> usableBattlerList;
-        [SerializeField] private List<Item> itemRewardPool;
+        [SerializeField] public List<AudioClip> usableSongList;
         [SerializeField] private Conversation defaultConvo;
 
         public Level Generate(float difficulty = 0.5f, bool VersusLevelsEnabled = true, bool SoloLevelsEnabled = false, Battler battler = null, Level lastLevel = null)
@@ -41,10 +41,13 @@ namespace SoloMode
             // if battler is given by method caller, set level battler. otherwise make battler random
             newLevel.battler = (battler != null) ? battler : usableBattlerList[(int) Random.Range(0, usableBattlerList.Count-1)];
 
+            // set song
+            newLevel.battleMusic = usableSongList[Random.Range(0,usableSongList.Count)];
+
             // 30% chance of item reward. TODO add item weights / rarities
             if (Random.value <= 0.3)
             {
-                newLevel.itemReward = itemRewardPool[Random.Range(0,itemRewardPool.Count)];
+                newLevel.itemReward = ArcadeStats.itemRewardPool[Random.Range(0,ArcadeStats.itemRewardPool.Count)];
             }
 
             // generate an ai battle level
