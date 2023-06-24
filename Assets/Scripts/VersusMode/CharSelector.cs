@@ -107,18 +107,27 @@ namespace VersusMode {
                 active = value;
 
                 if (active) {
+                    Debug.Log("activated inputs on " + gameObject + " - map: " + playerInput.currentActionMap);
+                    playerInput.ActivateInput();
+
                     portrait.enabled = true;
                     nameText.enabled = true;
+                    cursorImage.enabled = true;
+                    cursorImage.transform.position = battlerGrid.transform.GetChild(0).position;
                     // SetSelection(selectedIcon.selectable);
                     cursorImage.color = Color.white;
                 }
                 // if not active (player vs. cpu only): dimmed cursor if p1, hide if p2
                 else {
+                    Debug.Log("deactivated inputs on " + gameObject + " - map: " + playerInput.currentActionMap);
+                    playerInput.DeactivateInput();
+
                     if (isPlayer1) {
                         cursorImage.color = new Color(1f, 1f, 1f, 0.5f);
                     } else {
                         portrait.color = new Color(1f, 1f, 1f, 0.5f);
                         nameText.enabled = false;
+                        cursorImage.enabled = false;
                         HideSelection();
                     }
                 }
@@ -339,17 +348,45 @@ namespace VersusMode {
                 cursorImage.transform.position,
                 selectedIcon.transform.position,
                 ref cursorVelocity,
-                0.05f
+                0.035f
                 );
         }
 
         public void MenuInit() {
+            // if in solo mode or versus mode that is not PvP, use the solo input actions instead of multiplayer
+            bool useSoloActions = Storage.gamemode == Storage.GameMode.Solo || (Storage.gamemode == Storage.GameMode.Versus && (!Storage.isPlayerControlled2));
+
+            if (useSoloActions)
+            {
+                // i don't understand unity input system ;-;
+                playerInput.defaultControlScheme = "Keyboard&Mouse";
+                playerInput.actions = soloActions;
+                playerInput.defaultControlScheme = "Keyboard&Mouse";
+            }
+
+            // playerInput.actions.FindActionMap("UI").Enable();
+            // playerInput.actions.FindActionMap("Battle").Disable();
+
+            Debug.Log(useSoloActions + ": " + playerInput.actions);
+
+            // If no input devices are available, use the keyboard - even if the other player inputuser is also paired to it
+            if (playerInput.devices.Count == 0)
+            {
+                playerInput.SwitchCurrentControlScheme(playerInput.defaultControlScheme, Keyboard.current);
+            }
+
+            playerInput.actions.FindActionMap("UI").Enable();
+
+            // playerInput.uiInputModule.enabled = false;
+            // playerInput.uiInputModule.enabled = true;
+
             // Set cpu cursor to true if in Versus: PvC and CvC only only. set to cpu cursor and false if this is p2
             if (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2 && Storage.level == null) {
                 if (!isPlayer1) {
                     isCpuCursor = true;
                     Active = false;
                     portrait.enabled = false;
+                    cursorImage.enabled = false;
                 } else {
                     if (!Storage.isPlayerControlled1) isCpuCursor = true;
                     // inputs should be solo inputs scripts, as the player will play in the game
@@ -363,15 +400,14 @@ namespace VersusMode {
             }
             
             // in solo mode, use solo inputs
-            if (Storage.gamemode == Storage.GameMode.Solo || (isPlayer1 && (!Storage.isPlayerControlled2 && Storage.level != null)))
+            if (useSoloActions)
             {
                 // set solo mode inputs 
                 // TODO change tip text depending on inputs
-                playerInput.actions = soloActions;
                 // tipText.SetInputs(inputScript);
 
                 // hide p2 elements in in solo mode
-                if (!isPlayer1)
+                if (!isPlayer1 && Storage.gamemode == Storage.GameMode.Solo)
                 {
                     tipText.gameObject.SetActive(false);
                     gameObject.SetActive(false);
@@ -379,24 +415,19 @@ namespace VersusMode {
                 }
 
                 // loop through battlers and hide battler portraits based on level available battlers
-                for (int i = 0; i < battlerGrid.transform.childCount; i++)
+                if (Storage.level != null)
                 {
-                    GameObject portrait = battlerGrid.transform.GetChild(i).gameObject;
-                    // Debug.Log(portrait.name);
-                    if (!Storage.level.availableBattlers.Contains(portrait.GetComponent<CharacterIcon>().battler)){
-                        portrait.SetActive(false);
+                    for (int i = 0; i < battlerGrid.transform.childCount; i++)
+                    {
+                        CharacterIcon charIcon = battlerGrid.transform.GetChild(i).GetComponent<CharacterIcon>();
+                        // Debug.Log(portrait.name);
+                        if (!Storage.level.availableBattlers.Contains(charIcon.battler))
+                        {
+                            charIcon.gameObject.SetActive(false);
+                        }
                     }
                 }
             }
-
-            // If no input devices are available, use the keyboard - even if the other player inputuser is also paired to it
-            if (playerInput.devices.Count == 0)
-            {
-                playerInput.SwitchCurrentControlScheme(playerInput.defaultControlScheme, Keyboard.current);
-            }
-
-            playerInput.uiInputModule.enabled = false;
-            playerInput.uiInputModule.enabled = true;
 
             if (menu.Mobile && isCpuCursor && Active) {
                 cpuLevelObject.SetActive(true);
