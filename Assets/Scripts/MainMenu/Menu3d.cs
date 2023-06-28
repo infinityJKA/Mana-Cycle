@@ -116,6 +116,7 @@ namespace MainMenu {
                     konamiIndex++;
                     if (konamiIndex >= konamiCode.Count)
                     {
+                        konamiIndex = 0;
                         blackjackMenu.OpenBlackjack();
                     }
                 }
