@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 using Cinemachine;
+using System.Collections.Generic;
 
 namespace MainMenu {
     /// <summary>
@@ -46,11 +47,36 @@ namespace MainMenu {
         // Blackjack canvas, easter egg in main menu
         [SerializeField] private BlackjackMenu blackjackMenu;
 
+        List<KeyCode> konamiCode = new List<KeyCode>();
+        int konamiIndex = 0;
+
+        // Keep track of current input sequence to check for konami code, to enter blackjack
+
+
 
         // Start is called before the first frame update
         void Start()
         {
+            UpdateKonamiList();
             SelectLastSelected();
+        }
+
+        public void UpdateKonamiList()
+        {
+            InputScript inputScript = inputScripts[0];
+
+            konamiCode.Clear();
+            konamiCode.Add(inputScript.Up);
+            konamiCode.Add(inputScript.Up);
+            konamiCode.Add(inputScript.Down);
+            konamiCode.Add(inputScript.Down);
+            konamiCode.Add(inputScript.Left);
+            konamiCode.Add(inputScript.Right);
+            konamiCode.Add(inputScript.Left);
+            konamiCode.Add(inputScript.Right);
+            konamiCode.Add(inputScript.RotateCCW);
+            konamiCode.Add(inputScript.RotateCW);
+            //konamiCode.Add(inputScript.Cast);
         }
 
         public void SelectLastSelected()
@@ -63,13 +89,43 @@ namespace MainMenu {
         }
 
         // Update is called once per frame
-        // not sure why this was commented out
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F1))
+            DetectKonami();
+        }
+
+        private void DetectKonami()
+        {
+            InputScript inputScript = inputScripts[0];
+
+            CheckKonami(inputScript.Up);
+            CheckKonami(inputScript.Down);
+            CheckKonami(inputScript.Left);
+            CheckKonami(inputScript.Right);
+            CheckKonami(inputScript.RotateCCW);
+            CheckKonami(inputScript.RotateCW);
+            CheckKonami(inputScript.Cast);
+        }
+
+        private void CheckKonami(KeyCode keyCode)
+        {
+            if (Input.GetKeyDown(keyCode))
             {
-                blackjackMenu.OpenBlackjack();
+                if (konamiCode[konamiIndex] == keyCode)
+                {
+                    konamiIndex++;
+                    if (konamiIndex >= konamiCode.Count)
+                    {
+                        blackjackMenu.OpenBlackjack();
+                    }
+                }
+                else
+                {
+                    konamiIndex = 0;
+                }
+                Debug.Log("konami index " + konamiIndex);
             }
+            
         }
 
         public void SelectVersus()

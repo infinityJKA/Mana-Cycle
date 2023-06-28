@@ -36,7 +36,6 @@ public class InputScript : ScriptableObject
         Debug.Log("Binds Reset");
 
     }
-
     
     #if (UNITY_EDITOR)
     [CustomEditor(typeof(InputScript))]
