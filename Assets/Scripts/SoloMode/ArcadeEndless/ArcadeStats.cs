@@ -20,9 +20,6 @@ public class ArcadeStats
 
     public static int usedEquipSlots = 0;
 
-    // the stats of the player, to be modified in AE
-    public static Dictionary<Stat, float> playerStats = new Dictionary<Stat, float>();
-
     // stat defaults, used in all other gamemodes
     public static Dictionary<Stat, float> defaultStats = new Dictionary<Stat, float>()
     {
