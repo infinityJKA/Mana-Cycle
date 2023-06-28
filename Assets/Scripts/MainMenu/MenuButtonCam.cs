@@ -16,7 +16,6 @@ namespace MainMenu {
     {
         public CinemachineVirtualCamera thisCam;
         public CinemachineBrain brain;
-        public TMP_Text textBox;
         // public string text;
 
         // Components to only be enabled when this item is selected

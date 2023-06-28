@@ -20,7 +20,6 @@ namespace MainMenu {
         [SerializeField] GameObject FinishSelected;
         [SerializeField] TMPro.TextMeshProUGUI WinText;
         [SerializeField] TMPro.TextMeshProUGUI WinSubtext;
-        [SerializeField] private PlayerInput playerInput;
         [SerializeField] private BlackjackCard EmptyCard;
         [SerializeField] private BlackjackPlayerCards PlayerCards;
         [SerializeField] private BlackjackPlayerCards AICards;

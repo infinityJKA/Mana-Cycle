@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
+using Cinemachine;
 
 namespace MainMenu {
     /// <summary>
@@ -11,7 +12,7 @@ namespace MainMenu {
     {
         [SerializeField] private GameObject HTPWindow;
         [SerializeField] private HowToPlay HTPScript;
-        [SerializeField] private GameObject MainWindow;
+        [SerializeField] public GameObject MainWindow;
 
         [SerializeField] private GameObject MainFirstSelected;
         [SerializeField] private GameObject HTPFirstSelected;
@@ -41,39 +42,35 @@ namespace MainMenu {
 
         [SerializeField] private bool mobile;
 
+
+        // Blackjack canvas, easter egg in main menu
+        [SerializeField] private BlackjackMenu blackjackMenu;
+
+
         // Start is called before the first frame update
         void Start()
         {
-            // Select the last item selected by the player in previous menu. Defaults to solo mode button if game was just launched
-            if (!mobile) EventSystem.current.SetSelectedGameObject( buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject );
+            SelectLastSelected();
+        }
+
+        public void SelectLastSelected()
+        {
+            if(!mobile) EventSystem.current.SetSelectedGameObject(buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject);
 
             UpdateTip();
 
-            versionText.text = "v"+Application.version;
+            versionText.text = "v" + Application.version;
         }
 
         // Update is called once per frame
         // not sure why this was commented out
-        //void Update()
-        //{
-        //    foreach (InputScript inputScript in inputScripts) {
-        //        if (Input.GetKeyDown(inputScript.Cast)) {
-        //            var selection = EventSystem.current.currentSelectedGameObject;
-        //            Debug.Log(selection);
-        //            if (selection) {
-        //                Storage.lastMainMenuItem = selection.transform.GetSiblingIndex();
-        //                Debug.Log(Storage.lastMainMenuItem);
-
-        //                Button button = selection.GetComponent<Button>();
-        //                if (button) button.onClick.Invoke();
-
-        //                Toggle toggle = selection.GetComponent<Toggle>();
-        //                if (toggle) toggle.isOn = !toggle.isOn;
-        //            }
-        //            break;
-        //        }
-        //    }
-        //}
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                blackjackMenu.OpenBlackjack();
+            }
+        }
 
         public void SelectVersus()
         {

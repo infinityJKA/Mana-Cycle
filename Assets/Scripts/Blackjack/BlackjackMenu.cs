@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 using UnityEngine.InputSystem;
+using Cinemachine;
 
 namespace MainMenu {
     public class BlackjackMenu : MonoBehaviour
@@ -13,7 +14,7 @@ namespace MainMenu {
 
         [SerializeField] GameObject MainFirstSelected;
 
-        [SerializeField] GameObject BJfirstSelected;
+        [SerializeField] public GameObject BJfirstSelected;
 
         [SerializeField] private TransitionScript TransitionHandler;
 
@@ -22,12 +23,35 @@ namespace MainMenu {
 
         [SerializeField] bool mobile;
 
+        [SerializeField] private CinemachineVirtualCamera thisCam;
+        [SerializeField] private CinemachineBrain brain;
+
+        [SerializeField] private Menu3d Menu3dMainMenu;
+
         // [SerializeField] PlayerInput playerInput;
 
         // Start is called before the first frame update
         void Start()
         {
 
+        }
+
+        public void OpenBlackjack()
+        {
+            gameObject.SetActive(true);
+            Menu3dMainMenu.MainWindow.SetActive(false);
+
+            if (!mobile) EventSystem.current.SetSelectedGameObject(buttonTransorm.GetChild(0).gameObject);
+
+            if (brain && brain.ActiveVirtualCamera != null) brain.ActiveVirtualCamera.Priority = 1;
+            if (thisCam) thisCam.Priority = 30;
+        }
+
+        public void ExitBlackjack()
+        {
+            gameObject.SetActive(false);
+            Menu3dMainMenu.MainWindow.SetActive(true);
+            Menu3dMainMenu.SelectLastSelected();
         }
 
         // Update is called once per frame
@@ -38,15 +62,7 @@ namespace MainMenu {
         {
             BlackjackPlayMenu.SetActive(true);
             MainWindow.SetActive(false);
-            Storage.lastMainMenuItem = 0;
             if (!mobile) EventSystem.current.SetSelectedGameObject(BJfirstSelected);
         }
-
-
-        public void ExitBlackjack (int setup){
-            TransitionHandler.WipeToScene("MainMenu");
-        }
-
-
     }
 }
