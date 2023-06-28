@@ -54,26 +54,26 @@ namespace MainMenu {
 
         // Update is called once per frame
         // not sure why this was commented out
-        void Update()
-        {
-            foreach (InputScript inputScript in inputScripts) {
-                if (Input.GetKeyDown(inputScript.Cast)) {
-                    var selection = EventSystem.current.currentSelectedGameObject;
-                    Debug.Log(selection);
-                    if (selection) {
-                        Storage.lastMainMenuItem = selection.transform.GetSiblingIndex();
-                        Debug.Log(Storage.lastMainMenuItem);
+        //void Update()
+        //{
+        //    foreach (InputScript inputScript in inputScripts) {
+        //        if (Input.GetKeyDown(inputScript.Cast)) {
+        //            var selection = EventSystem.current.currentSelectedGameObject;
+        //            Debug.Log(selection);
+        //            if (selection) {
+        //                Storage.lastMainMenuItem = selection.transform.GetSiblingIndex();
+        //                Debug.Log(Storage.lastMainMenuItem);
 
-                        Button button = selection.GetComponent<Button>();
-                        if (button) button.onClick.Invoke();
+        //                Button button = selection.GetComponent<Button>();
+        //                if (button) button.onClick.Invoke();
 
-                        Toggle toggle = selection.GetComponent<Toggle>();
-                        if (toggle) toggle.isOn = !toggle.isOn;
-                    }
-                    break;
-                }
-            }
-        }
+        //                Toggle toggle = selection.GetComponent<Toggle>();
+        //                if (toggle) toggle.isOn = !toggle.isOn;
+        //            }
+        //            break;
+        //        }
+        //    }
+        //}
 
         public void SelectVersus()
         {
