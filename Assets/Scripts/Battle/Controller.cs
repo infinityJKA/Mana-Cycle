@@ -30,7 +30,6 @@ namespace Battle {
             // these will be set to true if any of the input scripts trigger it
             if (board.IsPlayerControlled()) {
                 if (!board.Mobile) board.quickFall = false;
-                board.instaDropThisFrame = false; 
             }
 
             foreach (InputScript inputScript in board.inputScripts) {
@@ -109,7 +108,7 @@ namespace Battle {
                         if (board.IsPlayerControlled() && board.GetPiece() != null) {
                             // don't set to false if already true
                             board.quickFall = Input.GetKey(inputScript.Down) || board.quickFall;
-                            board.instaDropThisFrame = Input.GetKeyDown(inputScript.Up);
+                            board.instaDropThisFrame = Input.GetKeyDown(inputScript.Up) || board.instaDropThisFrame;
                         }
 
                         if (board.Mobile && Input.GetKeyUp(inputScript.Down)) {
