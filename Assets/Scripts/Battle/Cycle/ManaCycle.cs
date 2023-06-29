@@ -50,10 +50,10 @@ namespace Battle.Cycle {
         public void InitBoards()
         {
             // Check if player 1 is in single player. if so, use its cycle length variables
-            if (boards[0].singlePlayer) {
-                cycleLength = boards[0].GetLevel().cycleLength;
-                cycleUniqueColors = boards[0].GetLevel().cycleUniqueColors;
-                lockPieceColors = boards[0].GetLevel().lockPieceColors;
+            if (Storage.level) {
+                cycleLength = Storage.level.cycleLength;
+                cycleUniqueColors = Storage.level.cycleUniqueColors;
+                lockPieceColors = Storage.level.lockPieceColors;
                 boards[1].pointer.SetActive(false);
                 boards[1].pointer.gameObject.SetActive(false);
             } else {

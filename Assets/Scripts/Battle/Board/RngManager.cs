@@ -17,10 +17,10 @@ namespace Battle.Board {
         {
             if (bag == null) bag = new List<ManaColor>();
 
-            // generate the next piece colors with 2x bag, where x is unique cycle colors
+            // generate the next piece colors with 2x bag, where x is uniqsue cycle colors
             // create the unsorted list with 2 of each color
             bag.Clear();
-            for (int i = 0; i < ManaCycle.cycleUniqueColors; i++)
+            for (int i = 0; i < (ManaCycle.lockPieceColors ? ManaCycle.cycleUniqueColors : 5); i++)
             {
                 bag.Add(( (ManaColor) i));
                 bag.Add(( (ManaColor) i));
