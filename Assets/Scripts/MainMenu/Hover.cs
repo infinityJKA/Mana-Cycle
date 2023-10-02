@@ -14,7 +14,7 @@ namespace MainMenu {
         void Start()
         {
             t = 0;
-            originY = transform.position.y;
+            originY = transform.localPosition.y;
         }
 
         // Update is called once per frame
@@ -22,7 +22,7 @@ namespace MainMenu {
         {
             t += Time.smoothDeltaTime;
             y = (float) Math.Sin(t*speed) * scale;
-            transform.position = new Vector3(transform.position.x, originY + y, transform.position.z);
+            transform.localPosition = new Vector3(transform.localPosition.x, originY + y, transform.localPosition.z);
         }
     }
 }
