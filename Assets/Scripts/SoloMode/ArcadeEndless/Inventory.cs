@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.UI;
+
+using Sound;
 
 public class Inventory : MonoBehaviour
 {
@@ -22,10 +25,18 @@ public class Inventory : MonoBehaviour
 
     [SerializeField] private GameObject descriptionObject;
 
+    [SerializeField] public ScrollRect scrollRect;
+
+    [SerializeField] private AudioClip equipSFX;
+    [SerializeField] private AudioClip unequipSFX;
+
+    // private float scrollPosTarget = 1f;
+
     void OnEnable()
     {
         BuildItemList();
         RefreshInfo();
+
     }
 
     private void BuildItemList()
@@ -57,7 +68,7 @@ public class Inventory : MonoBehaviour
             // add OnSelect functionality, RefreshInfo function
             EventTrigger.Entry selectEntry = new EventTrigger.Entry();
             selectEntry.eventID = EventTriggerType.Select;
-            selectEntry.callback.AddListener(ev => RefreshSelection(ev));
+            selectEntry.callback.AddListener(ev => MoveSelection(ev));
             itemEventTrigger.triggers.Add(selectEntry);
 
             // add submit functionality, use item
@@ -89,12 +100,16 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void RefreshSelection(BaseEventData ev)
+    public void MoveSelection(BaseEventData ev)
     {
-        // GameObject selection = EventSystem.current.currentSelectedGameObject;
+        GameObject selection = EventSystem.current.currentSelectedGameObject;
         // Item item = selection.GetComponent<ItemDisplay>().item;
 
         RefreshInfo();
+
+        // scoll logic
+        scrollRect.verticalNormalizedPosition = 1f - (selection.transform.GetSiblingIndex() * 1f) / (itemDisplayParent.transform.childCount-1);
+        // Debug.Log(scrollRect.verticalNormalizedPosition);
     } 
 
     public void RefreshInfo()
@@ -140,7 +155,9 @@ public class Inventory : MonoBehaviour
                 item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;
 
             case Item.UseType.Equip: 
-                item.ActivateEffect(); break;
+                item.ActivateEffect();
+                SoundManager.Instance.PlaySound(ArcadeStats.equipedItems.Contains(item) ? equipSFX : unequipSFX, volumeScale: 0.75f);
+                break;
 
             default: 
                 item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;
@@ -176,6 +193,12 @@ public class Inventory : MonoBehaviour
         {
             item.ActivateEffect(); 
             return;
+        }
+
+        // don't allow equipables that are already owned to appear in pool
+        if (item.useType == Item.UseType.Equip)
+        {
+            ArcadeStats.itemRewardPool.Remove(item);
         }
         
         // if the inventory dict already contains an instance of this item, just add to its amount. if not, add to dict

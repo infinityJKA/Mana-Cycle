@@ -13,12 +13,15 @@ public class ArcadeStats
     public static Dictionary<Item, int> inventory;
 
     // items the player has equiped. items are not removed from inventory when equip
-    public static List<Item> equipedItems;
+    public static List<Item> equipedItems = new List<Item>();
 
     // max equipables you can have on at once. can be increased during gameplay
     public static int maxEquipSlots = 3;
 
     public static int usedEquipSlots = 0;
+
+    // set by levelCardManager
+    public static List<Item> itemRewardPool;
 
     // stat defaults, used in all other gamemodes
     public static Dictionary<Stat, float> defaultStats = new Dictionary<Stat, float>()
@@ -28,12 +31,26 @@ public class ArcadeStats
         {Stat.SpecialGainMult, 1f},
         {Stat.StartingCycleModifier, 0f}, 
         {Stat.CycleMultIncrease, 0.2f},
-        {Stat.QuickDropSpeed, 0.125f}, // not implemented yet
+        {Stat.QuickDropSpeed, 0.125f},
+        {Stat.MoneyMult, 1f},
 
     };
 
     // the stats of the player, to be modified in AE
     public static Dictionary<Stat, float> playerStats = new Dictionary<Stat, float>(defaultStats);
+
+    // the stats to change at the end of a match. also reset after each match. used for temp mid-game stat boosts
+    public static Dictionary<Stat, float> deltaPlayerStats = new Dictionary<Stat, float>()
+        {
+        {Stat.DamageMult, 0f},
+        {Stat.StartingSpecial, 0f},
+        {Stat.SpecialGainMult, 0f},
+        {Stat.StartingCycleModifier, 0f}, 
+        {Stat.CycleMultIncrease, 0f},
+        {Stat.QuickDropSpeed, 0f},
+        {Stat.MoneyMult, 0f},
+
+    };
 
     // types of stats / multipliers to be applied in gameboard scene
     // more types to be added if item concepts need them
@@ -45,6 +62,7 @@ public class ArcadeStats
         StartingCycleModifier, // extra cycle multiplier you have at the beginning of the match. normally 0x, can be negative
         CycleMultIncrease, // how much the multiplier increases each full cycle. normally 0.2
         QuickDropSpeed, // the quick drop delay, normally 0.125
+        MoneyMult, // multiplier for money gained in AE. starts at 1x
     }
 
 

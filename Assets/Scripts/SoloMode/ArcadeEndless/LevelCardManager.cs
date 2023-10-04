@@ -5,10 +5,11 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-// using Sound;
+using Sound;
 
 namespace SoloMode
 {
+    // used as the main script of the main window in the AE scene.
     public class LevelCardManager : MonoBehaviour
     {
         [SerializeField] private InputScript inputScript;
@@ -28,10 +29,16 @@ namespace SoloMode
         [SerializeField] GameObject lifeContainer;
         [SerializeField] GameObject lifePrefab;
 
+        [SerializeField] public List<Item> itemRewardPool;
+        [SerializeField] public List<Item> startingInventory;
+
+        [SerializeField] private AudioClip bgm;
+
         [SerializeField] TransitionScript transitionHandler;
 
         void Start()
         {
+            SoundManager.Instance.SetBGM(bgm);
             if (Storage.level == null) ArcadeStats.inventory = new Dictionary<Item, int>();
 
             // hide debug cards if not debugging
@@ -56,6 +63,9 @@ namespace SoloMode
                 ArcadeStats.usedEquipSlots = 0;
 
                 ArcadeStats.playerStats = new Dictionary<ArcadeStats.Stat, float>(ArcadeStats.defaultStats);
+                ArcadeStats.itemRewardPool = itemRewardPool;
+
+                foreach (Item item in startingInventory) Inventory.ObtainItem(item);
             }
 
             if (Storage.nextLevelChoices != null)
@@ -67,6 +77,9 @@ namespace SoloMode
                     newCard.GetComponent<LevelCard>().level = level;
                 }
             }
+
+            // now called in postGame menu
+            // Item.Proc(ArcadeStats.equipedItems, deferType: Item.DeferType.PostGame);
 
             // auto select middle card.
             // 3 test cards can be hidden / unhidden from scene for testing. if the scene is not being tested, add 3 to skip those cards in children order.
@@ -86,17 +99,10 @@ namespace SoloMode
             RefreshInfo();
         }
 
-        void Update()
-        {
-            if (Input.GetKeyDown(inputScript.Cast))
-            {
-                EventSystem.current.currentSelectedGameObject.GetComponent<Button>().onClick.Invoke();
-            }
-        }
-
         public void SelectQuit()
         {
             transitionHandler.WipeToScene("SoloMenu", reverse: true);
+            SoundManager.Instance.SetBGM(SoundManager.Instance.mainMenuMusic);
         }
 
         public void RefreshInfo()

@@ -10,19 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 034c5d9ed6c933747b0235628e1a5862, type: 3}
-  m_Name: TestEquipable
+  m_Name: BruteForce
   m_EditorClassIdentifier: 
-  itemName: Equipment :)
-  description: really really long description for awesome and funny times and also
-    to test text autoscaling hoooorayyyy!!!
-  icon: {fileID: 21300000, guid: e47d53c8c57e4422f8c285c78faa6038, type: 3}
+  itemName: Brute Force
+  description: Increase damage by 15% and makes mana quickdrop faster. Completely
+    disables special meter gain.
+  icon: {fileID: 21300000, guid: f52044703648e514fae807147749558a, type: 3}
   useType: 1
   effects:
-  - type: 1
-    value: 500
+  - type: 3
+    value: 0.15
     key: 0
-    deferType: 6
-  baseCost: 1
+    deferType: 0
+  - type: 3
+    value: -0.1
+    key: 5
+    deferType: 0
+  - type: 3
+    value: -9999
+    key: 2
+    deferType: 0
+  baseCost: 600
   useSFX: {fileID: 0}
   soundPitch: 1
   costIncreaseMult: 1

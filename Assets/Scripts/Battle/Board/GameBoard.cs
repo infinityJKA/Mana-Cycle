@@ -2018,6 +2018,11 @@ namespace Battle.Board {
             CheckMidLevelConversations();
         }
 
+        public void Heal(int amount)
+        {
+            hp = Math.Min(hp, maxHp + amount);
+        }
+
         /// <summary>
         /// play a sound from this board.
         /// </summary>
