@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.UI;
+
+using Sound;
 
 public class Shop : MonoBehaviour
 {
@@ -20,6 +23,12 @@ public class Shop : MonoBehaviour
 
     // every object in scene that displays money count
     [SerializeField] List<MoneyDisp> moneyDisplays;
+
+    [SerializeField] public ScrollRect scrollRect;
+    [SerializeField] public float scrollAmount = 0.1f;
+
+    [SerializeField] AudioClip puchaseSFX;
+    [SerializeField] AudioClip failPuchaseSFX;
 
     // Start is called before the first frame update
     void Start()
@@ -44,7 +53,7 @@ public class Shop : MonoBehaviour
             // select functionality
             EventTrigger.Entry selectEntry = new EventTrigger.Entry();
             selectEntry.eventID = EventTriggerType.Select;
-            selectEntry.callback.AddListener(ev => RefreshSelection(ev));
+            selectEntry.callback.AddListener(ev => MoveSelection(ev));
             itemEventTrigger.triggers.Add(selectEntry);
 
             // add submit functionality
@@ -61,15 +70,15 @@ public class Shop : MonoBehaviour
     void Update()
     {
         // debug
-        if (Application.isEditor && Input.GetKeyDown(KeyCode.F1))
-            {
-                ArcadeStats.moneyAmount += 500;
-                RefreshAllDisplays();
-                // Debug.Log(string.Join(",", ArcadeStats.inventory));
-            }
+        // if (Application.isEditor && Input.GetKeyDown(KeyCode.F1))
+        //     {
+        //         ArcadeStats.moneyAmount += 500;
+        //         RefreshAllDisplays();
+        //         // Debug.Log(string.Join(",", ArcadeStats.inventory));
+        //     }
     }
 
-    public void RefreshSelection(BaseEventData ev)
+    public void MoveSelection(BaseEventData ev)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
         Item item = selection.GetComponent<ItemDisplay>().item;
@@ -98,8 +107,9 @@ public class Shop : MonoBehaviour
 
         descriptionText.text = item.description;
         typeText.text = item.UseTypeToString();
-        if (ArcadeStats.inventory.ContainsKey(item)) ownedText.text = "" + ArcadeStats.inventory[item] + " owned";
+        if (ArcadeStats.inventory.ContainsKey(item)) ownedText.text = "" + (item.useType != Item.UseType.Equip ? ArcadeStats.inventory[item] : "Already") + " owned";
         else ownedText.text = item.useType == Item.UseType.UseOnObtain ? "" : "Unowned";
+
     }
 
     public void BuyItem(BaseEventData ev)
@@ -108,22 +118,30 @@ public class Shop : MonoBehaviour
         Item item = selection.GetComponent<ItemDisplay>().item;
 
         // Debug.Log(item.itemName + " purchase attempt");
+        // only buy 1 of each equipable
+        bool equipOwnedCheck = (item.useType == Item.UseType.Equip && ArcadeStats.inventory.ContainsKey(item) && ArcadeStats.inventory[item] > 0);
 
-        if (ArcadeStats.moneyAmount >= item.cost)
+        if (ArcadeStats.moneyAmount >= item.cost && !equipOwnedCheck)
         {
             // buy item
             // Debug.Log("purchase win");
 
             ArcadeStats.moneyAmount -= item.cost;
+            item.cost = (int) (item.cost * item.costIncreaseMult);
             Inventory.ObtainItem(item);
             // update money counters
             RefreshAllDisplays();
             RefreshText();
+            selection.GetComponent<ItemDisplay>().Refresh();
+            SoundManager.Instance.PlaySound(puchaseSFX, pitch: 1.1f, volumeScale: 0.75f);
         }
         else
         {
             // cant buy item
             Debug.Log("purchase fail");
+            if (ArcadeStats.moneyAmount < item.cost) moneyDisplays[0].GetComponent<Animation.Shake>().StartShake();
+            if (equipOwnedCheck) ownedText.GetComponent<Animation.ColorFlash>().Flash(0.75f);
+            SoundManager.Instance.PlaySound(failPuchaseSFX, pitch: 1f);
         }
 
     }

@@ -4,7 +4,7 @@ using System;
 using UnityEngine.UI;
 using TMPro;
 
-// using Sound;
+using Sound;
 
 namespace SoloMode
 {
@@ -16,7 +16,12 @@ namespace SoloMode
         [SerializeField] TextMeshProUGUI timeText;
         [SerializeField] TextMeshProUGUI nameText;
         [SerializeField] TextMeshProUGUI descriptionText;
-        [SerializeField] TextMeshProUGUI rewardText;
+        [SerializeField] TextMeshProUGUI moneyRewardText;
+        [SerializeField] GameObject itemRewardObject;
+        [SerializeField] TextMeshProUGUI itemRewardText;
+
+        [SerializeField] AudioClip selectSFX;
+        [SerializeField] AudioClip submitSFX;
 
         TransitionScript transitionHandler;
 
@@ -31,13 +36,23 @@ namespace SoloMode
             timeText.text = "Time: " + Utils.FormatTime(level.time);
             nameText.text = level.levelName;
             descriptionText.text = level.description;
-            rewardText.text = "+" + level.rewardAmount;
+            moneyRewardText.text = "+" + level.rewardAmount;
+
+            if (level.itemReward != null) itemRewardText.text = "+" + level.itemReward.UseTypeToString() + " Item";
+            else itemRewardObject.SetActive(false);
+
         }
 
         public void LoadLevel()
         {
+            SoundManager.Instance.PlaySound(submitSFX);
             Storage.level = level;
             transitionHandler.WipeToScene("ManaCycle");
+        }
+
+        public void OnSelect()
+        {
+            SoundManager.Instance.PlaySound(selectSFX, pitch: 1.3f);
         }
         
     }
