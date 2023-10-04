@@ -7,7 +7,7 @@ using UnityEngine.UI;
 // tragic file
 public class UIHandler : MonoBehaviour
 {
-    [SerializeField] InputScript inputScript;
+    [SerializeField] InputScript[] inputScripts;
     EventSystem eventSystem;
     // Start is called before the first frame update
     void Start()
@@ -35,30 +35,41 @@ public class UIHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(inputScript.Cast))
+        foreach (InputScript inputScript in inputScripts)
         {
-            Button button = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-            ExecuteEvents.Execute(button.gameObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
-        }
+            if (Input.GetKeyDown(inputScript.Cast))
+            {
+                Selectable button;
+                // button = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+                if (EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>() != null) button = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+                else button = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
+                ExecuteEvents.Execute(button.gameObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
+                break;
+            }
 
-        if (Input.GetKeyDown(inputScript.Left))
-        {
-            Move(MoveDirection.Left);
-        }
+            if (Input.GetKeyDown(inputScript.Left))
+            {
+                Move(MoveDirection.Left);
+                break;
+            }
 
-        if (Input.GetKeyDown(inputScript.Right))
-        {
-            Move(MoveDirection.Right);
-        }
+            if (Input.GetKeyDown(inputScript.Right))
+            {
+                Move(MoveDirection.Right);
+                break;
+            }
 
-        if (Input.GetKeyDown(inputScript.Up))
-        {
-            Move(MoveDirection.Up);
-        }
+            if (Input.GetKeyDown(inputScript.Up))
+            {
+                Move(MoveDirection.Up);
+                break;
+            }
 
-        if (Input.GetKeyDown(inputScript.Down))
-        {
-            Move(MoveDirection.Down);
+            if (Input.GetKeyDown(inputScript.Down))
+            {
+                Move(MoveDirection.Down);
+                break;
+            }
         }
     }
 }
