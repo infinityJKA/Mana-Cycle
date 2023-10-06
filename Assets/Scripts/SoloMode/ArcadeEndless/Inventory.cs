@@ -186,7 +186,7 @@ public class Inventory : MonoBehaviour
         yield return null;
     }
 
-    // used by any script that gives player items, like shop or level rewards (soon)
+    // used by any script that gives player items, like shop or level rewards
     public static void ObtainItem(Item item)
     {
         if (item.useType == Item.UseType.UseOnObtain)
