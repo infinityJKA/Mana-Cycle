@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Sound;
+
 namespace Battle {
     // Timer that ticks down. If time is reached, player loses
     public class Timer : MonoBehaviour
@@ -21,11 +23,15 @@ namespace Battle {
         /** Color shown when time is almost up */
         [SerializeField] private TMPro.TMP_ColorGradient redGradient;
 
+        [SerializeField] private AudioClip beepSFX;
+
         /** if the timer is currently running */
         private bool running = false;
 
         // The time the timer will end at.
         private float endTime;
+
+        private string lastDisplayedTime;
 
         void Start() {
             textbox.enableVertexGradient = true;
@@ -72,8 +78,12 @@ namespace Battle {
             } else{
                 if(player1.level.time != -1){
                     textbox.text = Utils.FormatTime(timeLeft);
+                    if (timeLeft < 3 && lastDisplayedTime != textbox.text) SoundManager.Instance.PlaySound(beepSFX, pitch: 1.5f, volumeScale: 1f);
                 }
             }
+
+            lastDisplayedTime = textbox.text;
+            
         }
 
         public float SecondsRemaining() {

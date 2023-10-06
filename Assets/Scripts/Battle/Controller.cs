@@ -64,6 +64,7 @@ namespace Battle {
                     // same with post game menu, if timer is not running
                     else if (board.postGame && !board.winMenu.timerRunning)
                     {
+                        if (board.winMenu == null) return;
                         if (Input.GetKeyDown(inputScript.Up)) {
                             board.winMenu.MoveCursor(Vector3.up);
                         } else if (Input.GetKeyDown(inputScript.Down)) {

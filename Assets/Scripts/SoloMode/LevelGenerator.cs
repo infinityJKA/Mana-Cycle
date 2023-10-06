@@ -49,6 +49,8 @@ namespace SoloMode
                 newLevel.aiDifficulty = difficulty;
                 newLevel.levelName = "Vs. " + newLevel.opponent.displayName;
                 newLevel.description = "Fight a Level " + ((int) (newLevel.aiDifficulty*10f)) + " " + newLevel.opponent.displayName + "!";
+                // 1 in 4 chance for item reward
+                if (Random.Range(0,3) == 0 && ArcadeStats.itemRewardPool != null) newLevel.itemReward = ArcadeStats.itemRewardPool[Random.Range(0, ArcadeStats.itemRewardPool.Count-1)];
                 newLevel.CalculateRewardAmount();
             }
             // generate a solo level with objectives

@@ -184,6 +184,7 @@ namespace PostGame {
 
                         // add reward of level to total
                         ArcadeStats.moneyAmount += Storage.level.rewardAmount;
+                        if (Storage.level.itemReward != null) Inventory.ObtainItem(Storage.level.itemReward); 
                     }
                 }
 
