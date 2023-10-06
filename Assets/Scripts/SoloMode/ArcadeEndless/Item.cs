@@ -185,7 +185,7 @@ public class Item : ScriptableObject
                 case EffectType.IncreaseHpPercent: GainHP((int) (ArcadeStats.maxHp * e.value)); break;
                 case EffectType.IncreaseHpFlat: GainHP ((int) e.value); break;
                 case EffectType.IncreaseMaxHP: ArcadeStats.maxHp += (int) e.value; GainHP(0); break;
-                case EffectType.AddToStat: ArcadeStats.playerStats[e.key] += e.value; break;
+                case EffectType.AddToStat: ArcadeStats.playerStats[e.key] += e.value; Debug.Log("bruh momentos"); break;
                 case EffectType.TempAddToStat: ArcadeStats.playerStats[e.key] += e.value; ArcadeStats.deltaPlayerStats[e.key] -= e.value; break;
                 case EffectType.TakeDamageFlat: board.TakeDamage((int) e.value); break;
                 default: Debug.Log("Effect Type Not Handled! :("); break;

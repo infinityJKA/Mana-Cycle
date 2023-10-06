@@ -297,16 +297,21 @@ namespace Battle.Board {
             }
 
             // load stats dict
-            if (Storage.level == null || Storage.level.generateNextLevel || playerSide == 1)
+            if (Storage.level == null || !Storage.level.generateNextLevel || playerSide == 1)
             {
                 // if not in arcade endless, use default stats
                 boardStats = ArcadeStats.defaultStats;
+                Debug.Log(playerSide);
                 Debug.Log(string.Join("\n",boardStats));
             }
             else 
             {
                 // otherwise, use player stats
                 boardStats = ArcadeStats.playerStats;
+                Debug.Log(playerSide);
+                Debug.Log(string.Join("\n",boardStats));
+                Debug.Log(string.Join("\n",ArcadeStats.playerStats));
+                Debug.Log("This is loading the player stats. Not Default.");
             }
 
             // if (playerSide == 1) boardStats = ArcadeStats.defaultStats;
@@ -538,7 +543,7 @@ namespace Battle.Board {
                 if (instaDropThisFrame && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
                     PlacePiece();
                 } else {
-                    fallTimeMult = quickFall ? 0.125f : 1f;
+                    fallTimeMult = (quickFall ? boardStats[QuickDropSpeed] : 1f);
 
                     // Get the time that has passed since the previous piece fall.
                     // If it is greater than fall time (or fallTime/10 if holding down),

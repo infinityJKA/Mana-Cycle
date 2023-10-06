@@ -183,7 +183,7 @@ namespace PostGame {
                         Utils.Shuffle(Storage.nextLevelChoices);
 
                         // add reward of level to total
-                        ArcadeStats.moneyAmount += Storage.level.rewardAmount;
+                        ArcadeStats.moneyAmount += (int) (Storage.level.rewardAmount * ArcadeStats.playerStats[ArcadeStats.Stat.MoneyMult]);
                         if (Storage.level.itemReward != null) Inventory.ObtainItem(Storage.level.itemReward); 
                     }
                 }
