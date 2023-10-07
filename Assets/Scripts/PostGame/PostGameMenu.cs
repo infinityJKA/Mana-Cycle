@@ -116,7 +116,7 @@ namespace PostGame {
                 Time.timeScale = 1f;
                 
                 // if first clear (and not in series or endless), immediately exit back to solomenu; otherwise, open menu
-                if (!clearedBefore && cleared && Storage.level.nextSeriesLevel == null && Storage.level.time != -1) {
+                if (!clearedBefore && cleared && Storage.level.nextSeriesLevel == null && Storage.level.time != -1 && !Storage.level.generateNextLevel) {
                     // if reached the end of a solo level, go to win screen
                     if (Storage.level.nextSeriesLevel == null && Storage.level.lastSeriesLevel != null && !Storage.level.generateNextLevel)
                     {
