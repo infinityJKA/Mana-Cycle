@@ -740,6 +740,7 @@ namespace Battle.Board {
             if (abilityManager.enabled) {
                 abilityManager.UseAbility();
                 RefreshGhostPiece();
+                Item.Proc(equiped, Item.DeferType.OnSpecialUsed);
             }
         }
 
@@ -1913,7 +1914,7 @@ namespace Battle.Board {
             recoveryMode = false;
             if (postGame || won) return;
 
-            Item.Proc(equiped, Item.DeferType.PostGame);
+            //Item.Proc(equiped, Item.DeferType.PostGame);
 
             postGame = true;
             won = true;
