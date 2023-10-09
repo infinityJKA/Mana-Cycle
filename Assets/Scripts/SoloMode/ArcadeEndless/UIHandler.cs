@@ -39,11 +39,12 @@ public class UIHandler : MonoBehaviour
         {
             if (Input.GetKeyDown(inputScript.Cast))
             {
-                Selectable button;
+                if (EventSystem.current.currentSelectedGameObject == null) return;
+                Selectable button = null;
                 // button = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
                 if (EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>() != null) button = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
                 else button = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-                ExecuteEvents.Execute(button.gameObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
+                if (button != null) ExecuteEvents.Execute(button.gameObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
                 break;
             }
 
