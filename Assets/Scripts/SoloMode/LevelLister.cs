@@ -151,34 +151,40 @@ namespace SoloMode {
                 {
                     MoveCursor(-1);
                     SoundManager.Instance.PlaySound(moveSFX, pitch : 1.18f);
+                    break;
                 }
 
                 if (Input.GetKeyDown(inputScript.Down))
                 {
                     MoveCursor(1);
                     SoundManager.Instance.PlaySound(moveSFX, pitch : 1.06f);
+                    break;
                 }
 
                 if (Input.GetKeyDown(inputScript.Left))
                 {
                     LeftTabArrow();
+                    break;
                 }
 
                 if (Input.GetKeyDown(inputScript.Right))
                 {
                     RightTabArrow();
+                    break;
                 }
 
                 // pause - go back to main menu
                 if (Input.GetKeyDown(inputScript.Pause))
                 {
                     Back();
+                    break;
                 }
 
                 // cast - open selected level
                 if (Input.GetKeyDown(inputScript.Cast))
                 {
                     ConfirmLevel(selectedLevel);
+                    break;
                 }
             }
 
