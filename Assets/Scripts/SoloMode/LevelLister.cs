@@ -135,9 +135,13 @@ namespace SoloMode {
             // refresh shown information for first selected current tab & level
             tabTexts[0].color = tabSelectedColor;
 
+            // Storage.lastTabSelectedIndex = selectedTabIndex;
+            // Storage.lastLevelSelectedIndex = selectedLevelIndexes[selectedTabIndex];
+
             RefreshTab();
             RefreshCursor();
             RefreshDescription();
+
         }
 
         // Update is called once per frame
