@@ -48,6 +48,8 @@ namespace SoloMode
                 transform.GetChild(1).gameObject.SetActive(false);
                 transform.GetChild(2).gameObject.SetActive(false);
             }
+
+            Item.Proc(ArcadeStats.equipedItems, Item.DeferType.PostGame); 
             
             // if first match, init player stats and keep hp (determined by previous level) within bounds
             // second null check is for debug
