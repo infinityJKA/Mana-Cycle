@@ -16,6 +16,7 @@ using Achievements;
 
 // may be a bad idea to namespace this, could be changed later
 using static ArcadeStats.Stat;
+//using static Item.DeferType;
 
 namespace Battle.Board {
     public class GameBoard : MonoBehaviour
@@ -257,6 +258,7 @@ namespace Battle.Board {
 
         // dict for some game stats, set depending on mode
         public Dictionary<ArcadeStats.Stat, float> boardStats;
+        public List<Item> equiped = new List<Item>();
 
         // Start is called before the first frame update
         void Start()
@@ -274,6 +276,8 @@ namespace Battle.Board {
             sfx = serializedSoundDict.asDictionary();
             
             blobs = new List<Blob>();
+
+            if (Storage.level.generateNextLevel) equiped = ArcadeStats.equipedItems;
 
             if (Storage.gamemode != Storage.GameMode.Default && playerSide == 0) {
                 singlePlayer = (Storage.gamemode == Storage.GameMode.Solo);
@@ -736,6 +740,7 @@ namespace Battle.Board {
             if (abilityManager.enabled) {
                 abilityManager.UseAbility();
                 RefreshGhostPiece();
+                Item.Proc(equiped, Item.DeferType.OnSpecialUsed);
             }
         }
 
@@ -1237,6 +1242,7 @@ namespace Battle.Board {
             int dmg = hpBar.DamageQueue[5].dmg;
             if (dmg > 0) {
                 TakeDamage(dmg);
+                Item.Proc(equiped, Item.DeferType.OnDamageTaken);
             }
 
             // advance queue
@@ -1466,6 +1472,7 @@ namespace Battle.Board {
                         averagePos /= totalBlobMana;
 
                         totalSpellcasts++;
+                        
                         totalManaCleared += totalBlobMana;
                         abilityManager.GainMana((int) (totalBlobMana * boardStats[SpecialGainMult]));
 
@@ -1532,6 +1539,7 @@ namespace Battle.Board {
                 cyclePosition = 0;
                 cycleLevel++;
                 cycleLevelDisplay.Set(cycleLevel);
+                Item.Proc(equiped, Item.DeferType.OnFullCycle);
                 PlaySFX("cycle");
             }
             PointerReposition();
@@ -1905,6 +1913,8 @@ namespace Battle.Board {
         {
             recoveryMode = false;
             if (postGame || won) return;
+
+            //Item.Proc(equiped, Item.DeferType.PostGame);
 
             postGame = true;
             won = true;
