@@ -3,6 +3,12 @@ using UnityEngine.UI;
 
 namespace Achievements
 {
+    /// <summary>
+    /// This can represent either a notification for an achievement or a listed achievement in the settings achievements tab.
+    /// Characteristics change slightly depending on wherer this notification is.
+    /// only listed achievmenets will have a color changing background for example and bgkd is not referenced for notifications
+    /// (this docstring was added way after this was coded but I think thats correct)
+    /// </summary>
     public class AchievementNotification : MonoBehaviour
     {
         [SerializeField] TMPro.TextMeshProUGUI titleLabel;

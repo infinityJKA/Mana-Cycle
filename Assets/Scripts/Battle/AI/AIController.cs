@@ -49,7 +49,7 @@ namespace Battle.AI {
         // Placement calculation
         // currently running best placement job
         BestPlacementJob job;
-        // Schedule handle for the best
+        // Schedule handle for the best placement job
         JobHandle jobHandle;
         // Whether or not the job is running
         bool placementJobRunning;
@@ -63,7 +63,7 @@ namespace Battle.AI {
         // Highest row found during the last placement calculation
         int boardHighestRow = GameBoard.height;
 
-        // rows from top - used in various methods
+        // rows from top of the current highest column - used in various methods
         int rowsFromTop = 18;
 
         // when true, insta-drop on next movement tick

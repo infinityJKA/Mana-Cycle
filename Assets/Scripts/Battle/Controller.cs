@@ -9,6 +9,7 @@ using Unity.Collections;
 
 using Battle.Board;
 using Battle.AI;
+using UnityEngine.InputSystem;
 
 namespace Battle {
     /// <summary>
@@ -18,6 +19,10 @@ namespace Battle {
     {
         // the board being controlled by this script
         [SerializeField] public Board.GameBoard board;
+
+        // Movement input for joysticks, etc.
+        // This is NOT the same as single button presses such as the arrow keys.
+        private Vector2 movementInput;
 
         // Update is called once per frame
         void Update()
@@ -118,6 +123,11 @@ namespace Battle {
                     }
                 }
             }        
+        }
+
+        // Functions to handle new Action Input System invocations
+        public void OnMove(InputAction.CallbackContext ctx) {
+            movementInput = ctx.ReadValue<Vector2>();
         }
     }
 }
