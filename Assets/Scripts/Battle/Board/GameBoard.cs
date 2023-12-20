@@ -277,7 +277,7 @@ namespace Battle.Board {
             
             blobs = new List<Blob>();
 
-            if (Storage.level.generateNextLevel) equiped = ArcadeStats.equipedItems;
+            if (Storage.level && Storage.level.generateNextLevel) equiped = ArcadeStats.equipedItems;
 
             if (Storage.gamemode != Storage.GameMode.Default && playerSide == 0) {
                 singlePlayer = (Storage.gamemode == Storage.GameMode.Solo);
