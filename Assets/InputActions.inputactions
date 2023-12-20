@@ -114,6 +114,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "AbilityUse",
+                    "type": "Button",
+                    "id": "51e0f912-0762-4542-96ad-9a5bcb9d8e8d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "PieceQuickfallHold",
                     "type": "Button",
                     "id": "37ff110e-36bc-43d3-accd-b9803400b11e",
@@ -634,6 +643,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "PieceQuickfallHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9b5852d9-41c3-4086-9b2f-626979df8869",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "AbilityUse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -1001,7 +1001,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 2738482425047349209}
-  useInputScripts: 0
+  battleUseInputScripts: 0
+  menuUseInputScripts: 1
 --- !u!114 &3785837764649673596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1171,6 +1172,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 37ff110e-36bc-43d3-accd-b9803400b11e
     m_ActionName: Gameplay/PieceQuickfallHold[/Keyboard/downArrow]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1629217829993438081}
+        m_TargetAssemblyTypeName: Battle.Controller, Assembly-CSharp
+        m_MethodName: OnAbiltyUse
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 51e0f912-0762-4542-96ad-9a5bcb9d8e8d
+    m_ActionName: Gameplay/AbilityUse[/Keyboard/upArrow]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay

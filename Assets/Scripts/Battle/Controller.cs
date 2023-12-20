@@ -141,7 +141,7 @@ namespace Battle {
         }
 
         public void OnQuickfall(InputAction.CallbackContext ctx) {
-            if (ctx.started) {
+            if (ctx.performed) {
                 board.quickFall = true;
                 board.instaDropThisFrame = true;
                 Debug.Log("quickfalling");
@@ -170,6 +170,10 @@ namespace Battle {
 
         public void OnSpellcast(InputAction.CallbackContext ctx) {
             if (ctx.performed) board.Spellcast();
+        }
+
+        public void OnAbiltyUse(InputAction.CallbackContext ctx) {
+            if (ctx.performed) board.UseAbility();
         }
     }
 }
