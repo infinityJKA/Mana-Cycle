@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.09431914, g: 0.09416754, b: 0.09431914, a: 1}
+  m_IndirectSpecularColor: {r: 0.09481978, g: 0.09493873, b: 0.09481978, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -660,6 +660,7 @@ GameObject:
   - component: {fileID: 102548624}
   - component: {fileID: 102548623}
   - component: {fileID: 102548622}
+  - component: {fileID: 102548626}
   - component: {fileID: 102548625}
   m_Layer: 5
   m_Name: Menu
@@ -774,6 +775,23 @@ MonoBehaviour:
   versionText: {fileID: 1594978075}
   mobile: 0
   blackjackMenu: {fileID: 1498035165}
+--- !u!114 &102548626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102548620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &118444161
 GameObject:
   m_ObjectHideFlags: 0
@@ -2835,7 +2853,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 240257909}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
   m_Name: 
@@ -2846,8 +2864,8 @@ MonoBehaviour:
   m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
   m_PointAction: {fileID: -1654692200621890270, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
-  m_MoveAction: {fileID: -8784545083839296357, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
-  m_SubmitAction: {fileID: 392368643174621059, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
+  m_MoveAction: {fileID: 0}
+  m_SubmitAction: {fileID: 0}
   m_CancelAction: {fileID: 7727032971491509709, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
   m_LeftClickAction: {fileID: 3001919216989983466, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
   m_MiddleClickAction: {fileID: -2185481485913320682, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
