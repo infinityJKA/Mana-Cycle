@@ -10,6 +10,7 @@ using Unity.Collections;
 using Battle.Board;
 using Battle.AI;
 using UnityEngine.InputSystem;
+using VersusMode;
 
 namespace Battle {
     /// <summary>
@@ -17,8 +18,18 @@ namespace Battle {
     /// </summary>
     public class Controller : MonoBehaviour
     {
+        // CharSelectController to delegate inputs to during char select
+        private CharSelector charSelector;
+
         // the board being controlled by this script
-        [SerializeField] public Board.GameBoard board;
+        private Board.GameBoard board;
+
+        private ControlMode controlMode;
+
+        public enum ControlMode {
+            CharSelector,
+            Board
+        }
 
         public PlayerInput playerInput {get; private set;}
 
@@ -37,6 +48,9 @@ namespace Battle {
         // Update is called once per frame
         void Update()
         {
+
+            if (controlMode != ControlMode.Board) return;
+
             // if not using tinput scripts, this script's update logic is not needed. (OnMove etc will still work when disabled, innvoked by playerinput script on same object.)
             if (!battleUseInputScripts && !menuUseInputScripts) {
                 enabled = false;
@@ -143,47 +157,88 @@ namespace Battle {
 
         public void SetBoard(GameBoard board) {
             this.board = board;
+            controlMode = ControlMode.Board;
         }
+
+        public void SetCharSelector(CharSelector charSelector) {
+            this.charSelector = charSelector;
+            controlMode = ControlMode.CharSelector;
+        }
+
+        private static float charSelectDeadzone = 0.1f;
+        private static float charSelectInputMagnitude = 0.5f;
+
+        private bool joystickPressed;
 
         // Functions to handle new Action Input System invocations
         public void OnMove(InputAction.CallbackContext ctx) {
+            // this isn't used in battle YET but it will be used for controller joystick piece movement EVENTUALLY probably
             movementInput = ctx.ReadValue<Vector2>();
+
+            if (controlMode == ControlMode.CharSelector) {
+                if (joystickPressed) {
+                    if (movementInput.magnitude <= charSelectDeadzone) joystickPressed = false;
+                }
+
+                else if (!joystickPressed && movementInput.magnitude >= charSelectInputMagnitude) {
+                    joystickPressed = true;
+
+                    float angle = Vector2.SignedAngle(Vector2.up, movementInput);
+                    Debug.Log(angle);
+
+                    if (Mathf.Abs(angle) < 45f) charSelector.OnMoveUp();
+                    else if (Mathf.Abs(angle - 180f) < 45f) charSelector.OnMoveDown();
+                    else if (Mathf.Abs(angle - 90f) < 45f) charSelector.OnMoveLeft();
+                    else if (Mathf.Abs(angle + 90f) < 45f) charSelector.OnMoveRight();
+                }
+            }
         }
 
         public void OnQuickfall(InputAction.CallbackContext ctx) {
-            if (ctx.performed) {
-                board.quickFall = true;
-                board.instaDropThisFrame = true;
-                Debug.Log("quickfalling");
-            }
-            if (ctx.canceled) {
-                board.quickFall = false;
-                Debug.Log("stopped quickfalling");
+            if (controlMode == ControlMode.Board) {
+                if (ctx.performed) {
+                    board.quickFall = true;
+                    board.instaDropThisFrame = true;
+                    Debug.Log("quickfalling");
+                }
+                if (ctx.canceled) {
+                    board.quickFall = false;
+                    Debug.Log("stopped quickfalling");
+                }
             }
         }
 
         public void PieceTapLeft(InputAction.CallbackContext ctx) {
-            if (ctx.performed) board.MoveLeft();
+            if (!ctx.performed) return; 
+            if (controlMode == ControlMode.Board) board.MoveLeft();
         }
 
         public void PieceTapRight(InputAction.CallbackContext ctx) {
-            if (ctx.performed) board.MoveRight();
+            if (!ctx.performed) return;
+            if (controlMode == ControlMode.Board) board.MoveRight();
         }
 
         public void OnRotateLeft(InputAction.CallbackContext ctx) {
-            if (ctx.performed) board.RotateLeft();
+            if (!ctx.performed) return;
+            if (controlMode == ControlMode.Board) board.RotateLeft();
+            else if (controlMode == ControlMode.CharSelector) charSelector.OnRotateCCW();
         }
 
         public void OnRotateRight(InputAction.CallbackContext ctx) {
-            if (ctx.performed) board.RotateRight();
+            if (!ctx.performed) return;
+            if (controlMode == ControlMode.Board) board.RotateRight();
+            else if (controlMode == ControlMode.CharSelector) charSelector.OnRotateCW();
         }
 
         public void OnSpellcast(InputAction.CallbackContext ctx) {
-            if (ctx.performed) board.Spellcast();
+            if (!ctx.performed) return;
+            if (controlMode == ControlMode.Board) board.Spellcast();
+            else if (controlMode == ControlMode.CharSelector) charSelector.OnCast();
         }
 
         public void OnAbiltyUse(InputAction.CallbackContext ctx) {
-            if (ctx.performed) board.UseAbility();
+            if (!ctx.performed) return;
+            if (controlMode == ControlMode.Board) board.UseAbility();
         }
     }
 }

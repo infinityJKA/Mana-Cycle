@@ -89,6 +89,8 @@ namespace VersusMode {
         ///<summary>True when the player has locked in their choice
         public bool lockedIn {get; private set;}
 
+
+
         ///<summary> If currently in CPU select mode. This will control CPU cursor instead of cpu cursor. (player vs. ai p2 only)
         public bool isCpuCursor;
         ///<summary> If active. Will only be inactive if this is CPU and player1 is currently selecting </summary>
@@ -163,6 +165,8 @@ namespace VersusMode {
             }
         }
 
+        // whether or not to use the old smelly input scripts and not the new action input system
+        [SerializeField] private bool useInputScripts = false;
 
         private Vector2 centerPosition;
         void Start() {
@@ -234,8 +238,8 @@ namespace VersusMode {
                 }
             }
 
-            // don't accept input if not active
-            if (!Active) return;
+            // don't accept input if not active or old input scripts disabled
+            if (!Active || !useInputScripts) return;
 
             if (settingsDisplayed) {
                 // Look for a new icon to select in inputted directions, select if found
@@ -266,39 +270,7 @@ namespace VersusMode {
             }
             
             if (Input.GetKeyDown(inputScript.Cast)) {
-                // when in settings menu, cast will toggle the current toggle, press the current button, etc..
-                if (settingsDisplayed) {
-                    var toggle = settingsSelection.GetComponent<Toggle>();
-                    if (toggle) {
-                        toggle.isOn = !toggle.isOn;
-                        SoundManager.Instance.PlaySound(settingsToggleSFX);
-                    }
-
-                    // if any battle preferences were just toggled, update its state in Storage and the other player's settings toggle
-                    if (settingsSelection == abilityToggle) {
-                        PlayerPrefs.SetInt("enableAbilities", abilityToggle.isOn ? 1 : 0);
-                        opponentSelector.abilityToggle.isOn = abilityToggle.isOn;
-                    }
-                }
-
-                // if this is CPU and locked into selecting CPU level, give control to other board
-                else if (selectingCpuLevel && !menu.Mobile) {
-                    selectingCpuLevel = false;
-                    SoundManager.Instance.PlaySound(selectSFX);
-                    Active = false;
-                    opponentSelector.Active = true;
-                    RefreshLockVisuals();
-                }
-
-                // If aready locked in, start match if other player is also locked in
-                else if (lockedIn) {
-                    menu.StartIfReady();
-                }
-
-                // otherwise, lock in this character
-                else {
-                    ToggleLock();
-                }
+                OnCast();
             }
 
             if (Input.GetKeyDown(inputScript.Pause)) 
@@ -317,6 +289,93 @@ namespace VersusMode {
             }
         }
 
+        // for use with CharSelectorController
+
+        public void OnMoveLeft() {
+            if (!enabled || !selectedIcon) return;
+            if (settingsDisplayed) SettingsCursorLeft();
+            else if (isCpuCursor && lockedIn) {
+                if (CpuLevel > minCpuLevel) { CpuLevel--; RefreshCpuLevel(); }
+            }
+            else if (!lockedIn) SetSelection(selectedIcon.selectable.FindSelectableOnLeft());
+            
+        }
+
+        public void OnMoveRight() {
+            if (!enabled || !selectedIcon) return;
+            if (settingsDisplayed) SettingsCursorRight();
+            else if (isCpuCursor && lockedIn) {
+                if (CpuLevel < maxCpuLevel) { CpuLevel++; RefreshCpuLevel(); }
+            }
+            else if (!lockedIn) SetSelection(selectedIcon.selectable.FindSelectableOnRight());
+        }
+
+        public void OnMoveUp() {
+            if (!enabled || !selectedIcon) return;
+            if (settingsDisplayed) SetSettingsSelection(settingsSelection.FindSelectableOnUp());
+            else if (!lockedIn) SetSelection(selectedIcon.selectable.FindSelectableOnUp());
+        }
+
+        public void OnMoveDown() {
+            if (!enabled || !selectedIcon) return;
+            if (settingsDisplayed) SetSettingsSelection(settingsSelection.FindSelectableOnDown());
+            else if (!lockedIn) SetSelection(selectedIcon.selectable.FindSelectableOnDown());
+        }
+
+        public void OnCast() {
+            if (!enabled || !selectedIcon) return;
+
+            // when in settings menu, cast will toggle the current toggle, press the current button, etc..
+            if (settingsDisplayed) {
+                var toggle = settingsSelection.GetComponent<Toggle>();
+                if (toggle) {
+                    toggle.isOn = !toggle.isOn;
+                    SoundManager.Instance.PlaySound(settingsToggleSFX);
+                }
+
+                // if any battle preferences were just toggled, update its state in Storage and the other player's settings toggle
+                if (settingsSelection == abilityToggle) {
+                    PlayerPrefs.SetInt("enableAbilities", abilityToggle.isOn ? 1 : 0);
+                    opponentSelector.abilityToggle.isOn = abilityToggle.isOn;
+                }
+            }
+
+            // if this is CPU and locked into selecting CPU level, give control to other board
+            else if (selectingCpuLevel && !menu.Mobile) {
+                selectingCpuLevel = false;
+                SoundManager.Instance.PlaySound(selectSFX);
+                Active = false;
+                opponentSelector.Active = true;
+                RefreshLockVisuals();
+            }
+
+            // If aready locked in, start match if other player is also locked in
+            else if (lockedIn) {
+                menu.StartIfReady();
+            }
+
+            // otherwise, lock in this character
+            else {
+                ToggleLock();
+            }
+        }
+
+        public void OnBack() {
+            if (!enabled || !selectedIcon) return;
+            Back();
+        }
+
+        public void OnRotateCCW() {
+            if (!enabled || !selectedIcon) return;
+            if (!menu.Mobile) ToggleAbilityInfo();
+        }
+
+        public void OnRotateCW() {
+            if (!enabled || !selectedIcon) return;
+            if (!menu.Mobile) ToggleSettings();
+        }
+
+        // initialization :(
         public void MenuInit() {
             RefreshLockVisuals();
 
