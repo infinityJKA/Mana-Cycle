@@ -236,7 +236,6 @@ namespace SoloMode {
                 joystickPressed = true;
 
                 float angle = Vector2.SignedAngle(Vector2.up, navigateInput);
-                Debug.Log(angle);
 
                 if (Mathf.Abs(angle) < 45f) MoveCursor(-1);
                 else if (Mathf.Abs(angle - 180f) < 45f) MoveCursor(1);
