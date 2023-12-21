@@ -118,11 +118,11 @@ namespace Battle {
                     else if (battleUseInputScripts && !board.isPaused() && !board.isPostGame()) {
                         // code previously in controller.cs
                         if (Input.GetKeyDown(inputScript.RotateCW)){
-                            board.RotateLeft();
+                            board.RotateCCW();
                         }
 
                         if (Input.GetKeyDown(inputScript.RotateCCW)){
-                            board.RotateRight();
+                            board.RotateCW();
                         }
 
                         if (Input.GetKeyDown(inputScript.Left)){
@@ -255,13 +255,13 @@ namespace Battle {
 
         public void OnRotateLeft(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
-            if (controlMode == ControlMode.Board) board.RotateLeft();
+            if (controlMode == ControlMode.Board) board.RotateCCW();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnRotateCCW();
         }
 
         public void OnRotateRight(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
-            if (controlMode == ControlMode.Board) board.RotateRight();
+            if (controlMode == ControlMode.Board) board.RotateCW();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnRotateCW();
         }
 

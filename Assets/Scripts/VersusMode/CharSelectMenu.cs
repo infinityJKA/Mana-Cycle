@@ -218,5 +218,14 @@ namespace VersusMode {
             connectionManager.EnableControllers();
             Debug.Log("Switched to multi-device controller mode");
         }
+
+        // for solo modes, get the selector that the SoloCharSelectController should currently be controlling.
+        public CharSelector GetActiveSelector() {
+            if (p2Selector.Active && p1Selector.lockedIn) {
+                return p2Selector;
+            } else {
+                return p1Selector;
+            }
+        }
     }
 }

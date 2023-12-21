@@ -513,16 +513,19 @@ namespace VersusMode {
 
             // or go back to menu if not locked in
             else {
-                if (!transitionHandler) {
-                    Debug.LogError("Transition handler not found in scene!");
-                    return;
-                }
-                if (Storage.gamemode != Storage.GameMode.Solo) {
-                    transitionHandler.WipeToScene("MainMenu", reverse: true);
-                } else {
-                    transitionHandler.WipeToScene("SoloMenu", reverse: true);
-                }
-                
+                ReturnToMenu();
+            }
+        }
+
+        public void ReturnToMenu() {
+            if (!transitionHandler) {
+                Debug.LogError("Transition handler not found in scene!");
+                return;
+            }
+            if (Storage.gamemode != Storage.GameMode.Solo) {
+                transitionHandler.WipeToScene("MainMenu", reverse: true);
+            } else {
+                transitionHandler.WipeToScene("SoloMenu", reverse: true);
             }
         }
 

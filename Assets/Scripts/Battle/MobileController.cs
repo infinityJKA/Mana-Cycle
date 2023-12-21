@@ -122,7 +122,7 @@ namespace Battle {
 
             // only a tap and not a drag if finger moved less than half a tile's width, the minimum to move a tile left/right
             if (Time.time - touchTime < 0.2f && offset.magnitude < 50f) {
-                board.RotateRight();
+                board.RotateCW();
             }
 
             // If slope of y/|x| swipe distance is above a certain threshold, user swiped upwards, spellcast

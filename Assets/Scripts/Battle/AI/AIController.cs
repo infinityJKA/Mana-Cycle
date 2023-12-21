@@ -96,7 +96,7 @@ namespace Battle.AI {
                 // rotate piece to target rot
                 bool reachedTargetRot = (int)board.GetPiece().getRot() == this.targetRot;
                 if (!reachedTargetRot){
-                    board.RotateLeft();
+                    board.RotateCCW();
                 }
                 
                 // move the piece to our target col, only if rot is met (or if concurrent actions is enabled)

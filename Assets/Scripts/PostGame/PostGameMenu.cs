@@ -221,8 +221,8 @@ namespace PostGame {
             }
 
             AchievementHandler achievementHandler = FindAnyObjectByType<AchievementHandler>();
-            achievementHandler.CheckAchievements(board);
-            if (Storage.gamemode == Storage.GameMode.Versus) achievementHandler.CheckAchievements(board.enemyBoard);
+            if (board.IsPlayerControlled()) achievementHandler.CheckAchievements(board);
+            if (board.enemyBoard.IsPlayerControlled()) achievementHandler.CheckAchievements(board.enemyBoard);
 
             if (!board.Mobile) {
                 EventSystem.current.SetSelectedGameObject(null);

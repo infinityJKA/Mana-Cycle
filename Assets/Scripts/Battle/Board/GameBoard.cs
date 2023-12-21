@@ -671,7 +671,7 @@ namespace Battle.Board {
         }
 
 
-        public void RotateLeft(){
+        public void RotateCCW(){
             if (!piece.IsRotatable) return;
             piece.RotateLeft();
 
@@ -686,7 +686,7 @@ namespace Battle.Board {
             PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f), important: false);
         }
 
-        public void RotateRight(){
+        public void RotateCW(){
             if (!piece.IsRotatable) return;
             piece.RotateRight();
 
