@@ -7,7 +7,7 @@ public class SoloCharSelectController : MonoBehaviour {
 
     private CharSelector charSelector;
 
-    [SerializeField] private InputActionReference navigateAction, selectAction, backAction, pauseAction, abilityInfoAction, settingsAction;
+    // [SerializeField] private InputActionReference navigateAction, selectAction, backAction, pauseAction, abilityInfoAction, settingsAction;
 
     private Vector2 navigateInput;
     private static float joystickDeadzone = 0.1f;
@@ -22,8 +22,8 @@ public class SoloCharSelectController : MonoBehaviour {
         charSelector = charSelectMenu.GetActiveSelector();
     }
 
-    private void Update() {
-        navigateInput = navigateAction.action.ReadValue<Vector2>();
+    public void OnNavigate(InputAction.CallbackContext ctx) {
+        navigateInput = ctx.action.ReadValue<Vector2>();
 
         // navigation handling for new input system
         if (joystickPressed) {
@@ -42,41 +42,46 @@ public class SoloCharSelectController : MonoBehaviour {
         }
     }
 
-    private void OnEnable() {
-        selectAction.action.performed += OnSelect;
-        backAction.action.performed += OnBack;
-        pauseAction.action.performed += OnPause;
-        abilityInfoAction.action.performed += OnAbilityInfo;
-        settingsAction.action.performed += OnSettings;
-    }
+    // public void OnEnable() {
+    //     selectAction.action.performed += OnSelect;
+    //     backAction.action.performed += OnBack;
+    //     pauseAction.action.performed += OnPause;
+    //     abilityInfoAction.action.performed += OnAbilityInfo;
+    //     settingsAction.action.performed += OnSettings;
+    // }
 
-    private void OnDisable() {
-        selectAction.action.performed -= OnSelect;
-        backAction.action.performed -= OnBack;
-        pauseAction.action.performed -= OnPause;
-        abilityInfoAction.action.performed -= OnAbilityInfo;
-        settingsAction.action.performed -= OnSettings;
-    }
+    // public void OnDisable() {
+    //     selectAction.action.performed -= OnSelect;
+    //     backAction.action.performed -= OnBack;
+    //     pauseAction.action.performed -= OnPause;
+    //     abilityInfoAction.action.performed -= OnAbilityInfo;
+    //     settingsAction.action.performed -= OnSettings;
+    // }
 
-    private void OnSelect(InputAction.CallbackContext ctx) {
+    public void OnSelect(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) return;
         charSelector.OnCast();
         charSelector = charSelectMenu.GetActiveSelector();
     }
 
-    private void OnBack(InputAction.CallbackContext ctx) {
+    public void OnBack(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) return;
         charSelector.OnBack();
         charSelector = charSelectMenu.GetActiveSelector();
     }
 
-    private void OnPause(InputAction.CallbackContext ctx) {
+    public void OnPause(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) return;
         charSelector.ReturnToMenu();
     }
 
-    private void OnAbilityInfo(InputAction.CallbackContext ctx) {
-        charSelector.OnRotateCCW();
+    public void OnAbilityInfo(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) return;
+        charSelector.OnAbilityInfo();
     }
 
-    private void OnSettings(InputAction.CallbackContext ctx) {
-        charSelector.OnRotateCW();
+    public void OnSettings(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) return;
+        charSelector.OnSettings();
     }
 }
