@@ -149,35 +149,6 @@ namespace SoloMode {
         // new action input system controls
         [SerializeField] private bool useInputScripts = false;
 
-        [SerializeField] private InputActionReference scrollAction;
-        [SerializeField] private InputActionReference selectAction;
-        [SerializeField] private InputActionReference closeAction;
-
-        private void OnEnable() {
-            closeAction.action.performed += OnMenuClose;
-            selectAction.action.performed += OnSelect;
-
-        }
-
-        private void OnDisable() {
-            closeAction.action.performed -= OnMenuClose;
-            selectAction.action.performed -= OnSelect;
-        }
-
-        private void OnMenuClose(InputAction.CallbackContext ctx) {
-            Back();
-        }
-
-        public void OnSelect(InputAction.CallbackContext ctx) {
-            ConfirmLevel(selectedLevel);
-        }
-
-        private Vector2 navigateInput;
-        private static float joystickDeadzone = 0.1f;
-        private static float joystickInputMagnitude = 0.5f;
-
-        private bool joystickPressed;
-
         // Update is called once per frame
         void Update()
         {
@@ -224,24 +195,6 @@ namespace SoloMode {
                     }
                 }
             }
-
-            navigateInput = scrollAction.action.ReadValue<Vector2>();
-
-            // navigation handling for new input system
-            if (joystickPressed) {
-                if (navigateInput.magnitude <= joystickDeadzone) joystickPressed = false;
-            }
-
-            else if (!joystickPressed && navigateInput.magnitude >= joystickInputMagnitude) {
-                joystickPressed = true;
-
-                float angle = Vector2.SignedAngle(Vector2.up, navigateInput);
-
-                if (Mathf.Abs(angle) < 45f) MoveCursor(-1);
-                else if (Mathf.Abs(angle - 180f) < 45f) MoveCursor(1);
-                else if (Mathf.Abs(angle - 90f) < 45f) LeftTabArrow();
-                else if (Mathf.Abs(angle + 90f) < 45f) RightTabArrow();
-            }
         
             // smoothly update displayed y position of level list
             if (autoMoveLevelList) listTransform.anchoredPosition = 
@@ -284,6 +237,10 @@ namespace SoloMode {
             Storage.levelSelectedThisInput = true;
 
             gameObject.SetActive(false);
+        }
+
+        public void ConfirmSelectedLevel() {
+            ConfirmLevel(selectedLevel);
         }
 
         public void LeftTabArrow() {
@@ -414,7 +371,7 @@ namespace SoloMode {
             }    
         }
 
-        void MoveCursor(int delta)
+        public void MoveCursor(int delta)
         {
             if (!showLevelCursor) return;
 

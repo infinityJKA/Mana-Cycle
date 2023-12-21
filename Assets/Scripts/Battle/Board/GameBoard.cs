@@ -605,6 +605,7 @@ namespace Battle.Board {
                 }
 
                 instaDropThisFrame = false;
+                Storage.convoEndedThisInput = false;
             }
         }
 
@@ -672,6 +673,8 @@ namespace Battle.Board {
 
 
         public void RotateCCW(){
+            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return;
+
             if (!piece.IsRotatable) return;
             piece.RotateLeft();
 
@@ -687,6 +690,8 @@ namespace Battle.Board {
         }
 
         public void RotateCW(){
+            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return;
+
             if (!piece.IsRotatable) return;
             piece.RotateRight();
 
@@ -701,7 +706,7 @@ namespace Battle.Board {
         }
 
         public bool MoveLeft(){
-            if (!isInitialized() || isPaused() || isPostGame()) return false;
+            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return false;
 
             if (MovePiece(-1, 0)) {
                 PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
@@ -711,7 +716,7 @@ namespace Battle.Board {
         }
 
         public bool MoveRight() {
-            if (!isInitialized() || isPaused() || isPostGame()) return false;
+            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return false;
 
             if (MovePiece(1, 0)) {
                 PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
@@ -722,6 +727,11 @@ namespace Battle.Board {
 
         public void Spellcast(){
             if (!isInitialized() || isPaused() || isPostGame()) return;
+
+            if (convoPaused) {
+                convoHandler.Advance();
+                return;
+            }
 
             // get current mana color from cycle, and clear that color
             // start at chain of 1
@@ -741,6 +751,8 @@ namespace Battle.Board {
         }
 
         public void UseAbility(){
+            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return;
+
             if (abilityManager.enabled) {
                 abilityManager.UseAbility();
                 RefreshGhostPiece();
@@ -1877,6 +1889,14 @@ namespace Battle.Board {
         }
 
         public void Pause() {
+            Debug.Log("convopaused: "+convoPaused);
+            Debug.Log("convoendedthisinput: "+Storage.convoEndedThisInput);
+
+            if (convoPaused) {
+                convoHandler.EndConvo();
+                return;
+            }
+
             if (!postGame && !Storage.convoEndedThisInput)
             {
                 pauseMenu.TogglePause();

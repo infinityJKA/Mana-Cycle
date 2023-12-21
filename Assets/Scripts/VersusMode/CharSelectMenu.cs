@@ -62,7 +62,7 @@ namespace VersusMode {
                 p1Selector.SetLives(Storage.level.lives);
                 p1Selector.livesSelectable.gameObject.SetActive(false);
             } else {
-                p1Selector.SetLives(PlayerPrefs.GetInt("versusLives", 3));
+                p1Selector.SetLives(PlayerPrefs.GetInt("versusLives", 1));
             }
 
             if (!Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) {

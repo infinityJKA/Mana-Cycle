@@ -62,28 +62,6 @@ namespace ConvoSystem {
 
         [SerializeField] private bool useInputScripts = false;
 
-        [SerializeField] private InputActionReference advanceAction;
-        [SerializeField] private InputActionReference skipAction;
-
-        private void OnEnable() {
-            advanceAction.action.performed += OnAdvance;
-            skipAction.action.performed += OnSkip;
-
-        }
-
-        private void OnDisable() {
-            advanceAction.action.performed -= OnAdvance;
-            skipAction.action.performed -= OnSkip;
-        }
-
-        private void OnAdvance(InputAction.CallbackContext ctx) {
-            if (!Storage.levelSelectedThisInput) Advance();
-        }
-
-        public void OnSkip(InputAction.CallbackContext ctx) {
-            EndConvo();
-        }
-
         // Update is called once per frame
         void Update()
         {
@@ -211,6 +189,7 @@ namespace ConvoSystem {
 
             if (board != null) {
                 board.convoPaused = false;
+                Debug.Log("convopaused set to "+board.convoPaused);
                 Time.timeScale = 1;
                 board = null;
             }
