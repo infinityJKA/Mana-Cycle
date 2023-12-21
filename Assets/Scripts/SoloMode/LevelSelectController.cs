@@ -22,6 +22,8 @@ public class LevelSelectController : MonoBehaviour {
     }
 
     public void OnNavigate(InputAction.CallbackContext ctx) {
+        if (convoHandler && convoHandler.enabled) return;
+
         navigateInput = ctx.ReadValue<Vector2>();
 
         // navigation handling for new input system
