@@ -85,6 +85,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6647794107243349722}
+  - {fileID: 8294321625449943403}
   - {fileID: 6497960546296106959}
   - {fileID: 5772421829298210278}
   m_Father: {fileID: 0}
@@ -158,6 +159,7 @@ MonoBehaviour:
   particleParent: {fileID: 4920481684090110958}
   clearParticleSystem: {fileID: 8444103318734970022, guid: 25402455859d44a83abb5c7f5c764f7d, type: 3}
   controllerObject: {fileID: 2359411655281228369}
+  aiController: {fileID: 5825437507682011474}
   lifeTransform: {fileID: 8845861909844032918}
   lifeHeartObj: {fileID: 7506047623504768559, guid: 58adc0e5267f1db41be8273b0c472c90, type: 3}
   boardBackground: {fileID: 7375610561186021462}
@@ -960,10 +962,9 @@ GameObject:
   - component: {fileID: 6647794107243349722}
   - component: {fileID: 1629217829993438081}
   - component: {fileID: 3785837764649673596}
-  - component: {fileID: 1901849431573290248}
   - component: {fileID: 3856110253940011839}
   m_Layer: 5
-  m_Name: Controller
+  m_Name: PlayerInputController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1193,24 +1194,6 @@ MonoBehaviour:
   m_DefaultActionMap: Gameplay
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &1901849431573290248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2359411655281228369}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49d441558a9054323b1d6ecb9b6dadfa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  board: {fileID: 2738482425047349209}
-  moveDelay: 0.5
-  accuracy: 1
-  castChanceMultiplier: 1
-  abilityChanceMultiplier: 1
-  concurrentActions: 0
 --- !u!114 &3856110253940011839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3485,6 +3468,60 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flashColor: {r: 0.9811321, g: 0.61552155, b: 0.61552155, a: 0.47058824}
+--- !u!1 &9222674128972634489
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8294321625449943403}
+  - component: {fileID: 5825437507682011474}
+  m_Layer: 5
+  m_Name: AIController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8294321625449943403
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9222674128972634489}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 109460369072555598}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5825437507682011474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9222674128972634489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49d441558a9054323b1d6ecb9b6dadfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  board: {fileID: 2738482425047349209}
+  moveDelay: 0.5
+  accuracy: 1
+  castChanceMultiplier: 1
+  abilityChanceMultiplier: 1
+  concurrentActions: 0
 --- !u!1001 &216248985347870178
 PrefabInstance:
   m_ObjectHideFlags: 0

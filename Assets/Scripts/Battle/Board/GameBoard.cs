@@ -225,6 +225,9 @@ namespace Battle.Board {
         // the controller object for this board
         public GameObject controllerObject;
 
+        // AI controller connected to this board for non-human opponents.
+        [SerializeField] private AIController aiController;
+
         // In party mode, this is the timer before the user takes direct uncounterable damage from all trash tiles
         // Timer starts when a trash tile is added, and will stop running when no trash tiles tick when timer is up
         private float trashDamageTimer;
@@ -455,8 +458,6 @@ namespace Battle.Board {
         }
 
         void SetAIDifficulty(float difficulty) {
-            // set up ai difficulty values
-            AIController aiController = controllerObject.GetComponent<AIController>();
             // ai shoudn't bee too dumb or it will just top out and be boring, accuracy shuld actually stay high, speed is what matters
             aiController.accuracy = Mathf.Lerp(0.5f, 1f, difficulty);
 
