@@ -73,11 +73,11 @@ namespace Battle {
  
                 if (inputScript != null)
                 {
-                    if (menuUseInputScripts && Input.GetKeyDown(inputScript.Pause) && !board.postGame && !Storage.convoEndedThisInput)
+                    if (Input.GetKeyDown(inputScript.Pause) && menuUseInputScripts)
                     {
-                        board.pauseMenu.TogglePause();
-                        board.PlaySFX("pause", pan: 0);
+                        board.Pause();
                     }
+                    
                     Storage.convoEndedThisInput = false;
 
                     // control the pause menu if paused
@@ -239,6 +239,12 @@ namespace Battle {
         public void OnAbiltyUse(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board) board.UseAbility();
+        }
+
+        public void OnCancel(InputAction.CallbackContext ctx) {
+            if (!ctx.performed) return;
+            if (controlMode == ControlMode.Board) board.Pause();
+            else if (controlMode == ControlMode.CharSelector) charSelector.OnBack();
         }
     }
 }
