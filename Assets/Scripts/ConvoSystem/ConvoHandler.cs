@@ -6,6 +6,7 @@ using Random=UnityEngine.Random;
 
 using SoloMode;
 using Battle.Board;
+using UnityEngine.InputSystem;
 
 namespace ConvoSystem {
     public class ConvoHandler : MonoBehaviour
@@ -59,25 +60,50 @@ namespace ConvoSystem {
 
         [SerializeField] private bool mobile;
 
+        [SerializeField] private bool useInputScripts = false;
+
+        [SerializeField] private InputActionReference advanceAction;
+        [SerializeField] private InputActionReference skipAction;
+
+        private void OnEnable() {
+            advanceAction.action.performed += OnAdvance;
+            skipAction.action.performed += OnSkip;
+
+        }
+
+        private void OnDisable() {
+            advanceAction.action.performed -= OnAdvance;
+            skipAction.action.performed -= OnSkip;
+        }
+
+        private void OnAdvance(InputAction.CallbackContext ctx) {
+            if (!Storage.levelSelectedThisInput) Advance();
+        }
+
+        public void OnSkip(InputAction.CallbackContext ctx) {
+            EndConvo();
+        }
+
         // Update is called once per frame
         void Update()
         {
             if (!convoUI.activeSelf) return;
 
-            foreach (InputScript inputScript in inputScripts) {
+            if (useInputScripts) {
+                foreach (InputScript inputScript in inputScripts) {
 
-                if (Input.GetKeyDown(inputScript.Cast) && !Storage.levelSelectedThisInput)
-                {
-                    Advance();
-                } 
-                
-                // skip rest of convo when pause pressed
-                else if (Input.GetKeyDown(inputScript.Pause)) {
-                    EndConvo();
+                    if (Input.GetKeyDown(inputScript.Cast) && !Storage.levelSelectedThisInput)
+                    {
+                        Advance();
+                    } 
+                    
+                    // skip rest of convo when pause pressed
+                    else if (Input.GetKeyDown(inputScript.Pause)) {
+                        EndConvo();
+                    }
                 }
             }
-
-
+            
             Storage.levelSelectedThisInput = false;
         }
 
@@ -112,6 +138,7 @@ namespace ConvoSystem {
         public void StartConvo(Conversation convo)
         {
             this.convo = convo;
+            enabled = true;
             index = 0;
             convoUI.SetActive(true);
             EventSystem.current.SetSelectedGameObject(null);
@@ -138,6 +165,7 @@ namespace ConvoSystem {
 
         public void EndConvo()
         {
+            enabled = false;
             if (board != null) {
                 // Try to automatically start the next conversation avaialble. If none are, move on
                 bool nextConvoPlayed = board.CheckMidLevelConversations();
