@@ -4,6 +4,8 @@ using TMPro;
 
 using ConvoSystem;
 using Sound;
+using UnityEngine.InputSystem;
+
 
 #if (UNITY_EDITOR)
 using UnityEditor;
@@ -144,54 +146,104 @@ namespace SoloMode {
 
         }
 
+        // new action input system controls
+        [SerializeField] private bool useInputScripts = false;
+
+        [SerializeField] private InputActionReference scrollAction;
+        [SerializeField] private InputActionReference selectAction;
+        [SerializeField] private InputActionReference closeAction;
+
+        private void OnEnable() {
+            closeAction.action.performed += OnMenuClose;
+            selectAction.action.performed += OnSelect;
+
+        }
+
+        private void OnDisable() {
+            closeAction.action.performed -= OnMenuClose;
+            selectAction.action.performed -= OnSelect;
+        }
+
+        private void OnMenuClose(InputAction.CallbackContext ctx) {
+            Back();
+        }
+
+        public void OnSelect(InputAction.CallbackContext ctx) {
+            ConfirmLevel(selectedLevel);
+        }
+
+        private Vector2 navigateInput;
+        private static float joystickDeadzone = 0.1f;
+        private static float joystickInputMagnitude = 0.5f;
+
+        private bool joystickPressed;
+
         // Update is called once per frame
         void Update()
         {
             if (!focused) return;
 
-            foreach (InputScript inputScript in inputScripts) {
+            if (useInputScripts) {
+                foreach (InputScript inputScript in inputScripts) {
+                    if (Input.GetKeyDown(inputScript.Up))
+                    {
+                        MoveCursor(-1);
+                        break;
+                    }
 
-                if (Input.GetKeyDown(inputScript.Up))
-                {
-                    MoveCursor(-1);
-                    SoundManager.Instance.PlaySound(moveSFX, pitch : 1.18f);
-                    break;
-                }
+                    if (Input.GetKeyDown(inputScript.Down))
+                    {
+                        MoveCursor(1);
+                        break;
+                    }
 
-                if (Input.GetKeyDown(inputScript.Down))
-                {
-                    MoveCursor(1);
-                    SoundManager.Instance.PlaySound(moveSFX, pitch : 1.06f);
-                    break;
-                }
+                    if (Input.GetKeyDown(inputScript.Left))
+                    {
+                        LeftTabArrow();
+                        break;
+                    }
 
-                if (Input.GetKeyDown(inputScript.Left))
-                {
-                    LeftTabArrow();
-                    break;
-                }
+                    if (Input.GetKeyDown(inputScript.Right))
+                    {
+                        RightTabArrow();
+                        break;
+                    }
 
-                if (Input.GetKeyDown(inputScript.Right))
-                {
-                    RightTabArrow();
-                    break;
-                }
+                    // pause - go back to main menu
+                    if (Input.GetKeyDown(inputScript.Pause))
+                    {
+                        Back();
+                        break;
+                    }
 
-                // pause - go back to main menu
-                if (Input.GetKeyDown(inputScript.Pause))
-                {
-                    Back();
-                    break;
-                }
-
-                // cast - open selected level
-                if (Input.GetKeyDown(inputScript.Cast))
-                {
-                    ConfirmLevel(selectedLevel);
-                    break;
+                    // cast - open selected level
+                    if (Input.GetKeyDown(inputScript.Cast))
+                    {
+                        ConfirmLevel(selectedLevel);
+                        break;
+                    }
                 }
             }
 
+            navigateInput = scrollAction.action.ReadValue<Vector2>();
+
+            // navigation handling for new input system
+            if (joystickPressed) {
+                if (navigateInput.magnitude <= joystickDeadzone) joystickPressed = false;
+            }
+
+            else if (!joystickPressed && navigateInput.magnitude >= joystickInputMagnitude) {
+                joystickPressed = true;
+
+                float angle = Vector2.SignedAngle(Vector2.up, navigateInput);
+                Debug.Log(angle);
+
+                if (Mathf.Abs(angle) < 45f) MoveCursor(-1);
+                else if (Mathf.Abs(angle - 180f) < 45f) MoveCursor(1);
+                else if (Mathf.Abs(angle - 90f) < 45f) LeftTabArrow();
+                else if (Mathf.Abs(angle + 90f) < 45f) RightTabArrow();
+            }
+        
             // smoothly update displayed y position of level list
             if (autoMoveLevelList) listTransform.anchoredPosition = 
             Vector2.SmoothDamp(listTransform.anchoredPosition, targetListPosition, ref vel, 0.1f);
@@ -373,6 +425,12 @@ namespace SoloMode {
             RefreshListedLevelText(selectedLevel, selectedText, false);
             selectedLevelIndexes[selectedTabIndex] += delta;
             RefreshListedLevelText(selectedLevel, selectedText, true);
+
+            if (delta == -1) {
+                SoundManager.Instance.PlaySound(moveSFX, pitch : 1.18f);
+            } else {
+                SoundManager.Instance.PlaySound(moveSFX, pitch : 1.06f);
+            }
 
             // update the level target position to animate to
             RefreshCursor();
