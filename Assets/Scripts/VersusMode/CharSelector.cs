@@ -25,6 +25,7 @@ namespace VersusMode {
         // set as the inputScript when in solo mode
         [SerializeField] private InputScript soloInputScript;
 
+        [SerializeField] private Image background;
         [SerializeField] private Image portrait;
         [SerializeField] private TextMeshProUGUI nameText;
 
@@ -33,7 +34,7 @@ namespace VersusMode {
         [SerializeField] private GameObject cpuLevelLeftArrow, cpuLevelRightArrow;
 
         ///<summary>SFX played when interacting with menu</summary>
-        [SerializeField] private AudioClip switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX, settingsToggleSFX;
+        [SerializeField] private AudioClip switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX, settingsToggleSFX, connectSFX;
 
         /// Fade in/out speed for the ability info & settings box
         [SerializeField] private float fadeSpeed;
@@ -89,8 +90,6 @@ namespace VersusMode {
         ///<summary>True when the player has locked in their choice
         public bool lockedIn {get; private set;}
 
-
-
         ///<summary> If currently in CPU select mode. This will control CPU cursor instead of cpu cursor. (player vs. ai p2 only)
         public bool isCpuCursor;
         ///<summary> If active. Will only be inactive if this is CPU and player1 is currently selecting </summary>
@@ -103,8 +102,10 @@ namespace VersusMode {
                 if (active) {
                     portrait.enabled = true;
                     nameText.enabled = true;
-                    SetSelection(selectedIcon.selectable);
-                    selectedIcon.cursorImage.color = Color.white;
+                    if (selectedIcon) {
+                        SetSelection(selectedIcon.selectable);
+                        selectedIcon.cursorImage.color = Color.white;
+                    }
                 }
                 // if not active (player vs. cpu only): dimmed cursor if p1, hide if p2
                 else {
@@ -172,6 +173,17 @@ namespace VersusMode {
 
         [SerializeField] private TextMeshProUGUI settingsInputModeButtonLabel;
 
+
+        // If there is an input connected to this selector.
+        // Only for Player vs Player. In all other modes this will always be true
+        public bool connected {get; private set;} = true;
+        [SerializeField] private Color disconnectBkgdColor, connectBkgdColor;
+
+        [SerializeField] private GameObject connectTipLabel;
+
+        // If player JUST connected this frame. will not register inputs for the button they pressed to join in charselect
+        private bool connectedThisUpdate;
+
         private Vector2 centerPosition;
         void Start() {
             // TEMP FOR TESTING !! ,`:)
@@ -187,6 +199,8 @@ namespace VersusMode {
         }
 
         void Update() {
+            connectedThisUpdate = false;
+
             if (!enabled || !selectedIcon) return;
 
             if (abilityInfoAnimating) {
@@ -296,7 +310,7 @@ namespace VersusMode {
         // for use with CharSelectorController
 
         public void OnMoveLeft() {
-            if (!enabled || !selectedIcon) return;
+            if (!enabled || !selectedIcon || connectedThisUpdate) return;
             if (settingsDisplayed) SettingsCursorLeft();
             else if (isCpuCursor && lockedIn) {
                 if (CpuLevel > minCpuLevel) { CpuLevel--; RefreshCpuLevel(); }
@@ -306,7 +320,7 @@ namespace VersusMode {
         }
 
         public void OnMoveRight() {
-            if (!enabled || !selectedIcon) return;
+            if (!enabled || !selectedIcon || connectedThisUpdate) return;
             if (settingsDisplayed) SettingsCursorRight();
             else if (isCpuCursor && lockedIn) {
                 if (CpuLevel < maxCpuLevel) { CpuLevel++; RefreshCpuLevel(); }
@@ -315,19 +329,19 @@ namespace VersusMode {
         }
 
         public void OnMoveUp() {
-            if (!enabled || !selectedIcon) return;
+            if (!enabled || !selectedIcon || connectedThisUpdate) return;
             if (settingsDisplayed) SetSettingsSelection(settingsSelection.FindSelectableOnUp());
             else if (!lockedIn) SetSelection(selectedIcon.selectable.FindSelectableOnUp());
         }
 
         public void OnMoveDown() {
-            if (!enabled || !selectedIcon) return;
+            if (!enabled || !selectedIcon || connectedThisUpdate) return;
             if (settingsDisplayed) SetSettingsSelection(settingsSelection.FindSelectableOnDown());
             else if (!lockedIn) SetSelection(selectedIcon.selectable.FindSelectableOnDown());
         }
 
         public void OnCast() {
-            if (!enabled || !selectedIcon) return;
+            if (!enabled || !selectedIcon || connectedThisUpdate) return;
 
             // when in settings menu, cast will toggle the current toggle, press the current button, etc..
             if (settingsDisplayed) {
@@ -369,17 +383,17 @@ namespace VersusMode {
         }
 
         public void OnBack() {
-            if (!enabled || !selectedIcon) return;
+            if (!enabled || !selectedIcon || connectedThisUpdate) return;
             Back();
         }
 
         public void OnAbilityInfo() {
-            if (!enabled || !selectedIcon) return;
+            if (!enabled || !selectedIcon || connectedThisUpdate) return;
             if (!menu.Mobile) ToggleAbilityInfo();
         }
 
         public void OnSettings() {
-            if (!enabled || !selectedIcon) return;
+            if (!enabled || !selectedIcon || connectedThisUpdate) return;
             if (!menu.Mobile) ToggleSettings();
         }
 
@@ -530,6 +544,7 @@ namespace VersusMode {
         }
 
         void RefreshLockVisuals() {
+            if (!connected) return;
             if (lockedIn){
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, (selectingCpuLevel && !menu.Mobile) ? 0.65f : 1f);
                 nameText.text = selectedBattler.displayName;
@@ -658,7 +673,7 @@ namespace VersusMode {
         }
 
         public void HideSelection() {
-            selectedIcon.SetSelected(isPlayer1, false);
+            if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
         }
 
         public void DualKeyboardEnabled() {
@@ -681,6 +696,30 @@ namespace VersusMode {
 
         public bool enableAbilities { 
             get { return abilityToggle.isOn; } 
+        }
+
+        public void Disconnect() {
+            Debug.Log(name + " disconnected");
+            if (lockedIn) ToggleLock();
+            connected = false;
+            connectTipLabel.SetActive(true);
+            background.color = disconnectBkgdColor;
+            HideSelection();
+            portrait.gameObject.SetActive(false);
+            nameText.gameObject.SetActive(false);
+        }
+
+        public void Connect() {
+            Debug.Log(name + " connected");
+            connected = true;
+            connectTipLabel.SetActive(false);
+            background.color = connectBkgdColor;
+            if (selectedIcon != null) selectedIcon.SetSelected(isPlayer1, true);
+            portrait.gameObject.SetActive(true);
+            nameText.gameObject.SetActive(true);
+            connectedThisUpdate = true;
+            SoundManager.Instance.PlaySound(connectSFX);
+            RefreshLockVisuals();
         }
     }
 }

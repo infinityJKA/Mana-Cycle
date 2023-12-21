@@ -187,8 +187,6 @@ namespace Battle {
             if (joystickPressed) {
                 if (movementInput.magnitude <= charSelectDeadzone) {
                     joystickPressed = false;
-                    joystickPressedSouth = false;
-                    board.quickFall = quickfallButtonPressed || joystickPressedSouth;
                 }
             }            
 
@@ -268,7 +266,11 @@ namespace Battle {
         public void OnRotateRight(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board && canControlBoard) board.RotateCW();
-            else if (controlMode == ControlMode.CharSelector) charSelector.OnSettings();
+        }
+
+        public void OnSettings(InputAction.CallbackContext ctx) {
+            if (!ctx.performed) return;
+            if (controlMode == ControlMode.CharSelector) charSelector.OnSettings();
         }
 
         public void OnSpellcast(InputAction.CallbackContext ctx) {

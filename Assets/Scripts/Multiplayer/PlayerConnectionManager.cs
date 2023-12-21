@@ -38,6 +38,13 @@ namespace Multiplayer {
                     instance = this;
                     reparent = true;
                     DontDestroyOnLoad(gameObject);
+
+                    // if char seelct and player vs player, disconnect all at start, they will be connected to by controllers
+                    if (connectMode == ConnectMode.CharSelect && Storage.isPlayerControlled1 && Storage.isPlayerControlled2) {
+                        foreach (var charSelector in charSelectors) {
+                            charSelector.Disconnect();
+                        }
+                    }
                 }
             } else {
                 reparent = false;
@@ -71,6 +78,10 @@ namespace Multiplayer {
             }
         }
 
+        public void OnDisconnect(PlayerInput playerInput) {
+            DisconnectCharSelector(playerInput);
+        }
+
         // upon joining at beginning or during battle, connect to a board based on player index. 0 will be left, 1 will be right
         public void ConnectControllerToBoard(PlayerInput playerInput) {
             
@@ -80,9 +91,17 @@ namespace Multiplayer {
 
         public void ConnectControllerToCharSelector(PlayerInput playerInput) {
             var controller = playerInput.GetComponent<Controller>();
-            controller.SetCharSelector(charSelectors[playerInput.playerIndex]);
+            var charSelector = charSelectors[playerInput.playerIndex];
+            controller.SetCharSelector(charSelector);
+            charSelector.Connect();
         }
 
+        public void DisconnectCharSelector(PlayerInput playerInput) {
+            if (connectMode == ConnectMode.CharSelect) {
+                var charSelector = charSelectors[playerInput.playerIndex];
+                charSelector.Disconnect();
+            }
+        }
 
         public void DisableControllers() {
             foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
