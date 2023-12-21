@@ -232,7 +232,7 @@ namespace Battle.Board {
 
         // Amount of remaining lives. When dying, lose a life. If more than one life is remaining,
         // clear all incoming damage, clear the board, and suffer a 6-second delay before you can place pieces again.
-        public int lives { get; private set; } = 3;
+        public int lives { get; private set; } = 1;
         // Transform where LifeHearts display the amount of remaining lives.
         [SerializeField] private Transform lifeTransform;
         // Prefab for a life heart displayed in the lives transform of the board

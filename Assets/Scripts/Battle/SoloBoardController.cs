@@ -13,5 +13,6 @@ public class SoloBoardController : MonoBehaviour {
         if (Storage.isPlayerControlled2) Destroy(gameObject);
 
         GetComponent<Controller>().SetBoard(board);
+        if (!Storage.isPlayerControlled1) GetComponent<Controller>().canControlBoard = false;
     }
 }

@@ -58,7 +58,7 @@ namespace VersusMode {
         /// <summary>the arrows to show if life count can be increased or decreased</summary>
         [SerializeField] private GameObject livesLeftArrow, livesRightArrow;
         /// <summary>current selected life count value</summary>
-        public int lives {get; private set;} = 3;
+        public int lives {get; private set;} = 1;
         ///
         [SerializeField] private TextMeshProUGUI livesText;
 
