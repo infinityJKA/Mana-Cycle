@@ -222,9 +222,6 @@ namespace Battle.Board {
         // Particle system for when a tile is cleared
         [SerializeField] private GameObject clearParticleSystem;
 
-        // the controller object for this board
-        public GameObject controllerObject;
-
         // AI controller connected to this board for non-human opponents.
         [SerializeField] private AIController aiController;
 

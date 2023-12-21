@@ -20,6 +20,8 @@ namespace Battle {
         // the board being controlled by this script
         [SerializeField] public Board.GameBoard board;
 
+        public PlayerInput playerInput {get; private set;}
+
         // Movement input for joysticks, etc.
         // This is NOT the same as single button presses such as the arrow keys.
         private Vector2 movementInput;
@@ -27,6 +29,10 @@ namespace Battle {
         // Whether or not to respond to Input Script update-based inputs instead of the new action input system stuff
         [SerializeField] private bool battleUseInputScripts = false;
         [SerializeField] private bool menuUseInputScripts = true;
+
+        private void Awake() {
+            playerInput = GetComponent<PlayerInput>();
+        }
 
         // Update is called once per frame
         void Update()
@@ -133,6 +139,10 @@ namespace Battle {
                     }
                 }
             }        
+        }
+
+        public void SetBoard(GameBoard board) {
+            this.board = board;
         }
 
         // Functions to handle new Action Input System invocations
