@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 namespace MainMenu {
     /// <summary>
@@ -22,10 +23,34 @@ namespace MainMenu {
 
         [SerializeField] public ScrollRect scrollRect;
 
+
         [SerializeField] public float scrollSpeed = 1f;
+
+
+        [SerializeField] private InputActionReference scrollAction;
+
+        [SerializeField] private InputActionReference closeAction;
+
+
+        private Vector2 scrollInput;
+
+        private void Awake() {
+            closeAction.action.performed += ctx => {
+                HideMenu();
+            };
+
+            scrollAction.action.performed += ctx => {
+                scrollInput = ctx.ReadValue<Vector2>();
+            };
+            scrollAction.action.canceled += ctx => {
+                scrollInput = Vector2.zero;
+            };
+        }
 
         public void Update()
         {
+            float verticalInput = scrollInput.y;
+
             foreach (InputScript inputScript in inputScripts)
             {
                 if (Input.GetKeyDown(inputScript.Pause))
@@ -36,14 +61,16 @@ namespace MainMenu {
 
                 if (Input.GetKey(inputScript.Down))
                 {
-                    scrollRect.verticalNormalizedPosition -= scrollSpeed * Time.deltaTime;
+                    verticalInput -= 1;
                 }
 
                 if (Input.GetKey(inputScript.Up))
                 {
-                    scrollRect.verticalNormalizedPosition += scrollSpeed * Time.deltaTime;
+                    verticalInput += 1;
                 }
             }
+
+            scrollRect.verticalNormalizedPosition += Mathf.Clamp(verticalInput, -1, 1) * scrollSpeed * Time.deltaTime;
         }
 
         public void ShowMenu()
@@ -55,6 +82,7 @@ namespace MainMenu {
 
         public void HideMenu()
         {
+            if (!gameObject.activeSelf) return;
             gameObject.SetActive(false);
             settingsWindow.SetActive(true);
         }
