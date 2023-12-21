@@ -52,6 +52,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   battleUseInputScripts: 0
   menuUseInputScripts: 0
+  canControlBoard: 1
 --- !u!114 &4568795817241217777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,6 +282,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: a4102ce4-d5c7-449e-9fe7-e7a86c2a664d
     m_ActionName: Gameplay/PieceMoveAnalog[/XInputControllerWindows/leftStick/up,/XInputControllerWindows/rightStick/up,/XInputControllerWindows/leftStick/down,/XInputControllerWindows/rightStick/down,/XInputControllerWindows/leftStick/left,/XInputControllerWindows/rightStick/left,/XInputControllerWindows/leftStick/right,/XInputControllerWindows/rightStick/right]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2121833181378916876}
+        m_TargetAssemblyTypeName: Battle.Controller, Assembly-CSharp
+        m_MethodName: OnSettings
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 381928d4-1e1e-4ff2-a39e-fa83cff220dd
+    m_ActionName: Gameplay/Settings[/Keyboard/w,/XInputControllerWindows/rightShoulder,/XInputControllerWindows/buttonNorth]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay

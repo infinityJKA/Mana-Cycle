@@ -48,7 +48,9 @@ namespace VersusMode {
             Selectable firstSelection = grid.GetChild(0).GetComponent<Selectable>();
 
             p2Selector.SetSelection(firstSelection);
+            if (!p2Selector.connected) p2Selector.HideSelection();
             p1Selector.SetSelection(firstSelection);
+            if (!p1Selector.connected) p1Selector.HideSelection();
 
             p2Selector.MenuInit();
             p1Selector.MenuInit();
