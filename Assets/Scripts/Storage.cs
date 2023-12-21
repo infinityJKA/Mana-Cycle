@@ -14,7 +14,7 @@ public class Storage
     public static bool isPlayerControlled2;
 
     // amount of lives players will start with. used for persistence between arcade levels, and also set via versus mode settings
-    public static int lives = 3;
+    public static int lives = 1;
     // in arcade mode- persist HP between matches
     public static int hp;
 

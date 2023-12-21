@@ -41,6 +41,9 @@ namespace Battle {
         [SerializeField] private bool battleUseInputScripts = false;
         [SerializeField] private bool menuUseInputScripts = true;
 
+        // set to false whhen this is an AI vs AI match and htis controller can only interact with the pause menu.
+        public bool canControlBoard = true;
+
         private void Awake() {
             playerInput = GetComponent<PlayerInput>();
         }
@@ -173,6 +176,8 @@ namespace Battle {
         bool quickfallButtonPressed = false;
 
         // Functions to handle new Action Input System invocations
+
+        // charselector only
         public void OnMove(InputAction.CallbackContext ctx) {
             if (controlMode != ControlMode.CharSelector) return;
 
@@ -199,8 +204,9 @@ namespace Battle {
             } 
         }
 
+        // board only
         public void OnPieceMoveAnalog(InputAction.CallbackContext ctx) {
-            if (controlMode != ControlMode.Board) return;
+            if (controlMode != ControlMode.Board || !canControlBoard) return;
 
             movementInput = ctx.ReadValue<Vector2>();
 
@@ -228,7 +234,7 @@ namespace Battle {
         }
 
         public void OnQuickfall(InputAction.CallbackContext ctx) {
-            if (controlMode == ControlMode.Board) {
+            if (controlMode == ControlMode.Board && canControlBoard) {
                 if (ctx.performed) {
                     quickfallButtonPressed = true;
                     board.quickFall = quickfallButtonPressed || joystickPressedSouth;
@@ -245,35 +251,35 @@ namespace Battle {
 
         public void PieceTapLeft(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return; 
-            if (controlMode == ControlMode.Board) board.MoveLeft();
+            if (controlMode == ControlMode.Board && canControlBoard) board.MoveLeft();
         }
 
         public void PieceTapRight(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
-            if (controlMode == ControlMode.Board) board.MoveRight();
+            if (controlMode == ControlMode.Board && canControlBoard) board.MoveRight();
         }
 
         public void OnRotateLeft(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
-            if (controlMode == ControlMode.Board) board.RotateCCW();
+            if (controlMode == ControlMode.Board && canControlBoard) board.RotateCCW();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnAbilityInfo();
         }
 
         public void OnRotateRight(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
-            if (controlMode == ControlMode.Board) board.RotateCW();
+            if (controlMode == ControlMode.Board && canControlBoard) board.RotateCW();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnSettings();
         }
 
         public void OnSpellcast(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
-            if (controlMode == ControlMode.Board) board.Spellcast();
+            if (controlMode == ControlMode.Board && canControlBoard) board.Spellcast();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnCast();
         }
 
         public void OnAbiltyUse(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
-            if (controlMode == ControlMode.Board) board.UseAbility();
+            if (controlMode == ControlMode.Board && canControlBoard) board.UseAbility();
         }
 
         public void OnCancel(InputAction.CallbackContext ctx) {
