@@ -29,18 +29,23 @@ namespace MainMenu {
 
         [SerializeField] private InputActionReference scrollAction;
 
-        [SerializeField] private InputActionReference closeAction;
+        [SerializeField] private InputActionReference closeAction, pauseAction;
 
 
         private Vector2 scrollInput;
 
         private void OnEnable() {
+            closeAction.action.Enable();
             closeAction.action.performed += OnMenuClose;
+            pauseAction.action.Enable();
+            pauseAction.action.performed += OnMenuClose;
+            scrollAction.action.Enable();
             scrollAction.action.performed += OnScroll;
         }
 
         private void OnDisable() {
             closeAction.action.performed -= OnMenuClose;
+            pauseAction.action.performed -= OnMenuClose;
             scrollAction.action.performed -= OnScroll;
         }
 

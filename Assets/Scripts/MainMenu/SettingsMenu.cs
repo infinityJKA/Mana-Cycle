@@ -13,16 +13,20 @@ namespace MainMenu {
         [SerializeField] private Toggle ghostPieceToggle;
         [SerializeField] private Button closeButton;
         
-        [SerializeField] private InputActionReference closeAction;
+        [SerializeField] private InputActionReference closeAction, pauseAction;
 
         [SerializeField] private Menu3d menu3D;
 
         private void OnEnable() {
+            closeAction.action.Enable();
             closeAction.action.performed += OnMenuClose;
+            pauseAction.action.Enable();
+            pauseAction.action.performed += OnMenuClose;
         }
 
         private void OnDisable() {
             closeAction.action.performed -= OnMenuClose;
+            pauseAction.action.performed -= OnMenuClose;
         }
 
         private void OnMenuClose(InputAction.CallbackContext ctx) {

@@ -1021,6 +1021,7 @@ MonoBehaviour:
   scrollSpeed: 0.35
   scrollAction: {fileID: -8784545083839296357, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
   closeAction: {fileID: 7727032971491509709, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
+  pauseAction: {fileID: 5254050053853602190, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
 --- !u!1 &124245415
 GameObject:
   m_ObjectHideFlags: 0
@@ -7716,6 +7717,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closeAction: {fileID: 7727032971491509709, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
+  pauseAction: {fileID: 5254050053853602190, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
   menu3D: {fileID: 102548625}
 --- !u!1 &1067160524
 GameObject:
@@ -10326,7 +10328,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1230629768
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11295,7 +11297,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1337831528
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11482,7 +11484,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 3
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 201159910}
     m_SelectOnDown: {fileID: 315926936}
@@ -12567,6 +12569,7 @@ MonoBehaviour:
   ghostPieceToggle: {fileID: 124245417}
   closeButton: {fileID: 315926936}
   closeAction: {fileID: 7727032971491509709, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
+  pauseAction: {fileID: 5254050053853602190, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
   menu3D: {fileID: 102548625}
 --- !u!1 &1594978073
 GameObject:
