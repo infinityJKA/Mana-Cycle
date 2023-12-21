@@ -169,39 +169,75 @@ namespace Battle {
         private static float charSelectInputMagnitude = 0.5f;
 
         private bool joystickPressed;
+        bool joystickPressedSouth = false;
+        bool quickfallButtonPressed = false;
 
         // Functions to handle new Action Input System invocations
         public void OnMove(InputAction.CallbackContext ctx) {
+            if (controlMode != ControlMode.CharSelector) return;
+
             // this isn't used in battle YET but it will be used for controller joystick piece movement EVENTUALLY probably
             movementInput = ctx.ReadValue<Vector2>();
 
-            if (controlMode == ControlMode.CharSelector) {
-                if (joystickPressed) {
-                    if (movementInput.magnitude <= charSelectDeadzone) joystickPressed = false;
+            if (joystickPressed) {
+                if (movementInput.magnitude <= charSelectDeadzone) {
+                    joystickPressed = false;
+                    joystickPressedSouth = false;
+                    board.quickFall = quickfallButtonPressed || joystickPressedSouth;
                 }
+            }            
 
-                else if (!joystickPressed && movementInput.magnitude >= charSelectInputMagnitude) {
-                    joystickPressed = true;
+            else if (!joystickPressed && movementInput.magnitude >= charSelectInputMagnitude) {
+                joystickPressed = true;
 
-                    float angle = Vector2.SignedAngle(Vector2.up, movementInput);
+                float angle = Vector2.SignedAngle(Vector2.up, movementInput);
 
-                    if (Mathf.Abs(angle) < 45f) charSelector.OnMoveUp();
-                    else if (Mathf.Abs(angle - 180f) < 45f) charSelector.OnMoveDown();
-                    else if (Mathf.Abs(angle - 90f) < 45f) charSelector.OnMoveLeft();
-                    else if (Mathf.Abs(angle + 90f) < 45f) charSelector.OnMoveRight();
+                if (Mathf.Abs(angle) < 45f) charSelector.OnMoveUp();
+                else if (Mathf.Abs(angle - 180f) < 45f) charSelector.OnMoveDown();
+                else if (Mathf.Abs(angle - 90f) < 45f) charSelector.OnMoveLeft();
+                else if (Mathf.Abs(angle + 90f) < 45f) charSelector.OnMoveRight();  
+            } 
+        }
+
+        public void OnPieceMoveAnalog(InputAction.CallbackContext ctx) {
+            if (controlMode != ControlMode.Board) return;
+
+            movementInput = ctx.ReadValue<Vector2>();
+
+            if (joystickPressed) {
+                if (movementInput.magnitude <= charSelectDeadzone) {
+                    joystickPressed = false;
+                    joystickPressedSouth = false;
+                    board.quickFall = quickfallButtonPressed || joystickPressedSouth;
                 }
+            }            
+
+            else if (!joystickPressed && movementInput.magnitude >= charSelectInputMagnitude) {
+                joystickPressed = true;
+
+                float angle = Vector2.SignedAngle(Vector2.up, movementInput);
+
+                if (Mathf.Abs(angle) < 45f) board.UseAbility();
+                else if (Mathf.Abs(angle - 180f) < 45f) {
+                    joystickPressedSouth = true;
+                    board.quickFall = quickfallButtonPressed || joystickPressedSouth;
+                }
+                else if (Mathf.Abs(angle - 90f) < 45f) board.MoveLeft();
+                else if (Mathf.Abs(angle + 90f) < 45f) board.MoveRight();  
             }
         }
 
         public void OnQuickfall(InputAction.CallbackContext ctx) {
             if (controlMode == ControlMode.Board) {
                 if (ctx.performed) {
-                    board.quickFall = true;
+                    quickfallButtonPressed = true;
+                    board.quickFall = quickfallButtonPressed || joystickPressedSouth;
                     board.instaDropThisFrame = true;
                     Debug.Log("quickfalling");
                 }
                 if (ctx.canceled) {
-                    board.quickFall = false;
+                    quickfallButtonPressed = false;
+                    board.quickFall = quickfallButtonPressed || joystickPressedSouth;
                     Debug.Log("stopped quickfalling");
                 }
             }
@@ -241,6 +277,11 @@ namespace Battle {
         }
 
         public void OnCancel(InputAction.CallbackContext ctx) {
+            if (!ctx.performed) return;
+            else if (controlMode == ControlMode.CharSelector) charSelector.OnBack();
+        }
+
+        public void OnPause(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board) board.Pause();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnBack();

@@ -478,7 +478,7 @@ namespace Battle.Board {
             // temporarily in update() to find the correct values quicker, keeping in case needed again in the future
             // portrait.GetComponent<RectTransform>().anchoredPosition = initialPos + battler.portraitOffset;
             // wait for cycle to initialize (after countdown) to run game logic
-            if (!cycleInitialized) return;
+            if (!isInitialized() || isPaused() || isPostGame()) return;
 
             PointerReposition();
 
@@ -701,6 +701,8 @@ namespace Battle.Board {
         }
 
         public bool MoveLeft(){
+            if (!isInitialized() || isPaused() || isPostGame()) return false;
+
             if (MovePiece(-1, 0)) {
                 PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
                 return true;
@@ -709,6 +711,8 @@ namespace Battle.Board {
         }
 
         public bool MoveRight() {
+            if (!isInitialized() || isPaused() || isPostGame()) return false;
+
             if (MovePiece(1, 0)) {
                 PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
                 return true;
@@ -717,6 +721,8 @@ namespace Battle.Board {
         }
 
         public void Spellcast(){
+            if (!isInitialized() || isPaused() || isPostGame()) return;
+
             // get current mana color from cycle, and clear that color
             // start at chain of 1
             // canCast is true if a spellcast is currently in process.

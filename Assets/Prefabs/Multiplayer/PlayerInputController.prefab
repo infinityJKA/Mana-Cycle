@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleUseInputScripts: 0
-  menuUseInputScripts: 1
+  menuUseInputScripts: 0
 --- !u!114 &4568795817241217777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,6 +249,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 51e0f912-0762-4542-96ad-9a5bcb9d8e8d
     m_ActionName: Gameplay/AbilityUse[/Keyboard/upArrow]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2121833181378916876}
+        m_TargetAssemblyTypeName: Battle.Controller, Assembly-CSharp
+        m_MethodName: OnPause
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: e5482c67-4ce4-4aa3-80df-af8419e85a05
+    m_ActionName: Gameplay/Pause[/Keyboard/pause,/XInputControllerWindows/select,/Keyboard/tab,/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2121833181378916876}
+        m_TargetAssemblyTypeName: Battle.Controller, Assembly-CSharp
+        m_MethodName: OnPieceMoveAnalog
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: a4102ce4-d5c7-449e-9fe7-e7a86c2a664d
+    m_ActionName: Gameplay/PieceMoveAnalog[/XInputControllerWindows/leftStick/up,/XInputControllerWindows/rightStick/up,/XInputControllerWindows/leftStick/down,/XInputControllerWindows/rightStick/down,/XInputControllerWindows/leftStick/left,/XInputControllerWindows/rightStick/left,/XInputControllerWindows/leftStick/right,/XInputControllerWindows/rightStick/right]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay
