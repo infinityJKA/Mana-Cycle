@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace MainMenu {
@@ -11,6 +13,18 @@ namespace MainMenu {
         [SerializeField] private Toggle ghostPieceToggle;
         [SerializeField] private Button closeButton;
         
+        [SerializeField] private InputActionReference closeAction;
+
+        [SerializeField] private Menu3d menu3D;
+
+        private void Awake() {
+            closeAction.action.performed += ctx => {
+                if (gameObject == null) return;
+                if (!gameObject) return;
+                if (!gameObject.activeSelf) return;
+                menu3D.CloseSettings();
+            };
+        }
         void Start() {
             if (ghostPieceToggle) {
                 if (!PlayerPrefs.HasKey("drawGhostPiece")) PlayerPrefs.SetInt("drawGhostPiece", 1);
