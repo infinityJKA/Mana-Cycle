@@ -256,13 +256,13 @@ namespace Battle {
         public void OnRotateLeft(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board) board.RotateCCW();
-            else if (controlMode == ControlMode.CharSelector) charSelector.OnRotateCCW();
+            else if (controlMode == ControlMode.CharSelector) charSelector.OnAbilityInfo();
         }
 
         public void OnRotateRight(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board) board.RotateCW();
-            else if (controlMode == ControlMode.CharSelector) charSelector.OnRotateCW();
+            else if (controlMode == ControlMode.CharSelector) charSelector.OnSettings();
         }
 
         public void OnSpellcast(InputAction.CallbackContext ctx) {

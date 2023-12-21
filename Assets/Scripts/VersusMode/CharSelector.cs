@@ -373,12 +373,12 @@ namespace VersusMode {
             Back();
         }
 
-        public void OnRotateCCW() {
+        public void OnAbilityInfo() {
             if (!enabled || !selectedIcon) return;
             if (!menu.Mobile) ToggleAbilityInfo();
         }
 
-        public void OnRotateCW() {
+        public void OnSettings() {
             if (!enabled || !selectedIcon) return;
             if (!menu.Mobile) ToggleSettings();
         }
