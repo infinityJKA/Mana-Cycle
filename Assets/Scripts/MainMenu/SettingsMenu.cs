@@ -17,14 +17,21 @@ namespace MainMenu {
 
         [SerializeField] private Menu3d menu3D;
 
-        private void Awake() {
-            closeAction.action.performed += ctx => {
-                if (gameObject == null) return;
-                if (!gameObject) return;
-                if (!gameObject.activeSelf) return;
-                menu3D.CloseSettings();
-            };
+        private void OnEnable() {
+            closeAction.action.performed += OnMenuClose;
         }
+
+        private void OnDisable() {
+            closeAction.action.performed -= OnMenuClose;
+        }
+
+        private void OnMenuClose(InputAction.CallbackContext ctx) {
+            if (gameObject == null) return;
+            if (!gameObject) return;
+            if (!gameObject.activeSelf) return;
+            menu3D.CloseSettings();
+        }
+
         void Start() {
             if (ghostPieceToggle) {
                 if (!PlayerPrefs.HasKey("drawGhostPiece")) PlayerPrefs.SetInt("drawGhostPiece", 1);
@@ -34,14 +41,16 @@ namespace MainMenu {
 
         void Update()
         {
-            if (Input.GetKeyDown(inputScript.Pause)) {
-                closeButton.onClick.Invoke();
-            }
+            // if (Input.GetKeyDown(inputScript.Pause)) {
+            //     closeButton.onClick.Invoke();
+            // }
         }
 
         public void OnGhostPieceToggleChange() {
             bool tickOn = ghostPieceToggle.isOn;
             PlayerPrefs.SetInt("drawGhostPiece", tickOn ? 1 : 0);
         }
+
+        
     }
 }

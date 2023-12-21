@@ -1,3 +1,4 @@
+using Multiplayer;
 using UnityEngine;
 using UnityEngine.UI;
 namespace VersusMode {
@@ -22,6 +23,9 @@ namespace VersusMode {
         // Start text to darken when button disabled
         [SerializeField] private Selectable startText;
 
+        // for handling Controllers
+        [SerializeField] private PlayerConnectionManager connectionManager;
+
         [SerializeField] private bool mobile;
         public bool Mobile { get {return mobile;} }
 
@@ -31,6 +35,10 @@ namespace VersusMode {
                 Storage.gamemode = Storage.GameMode.Versus;
                 Storage.isPlayerControlled1 = false;
                 Storage.isPlayerControlled2 = false;
+            }
+
+            if (!connectionManager) {
+                connectionManager = FindFirstObjectByType<PlayerConnectionManager>();
             }
         }
 
@@ -84,6 +92,10 @@ namespace VersusMode {
                 Sound.SoundManager.Instance.PlaySound(startSFX, 0.5f);
                 StartMatch();
             }
+        }
+
+        public bool IsBothPlayersReady() {
+            return ready;
         }
 
         void StartMatch() {
@@ -181,6 +193,30 @@ namespace VersusMode {
             } else {
                 p2Selector.AdjustCPULevel(delta);
             }
+        }
+
+        bool dualKeybaord = false;
+        public void ToggleDualKeyboard() {
+            dualKeybaord = !dualKeybaord;
+            if (dualKeybaord) {
+                SwitchToDualKeyboardMode(); 
+            } else {
+                SwitchToControllers();
+            }
+        }
+
+        public void SwitchToDualKeyboardMode() {
+            p1Selector.DualKeyboardEnabled();
+            p2Selector.DualKeyboardEnabled();
+            connectionManager.DisableControllers();
+            Debug.Log("Switched to dual keyboard mode");
+        }
+
+        public void SwitchToControllers() {
+            p1Selector.DualKeyboardDisabled();
+            p2Selector.DualKeyboardDisabled();
+            connectionManager.EnableControllers();
+            Debug.Log("Switched to multi-device controller mode");
         }
     }
 }

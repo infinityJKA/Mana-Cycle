@@ -166,7 +166,11 @@ namespace VersusMode {
         }
 
         // whether or not to use the old smelly input scripts and not the new action input system
-        [SerializeField] private bool useInputScripts = false;
+        [SerializeField] public bool useInputScripts = false;
+
+        [SerializeField] private GameObject settingsInputModeButton;
+
+        [SerializeField] private TextMeshProUGUI settingsInputModeButtonLabel;
 
         private Vector2 centerPosition;
         void Start() {
@@ -333,6 +337,12 @@ namespace VersusMode {
                     SoundManager.Instance.PlaySound(settingsToggleSFX);
                 }
 
+                var button = settingsSelection.GetComponent<Button>();
+                if (button) {
+                    button.onClick.Invoke();
+                    SoundManager.Instance.PlaySound(settingsToggleSFX);
+                }
+
                 // if any battle preferences were just toggled, update its state in Storage and the other player's settings toggle
                 if (settingsSelection == abilityToggle) {
                     PlayerPrefs.SetInt("enableAbilities", abilityToggle.isOn ? 1 : 0);
@@ -348,15 +358,13 @@ namespace VersusMode {
                 opponentSelector.Active = true;
                 RefreshLockVisuals();
             }
-
-            // If aready locked in, start match if other player is also locked in
-            else if (lockedIn) {
-                menu.StartIfReady();
-            }
-
-            // otherwise, lock in this character
+            // otherwise, lock/unlock in this character
             else {
-                ToggleLock();
+                if (menu.IsBothPlayersReady()) {
+                    menu.StartIfReady();
+                } else {
+                    ToggleLock();
+                }
             }
         }
 
@@ -428,6 +436,10 @@ namespace VersusMode {
                 RefreshCpuLevel();
             } else {
                 cpuLevelObject.SetActive(false);
+            }
+
+            if (!Storage.isPlayerControlled2) {
+                settingsInputModeButton.gameObject.SetActive(false);
             }
 
             SetSettingsSelection(ghostPieceToggle);
@@ -644,6 +656,18 @@ namespace VersusMode {
 
         public void HideSelection() {
             selectedIcon.SetSelected(isPlayer1, false);
+        }
+
+        public void DualKeyboardEnabled() {
+            useInputScripts = true;
+            settingsInputModeButtonLabel.text = "Switch to Multi-Device Inputs";
+            if (settingsDisplayed) ToggleSettings();
+        }
+
+        public void DualKeyboardDisabled() {
+            useInputScripts = false;
+            settingsInputModeButtonLabel.text = "Switch to Dual-Keyboard Inputs";
+            if (settingsDisplayed) ToggleSettings();
         }
 
         // used by CharSelectMenu to receive player pereference decisions

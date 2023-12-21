@@ -184,7 +184,6 @@ namespace Battle {
                     joystickPressed = true;
 
                     float angle = Vector2.SignedAngle(Vector2.up, movementInput);
-                    Debug.Log(angle);
 
                     if (Mathf.Abs(angle) < 45f) charSelector.OnMoveUp();
                     else if (Mathf.Abs(angle - 180f) < 45f) charSelector.OnMoveDown();

@@ -107,9 +107,18 @@ namespace MainMenu {
             }
 
             // Check if over 21, else check if 5-card rule
-            if(PlayerCards.getPlayerSum() > 21){
+            int cardSum = PlayerCards.getPlayerSum();
+            if(cardSum > 21){
                 Lose("Bust");
-            }else if(PlayerHand.Count >= 5){
+            }
+            else if (cardSum == 21) {
+                if (gameStart) {
+                    Win("Blackjack");
+                } else {
+                    BJ_Stand();
+                }
+            }
+            else if(PlayerHand.Count >= 5){
                 Win("5-Card Rule");
             }else if(!gameStart && cond == bj_cond.MIDGAME){
                 EventSystem.current.SetSelectedGameObject(ActionSelected);

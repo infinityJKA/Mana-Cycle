@@ -14,13 +14,19 @@ namespace MainMenu {
 
         [SerializeField] private Menu3d menu3D;
 
-        private void Awake() {
-            closeAction.action.performed += ctx => {
-                if (!enabled) return;
-                if (!gameObject) return;
-                if (!gameObject.activeSelf) return;
-                menu3D.CloseVersus();
-            };
+        private void OnEnable() {
+            closeAction.action.performed += OnMenuClose;
+        }
+
+        private void OnDisable() {
+            closeAction.action.performed -= OnMenuClose;
+        }
+
+        private void OnMenuClose(InputAction.CallbackContext ctx) {
+            if (!enabled) return;
+            if (!gameObject) return;
+            if (!gameObject.activeSelf) return;
+            menu3D.CloseVersus();
         }
     }
 }
