@@ -34,17 +34,22 @@ namespace MainMenu {
 
         private Vector2 scrollInput;
 
-        private void Awake() {
-            closeAction.action.performed += ctx => {
-                HideMenu();
-            };
+        private void OnEnable() {
+            closeAction.action.performed += OnMenuClose;
+            scrollAction.action.performed += OnScroll;
+        }
 
-            scrollAction.action.performed += ctx => {
-                scrollInput = ctx.ReadValue<Vector2>();
-            };
-            scrollAction.action.canceled += ctx => {
-                scrollInput = Vector2.zero;
-            };
+        private void OnDisable() {
+            closeAction.action.performed -= OnMenuClose;
+            scrollAction.action.performed -= OnScroll;
+        }
+
+        private void OnMenuClose(InputAction.CallbackContext ctx) {
+            HideMenu();
+        }
+
+        private void OnScroll(InputAction.CallbackContext ctx) {
+            scrollInput = ctx.ReadValue<Vector2>();
         }
 
         public void Update()
@@ -53,11 +58,11 @@ namespace MainMenu {
 
             foreach (InputScript inputScript in inputScripts)
             {
-                if (Input.GetKeyDown(inputScript.Pause))
-                {
-                    HideMenu();
-                    return;
-                }
+                // if (Input.GetKeyDown(inputScript.Pause))
+                // {
+                //     HideMenu();
+                //     return;
+                // }
 
                 if (Input.GetKey(inputScript.Down))
                 {

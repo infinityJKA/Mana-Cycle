@@ -79,5 +79,18 @@ namespace Multiplayer {
             var controller = playerInput.GetComponent<Controller>();
             controller.SetCharSelector(charSelectors[playerInput.playerIndex]);
         }
+
+
+        public void DisableControllers() {
+            foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
+                playerInput.DeactivateInput();
+            }
+        }
+
+        public void EnableControllers() {
+            foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
+                playerInput.ActivateInput();
+            }
+        }
     }
 }
