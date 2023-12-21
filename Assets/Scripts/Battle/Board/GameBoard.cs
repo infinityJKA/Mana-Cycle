@@ -1840,6 +1840,8 @@ namespace Battle.Board {
             return postGame;
         }
 
+
+
         // Called when defeated. Lose one life and update life transform
         // If more than one life remains, clears the board and incoming damage, and player suffers a 5-second delay.
         void LoseLife() {
@@ -1865,6 +1867,14 @@ namespace Battle.Board {
                 }
 
                 hpBar.Refresh();
+            }
+        }
+
+        public void Pause() {
+            if (!postGame && !Storage.convoEndedThisInput)
+            {
+                pauseMenu.TogglePause();
+                PlaySFX("pause", pan: 0);
             }
         }
 
