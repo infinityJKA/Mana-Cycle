@@ -39,7 +39,7 @@ namespace Battle.Board {
         /// </summary>
         public bool abilityActive;
 
-        void Start()
+        void Awake()
         {
             board = GetComponent<GameBoard>();
             enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
@@ -49,6 +49,7 @@ namespace Battle.Board {
 
         public void InitManaBar() {
             if (!enabled || !board || !board.Battler) return;
+
             // set height based on mana required for battler - 7px per mana
             // manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, board.Battler.activeAbilityMana*7f);
             manaBarMask.sizeDelta = new Vector2(manaBarMask.sizeDelta.x, board.Battler.activeAbilityMana*7f);

@@ -454,6 +454,8 @@ namespace Battle.Board {
             portrait.sprite = battler.sprite;
             portrait.GetComponent<RectTransform>().anchoredPosition = portrait.GetComponent<RectTransform>().anchoredPosition + battler.portraitOffset;
             attackPopup.SetBattler(battler);
+
+            
         }
 
         void SetAIDifficulty(float difficulty) {
