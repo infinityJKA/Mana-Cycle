@@ -75,6 +75,10 @@ namespace VersusMode {
             transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
 
             RefreshStartButton();
+
+            if (Storage.useDualKeyboardInput) {
+                SwitchToDualKeyboardMode();
+            }
         }
 
         bool ready { 
@@ -211,6 +215,7 @@ namespace VersusMode {
             p1Selector.DualKeyboardEnabled();
             p2Selector.DualKeyboardEnabled();
             connectionManager.DisableControllers();
+            Storage.useDualKeyboardInput = true;
             Debug.Log("Switched to dual keyboard mode");
         }
 
@@ -218,6 +223,7 @@ namespace VersusMode {
             p1Selector.DualKeyboardDisabled();
             p2Selector.DualKeyboardDisabled();
             connectionManager.EnableControllers();
+            Storage.useDualKeyboardInput = false;
             Debug.Log("Switched to multi-device controller mode");
         }
 

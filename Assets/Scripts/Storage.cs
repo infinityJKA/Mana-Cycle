@@ -48,4 +48,7 @@ public class Storage
 
     // used in arcade endless
     public static List<SoloMode.Level> nextLevelChoices;
+
+    // If in dual keyboard mode. Player vs player matches will be controlled wtih both sides of the keyboard.
+    public static bool useDualKeyboardInput;
 }

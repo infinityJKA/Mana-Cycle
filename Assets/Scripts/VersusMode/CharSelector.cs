@@ -544,7 +544,7 @@ namespace VersusMode {
         }
 
         void RefreshLockVisuals() {
-            if (!connected) return;
+            if (!connected || !selectedIcon) return;
             if (lockedIn){
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, (selectingCpuLevel && !menu.Mobile) ? 0.65f : 1f);
                 nameText.text = selectedBattler.displayName;

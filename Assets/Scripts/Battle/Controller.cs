@@ -294,5 +294,11 @@ namespace Battle {
             if (controlMode == ControlMode.Board) board.Pause();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnBack();
         }
+
+        public void EnableInputScripts() {
+            Debug.Log("input scripts on "+name+" enabled");
+            menuUseInputScripts = true;
+            battleUseInputScripts = true;
+        }
     }
 }

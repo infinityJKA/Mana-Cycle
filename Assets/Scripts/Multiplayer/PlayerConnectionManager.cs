@@ -13,7 +13,9 @@ namespace Multiplayer {
 
         [SerializeField] private CharSelector[] charSelectors;
 
-        [SerializeField] private ConnectMode connectMode;
+        [SerializeField] public ConnectMode connectMode;
+
+        [SerializeField] private GameObject controllerPrefab;
 
         public enum ConnectMode {
             CharSelect,
@@ -48,14 +50,29 @@ namespace Multiplayer {
                 }
             } else {
                 reparent = false;
+                instance.connectMode = connectMode;
 
                 if (connectMode == ConnectMode.DestroyMultiplayer) {
                     Destroy(instance.gameObject);
                 } else {
-                    foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
-                        OnPlayerJoined(playerInput);
+                    // if in dual keyboard mode, give each board a controller
+                    if (Storage.useDualKeyboardInput) {
+                        foreach (var board in boards) {
+                            GameObject controllerObject = Instantiate(controllerPrefab);
+                            Destroy(controllerObject.GetComponent<PlayerInput>());
+
+                            Controller controller = controllerObject.GetComponent<Controller>();
+                            controller.SetBoard(board);
+                            controller.EnableInputScripts();
+                        }
+                    } 
+                    // otherwise, connect players using the player inputs that are already setup and parented under the current instance
+                    else {
+                        foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
+                            OnPlayerJoined(playerInput);
+                        }
                     }
-                }
+                }  
                 
                 // after all this tomfoolery, destroy this gameobject since the existing one should be the only one.
                 Destroy(gameObject);
@@ -84,8 +101,15 @@ namespace Multiplayer {
 
         // upon joining at beginning or during battle, connect to a board based on player index. 0 will be left, 1 will be right
         public void ConnectControllerToBoard(PlayerInput playerInput) {
-            
+            if (playerInput.playerIndex >= boards.Length) return;
+
             var controller = playerInput.GetComponent<Controller>();
+
+            // if in dual keyboard mode, enable the input scripts on the controller
+            if (Storage.useDualKeyboardInput) {
+                controller.EnableInputScripts();
+            }
+
             controller.SetBoard(boards[playerInput.playerIndex]);
         }
 
@@ -106,13 +130,22 @@ namespace Multiplayer {
         public void DisableControllers() {
             foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
                 playerInput.DeactivateInput();
+                Destroy(playerInput.gameObject);
+            }
+            GetComponent<PlayerInputManager>().DisableJoining();
+            foreach (var selector in charSelectors) {
+                selector.Connect();
             }
         }
 
         public void EnableControllers() {
-            foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
-                playerInput.ActivateInput();
+            foreach (var selector in charSelectors) {
+                selector.Disconnect();
             }
+            GetComponent<PlayerInputManager>().EnableJoining();
+            // foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
+            //     playerInput.ActivateInput();
+            // }
         }
     }
 }
