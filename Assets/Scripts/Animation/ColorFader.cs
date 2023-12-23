@@ -7,7 +7,7 @@ namespace Animation
 {
     public class ColorFader : MonoBehaviour
     {
-        private static float fadeTime = 1.25f;
+        [SerializeField] private float fadeTime = 0.75f;
 
         [SerializeField] private float alphaOverwrite = 1.0f;
         private float fadeTimer;
@@ -31,7 +31,7 @@ namespace Animation
             fadeTimer += Time.deltaTime;
         }
 
-        public void updateColor(Color newColor)
+        public void FadeToColor(Color newColor)
         {
             if (img == null) return;
             oldColor = img.color;
