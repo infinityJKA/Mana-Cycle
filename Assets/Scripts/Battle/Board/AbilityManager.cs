@@ -15,6 +15,8 @@ namespace Battle.Board {
 
         /// <summary>Background image for the mana (MP) bar </summary>
         [SerializeField] public RectTransform manaBar; 
+        [SerializeField] public RectTransform manaBarMask;
+        [SerializeField] public RectTransform manaBarOutline;  
         /// <summary>Fill image for the mana (MP) bar </summary>
         [SerializeField] public Image manaDisp;
         
@@ -48,7 +50,9 @@ namespace Battle.Board {
         public void InitManaBar() {
             if (!enabled || !board || !board.Battler) return;
             // set height based on mana required for battler - 7px per mana
-            manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, board.Battler.activeAbilityMana*7f);
+            // manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, board.Battler.activeAbilityMana*7f);
+            manaBarMask.sizeDelta = new Vector2(manaBarMask.sizeDelta.x, board.Battler.activeAbilityMana*7f);
+            // manaBarOutline.sizeDelta = new Vector2(manaBar.sizeDelta.x, board.Battler.activeAbilityMana*7f);
 
             mana = (int) (board.Battler.startAtFullMana ? board.Battler.activeAbilityMana : board.Battler.activeAbilityMana * board.boardStats[ArcadeStats.Stat.StartingSpecial]);
 
