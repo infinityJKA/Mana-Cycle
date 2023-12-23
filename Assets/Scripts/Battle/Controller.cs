@@ -221,11 +221,16 @@ namespace Battle {
 
                 float angle = Vector2.SignedAngle(Vector2.up, movementInput);
 
-                if (Mathf.Abs(angle) < 45f) board.UseAbility();
+                if (Mathf.Abs(angle) < 45f) {
+                    board.UseAbility();
+                    board.instaDropThisFrame = true; // for trainbot
+                }
+
                 else if (Mathf.Abs(angle - 180f) < 45f) {
                     joystickPressedSouth = true;
                     board.quickFall = quickfallButtonPressed || joystickPressedSouth;
                 }
+
                 else if (Mathf.Abs(angle - 90f) < 45f) board.MoveLeft();
                 else if (Mathf.Abs(angle + 90f) < 45f) board.MoveRight();  
             }
@@ -236,7 +241,6 @@ namespace Battle {
                 if (ctx.performed) {
                     quickfallButtonPressed = true;
                     board.quickFall = quickfallButtonPressed || joystickPressedSouth;
-                    board.instaDropThisFrame = true;
                     Debug.Log("quickfalling");
                 }
                 if (ctx.canceled) {
@@ -281,7 +285,10 @@ namespace Battle {
 
         public void OnAbiltyUse(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
-            if (controlMode == ControlMode.Board && canControlBoard) board.UseAbility();
+            if (controlMode == ControlMode.Board && canControlBoard) {
+                board.UseAbility();
+                board.instaDropThisFrame = true; // for trainbot
+            }
         }
 
         public void OnCancel(InputAction.CallbackContext ctx) {
