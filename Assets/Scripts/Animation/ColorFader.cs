@@ -8,6 +8,8 @@ namespace Animation
     public class ColorFader : MonoBehaviour
     {
         private static float fadeTime = 1.25f;
+
+        [SerializeField] private float alphaOverwrite = 1.0f;
         private float fadeTimer;
         private Color oldColor;
         private Color targetColor;
@@ -24,7 +26,8 @@ namespace Animation
         // Update is called once per frame
         void Update()
         {
-            img.color = Color.Lerp(oldColor, targetColor, fadeTimer / fadeTime);
+            Color newColor = Color.Lerp(oldColor, targetColor, fadeTimer / fadeTime);
+            img.color = new Color(newColor.r, newColor.g, newColor.b, alphaOverwrite);
             fadeTimer += Time.deltaTime;
         }
 

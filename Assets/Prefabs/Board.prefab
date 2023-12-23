@@ -169,6 +169,7 @@ MonoBehaviour:
   equiped: []
   cycleColoredObjects:
   - {fileID: 9205910468339133678}
+  - {fileID: 4849464366322271798}
 --- !u!114 &7561198744834971609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -682,13 +683,13 @@ RectTransform:
   m_Children:
   - {fileID: 4280784765599370640}
   - {fileID: 8026496023998112998}
+  - {fileID: 6761418252514739809}
   - {fileID: 1610189136958843712}
   - {fileID: 7270664644844596453}
   - {fileID: 9075220849298859004}
   - {fileID: 5695537894751129197}
   - {fileID: 3101349306596099375}
   - {fileID: 1874513233062967785}
-  - {fileID: 6761418252514739809}
   m_Father: {fileID: 6497960546296106959}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1913,6 +1914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f7c0b031920c164582251e7cc375998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaOverwrite: 1
 --- !u!1 &5299102538424461706
 GameObject:
   m_ObjectHideFlags: 0
@@ -2883,7 +2885,7 @@ GameObject:
   - component: {fileID: 6761418252514739809}
   - component: {fileID: 2250935792393371576}
   - component: {fileID: 3162243733211748408}
-  - component: {fileID: 9074879915738662040}
+  - component: {fileID: 4849464366322271798}
   m_Layer: 5
   m_Name: BoardBGGradient
   m_TagString: Untagged
@@ -2931,7 +2933,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.62547576, g: 0.57254905, b: 1, a: 0.078431375}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.078431375}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2948,27 +2950,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!95 &9074879915738662040
-Animator:
-  serializedVersion: 5
+--- !u!114 &4849464366322271798
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7000856385521157519}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 3716ae077a5de064dba6ba33205233e1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f7c0b031920c164582251e7cc375998, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  alphaOverwrite: 0.1
 --- !u!1 &7306380406049050774
 GameObject:
   m_ObjectHideFlags: 0
@@ -3057,6 +3051,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f7c0b031920c164582251e7cc375998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaOverwrite: 1
 --- !u!1 &7423294169500355251
 GameObject:
   m_ObjectHideFlags: 0
@@ -3145,6 +3140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f7c0b031920c164582251e7cc375998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaOverwrite: 1
 --- !u!1 &7475847921371690871
 GameObject:
   m_ObjectHideFlags: 0
@@ -3718,6 +3714,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f7c0b031920c164582251e7cc375998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaOverwrite: 1
 --- !u!1 &9031594446078554666
 GameObject:
   m_ObjectHideFlags: 0
@@ -3806,6 +3803,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f7c0b031920c164582251e7cc375998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alphaOverwrite: 1
 --- !u!1 &9088282051862407895
 GameObject:
   m_ObjectHideFlags: 0
