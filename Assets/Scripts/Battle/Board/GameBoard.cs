@@ -260,6 +260,8 @@ namespace Battle.Board {
         public Dictionary<ArcadeStats.Stat, float> boardStats;
         public List<Item> equiped = new List<Item>();
 
+        [SerializeField] private List<ColorFader> cycleColoredObjects;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -669,6 +671,8 @@ namespace Battle.Board {
             abilityManager.InitManaBar();
 
             hpBar.Refresh();
+
+            updateCycleColoredObjects();
         }
 
 
@@ -1559,6 +1563,17 @@ namespace Battle.Board {
                 PlaySFX("cycle");
             }
             PointerReposition();
+
+            updateCycleColoredObjects();
+        }
+
+        // update image color of cycle colored objects
+        private void updateCycleColoredObjects()
+        {
+            for (int i = 0; i < cycleColoredObjects.Count; i++)
+            {
+                cycleColoredObjects[i].updateColor(cycle.GetManaColor((int)cycle.GetCycle()[cyclePosition]));
+            }
         }
 
         public int damagePerMana {get {return 10 + (int)((cycleLevel + boardStats[StartingCycleModifier]) * boostPerCycleClear);}}
