@@ -672,7 +672,7 @@ namespace Battle.Board {
 
             hpBar.Refresh();
 
-            updateCycleColoredObjects();
+            UpdateCycleColoredObjects();
         }
 
 
@@ -1564,15 +1564,19 @@ namespace Battle.Board {
             }
             PointerReposition();
 
-            updateCycleColoredObjects();
+            UpdateCycleColoredObjects();
         }
 
+
+        private static Color fadeToColor = new Color(0.95f, 0.97f, 1f);
         // update image color of cycle colored objects
-        private void updateCycleColoredObjects()
+        private void UpdateCycleColoredObjects()
         {
-            for (int i = 0; i < cycleColoredObjects.Count; i++)
+            foreach (ColorFader cycleColoredObject in cycleColoredObjects)
             {
-                cycleColoredObjects[i].updateColor(cycle.GetManaColor((int)cycle.GetCycle()[cyclePosition]));
+                Color cycleColor = cycle.GetManaColor((int)cycle.GetCycle()[cyclePosition]);
+                Color brightenedColor = Color.Lerp(cycleColor, fadeToColor, 0.3f);
+                cycleColoredObject.FadeToColor(brightenedColor);
             }
         }
 
