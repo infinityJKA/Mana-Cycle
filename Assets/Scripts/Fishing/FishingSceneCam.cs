@@ -8,7 +8,7 @@ public class FishingSceneCam : MonoBehaviour
     public Transform target;
     public float smoothTime;
     private Vector3 currentVelocity = Vector3.zero;
-
+    
     private void Awake(){
         offset = transform.position - target.position;
     }
@@ -17,5 +17,7 @@ public class FishingSceneCam : MonoBehaviour
         Vector3 targetPos = target.position + offset;
         transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref currentVelocity, smoothTime);
     }
+
+    
 
 }
