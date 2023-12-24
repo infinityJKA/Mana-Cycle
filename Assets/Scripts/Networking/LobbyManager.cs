@@ -53,21 +53,22 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
-    public async Task Authenticate(string name) {
+    public async Task<bool> Authenticate(string name) {
         playerName = name.Trim();
         Debug.Log("Authenticating with username "+playerName);
 
         Regex rgx = new Regex("[^a-zA-Z0-9 -_]");
         playerName = rgx.Replace(playerName, "");
 
+        // todo: may replace these with onscreen error messages.
         if (playerName.Length == 0) {
-            Debug.Log("Please enter a username");
-            return;
+            Debug.LogWarning("Please enter a username");
+            return false;
         }
 
         if (playerName.Length > 16) {
-            Debug.Log("Username is too long");
-            return;
+            Debug.LogWarning("Username is too long");
+            return false;
         }
 
         InitializationOptions initializationOptions = new InitializationOptions();
@@ -80,6 +81,8 @@ public class LobbyManager : MonoBehaviour {
         };
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+        return true;
     }
 
     IEnumerator LobbyHeartbeat() {
