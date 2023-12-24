@@ -50,6 +50,9 @@ namespace MainMenu {
         List<KeyCode> konamiCode = new List<KeyCode>();
         int konamiIndex = 0;
 
+        // things to hide in web builds, such as the quit button
+        [SerializeField] GameObject[] hideInWebGL;
+
         // Keep track of current input sequence to check for konami code, to enter blackjack
 
 
@@ -59,6 +62,14 @@ namespace MainMenu {
         {
             UpdateKonamiList();
             SelectLastSelected();
+
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                foreach (GameObject o in hideInWebGL)
+                {
+                    o.SetActive(false);
+                }
+            }
         }
 
         public void UpdateKonamiList()
@@ -202,6 +213,12 @@ namespace MainMenu {
         public void UpdateTip()
         {
             tipText.text = String.Format("[Arrow Keys] to move cursor\n[{0}] to select", Utils.KeySymbol(inputScripts[0].Cast));
+        }
+
+        public void SelectExit()
+        {
+            Debug.Log("Quiting...");
+            Application.Quit();
         }
     }
 }
