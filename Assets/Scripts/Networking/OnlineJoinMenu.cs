@@ -14,7 +14,9 @@ public class OnlineJoinMenu : MonoBehaviour {
     }
 
     public async void QuickPlayPressed() {
-        await Authenticate();
+        bool authenticated = await Authenticate();
+        if (!authenticated) return;
+
         bool lobbyJoined = await lobbyManager.QuickJoinLobby();
         if (!lobbyJoined) {
             await lobbyManager.CreateLobby();
@@ -22,13 +24,15 @@ public class OnlineJoinMenu : MonoBehaviour {
     }
 
     public async void CreateLobbyPressed() {
-        await Authenticate();
+        bool authenticated = await Authenticate();
+        if (!authenticated) return;
+
         await lobbyManager.CreateLobby();
     }
 
-    public async Task Authenticate() {
+    public async Task<bool> Authenticate() {
         // note: later on when authentication is actually important, this may be done through steam/google/builtin in crappy database idk
-        await lobbyManager.Authenticate(usernameInputField.text);
+        return await lobbyManager.Authenticate(usernameInputField.text);
     }
 
     public void JoinByCodePressed() {
