@@ -26,7 +26,6 @@ public class TransitionScript : MonoBehaviour
             wipingOut = false;
             WipeOut();
         }
-
     }
 
     // Update is called once per frame

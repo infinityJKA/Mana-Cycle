@@ -4,8 +4,10 @@ using UnityEngine.UI;
 namespace VersusMode {
     ///<summary> Controls the character selection menu and the cursors within it. </summary>
     public class CharSelectMenu : MonoBehaviour {
+        public static CharSelectMenu Instance {get; private set;}
+
         ///<summary>Selectors for both players</summary>
-        [SerializeField] private CharSelector p1Selector, p2Selector;
+        [SerializeField] public CharSelector p1Selector, p2Selector;
         ///<summary>The grid of characters to select with the selectorss defined in this object</summary>
         [SerializeField] private Transform grid;
 
@@ -31,6 +33,8 @@ namespace VersusMode {
 
         // (for debug purposes)
         void Awake() {
+            Instance = this;
+
             if (Storage.gamemode == Storage.GameMode.Default) {
                 Storage.gamemode = Storage.GameMode.Versus;
                 Storage.isPlayerControlled1 = false;

@@ -11,7 +11,7 @@ public class Storage
     
     // player/cpu state selected by players
     public static bool isPlayerControlled1 = true;
-    public static bool isPlayerControlled2 = false;
+    public static bool isPlayerControlled2 = true;
 
     // amount of lives players will start with. used for persistence between arcade levels, and also set via versus mode settings
     public static int lives = 1;
@@ -51,4 +51,7 @@ public class Storage
 
     // If in dual keyboard mode. Player vs player matches will be controlled wtih both sides of the keyboard.
     public static bool useDualKeyboardInput;
+
+    // true for online mode, false for local. (only applies to PvP)
+    public static bool online = true;
 }

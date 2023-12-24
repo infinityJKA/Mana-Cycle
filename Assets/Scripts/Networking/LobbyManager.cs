@@ -11,6 +11,8 @@ using UnityEngine;
 
 public class LobbyManager : MonoBehaviour {
 
+    public static LobbyManager Instance {get; private set;}
+
     private Lobby hostLobby;
 
     public Lobby joinedLobby {get; private set;}
@@ -26,17 +28,13 @@ public class LobbyManager : MonoBehaviour {
 
     private string playerName = "";
 
-    // private async void Start() {
-    //     await Authenticate();
-
-    //     await QueryLobbies();
-
-    //     if (lobbies.Count > 0) {
-    //         await QuickJoinLobby();
-    //     } else {
-    //         await CreateLobby();
-    //     }
-    // }
+    private void Awake() {
+        if (Instance != null) {
+            Destroy(gameObject);
+        } else {
+            Instance = this;
+        }
+    }
 
     private void Update() {
         HandleLobbyPolling();

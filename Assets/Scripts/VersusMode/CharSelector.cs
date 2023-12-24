@@ -181,6 +181,8 @@ namespace VersusMode {
 
         [SerializeField] private GameObject connectTipLabel;
 
+        [SerializeField] private GameObject onlineShowWhileNotConnected;
+
         // If player JUST connected this frame. will not register inputs for the button they pressed to join in charselect
         private bool connectedThisUpdate;
 
@@ -702,7 +704,13 @@ namespace VersusMode {
             Debug.Log(name + " disconnected");
             if (lockedIn) ToggleLock();
             connected = false;
-            connectTipLabel.SetActive(true);
+
+            if (Storage.online) {
+                onlineShowWhileNotConnected.SetActive(true);
+            } else {
+                connectTipLabel.SetActive(true);
+            }
+            
             background.color = disconnectBkgdColor;
             HideSelection();
             portrait.gameObject.SetActive(false);
@@ -713,6 +721,7 @@ namespace VersusMode {
             Debug.Log(name + " connected");
             connected = true;
             connectTipLabel.SetActive(false);
+            onlineShowWhileNotConnected.SetActive(false);
             background.color = connectBkgdColor;
             if (selectedIcon != null) selectedIcon.SetSelected(isPlayer1, true);
             portrait.gameObject.SetActive(true);

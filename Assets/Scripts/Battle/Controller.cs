@@ -11,12 +11,13 @@ using Battle.Board;
 using Battle.AI;
 using UnityEngine.InputSystem;
 using VersusMode;
+using Unity.Netcode;
 
 namespace Battle {
     /// <summary>
     /// Allows the player to control a board with keyboard inputs.
     /// </summary>
-    public class Controller : MonoBehaviour
+    public class Controller : NetworkBehaviour
     {
         // CharSelectController to delegate inputs to during char select
         private CharSelector charSelector;
@@ -45,6 +46,10 @@ namespace Battle {
         public bool canControlBoard = true;
 
         private void Awake() {
+            if (!Storage.online) {
+                Destroy(GetComponent<NetworkObject>());
+            }
+
             playerInput = GetComponent<PlayerInput>();
         }
 
@@ -306,6 +311,17 @@ namespace Battle {
             Debug.Log("input scripts on "+name+" enabled");
             menuUseInputScripts = true;
             battleUseInputScripts = true;
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            if (CharSelectMenu.Instance != null) {
+                CharSelector selector = IsLocalPlayer ? CharSelectMenu.Instance.p1Selector : CharSelectMenu.Instance.p2Selector;
+                SetCharSelector(selector);
+                selector.Connect();
+            } else {
+                Debug.LogError("No charselectmenu to connect to");
+            }
         }
     }
 }
