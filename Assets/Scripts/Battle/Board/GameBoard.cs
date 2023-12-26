@@ -651,7 +651,7 @@ namespace Battle.Board {
                 battler = enemyBoard.battler;
                 InitBattler();
                 // maybe experiment with other colors at some point
-                portrait.color = new Color(0.1f,0.1f,0.1f,0.47f);
+                portrait.color = new Color(0.9f,0.2f,0.1f,0.57f);
                 
             }
             else
