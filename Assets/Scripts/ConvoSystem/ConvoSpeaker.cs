@@ -16,6 +16,8 @@ namespace ConvoSystem {
         /** Canvas group for the speaker name box */
         [SerializeField] private CanvasGroup nameGroup;
 
+        [SerializeField] private Image[] battlerColoredObjects;
+
         private static float fadeTime = 0.4f;
         private static float animDistance = 200f;
         public bool animating = false;
@@ -29,6 +31,11 @@ namespace ConvoSystem {
                 portrait.sprite = speaker.sprite;
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, focused ? 1.0f : 0.5f);
                 nameGUI.text = speaker.name;
+
+                foreach (Image i in battlerColoredObjects)
+                {
+                    i.color = speaker.textBoxColor;
+                }
             } 
             
             else {
