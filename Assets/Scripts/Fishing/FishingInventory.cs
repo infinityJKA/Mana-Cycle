@@ -1,11 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class FishingInventory : MonoBehaviour
 {
     public List<ItemInInventory> inventory = new List<ItemInInventory>();
     private Dictionary<FishingItem,ItemInInventory> itemDictionary = new Dictionary<FishingItem,ItemInInventory>();
+
+    // public List<FishingItem> GetInventoryList(){
+    //     List<FishingItem> L = new List<FishingItem>();
+    //     foreach(var i in itemDictionary){
+    //         L.Add(i.key)
+    //     }
+    // }
 
     public void Add(FishingItem itemData){
 
