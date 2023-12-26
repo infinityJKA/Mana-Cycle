@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.InputSystem;
 using Cinemachine;
+using System.Collections;
 
 namespace MainMenu {
     public class BlackjackMenu : MonoBehaviour
@@ -28,6 +29,9 @@ namespace MainMenu {
 
         [SerializeField] private Menu3d Menu3dMainMenu;
 
+
+        public static bool blackjackOpened {get; private set;} = false;
+
         // [SerializeField] PlayerInput playerInput;
 
         // Start is called before the first frame update
@@ -38,17 +42,24 @@ namespace MainMenu {
 
         public void OpenBlackjack()
         {
+            blackjackOpened = true;
             gameObject.SetActive(true);
             Menu3dMainMenu.MainWindow.SetActive(false);
 
-            if (!mobile) EventSystem.current.SetSelectedGameObject(buttonTransorm.GetChild(0).gameObject);
+            StartCoroutine(SelectFirstButtonNextFrame());
 
             if (brain && brain.ActiveVirtualCamera != null) brain.ActiveVirtualCamera.Priority = 1;
             if (thisCam) thisCam.Priority = 30;
         }
 
+        IEnumerator SelectFirstButtonNextFrame() {
+            yield return new WaitForEndOfFrame();
+            if (!mobile) EventSystem.current.SetSelectedGameObject(buttonTransorm.GetChild(0).gameObject);
+        }
+
         public void ExitBlackjack()
         {
+            blackjackOpened = false;
             gameObject.SetActive(false);
             Menu3dMainMenu.MainWindow.SetActive(true);
             Menu3dMainMenu.SelectLastSelected();
