@@ -12,6 +12,7 @@ using Battle.AI;
 using UnityEngine.InputSystem;
 using VersusMode;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 namespace Battle {
     /// <summary>
@@ -46,11 +47,26 @@ namespace Battle {
         public bool canControlBoard = true;
 
         private void Awake() {
-            if (!Storage.online) {
+            if (Storage.online) {
+                DontDestroyOnLoad(gameObject);
+            } else {
                 Destroy(GetComponent<NetworkObject>());
             }
 
             playerInput = GetComponent<PlayerInput>();
+        }
+
+        private void OnEnable() {
+            if (Storage.online) SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDisable() {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        // Destroy this object when leaving multiplayer gamemodes
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+            if (scene.name == "MainMenu") Destroy(gameObject);
         }
 
         // Update is called once per frame

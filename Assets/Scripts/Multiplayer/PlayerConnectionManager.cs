@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using Battle;
 using Battle.Board;
 using VersusMode;
+using Unity.Netcode;
 
 namespace Multiplayer {
     public class PlayerConnectionManager : MonoBehaviour {
@@ -83,6 +84,11 @@ namespace Multiplayer {
         // Will not reparent when called from awake while an instance already exists in which all the player inputs are parented
         // however this will contain info needed by the existing connection manager to set up connections before the new one is destroyed
         public void OnPlayerJoined(PlayerInput playerInput) {
+            if (!Storage.online) {
+                var netObj = playerInput.GetComponent<NetworkObject>();
+                if (netObj) Destroy(netObj);
+            }
+
             // for persistence between scenes (and organization), parent to this object
             if (reparent) playerInput.transform.SetParent(transform);
 
