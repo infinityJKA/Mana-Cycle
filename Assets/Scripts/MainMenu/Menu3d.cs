@@ -44,23 +44,14 @@ namespace MainMenu {
         [SerializeField] private bool mobile;
 
 
-        // Blackjack canvas, easter egg in main menu
-        [SerializeField] private BlackjackMenu blackjackMenu;
-
-        List<KeyCode> konamiCode = new List<KeyCode>();
-        int konamiIndex = 0;
-
         // things to hide in web builds, such as the quit button
         [SerializeField] GameObject[] hideInWebGL;
-
-        // Keep track of current input sequence to check for konami code, to enter blackjack
 
 
 
         // Start is called before the first frame update
         void Start()
         {
-            UpdateKonamiList();
             SelectLastSelected();
 
             if (Application.platform == RuntimePlatform.WebGLPlayer)
@@ -72,24 +63,6 @@ namespace MainMenu {
             }
         }
 
-        public void UpdateKonamiList()
-        {
-            InputScript inputScript = inputScripts[0];
-
-            konamiCode.Clear();
-            konamiCode.Add(inputScript.Up);
-            konamiCode.Add(inputScript.Up);
-            konamiCode.Add(inputScript.Down);
-            konamiCode.Add(inputScript.Down);
-            konamiCode.Add(inputScript.Left);
-            konamiCode.Add(inputScript.Right);
-            konamiCode.Add(inputScript.Left);
-            konamiCode.Add(inputScript.Right);
-            konamiCode.Add(inputScript.RotateCCW);
-            konamiCode.Add(inputScript.RotateCW);
-            //konamiCode.Add(inputScript.Cast);
-        }
-
         public void SelectLastSelected()
         {
             if(!mobile) EventSystem.current.SetSelectedGameObject(buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject);
@@ -97,47 +70,6 @@ namespace MainMenu {
             UpdateTip();
 
             versionText.text = "v" + Application.version;
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            DetectKonami();
-        }
-
-        private void DetectKonami()
-        {
-            InputScript inputScript = inputScripts[0];
-
-            CheckKonami(inputScript.Up);
-            CheckKonami(inputScript.Down);
-            CheckKonami(inputScript.Left);
-            CheckKonami(inputScript.Right);
-            CheckKonami(inputScript.RotateCCW);
-            CheckKonami(inputScript.RotateCW);
-            CheckKonami(inputScript.Cast);
-        }
-
-        private void CheckKonami(KeyCode keyCode)
-        {
-            if (Input.GetKeyDown(keyCode))
-            {
-                if (konamiCode[konamiIndex] == keyCode)
-                {
-                    konamiIndex++;
-                    if (konamiIndex >= konamiCode.Count)
-                    {
-                        konamiIndex = 0;
-                        blackjackMenu.OpenBlackjack();
-                    }
-                }
-                else
-                {
-                    konamiIndex = 0;
-                }
-                Debug.Log("konami index " + konamiIndex);
-            }
-            
         }
 
         public void SelectVersus()
@@ -175,6 +107,7 @@ namespace MainMenu {
 
         public void SelectHTP()
         {
+            if (BlackjackMenu.blackjackOpened) return;
             HTPWindow.SetActive(true);
             MainWindow.SetActive(false);
             if (!mobile) EventSystem.current.SetSelectedGameObject(HTPFirstSelected);
@@ -191,6 +124,7 @@ namespace MainMenu {
 
         public void SelectSettings()
         {
+            if (BlackjackMenu.blackjackOpened) return;
             SettingsWindow.SetActive(true);
             MainWindow.SetActive(false);
             if (!mobile) EventSystem.current.SetSelectedGameObject(SettingsFirstSelected);
@@ -207,6 +141,7 @@ namespace MainMenu {
 
         public void SelectSolo()
         {
+            if (BlackjackMenu.blackjackOpened) return;
             Storage.lastMainMenuItem = 1;
             Storage.online = false;
             TransitionHandler.WipeToScene("SoloMenu");
