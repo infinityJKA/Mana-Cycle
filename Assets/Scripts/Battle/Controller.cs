@@ -16,7 +16,7 @@ using UnityEngine.SceneManagement;
 
 namespace Battle {
     /// <summary>
-    /// Allows the player to control a board with keyboard inputs.
+    /// Allows the player to control a board with keyboard or controller inputs.
     /// </summary>
     public class Controller : NetworkBehaviour
     {
@@ -66,7 +66,7 @@ namespace Battle {
 
         // Destroy this object when leaving multiplayer gamemodes
         void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-            if (scene.name == "MainMenu") Destroy(gameObject);
+            if (scene.name == "MainMenu" || scene.name == "SoloMode") Destroy(gameObject);
         }
 
         // Update is called once per frame

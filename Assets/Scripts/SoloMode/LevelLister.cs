@@ -123,6 +123,8 @@ namespace SoloMode {
         // Start is called before the first frame update
         void Start()
         {
+            Storage.online = false;
+
             selectedLevelIndexes = new int[tabs.Length];
             selectedTabIndex = 0;
             focused = true;

@@ -87,10 +87,10 @@ namespace Multiplayer {
             if (!Storage.online) {
                 var netObj = playerInput.GetComponent<NetworkObject>();
                 if (netObj) Destroy(netObj);
-            }
 
-            // for persistence between scenes (and organization), parent to this object
-            if (reparent) playerInput.transform.SetParent(transform);
+                // for persistence between scenes (and organization), parent to this object
+                if (reparent) playerInput.transform.SetParent(transform);
+            }
 
             if (connectMode == ConnectMode.CharSelect) {
                 ConnectControllerToCharSelector(playerInput);

@@ -538,6 +538,8 @@ namespace VersusMode {
                 Debug.LogError("Transition handler not found in scene!");
                 return;
             }
+            // leave online mode - DontDestroyOnLoad network objects will destroy themselves upon unload.
+            Storage.online = false;
             if (Storage.gamemode != Storage.GameMode.Solo) {
                 transitionHandler.WipeToScene("MainMenu", reverse: true);
             } else {
