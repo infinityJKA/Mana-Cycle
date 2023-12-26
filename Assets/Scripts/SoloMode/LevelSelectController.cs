@@ -16,11 +16,6 @@ public class LevelSelectController : MonoBehaviour {
 
     private bool joystickPressed;
 
-    private void Awake() {
-        // Only use this object if there is no second player and no need for multiple device handling. (PlayerConnectionHandler will destroy itself if not)
-        if (Storage.isPlayerControlled2) Destroy(gameObject);
-    }
-
     public void OnNavigate(InputAction.CallbackContext ctx) {
         if (convoHandler && convoHandler.enabled) return;
 
