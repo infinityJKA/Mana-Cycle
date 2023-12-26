@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.09431914, g: 0.09416754, b: 0.09431914, a: 1}
+  m_IndirectSpecularColor: {r: 0.09481978, g: 0.09493873, b: 0.09481978, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -796,7 +796,6 @@ MonoBehaviour:
   buttonTransorm: {fileID: 449086498}
   versionText: {fileID: 1594978075}
   mobile: 0
-  blackjackMenu: {fileID: 1498035165}
   hideInWebGL:
   - {fileID: 1656079437}
 --- !u!114 &102548626
@@ -1082,7 +1081,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 839.82104, y: -50}
+  m_AnchoredPosition: {x: 839.6414, y: -50}
   m_SizeDelta: {x: 525, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &124245417
@@ -3002,6 +3001,7 @@ GameObject:
   - component: {fileID: 240257912}
   - component: {fileID: 240257911}
   - component: {fileID: 240257913}
+  - component: {fileID: 240257914}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -3069,6 +3069,22 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 0
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
+--- !u!114 &240257914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240257909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6044d1bdca376ae4785bdf5f10c6a961, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blackjackMenu: {fileID: 1498035165}
+  navigate_action: {fileID: -8784545083839296357, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
+  b_action: {fileID: -1919385911056607153, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
+  a_action: {fileID: -8922493186934266352, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
 --- !u!1001 &251293014
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3516,11 +3532,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: -1
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 1860559703}
+    m_SelectOnUp: {fileID: 770281086}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnLeft: {fileID: 770281086}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
@@ -4613,8 +4629,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 959.82104, y: -95}
-  m_SizeDelta: {x: 1679.6421, y: 150}
+  m_AnchoredPosition: {x: 959.6414, y: -95}
+  m_SizeDelta: {x: 1679.2828, y: 150}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &406996293
 MonoBehaviour:
@@ -6544,7 +6560,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2725648453425498581, guid: c6efeb4621ed50d4490733cafecbfcd4, type: 3}
       propertyPath: m_Name
-      value: MainMenuButton
+      value: AchievmentButton
       objectReference: {fileID: 0}
     - target: {fileID: 6009202163906249529, guid: c6efeb4621ed50d4490733cafecbfcd4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -6636,7 +6652,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7173658014579808920, guid: c6efeb4621ed50d4490733cafecbfcd4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 839.82104
+      value: 839.6414
       objectReference: {fileID: 0}
     - target: {fileID: 7173658014579808920, guid: c6efeb4621ed50d4490733cafecbfcd4, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -6664,6 +6680,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7173658014579808920, guid: c6efeb4621ed50d4490733cafecbfcd4, type: 3}
   m_PrefabInstance: {fileID: 770281083}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &770281086 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6009202163906249529, guid: c6efeb4621ed50d4490733cafecbfcd4, type: 3}
+  m_PrefabInstance: {fileID: 770281083}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &789029694
 GameObject:
   m_ObjectHideFlags: 0
@@ -13641,8 +13668,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 959.82104, y: -705}
-  m_SizeDelta: {x: 1679.6421, y: 120}
+  m_AnchoredPosition: {x: 959.6414, y: -705}
+  m_SizeDelta: {x: 1679.2828, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1671506134
 MonoBehaviour:
@@ -14069,8 +14096,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 959.82104, y: -370}
-  m_SizeDelta: {x: 1679.6421, y: 150}
+  m_AnchoredPosition: {x: 959.6414, y: -370}
+  m_SizeDelta: {x: 1679.2828, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1697946174
 MonoBehaviour:
@@ -20768,8 +20795,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 959.82104, y: -545}
-  m_SizeDelta: {x: 1679.6421, y: 100}
+  m_AnchoredPosition: {x: 959.6414, y: -545}
+  m_SizeDelta: {x: 1679.2828, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1937096733
 MonoBehaviour:
