@@ -1,12 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
-public class UIInventoryManage : MonoBehaviour
+public class UIInventoryManager : MonoBehaviour
 {
     public GameObject slotPrefab;
     public List<ItemSlot> itemSlots = new List<ItemSlot>();
     public FishingInventory inventory;
+    public Image bigImage;
+    public TextMeshProUGUI bigName;
+    public TextMeshProUGUI Description;
+
 
     void OnEnable(){
         CreateInventoryDisplay();
