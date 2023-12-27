@@ -32,7 +32,7 @@ public class Storage
     public static int lastTabSelectedIndex = -1;
 
     /** current gamemode selected by player */
-    public static GameMode gamemode;
+    public static GameMode gamemode = GameMode.Versus;
     public enum GameMode {
         Default,
         Solo,

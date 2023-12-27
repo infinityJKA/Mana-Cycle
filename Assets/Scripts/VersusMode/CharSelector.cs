@@ -289,7 +289,7 @@ namespace VersusMode {
             }
             
             if (Input.GetKeyDown(inputScript.Cast)) {
-                OnCast();
+                OnCast(true);
             }
 
             if (Input.GetKeyDown(inputScript.Pause)) 
@@ -341,7 +341,7 @@ namespace VersusMode {
             else if (!lockedIn) SetSelection(selectedIcon.selectable.FindSelectableOnDown());
         }
 
-        public void OnCast() {
+        public void OnCast(bool canStartGame) {
             if (!enabled || !selectedIcon || connectedThisUpdate) return;
 
             // when in settings menu, cast will toggle the current toggle, press the current button, etc..
@@ -376,7 +376,7 @@ namespace VersusMode {
             // otherwise, lock/unlock in this character
             else {
                 if (menu.IsBothPlayersReady()) {
-                    menu.StartIfReady();
+                    if (canStartGame) menu.StartIfReady();
                 } else {
                     ToggleLock();
                 }
@@ -465,6 +465,7 @@ namespace VersusMode {
         public void ToggleLock()
         {
             lockedIn = !lockedIn;  
+            Debug.Log(name+" locked in: "+lockedIn);
 
             if (isPlayer1 && isCpuCursor && !selectingCpuLevel && !menu.Mobile) {
                 SoundManager.Instance.PlaySound(settingsToggleSFX);

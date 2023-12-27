@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using Multiplayer;
+using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 namespace VersusMode {
     ///<summary> Controls the character selection menu and the cursors within it. </summary>
-    public class CharSelectMenu : MonoBehaviour {
+    public class CharSelectMenu : NetworkBehaviour {
         public static CharSelectMenu Instance {get; private set;}
 
         ///<summary>Selectors for both players</summary>
@@ -33,6 +35,8 @@ namespace VersusMode {
         [SerializeField] private bool mobile;
         public bool Mobile { get {return mobile;} }
 
+
+        public bool started {get; private set;}
         // (for debug purposes)
         void Awake() {
             Instance = this;
@@ -105,9 +109,11 @@ namespace VersusMode {
 
         // Called when player casts while locked in. If both players are ready, match will begin
         public void StartIfReady() {
+
+            // Only the host can start the match
             if (ready) {
-                Sound.SoundManager.Instance.PlaySound(startSFX, 0.5f);
-                StartMatch();
+                started = true;
+                StartGameClientRpc(); // this will start the match on both the cliemt-host and client non-host
             }
         }
 
@@ -151,6 +157,8 @@ namespace VersusMode {
                 return;
             }
 
+            Sound.SoundManager.Instance.PlaySound(startSFX, 0.5f);
+            started = true;
             transitionHandler.WipeToScene("ManaCycle");
         }
 
@@ -245,6 +253,11 @@ namespace VersusMode {
             } else {
                 return p1Selector;
             }
+        }
+
+        [ClientRpc]
+        public void StartGameClientRpc() {
+            StartMatch();
         }
     }
 }

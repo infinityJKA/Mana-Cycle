@@ -312,11 +312,19 @@ namespace Battle {
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board && canControlBoard) board.Spellcast();
             else if (controlMode == ControlMode.CharSelector) {
-                if (IsServer) {
-                    ToggleLockClientRpc();
+                // invoke on other client - passed bool is the target lockedIn status.
+                if (IsHost) {
+                    bool prevLocked = charSelector.lockedIn;
+                    charSelector.OnCast(true);
+                    if (charSelector.lockedIn != prevLocked) {
+                        ToggleLockClientRpc(charSelector.lockedIn);
+                    }
                 } else {
-                    charSelector.ToggleLock();
-                    ToggleLockServerRpc();
+                    // invoked on server only, so local onCast called as well
+                    bool prevLocked = charSelector.lockedIn;
+                    charSelector.OnCast(false);
+                    // only update on server if status actually changed.
+                    if (charSelector.lockedIn != prevLocked) ToggleLockServerRpc(charSelector.lockedIn); 
                 }
             }
         }
@@ -331,13 +339,22 @@ namespace Battle {
 
         public void OnCancel(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
-            else if (controlMode == ControlMode.CharSelector) charSelector.OnBack();
+            else if (controlMode == ControlMode.CharSelector) Back();
+        }
+
+        public void Back() {
+            bool prevLocked = charSelector.lockedIn;
+            charSelector.OnBack();
+            if (charSelector.lockedIn != prevLocked) {
+                if (IsHost) ToggleLockClientRpc(charSelector.lockedIn);
+                else ToggleLockServerRpc(charSelector.lockedIn);
+            }
         }
 
         public void OnPause(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board) board.Pause();
-            else if (controlMode == ControlMode.CharSelector) charSelector.OnBack();
+            else if (controlMode == ControlMode.CharSelector) Back();
         }
 
         public void EnableInputScripts() {
@@ -363,7 +380,7 @@ namespace Battle {
         }
 
         // RPCs
-        [ServerRpc(RequireOwnership = false)]
+        [ServerRpc]
         public void SetBattlerServerRpc(int index) {
             Debug.Log("ServerRpc "+charSelector.name+" "+OwnerClientId+": "+index);
             charSelector.SetSelection(index);
@@ -371,20 +388,22 @@ namespace Battle {
 
         [ClientRpc]
         public void SetBattlerClientRpc(int index) {
-            Debug.Log("ServerRpc "+charSelector.name+" "+OwnerClientId+": "+index);
+            if (IsHost) return;
+            Debug.Log("ClientRpc "+charSelector.name+" "+OwnerClientId+": "+index);
             charSelector.SetSelection(index);
         }
 
         [ServerRpc]
-        public void ToggleLockServerRpc() {
+        public void ToggleLockServerRpc(bool lockedIn) {
             Debug.Log("ServerRpc "+charSelector.name+" toggle");
-            charSelector.ToggleLock();
+            if (lockedIn != charSelector.lockedIn) charSelector.ToggleLock();
         }
 
         [ClientRpc]
-        public void ToggleLockClientRpc() {
+        public void ToggleLockClientRpc(bool lockedIn) {
+            if (IsHost) return;
             Debug.Log("ClientRpc "+charSelector.name+" toggle");
-            charSelector.ToggleLock();
+            if (lockedIn != charSelector.lockedIn) charSelector.ToggleLock();
         }
     }
 }
