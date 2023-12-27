@@ -7,6 +7,8 @@ using Battle.Board;
 namespace Battle.Cycle {
     public class ManaCycle : MonoBehaviour
     {
+        public static ManaCycle Instance {get; private set;}
+
         // Prefab for cycle colors to display
         [SerializeField] private Image manaImage;
         [SerializeField] private Image bgImage;
@@ -46,6 +48,14 @@ namespace Battle.Cycle {
         public static bool lockPieceColors = true;
 
         public bool usingSprites;
+
+        private void Awake() {
+            Instance = this;
+        }
+
+        public GameBoard GetBoard(int i) {
+            return boards[i];
+        }
 
         public void InitBoards()
         {

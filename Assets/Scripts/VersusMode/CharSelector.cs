@@ -154,10 +154,16 @@ namespace VersusMode {
 
         static readonly int minCpuLevel = 1, maxCpuLevel = 10;
 
+        public bool isRandomSelected {
+            get {
+                return selectedIcon.battler.displayName == "Random";
+            }
+        }
+
         // properties
         public Battle.Battler selectedBattler { 
             get { 
-                if (selectedIcon.battler.displayName == "Random" && randomBattler) {
+                if (isRandomSelected && randomBattler) {
                     return randomBattler;
                 } else {
                     return selectedIcon.battler;
@@ -647,31 +653,39 @@ namespace VersusMode {
 
         // Set battler to a specific index in the charselectmenu's grid of selectable battlers.
         // Called hen the controller receives a SetBattlerServerRpc.
-        public void SetSelection(int index) {
-            SetSelection(menu.characterIcons[index].GetComponent<Selectable>());
+        // battlerDisplayOnly used for when random is selected by the opponent
+        public void SetSelection(int index, bool isRandomBattler) {
+            if (isRandomBattler) {
+                randomBattler = menu.characterIcons[index].battler;
+                SelectBattler();
+            } else {
+                SetSelection(menu.characterIcons[index].GetComponent<Selectable>());
+            }
         }
 
         public void SetSelectedIcon(CharacterIcon newSelectedIcon) {
             // only actually display the curosr if this is either not online, or online but client is controlling (player1 is always client, player2 is oppnent)
-            if (!Storage.online || isPlayer1) {
-                if (isCpuCursor) {
-                    if (!Storage.isPlayerControlled1) {
-                        if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
-                        newSelectedIcon.SetSelected(isPlayer1, true);
-                    } else {
-                        if (selectedIcon) selectedIcon.SetCPUHovered(false);
-                        newSelectedIcon.SetCPUHovered(true);
-                    }
-                } else {
+            if (isCpuCursor) {
+                if (!Storage.isPlayerControlled1) {
                     if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
                     newSelectedIcon.SetSelected(isPlayer1, true);
+                } else {
+                    if (selectedIcon) selectedIcon.SetCPUHovered(false);
+                    newSelectedIcon.SetCPUHovered(true);
                 }
+            } else {
+                if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
+                newSelectedIcon.SetSelected(isPlayer1, true);
             }
 
             SoundManager.Instance.PlaySound(switchSFX, 2.5f);
 
             selectedIcon = newSelectedIcon;
 
+            SelectBattler();
+        }
+
+        public void SelectBattler() {
             portrait.sprite = selectedBattler.sprite;
             nameText.text = (selectedIcon.battler.displayName == "Random") ? "Random" : selectedBattler.displayName;
 
@@ -743,9 +757,7 @@ namespace VersusMode {
             connectTipLabel.SetActive(false);
             onlineShowWhileNotConnected.SetActive(false);
             background.color = connectBkgdColor;
-            if (!Storage.online || isPlayer1) {
-                if (selectedIcon != null) selectedIcon.SetSelected(isPlayer1, true);
-            }
+            if (selectedIcon != null) selectedIcon.SetSelected(isPlayer1, true);
             portrait.gameObject.SetActive(true);
             nameText.gameObject.SetActive(true);
             connectedThisUpdate = true;

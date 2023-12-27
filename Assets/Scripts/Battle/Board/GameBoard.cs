@@ -71,6 +71,8 @@ namespace Battle.Board {
         /** Stores the piece preview for this board */
         [SerializeField] public PiecePreview piecePreview;
 
+        [SerializeField] public GameObject piecePreviewUi;
+
         /** Cycle pointer game object that belongs to this board */
         [SerializeField] public GameObject pointer;
         [SerializeField] private Vector3 pointerOffset;
@@ -261,6 +263,8 @@ namespace Battle.Board {
         public List<Item> equiped = new List<Item>();
 
         [SerializeField] private List<ColorFader> cycleColoredObjects;
+
+        public bool networkControlled {get; private set;}
 
         // Start is called before the first frame update
         void Start()
@@ -2140,6 +2144,13 @@ namespace Battle.Board {
                     }
                 }
             });
+        }
+
+        // Will disable many functions of this board and leave it up to the server (sometimes client) to decide these things.
+        public void MakeNetworkControlled() {
+            networkControlled = true;
+
+            piecePreviewUi.gameObject.SetActive(false);
         }
     }
 }

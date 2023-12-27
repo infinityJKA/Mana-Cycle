@@ -13,6 +13,7 @@ using UnityEngine.InputSystem;
 using VersusMode;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
+using Battle.Cycle;
 
 namespace Battle {
     /// <summary>
@@ -64,9 +65,16 @@ namespace Battle {
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
+        // Connect to the appropriate board when online battle begins
         // Destroy this object when leaving multiplayer gamemodes
         void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-            if (scene.name == "MainMenu" || scene.name == "SoloMode") Destroy(gameObject);
+            if (scene.name == "ManaCycle") {
+                GameBoard board = IsOwner ? ManaCycle.Instance.GetBoard(0) : ManaCycle.Instance.GetBoard(1);
+                SetBoard(board);
+            }
+            else if (scene.name == "MainMenu" || scene.name == "SoloMode") {
+                Destroy(gameObject);
+            }
         }
 
         // Update is called once per frame
@@ -371,7 +379,7 @@ namespace Battle {
             }
 
             if (CharSelectMenu.Instance != null) {
-                CharSelector selector = IsOwner ? CharSelectMenu.Instance.p1Selector : CharSelectMenu.Instance.p2Selector;
+                CharSelector selector = OwnerClientId == 0 ? CharSelectMenu.Instance.p1Selector : CharSelectMenu.Instance.p2Selector;
                 SetCharSelector(selector);
                 selector.Connect();
             } else {
@@ -383,14 +391,14 @@ namespace Battle {
         [ServerRpc]
         public void SetBattlerServerRpc(int index) {
             Debug.Log("ServerRpc "+charSelector.name+" "+OwnerClientId+": "+index);
-            charSelector.SetSelection(index);
+            charSelector.SetSelection(index, charSelector.isRandomSelected);
         }
 
         [ClientRpc]
         public void SetBattlerClientRpc(int index) {
             if (IsHost) return;
             Debug.Log("ClientRpc "+charSelector.name+" "+OwnerClientId+": "+index);
-            charSelector.SetSelection(index);
+            charSelector.SetSelection(index, charSelector.isRandomSelected);
         }
 
         [ServerRpc]
