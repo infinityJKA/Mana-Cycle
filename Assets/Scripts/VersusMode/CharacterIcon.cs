@@ -30,6 +30,9 @@ namespace VersusMode {
         ///<summary>Selectable, used to find adjacent icons to select</summary>
         public Button selectable {get; private set;}
 
+        // used by SetBattlerServerRpc to get the index of the selected battler of the other player
+        public int index;
+
         public void Start()
         {
             selectable = GetComponent<Button>();

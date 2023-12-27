@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Multiplayer;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +11,7 @@ namespace VersusMode {
         [SerializeField] public CharSelector p1Selector, p2Selector;
         ///<summary>The grid of characters to select with the selectorss defined in this object</summary>
         [SerializeField] private Transform grid;
+        public CharacterIcon[] characterIcons {get; private set;}
 
         private TransitionScript transitionHandler;
 
@@ -43,6 +45,11 @@ namespace VersusMode {
 
             if (!connectionManager) {
                 connectionManager = FindFirstObjectByType<PlayerConnectionManager>();
+            }
+
+            characterIcons = GetComponentsInChildren<CharacterIcon>();
+            for (int i = 0; i < characterIcons.Length; i++) {
+                characterIcons[i].index = i;
             }
         }
 

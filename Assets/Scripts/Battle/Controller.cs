@@ -200,6 +200,7 @@ namespace Battle {
 
         // charselector only
         public void OnMove(InputAction.CallbackContext ctx) {
+
             if (controlMode != ControlMode.CharSelector) return;
 
             // this isn't used in battle YET but it will be used for controller joystick piece movement EVENTUALLY probably
@@ -219,7 +220,16 @@ namespace Battle {
                 if (Mathf.Abs(angle) < 45f) charSelector.OnMoveUp();
                 else if (Mathf.Abs(angle - 180f) < 45f) charSelector.OnMoveDown();
                 else if (Mathf.Abs(angle - 90f) < 45f) charSelector.OnMoveLeft();
-                else if (Mathf.Abs(angle + 90f) < 45f) charSelector.OnMoveRight();  
+                else if (Mathf.Abs(angle + 90f) < 45f) charSelector.OnMoveRight();
+
+                // only need to send over if not locked in to track selectedicon changes.
+                if (!charSelector.lockedIn) {
+                    if (IsServer) {
+                        SetBattlerClientRpc(charSelector.selectedIcon.index);
+                    } else {
+                        SetBattlerServerRpc(charSelector.selectedIcon.index);
+                    }
+                }
             } 
         }
 
@@ -301,7 +311,14 @@ namespace Battle {
         public void OnSpellcast(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board && canControlBoard) board.Spellcast();
-            else if (controlMode == ControlMode.CharSelector) charSelector.OnCast();
+            else if (controlMode == ControlMode.CharSelector) {
+                if (IsServer) {
+                    ToggleLockClientRpc();
+                } else {
+                    charSelector.ToggleLock();
+                    ToggleLockServerRpc();
+                }
+            }
         }
 
         public void OnAbiltyUse(InputAction.CallbackContext ctx) {
@@ -331,13 +348,43 @@ namespace Battle {
 
         public override void OnNetworkSpawn()
         {
+            Debug.Log(IsLocalPlayer);
+            if (!IsLocalPlayer) {
+                GetComponent<PlayerInput>().enabled = false;
+            }
+
             if (CharSelectMenu.Instance != null) {
-                CharSelector selector = IsLocalPlayer ? CharSelectMenu.Instance.p1Selector : CharSelectMenu.Instance.p2Selector;
+                CharSelector selector = IsOwner ? CharSelectMenu.Instance.p1Selector : CharSelectMenu.Instance.p2Selector;
                 SetCharSelector(selector);
                 selector.Connect();
             } else {
                 Debug.LogError("No charselectmenu to connect to");
             }
+        }
+
+        // RPCs
+        [ServerRpc(RequireOwnership = false)]
+        public void SetBattlerServerRpc(int index) {
+            Debug.Log("ServerRpc "+charSelector.name+" "+OwnerClientId+": "+index);
+            charSelector.SetSelection(index);
+        }
+
+        [ClientRpc]
+        public void SetBattlerClientRpc(int index) {
+            Debug.Log("ServerRpc "+charSelector.name+" "+OwnerClientId+": "+index);
+            charSelector.SetSelection(index);
+        }
+
+        [ServerRpc]
+        public void ToggleLockServerRpc() {
+            Debug.Log("ServerRpc "+charSelector.name+" toggle");
+            charSelector.ToggleLock();
+        }
+
+        [ClientRpc]
+        public void ToggleLockClientRpc() {
+            Debug.Log("ClientRpc "+charSelector.name+" toggle");
+            charSelector.ToggleLock();
         }
     }
 }

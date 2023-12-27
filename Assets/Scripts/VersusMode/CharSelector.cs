@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using TMPro;
 
 using Sound;
@@ -83,7 +82,7 @@ namespace VersusMode {
         private float settingsFadeAmount = 0;
 
         ///<summary> Currently selected icon's Selectable component </summary>
-        private CharacterIcon selectedIcon;
+        public CharacterIcon selectedIcon {get; private set;}
         ///<summary> Currently selected selectable in the settings menu </summary>
         private Selectable settingsSelection; 
         
@@ -91,7 +90,7 @@ namespace VersusMode {
         public bool lockedIn {get; private set;}
 
         ///<summary> If currently in CPU select mode. This will control CPU cursor instead of cpu cursor. (player vs. ai p2 only)
-        public bool isCpuCursor;
+        public bool isCpuCursor {get; private set;}
         ///<summary> If active. Will only be inactive if this is CPU and player1 is currently selecting </summary>
         private bool active;
         public bool Active {
@@ -110,7 +109,7 @@ namespace VersusMode {
                 // if not active (player vs. cpu only): dimmed cursor if p1, hide if p2
                 else {
                     if (isPlayer1) {
-                        selectedIcon.cursorImage.color = new Color(1f, 1f, 1f, 0.5f);
+                        if (selectedIcon) selectedIcon.cursorImage.color = new Color(1f, 1f, 1f, 0.5f);
                     } else {
                         portrait.color = new Color(1f, 1f, 1f, 0.5f);
                         nameText.enabled = false;
@@ -406,7 +405,7 @@ namespace VersusMode {
             // Set cpu cursor to true if in Versus: player vs. opponent only. set to cpu cursor and false if this is p2
             if (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2 && Storage.level == null) {
                 if (!isPlayer1) {
-                    isCpuCursor = true;
+                    if (!Storage.online) isCpuCursor = true;
                     Active = false;
                     portrait.enabled = false;
                 } else {
@@ -642,17 +641,30 @@ namespace VersusMode {
                 return;
             }
 
-            if (isCpuCursor) {
-                if (!Storage.isPlayerControlled1) {
+            SetSelectedIcon(newSelectedIcon);
+        }
+
+        // Set battler to a specific index in the charselectmenu's grid of selectable battlers.
+        // Called hen the controller receives a SetBattlerServerRpc.
+        public void SetSelection(int index) {
+            SetSelection(menu.characterIcons[index].GetComponent<Selectable>());
+        }
+
+        public void SetSelectedIcon(CharacterIcon newSelectedIcon) {
+            // only actually display the curosr if this is either not online, or online but client is controlling (player1 is always client, player2 is oppnent)
+            if (!Storage.online || isPlayer1) {
+                if (isCpuCursor) {
+                    if (!Storage.isPlayerControlled1) {
+                        if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
+                        newSelectedIcon.SetSelected(isPlayer1, true);
+                    } else {
+                        if (selectedIcon) selectedIcon.SetCPUHovered(false);
+                        newSelectedIcon.SetCPUHovered(true);
+                    }
+                } else {
                     if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
                     newSelectedIcon.SetSelected(isPlayer1, true);
-                } else {
-                    if (selectedIcon) selectedIcon.SetCPUHovered(false);
-                    newSelectedIcon.SetCPUHovered(true);
                 }
-            } else {
-                if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
-                newSelectedIcon.SetSelected(isPlayer1, true);
             }
 
             SoundManager.Instance.PlaySound(switchSFX, 2.5f);
@@ -674,6 +686,8 @@ namespace VersusMode {
                     + selectedBattler.activeAbilityDesc;
                 }
             }
+
+            Debug.Log(name+" selected "+selectedBattler.displayName);
         }
 
         public void HideSelection() {
@@ -706,6 +720,7 @@ namespace VersusMode {
             Debug.Log(name + " disconnected");
             if (lockedIn) ToggleLock();
             connected = false;
+            Active = false;
 
             if (Storage.online) {
                 onlineShowWhileNotConnected.SetActive(true);
@@ -722,10 +737,14 @@ namespace VersusMode {
         public void Connect() {
             Debug.Log(name + " connected");
             connected = true;
+            Active = true;
+            isCpuCursor = false;
             connectTipLabel.SetActive(false);
             onlineShowWhileNotConnected.SetActive(false);
             background.color = connectBkgdColor;
-            if (selectedIcon != null) selectedIcon.SetSelected(isPlayer1, true);
+            if (!Storage.online || isPlayer1) {
+                if (selectedIcon != null) selectedIcon.SetSelected(isPlayer1, true);
+            }
             portrait.gameObject.SetActive(true);
             nameText.gameObject.SetActive(true);
             connectedThisUpdate = true;
