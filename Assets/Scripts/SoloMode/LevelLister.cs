@@ -114,8 +114,8 @@ namespace SoloMode {
         [SerializeField] private GameObject upArrow;
         [SerializeField] private GameObject downArrow;
 
-        
-
+        // placed next to level 1
+        [SerializeField] private GameObject newPlayerNotifPrefab;
 
         [SerializeField] int tabWhitespacing = 4;
         [SerializeField] int flavorLineCount = 15;
@@ -310,6 +310,13 @@ namespace SoloMode {
 
                     var listedLevel = Instantiate(listedLevelPrefab, tabLevelsObject.transform);
                     listedLevel.transform.localPosition = offset;
+
+                    // add new player notif to level 1
+                    if (level.levelName == "Level 1")
+                    {
+                        GameObject notif = Instantiate(newPlayerNotifPrefab, listedLevel.transform);
+                        notif.transform.position = new Vector2(notif.transform.position.x + 50, notif.transform.position.y);
+                    } 
 
                     bool selected = i == selectedLevelIndexes[selectedTabIndex];
                     RefreshListedLevelText(level, listedLevel.GetComponent<TextMeshProUGUI>(), selected);
