@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Diagnostics.Tracing;
 
 public class ItemSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
 {
@@ -21,10 +22,41 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
     {
         uii.bigImage.sprite = icon.sprite;
         uii.bigName.text = item.itemData.itemName;
+        
+        int val = item.itemData.sellValue;
+        int atk = 0;
+        int def = 0;
+        string elem = "None";
+        string itemType = "ERROR";
+        string desc = item.itemData.inventoryDescription;
+        
         if(item.itemData is FishingTome){
-            uii.Description.text = 
-            "Value: [insert value here later]\nSTR: 000\nDEF: 000\nElement: None\nItem Type: Lore Tome\nThis is a tome that you can read.";
+            itemType = "Tome";
+            desc = "This is a tome that you can read.";
         }
+        else if (item.itemData is FishingWeapon){
+            itemType = "Weapon";
+            atk = (item.itemData as FishingWeapon).ATK;
+        }
+        else if (item.itemData is FishingWeapon){
+            itemType = "Armor";
+            def = (item.itemData as FishingArmor).DEF;
+        }
+        else if (item.itemData is FishingMaterial){
+            itemType = "Material";
+        }
+        else if (item.itemData is FishingLure){
+            itemType = "Lure";
+        }
+
+        uii.Description.text =
+        "Value: "+ val.ToString()+
+        "\nSTR: "+ atk.ToString()+
+        "\nDEF: "+ def.ToString()+
+        "\nElement: "+ elem+
+        "\nItem Type: "+ itemType
+        +"\n"+desc;
+        
         cursor.SetActive(true);
         //Debug.Log(this.gameObject.name + " was selected");
     }
