@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class FishingItem : ScriptableObject
 {
-    public string itemName = "itemName";
-    public int buyValue = 0;
-    public int sellValue = 0;
+    public string itemName;
+    public int buyValue;
+    public int sellValue;
+    public string inventoryDescription;
     public Sprite icon;
 }
