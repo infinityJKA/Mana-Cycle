@@ -65,6 +65,8 @@ GameObject:
   - component: {fileID: 7561198744834971609}
   - component: {fileID: 4174570119449310702}
   - component: {fileID: 1653424862917905127}
+  - component: {fileID: 3223004999130395562}
+  - component: {fileID: 8109286484171838679}
   m_Layer: 5
   m_Name: Board
   m_TagString: Untagged
@@ -222,6 +224,39 @@ MonoBehaviour:
   magnitude: 8
   frequency: 5
   duration: 1
+--- !u!114 &3223004999130395562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109460369072555597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &8109286484171838679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109460369072555597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a026749ef4ebe07459f2892318e84c0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  board: {fileID: 2738482425047349209}
 --- !u!1 &135124126067777765
 GameObject:
   m_ObjectHideFlags: 0

@@ -391,14 +391,14 @@ namespace Battle {
         [ServerRpc]
         public void SetBattlerServerRpc(int index) {
             Debug.Log("ServerRpc "+charSelector.name+" "+OwnerClientId+": "+index);
-            charSelector.SetSelection(index, charSelector.isRandomSelected);
+            charSelector.SetSelection(index);
         }
 
         [ClientRpc]
         public void SetBattlerClientRpc(int index) {
             if (IsHost) return;
             Debug.Log("ClientRpc "+charSelector.name+" "+OwnerClientId+": "+index);
-            charSelector.SetSelection(index, charSelector.isRandomSelected);
+            charSelector.SetSelection(index);
         }
 
         [ServerRpc]

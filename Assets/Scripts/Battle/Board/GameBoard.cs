@@ -264,7 +264,14 @@ namespace Battle.Board {
 
         [SerializeField] private List<ColorFader> cycleColoredObjects;
 
+        // Used to send data to the other board in online mode
+        public NetworkBoard networkBoard {get; private set;}
+
         public bool networkControlled {get; private set;}
+
+        private void Awake() {
+            networkBoard = GetComponent<NetworkBoard>();
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -626,6 +633,11 @@ namespace Battle.Board {
         {
             if (!enabled) return;
 
+            if (rngManager.rng == null) {
+                Debug.LogWarning("RNG was not initialized before start properly");
+                rngManager.InitializeRngWithSeed(Random.Range(int.MinValue, int.MaxValue));
+            }
+
             cycleInitialized = true;
             this.cycle = cycle;
 
@@ -783,7 +795,7 @@ namespace Battle.Board {
         public void AddTrashTile() {
             /// Add a new trash piece with a random color
             SinglePiece trashPiece = Instantiate(abilityManager.singlePiecePrefab).GetComponent<SinglePiece>();
-            trashPiece.GetCenter().SetColor(Piece.RandomColor(), this);
+            trashPiece.GetCenter().SetColor(Piece.RandomColor(this), this);
             trashPiece.GetCenter().MakeTrashTile(this);
             SpawnStandalonePiece(trashPiece);
 
@@ -821,9 +833,10 @@ namespace Battle.Board {
             // If at any point it overlaps with the piece being dropped, choose a new column
             // Try this a maximum of 10 times before giving up and destroying the piece
             // note: only checks for the center piece, aka single pieces/trash tiles
+            
             for (int i=0; i<10; i++) {
                 bool valid = true;
-                int col = (int)Random.Range(0, 8);
+                int col = rngManager.rng.Next(8);
 
                 int row = 1;
                 while (row < height && !tiles[row, col]) {
@@ -2149,8 +2162,6 @@ namespace Battle.Board {
         // Will disable many functions of this board and leave it up to the server (sometimes client) to decide these things.
         public void MakeNetworkControlled() {
             networkControlled = true;
-
-            piecePreviewUi.gameObject.SetActive(false);
         }
     }
 }

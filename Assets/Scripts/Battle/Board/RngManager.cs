@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-
 using Battle.Cycle;
 
 namespace Battle.Board {    
@@ -9,8 +8,14 @@ namespace Battle.Board {
         // reason for only init on start or method call on this instance: each instance (player) should needs to its own list
         private int CenterMatchCallCount = 0;
 
+        public System.Random rng {get; private set;}
+
         void Start() {
             if (bag == null) bag = new List<ManaColor>();
+        }
+
+        public void InitializeRngWithSeed(int seed) {
+            rng = new System.Random(seed);
         }
 
         private void RefillBag()
@@ -27,7 +32,7 @@ namespace Battle.Board {
             }
             // Debug.Log(string.Join(",",newBag));
 
-            Utils.Shuffle(bag);
+            Utils.ShuffleWithRng(bag, rng);
         }
 
         // pull the next color from bag

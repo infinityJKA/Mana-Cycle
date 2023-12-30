@@ -654,13 +654,8 @@ namespace VersusMode {
         // Set battler to a specific index in the charselectmenu's grid of selectable battlers.
         // Called hen the controller receives a SetBattlerServerRpc.
         // battlerDisplayOnly used for when random is selected by the opponent
-        public void SetSelection(int index, bool isRandomBattler) {
-            if (isRandomBattler) {
-                randomBattler = menu.characterIcons[index].battler;
-                SelectBattler();
-            } else {
-                SetSelection(menu.characterIcons[index].GetComponent<Selectable>());
-            }
+        public void SetSelection(int index) {
+            SetSelection(menu.characterIcons[index].GetComponent<Selectable>());
         }
 
         public void SetSelectedIcon(CharacterIcon newSelectedIcon) {

@@ -94,26 +94,26 @@ namespace Battle.Board {
 
             if (rng == PieceRng.PieceSameColorWeighted)
             {
-                center.SetColor(RandomColor(), board);
+                center.SetColor(RandomColor(board), board);
 
                 // for top and right, 40% chance to mirror the center color
                 if (Random.value < 0.333f) {
                     top.SetColor(center.color, board);
                 } else {
-                    top.SetColor(RandomColor(), board);
+                    top.SetColor(RandomColor(board), board);
                 }
                 if (Random.value < 0.4f) {
                     right.SetColor(center.color, board);
                 } else {
-                    right.SetColor(RandomColor(), board);
+                    right.SetColor(RandomColor(board), board);
                 }
             }
 
             else if (rng == PieceRng.PureRandom)
             {
-                center.SetColor(RandomColor(), board);
-                top.SetColor(RandomColor(), board);
-                right.SetColor(RandomColor(), board);
+                center.SetColor(RandomColor(board), board);
+                top.SetColor(RandomColor(board), board);
+                right.SetColor(RandomColor(board), board);
             }
 
             else if (rng == PieceRng.Bag)
@@ -129,21 +129,21 @@ namespace Battle.Board {
             {
                 // center matches cycle order, others are random
                 center.SetColor(board.GetCenterMatch(), board);
-                top.SetColor(RandomColor(), board);
-                right.SetColor(RandomColor(), board);
+                top.SetColor(RandomColor(board), board);
+                right.SetColor(RandomColor(board), board);
             }
         }
 
-        public static ManaColor RandomColor()
+        public static ManaColor RandomColor(GameBoard board)
         {
-            return (ManaColor)Random.Range(0, (ManaCycle.lockPieceColors ? ManaCycle.cycleUniqueColors : 5));
+            return (ManaColor)board.rngManager.rng.Next(ManaCycle.lockPieceColors ? ManaCycle.cycleUniqueColors : 5);
         }
 
         protected static ManaColor ColorWeightedRandom(GameBoard board)
         {
             // still always pull from bag, but replace some with cycle color
             var bagColor = board.PullColorFromBag();
-            if (Random.value < 0.15f)
+            if (board.rngManager.rng.NextDouble() < 0.15d)
             {
                 return board.GetCycleColor();
             } else {
