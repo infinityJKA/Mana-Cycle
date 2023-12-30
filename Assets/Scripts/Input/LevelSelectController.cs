@@ -15,7 +15,7 @@ public class LevelSelectController : MonoBehaviour {
     private static float joystickInputMagnitude = 0.5f;
 
     private bool joystickPressed;
-
+    
     public void OnNavigate(InputAction.CallbackContext ctx) {
         if (convoHandler && convoHandler.enabled) return;
 
