@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
-public class FishingTome : FishingItem
+public class FishingLure : FishingItem
 {
-    public string tomeText;
 
 }

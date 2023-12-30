@@ -6,6 +6,7 @@ using UnityEngine;
 public class FishingInventory : MonoBehaviour
 {
     public List<ItemInInventory> inventory = new List<ItemInInventory>();
+    public int bait;
     private Dictionary<FishingItem,ItemInInventory> itemDictionary = new Dictionary<FishingItem,ItemInInventory>();
 
     // public List<FishingItem> GetInventoryList(){
