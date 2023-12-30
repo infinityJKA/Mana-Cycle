@@ -61,7 +61,7 @@ namespace Battle.Board {
         [SerializeField] public InputScript[] soloInputScripts;
 
         /** ControlsGraphic that will show the input keys */
-        [SerializeField] public Battle.ControlsDisplaySystem.ControlsGraphic controlsGraphic;
+        // [SerializeField] public Battle.ControlsDisplaySystem.ControlsGraphic controlsGraphic;
 
         /** The board of the enemy of the player/enemy of this board */
         [SerializeField] public GameBoard enemyBoard;
@@ -288,8 +288,8 @@ namespace Battle.Board {
             }
 
             // don't show controls for player2 if singleplayer and player 2
-            if (mobile) controlsGraphic.gameObject.SetActive(false);
-            else if ((playerSide == 0 || !singlePlayer) && inputScripts.Length > 0 && inputScripts[0] != null) controlsGraphic.SetInputs(inputScripts[0]);
+            // if (mobile) controlsGraphic.gameObject.SetActive(false);
+            // else if ((playerSide == 0 || !singlePlayer) && inputScripts.Length > 0 && inputScripts[0] != null) controlsGraphic.SetInputs(inputScripts[0]);
 
             // load level if applicable
             if (Storage.level != null)
