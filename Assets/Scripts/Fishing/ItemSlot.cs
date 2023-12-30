@@ -73,4 +73,8 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
     
     }
 
+    public void InventoryClick(){
+        
+    }
+
 }

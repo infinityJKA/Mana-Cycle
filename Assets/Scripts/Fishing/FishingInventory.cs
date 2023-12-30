@@ -7,7 +7,11 @@ public class FishingInventory : MonoBehaviour
 {
     public List<ItemInInventory> inventory = new List<ItemInInventory>();
     public int bait;
-    private Dictionary<FishingItem,ItemInInventory> itemDictionary = new Dictionary<FishingItem,ItemInInventory>();
+    public Dictionary<FishingItem,ItemInInventory> itemDictionary = new Dictionary<FishingItem,ItemInInventory>();
+
+    public FishingWeapon weapon1;
+    public FishingWeapon weapon2;
+    public FishingArmor armor1;
 
     // public List<FishingItem> GetInventoryList(){
     //     List<FishingItem> L = new List<FishingItem>();
