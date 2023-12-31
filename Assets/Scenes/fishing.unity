@@ -547,7 +547,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -3.1043, y: -3.6}
+  m_AnchoredPosition: {x: -0.000051737, y: -3.6}
   m_SizeDelta: {x: 371.1667, y: 243.0182}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &73231655
@@ -609,13 +609,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 27
-  m_fontSizeBase: 27
+  m_fontSize: 26.5
+  m_fontSizeBase: 26.5
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -2237,6 +2237,8 @@ MonoBehaviour:
   inv: {fileID: 0}
   equippedItem: {fileID: 11400000, guid: 7ee20dcdf9b35084fa6224919f05625f, type: 2}
   itemLocation: right
+  defaultItem: {fileID: 11400000, guid: 8e576919adc8cd34fa9a0a38545d8c98, type: 2}
+  uii: {fileID: 0}
 --- !u!1 &704841843
 GameObject:
   m_ObjectHideFlags: 0
@@ -3243,6 +3245,8 @@ MonoBehaviour:
   inv: {fileID: 0}
   equippedItem: {fileID: 0}
   itemLocation: body
+  defaultItem: {fileID: 11400000, guid: 5b983fd6b1219e24b971d24d128b4ffb, type: 2}
+  uii: {fileID: 0}
 --- !u!1 &1022649114
 GameObject:
   m_ObjectHideFlags: 0
@@ -3395,6 +3399,8 @@ MonoBehaviour:
   inv: {fileID: 0}
   equippedItem: {fileID: 0}
   itemLocation: left
+  defaultItem: {fileID: 11400000, guid: 8e576919adc8cd34fa9a0a38545d8c98, type: 2}
+  uii: {fileID: 0}
 --- !u!1 &1051049374
 GameObject:
   m_ObjectHideFlags: 0
@@ -6104,7 +6110,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -5, y: -93.2}
+  m_AnchoredPosition: {x: -4.9977, y: -94}
   m_SizeDelta: {x: 663.9207, y: 149.3316}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1750530421
@@ -6159,19 +6165,19 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 37
-  m_fontSizeBase: 37
+  m_fontSize: 35
+  m_fontSizeBase: 35
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
-  m_characterSpacing: -7
+  m_characterSpacing: -10
   m_wordSpacing: -25
-  m_lineSpacing: 30
+  m_lineSpacing: 35
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -7158,8 +7164,8 @@ MonoBehaviour:
     stackSize: 1
   bait: 0
   weapon1: {fileID: 11400000, guid: 7ee20dcdf9b35084fa6224919f05625f, type: 2}
-  weapon2: {fileID: 0}
-  armor1: {fileID: 0}
+  weapon2: {fileID: 11400000, guid: 8e576919adc8cd34fa9a0a38545d8c98, type: 2}
+  armor1: {fileID: 11400000, guid: 5b983fd6b1219e24b971d24d128b4ffb, type: 2}
 --- !u!4 &1986572302
 Transform:
   m_ObjectHideFlags: 0
@@ -7331,7 +7337,7 @@ GameObject:
   - component: {fileID: 2050388653}
   - component: {fileID: 2050388654}
   m_Layer: 5
-  m_Name: Items
+  m_Name: UI Inventory Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

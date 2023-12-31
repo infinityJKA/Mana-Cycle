@@ -29,6 +29,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
         string elem = "None";
         string itemType = "ERROR";
         string desc = item.itemData.inventoryDescription;
+        string damageType = "";
         
         if(item.itemData is FishingTome){
             itemType = "Tome";
@@ -37,10 +38,18 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
         else if (item.itemData is FishingWeapon){
             itemType = "Weapon";
             atk = (item.itemData as FishingWeapon).ATK;
+            def = (item.itemData as FishingWeapon).DEF;
+            if((item.itemData as FishingWeapon).healing){
+                damageType = " (HEALING)";
+            }
         }
         else if (item.itemData is FishingWeapon){
             itemType = "Armor";
+            atk = (item.itemData as FishingArmor).ATK;
             def = (item.itemData as FishingArmor).DEF;
+            if((item.itemData as FishingArmor).healing){
+                damageType = " (HEALING)";
+            }
         }
         else if (item.itemData is FishingMaterial){
             itemType = "Material";
@@ -51,11 +60,11 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
 
         uii.Description.text =
         "Value: "+ val.ToString()+
-        "\nSTR: "+ atk.ToString()+
+        "\nSTR: "+ atk.ToString()+ damageType+
         "\nDEF: "+ def.ToString()+
         "\nElement: "+ elem+
         "\nItem Type: "+ itemType
-        +"\n"+desc;
+        +"\n\n"+desc;
         
         cursor.SetActive(true);
         //Debug.Log(this.gameObject.name + " was selected");
