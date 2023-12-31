@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using System.Diagnostics.Tracing;
 using System;
 
-public class FishingEquippedInteract : MonoBehaviour
+public class FishingEquippedInteract : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
 {
     public GameObject highlight;
     public Image icon;
@@ -15,48 +15,95 @@ public class FishingEquippedInteract : MonoBehaviour
     
     public FishingItem equippedItem;
     public string itemLocation;
-
-    void Start(){
-        inv = GameObject.Find("Inventory").GetComponent<FishingInventory>();
-        Generate();
-    }
+    public FishingItem defaultItem;
+    public UIInventoryManager uii;
 
     void OnEnable(){
+        uii = GameObject.Find("UI Inventory Manager").GetComponent<UIInventoryManager>();
         Generate();
     }
 
     public void Generate(){
         // Pulling the data
+        inv = GameObject.Find("Inventory").GetComponent<FishingInventory>();
         if(itemLocation == "left"){
-		    try {equippedItem = inv.weapon1;}
-            catch (NullReferenceException e) {equippedItem = null;}  
+		    equippedItem = inv.weapon1;
         }
         else if(itemLocation == "right"){
-            try {equippedItem = inv.weapon2;}
-            catch (NullReferenceException e) {equippedItem = null;}
+            equippedItem = inv.weapon2;
         }
         else{
-            try {equippedItem = inv.armor1;}
-            catch (NullReferenceException e) {equippedItem = null;}
+            equippedItem = inv.armor1;
         }
 
-        // Drawing the icon
-        if(equippedItem != null){
-            icon.gameObject.SetActive(true);
-            icon.sprite = equippedItem.icon;
-        }
-        else{
-            icon.gameObject.SetActive(false);
-        }
+        
+        icon.sprite = equippedItem.icon;
+        
     }
 
     public void Dequip(){
-        if(equippedItem != null){
+        if(equippedItem != defaultItem){
             inv.Add(equippedItem);
-            equippedItem = null;
+            if(itemLocation == "left"){
+		        inv.weapon1 = defaultItem as FishingWeapon;
+            }
+            else if(itemLocation == "right"){
+                inv.weapon2 = defaultItem as FishingWeapon;
+            }
+            else{
+                inv.armor1 = defaultItem as FishingArmor;
+            }
+            // Debug.Log("dequipped?");
             Generate();
+            uii.CreateInventoryDisplay();
         }
     }
+
+    public void OnPointerEnter(PointerEventData pointerEventData){
+        uii.bigImage.sprite = icon.sprite;
+        uii.bigName.text = equippedItem.itemName;
+        
+        int val = equippedItem.sellValue;
+        int atk = 0;
+        int def = 0;
+        string elem = "None";
+        string type = "ERROR";
+        string desc = equippedItem.inventoryDescription;
+        string damageType = "";
+        
+        if (equippedItem is FishingWeapon){
+            type = "=NO WEAPON EQUIPPED=";
+            atk = (equippedItem as FishingWeapon).ATK;
+            def = (equippedItem as FishingWeapon).DEF;
+            if((equippedItem as FishingWeapon).healing){
+                damageType = " (HEALING)";
+            }
+        }
+        else{
+            type = "=NO ARMOR EQUIPPED=";
+            atk = (equippedItem as FishingArmor).ATK;
+            def = (equippedItem as FishingArmor).DEF;
+            if((equippedItem as FishingArmor).healing){
+                damageType = " (HEALING)";
+            }
+        }
+
+        uii.Description.text =
+        "Value: "+ val.ToString()+
+        "\nSTR: "+ atk.ToString()+ damageType+
+        "\nDEF: "+ def.ToString()+
+        "\nElement: "+ elem+
+        "\n"+ type
+        +"\n\n"+desc;
+        
+        highlight.SetActive(true);
+        //Debug.Log(this.gameObject.name + " was selected");
+    }
+
+    public void OnPointerExit(PointerEventData pointerEventData){
+        highlight.SetActive(false);
+    }
+    
 
 
 }
