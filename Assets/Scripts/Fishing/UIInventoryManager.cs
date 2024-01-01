@@ -15,6 +15,8 @@ public class UIInventoryManager : MonoBehaviour
     public TextMeshProUGUI Description;
     public string mode = "ALL";
     public FishingInventoryEquippedStatus FIES;
+    public GameObject WeaponPopup;
+    public FishingWeapon clicked;
 
     public void setMode(string s){
         mode = s;
