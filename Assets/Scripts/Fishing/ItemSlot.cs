@@ -13,9 +13,11 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
     public ItemInInventory item;
     public UIInventoryManager uii;
     public GameObject cursor;
+    public FishingInventory inv;
 
     public void Start(){
         uii = transform.parent.GetComponent<UIInventoryManager>();
+        inv = GameObject.Find("Inventory").GetComponent<FishingInventory>();
     }
 
     public void OnPointerEnter(PointerEventData pointerEventData)
@@ -83,7 +85,18 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
     }
 
     public void InventoryClick(){
-        
+        if(item.itemData is FishingArmor){
+            if(inv.armor1 == inv.defaultArmor){
+                inv.armor1 = item.itemData as FishingArmor;
+                inv.Remove(item.itemData);
+            }
+            else{
+                inv.Add(inv.armor1);
+                inv.armor1 = item.itemData as FishingArmor;
+                inv.Remove(item.itemData);
+            }
+            uii.CreateInventoryDisplay();
+        }
     }
 
 }

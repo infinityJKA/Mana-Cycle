@@ -13,6 +13,9 @@ public class FishingInventory : MonoBehaviour
     public FishingWeapon weapon2;
     public FishingArmor armor1;
 
+    public FishingWeapon defaultWeapon;
+    public FishingArmor defaultArmor;
+
     // public List<FishingItem> GetInventoryList(){
     //     List<FishingItem> L = new List<FishingItem>();
     //     foreach(var i in itemDictionary){
