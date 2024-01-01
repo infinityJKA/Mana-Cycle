@@ -17,9 +17,11 @@ public class FishingEquippedInteract : MonoBehaviour, IPointerEnterHandler,IPoin
     public string itemLocation;
     public FishingItem defaultItem;
     public UIInventoryManager uii;
+    public FishingInventoryEquippedStatus FIES;
 
     void OnEnable(){
         uii = GameObject.Find("UI Inventory Manager").GetComponent<UIInventoryManager>();
+        //FIES = transform.parent.GetComponent<FishingInventoryEquippedStatus>();
         Generate();
     }
 
@@ -54,7 +56,7 @@ public class FishingEquippedInteract : MonoBehaviour, IPointerEnterHandler,IPoin
                 inv.armor1 = defaultItem as FishingArmor;
             }
             // Debug.Log("dequipped?");
-            Generate();
+            // FIES.UpdateDisplay();
             uii.CreateInventoryDisplay();
         }
     }

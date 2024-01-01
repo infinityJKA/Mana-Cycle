@@ -14,12 +14,14 @@ public class UIInventoryManager : MonoBehaviour
     public TextMeshProUGUI bigName;
     public TextMeshProUGUI Description;
     public string mode = "ALL";
+    public FishingInventoryEquippedStatus FIES;
 
     public void setMode(string s){
         mode = s;
     }
 
     void OnEnable(){
+        FIES = GameObject.Find("Current Status").GetComponent<FishingInventoryEquippedStatus>();;
         CreateInventoryDisplay();
     }
 
@@ -40,6 +42,9 @@ public class UIInventoryManager : MonoBehaviour
             itemSlots[i].item = itemsToShow[i];
             itemSlots[i].DrawSlot();
         }
+
+        // Update the equipped items display
+        FIES.UpdateDisplay();
 
     }
 

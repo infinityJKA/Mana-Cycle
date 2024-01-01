@@ -2239,6 +2239,7 @@ MonoBehaviour:
   itemLocation: right
   defaultItem: {fileID: 11400000, guid: 8e576919adc8cd34fa9a0a38545d8c98, type: 2}
   uii: {fileID: 0}
+  FIES: {fileID: 0}
 --- !u!1 &704841843
 GameObject:
   m_ObjectHideFlags: 0
@@ -2865,6 +2866,7 @@ GameObject:
   - component: {fileID: 908847486}
   - component: {fileID: 908847488}
   - component: {fileID: 908847487}
+  - component: {fileID: 908847489}
   m_Layer: 5
   m_Name: Current Status
   m_TagString: Untagged
@@ -2933,6 +2935,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 908847485}
   m_CullTransparentMesh: 1
+--- !u!114 &908847489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908847485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4d6e67ad2f5cd147a09043163eebea1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Left: {fileID: 1022649119}
+  Body: {fileID: 991136107}
+  Right: {fileID: 600321014}
+  StatsText: {fileID: 1750530421}
 --- !u!1 &967086784
 GameObject:
   m_ObjectHideFlags: 0
@@ -3247,6 +3265,7 @@ MonoBehaviour:
   itemLocation: body
   defaultItem: {fileID: 11400000, guid: 5b983fd6b1219e24b971d24d128b4ffb, type: 2}
   uii: {fileID: 0}
+  FIES: {fileID: 0}
 --- !u!1 &1022649114
 GameObject:
   m_ObjectHideFlags: 0
@@ -3401,6 +3420,7 @@ MonoBehaviour:
   itemLocation: left
   defaultItem: {fileID: 11400000, guid: 8e576919adc8cd34fa9a0a38545d8c98, type: 2}
   uii: {fileID: 0}
+  FIES: {fileID: 0}
 --- !u!1 &1051049374
 GameObject:
   m_ObjectHideFlags: 0
@@ -7165,7 +7185,9 @@ MonoBehaviour:
   bait: 0
   weapon1: {fileID: 11400000, guid: 7ee20dcdf9b35084fa6224919f05625f, type: 2}
   weapon2: {fileID: 11400000, guid: 8e576919adc8cd34fa9a0a38545d8c98, type: 2}
-  armor1: {fileID: 11400000, guid: 5b983fd6b1219e24b971d24d128b4ffb, type: 2}
+  armor1: {fileID: 11400000, guid: 0ebfbd0d06b39db4fa0601665564dfb7, type: 2}
+  defaultWeapon: {fileID: 11400000, guid: 8e576919adc8cd34fa9a0a38545d8c98, type: 2}
+  defaultArmor: {fileID: 11400000, guid: 5b983fd6b1219e24b971d24d128b4ffb, type: 2}
 --- !u!4 &1986572302
 Transform:
   m_ObjectHideFlags: 0
@@ -7390,6 +7412,7 @@ MonoBehaviour:
   bigName: {fileID: 1912621293}
   Description: {fileID: 73231655}
   mode: ALL
+  FIES: {fileID: 0}
 --- !u!114 &2050388653
 MonoBehaviour:
   m_ObjectHideFlags: 0
