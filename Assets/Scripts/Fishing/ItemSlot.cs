@@ -97,6 +97,10 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
             }
             uii.CreateInventoryDisplay();
         }
+        else if(item.itemData is FishingWeapon){
+            uii.clicked = item.itemData as FishingWeapon;
+            uii.WeaponPopup.gameObject.SetActive(true);
+        }
     }
 
 }
