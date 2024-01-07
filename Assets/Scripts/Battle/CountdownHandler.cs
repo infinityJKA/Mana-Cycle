@@ -70,7 +70,7 @@ namespace Battle {
                         countDownText.text = "GO!";
                         cycleActivated = true;
                         SoundManager.Instance.PlaySound(goSFX);
-                        SoundManager.Instance.UnpauseBGM();
+                        SoundManager.Instance.PlayBGM();
                     }
 
                     // if not reached 0 yet, tick; update text and play sound

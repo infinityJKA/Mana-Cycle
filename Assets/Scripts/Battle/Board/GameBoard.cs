@@ -215,7 +215,7 @@ namespace Battle.Board {
         private SFXDict.sfxDict serializedSoundDict;
         private Dictionary<string,AudioClip> sfx;
 
-        public AudioClip multiBattleMusic;
+        public AudioClip[] usableBattleMusic;
 
         // Transform where particles are drawn to
         [SerializeField] private Transform particleParent;
@@ -328,7 +328,9 @@ namespace Battle.Board {
             if (playerSide == 0) {
                 // Debug.Log("stopping bgm");
                 // SoundManager.Instance.UnloadBGM();
-                SoundManager.Instance.SetBGM(singlePlayer ? level.battleMusic : multiBattleMusic);
+                SoundManager.Instance.LoadBGM(singlePlayer ? level.battleMusic : usableBattleMusic[Random.Range(0, usableBattleMusic.Length - 1)]);
+                // wait until after countdown to play mus
+                SoundManager.Instance.PauseBGM();
             }
 
             if (singlePlayer && !Storage.level.aiBattle) {
