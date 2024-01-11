@@ -28,7 +28,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
         int val = item.itemData.sellValue;
         int atk = 0;
         int def = 0;
-        string elem = "None";
+        string elem = "N/A";
         string itemType = "ERROR";
         string desc = item.itemData.inventoryDescription;
         string damageType = "";
@@ -44,14 +44,16 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
             if((item.itemData as FishingWeapon).healing){
                 damageType = " (HEALING)";
             }
+            elem = (item.itemData as FishingWeapon).element.ToString();
         }
-        else if (item.itemData is FishingWeapon){
+        else if (item.itemData is FishingArmor){
             itemType = "Armor";
             atk = (item.itemData as FishingArmor).ATK;
             def = (item.itemData as FishingArmor).DEF;
             if((item.itemData as FishingArmor).healing){
                 damageType = " (HEALING)";
             }
+            elem = (item.itemData as FishingArmor).element.ToString();
         }
         else if (item.itemData is FishingMaterial){
             itemType = "Material";
