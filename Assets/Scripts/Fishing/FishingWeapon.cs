@@ -8,5 +8,5 @@ public class FishingWeapon : FishingItem
     public int ATK;
     public int DEF;
     public bool healing; // TRUE if healing, FALSE if damaging
-    public string element;
+    public Element element;
 }

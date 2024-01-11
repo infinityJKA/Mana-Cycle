@@ -68,7 +68,7 @@ public class FishingEquippedInteract : MonoBehaviour, IPointerEnterHandler,IPoin
         int val = equippedItem.sellValue;
         int atk = 0;
         int def = 0;
-        string elem = "None";
+        string elem = "ERROR";
         string type = "ERROR";
         string desc = equippedItem.inventoryDescription;
         string damageType = "";
@@ -80,6 +80,7 @@ public class FishingEquippedInteract : MonoBehaviour, IPointerEnterHandler,IPoin
             if((equippedItem as FishingWeapon).healing){
                 damageType = " (HEALING)";
             }
+            elem = (equippedItem as FishingWeapon).element.ToString();
         }
         else{
             type = "=NO ARMOR EQUIPPED=";
@@ -88,6 +89,7 @@ public class FishingEquippedInteract : MonoBehaviour, IPointerEnterHandler,IPoin
             if((equippedItem as FishingArmor).healing){
                 damageType = " (HEALING)";
             }
+            elem = (equippedItem as FishingArmor).element.ToString();
         }
 
         uii.Description.text =
