@@ -1451,6 +1451,7 @@ namespace Battle.Board {
             StartCoroutine(ClearCascadeWithDelay());
             IEnumerator ClearCascadeWithDelay()
             {
+                bool cascadeFoundThisCheck = false;
                 // Brief delay before clearing current color
                 yield return new WaitForSeconds(0.8f);
 
@@ -1475,7 +1476,12 @@ namespace Battle.Board {
                         if (chain > 1) chainPopup.Flash(chain.ToString());
 
                         cascade += 1;
-                        if (cascade > 1) cascadePopup.Flash(cascade.ToString());
+                        if (cascade > 1)
+                        {
+                            PlaySFX("cascade", pitch : 1f + cascade*0.1f, volumeScale: 0.85f);
+                            cascadePopup.Flash(cascade.ToString());
+                            cascadeFoundThisCheck = true;
+                        }
 
                         // Get the average of all tile positions; this is where shoot particle is spawned
                         Vector3 averagePos = Vector3.zero;
@@ -1523,7 +1529,7 @@ namespace Battle.Board {
                                 totalPointMult += ClearTile(pos.x, pos.y + 1, true, onlyClearFragile: true);
                             }
                         }
-                        PlaySFX("cast1", pitch : 1f + chain*0.1f);
+                        if (!cascadeFoundThisCheck) PlaySFX("cast1", pitch : 1f + chain*0.1f);
 
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.
