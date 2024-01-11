@@ -17,6 +17,7 @@ public class UIInventoryManager : MonoBehaviour
     public FishingInventoryEquippedStatus FIES;
     public GameObject WeaponPopup;
     public FishingWeapon clicked;
+    public FishingInventoryBaitAndGoldCounter FIBAGC;
 
     public void setMode(string s){
         mode = s;
@@ -47,6 +48,9 @@ public class UIInventoryManager : MonoBehaviour
 
         // Update the equipped items display
         FIES.UpdateDisplay();
+
+        // Update the bait/gold counter
+        FIBAGC.updateText();
 
     }
 
