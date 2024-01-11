@@ -124,7 +124,6 @@ MonoBehaviour:
   ghostPieceBoard: {fileID: 2676182262240373688}
   inputScripts: []
   soloInputScripts: []
-  controlsGraphic: {fileID: 0}
   enemyBoard: {fileID: 0}
   hpBar: {fileID: 3207433290967925078}
   piecePreview: {fileID: 8650080534907225375}
@@ -154,7 +153,7 @@ MonoBehaviour:
   convoHandler: {fileID: 0}
   convoPaused: 0
   sfxObject: {fileID: 3878394946360508906, guid: 46c0ce93771a39b44b219e70527567c5, type: 3}
-  multiBattleMusic: {fileID: 8300000, guid: bb2df057ec31041e08a2010acaf4872e, type: 3}
+  usableBattleMusic: []
   particleParent: {fileID: 4920481684090110958}
   clearParticleSystem: {fileID: 8444103318734970022, guid: 25402455859d44a83abb5c7f5c764f7d, type: 3}
   aiController: {fileID: 5825437507682011474}
@@ -190,7 +189,8 @@ MonoBehaviour:
   symbolList: {fileID: 842465151080099548}
   foresightIconPrefab: {fileID: 5392420740867616881, guid: e8ee66bf4a40345a29259ae0354dd8e9, type: 3}
   manaFillSFX: {fileID: 8300000, guid: b1e4678f9663b08428d9eff1a572dfaf, type: 3}
-  foresightSFX: {fileID: 8300000, guid: 06e9b69d1bf99544d930332dd7d26cdf, type: 3}
+  foresightActivateSFX: {fileID: 8300000, guid: 06e9b69d1bf99544d930332dd7d26cdf, type: 3}
+  foresightConsumeSFX: {fileID: 8300000, guid: c06e8bb8406c8be4b840b461ce069c1c, type: 3}
   abilityActive: 0
 --- !u!114 &4174570119449310702
 MonoBehaviour:
@@ -1914,6 +1914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f7c0b031920c164582251e7cc375998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeTime: 0.75
   alphaOverwrite: 1
 --- !u!1 &5299102538424461706
 GameObject:
@@ -2962,6 +2963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f7c0b031920c164582251e7cc375998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeTime: 0.75
   alphaOverwrite: 0.1
 --- !u!1 &7306380406049050774
 GameObject:
@@ -3051,6 +3053,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f7c0b031920c164582251e7cc375998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeTime: 0.75
   alphaOverwrite: 1
 --- !u!1 &7423294169500355251
 GameObject:
@@ -3140,6 +3143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f7c0b031920c164582251e7cc375998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeTime: 0.75
   alphaOverwrite: 1
 --- !u!1 &7475847921371690871
 GameObject:
@@ -3714,6 +3718,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f7c0b031920c164582251e7cc375998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeTime: 0.75
   alphaOverwrite: 1
 --- !u!1 &9031594446078554666
 GameObject:
@@ -3803,6 +3808,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f7c0b031920c164582251e7cc375998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeTime: 0.75
   alphaOverwrite: 1
 --- !u!1 &9088282051862407895
 GameObject:
