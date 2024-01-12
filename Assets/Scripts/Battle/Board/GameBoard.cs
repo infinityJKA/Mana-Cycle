@@ -437,8 +437,9 @@ namespace Battle.Board {
 
             // If in solo mode non-arcade or versus mode, hide lives list if only 1 life
             // also hide if arcade mode enemy
-            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && (Storage.level.nextSeriesLevel || Storage.level.generateNextLevel) && playerSide == 0)) {
+            if ((Storage.gamemode == Storage.GameMode.Versus || (Storage.level && (Storage.level.nextSeriesLevel || Storage.level.generateNextLevel || Storage.level.lastSeriesLevel)) && playerSide == 0)) {
                 // when the game starts, have the life transform mirror the amount of lives
+                Debug.Log("erm");
                 foreach (Transform child in lifeTransform) Destroy(child.gameObject);
                 for (int i=0; i<lives; i++) {
                     Instantiate(lifeHeartObj, lifeTransform);
@@ -487,6 +488,8 @@ namespace Battle.Board {
             if (!isInitialized() || isPaused() || isPostGame()) return;
 
             PointerReposition();
+            // debug
+            // if (playerSide == 1) TakeDamage(maxHp);
 
             if (recoveryMode) {
                 recoveryTimer -= Time.deltaTime;

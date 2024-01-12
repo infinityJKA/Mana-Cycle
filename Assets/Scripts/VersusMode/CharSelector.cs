@@ -502,6 +502,7 @@ namespace VersusMode {
         /// Also called when back button is pressed</summary>
         public void Back() {
             // close ability info/settings menu if it is open
+            Debug.Log("uwef" + lockedIn);
             if (!menu.Mobile && abilityInfoDisplayed) ToggleAbilityInfo();
             else if (!menu.Mobile && settingsDisplayed) ToggleSettings();
 
