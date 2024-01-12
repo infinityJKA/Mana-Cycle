@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 namespace MainMenu {
     /// <summary>
@@ -78,6 +79,7 @@ namespace MainMenu {
             }
 
             PlayerPrefs.SetInt("windowModeSelection", selection);
+            EventSystem.current.SetSelectedGameObject(windowModeDropdown.gameObject);
         }
 
         
