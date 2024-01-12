@@ -61,6 +61,7 @@ namespace MainMenu {
                     o.SetActive(false);
                 }
             }
+
         }
 
         public void SelectLastSelected()
