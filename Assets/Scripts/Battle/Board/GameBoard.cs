@@ -326,11 +326,9 @@ namespace Battle.Board {
             Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
 
             if (playerSide == 0) {
-                // Debug.Log("stopping bgm");
-                // SoundManager.Instance.UnloadBGM();
                 SoundManager.Instance.LoadBGM(singlePlayer ? level.battleMusic : usableBattleMusic[Random.Range(0, usableBattleMusic.Length - 1)]);
                 // wait until after countdown to play mus
-                SoundManager.Instance.PauseBGM();
+                // SoundManager.Instance.PauseBGM();
             }
 
             if (singlePlayer && !Storage.level.aiBattle) {
@@ -655,7 +653,6 @@ namespace Battle.Board {
                 Debug.Log("Shapeshifter effect activated");
                 battler = enemyBoard.battler;
                 InitBattler();
-                // maybe experiment with other colors at some point
                 portrait.color = new Color(0.9f,0.2f,0.1f,0.57f);
                 
             }
