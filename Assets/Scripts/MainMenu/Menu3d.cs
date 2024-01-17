@@ -70,7 +70,7 @@ namespace MainMenu {
 
             UpdateTip();
 
-            versionText.text = "v" + Application.version;
+            versionText.text = "v" + Application.version + " (" + Application.platform + ")";
         }
 
         public void SelectVersus()
