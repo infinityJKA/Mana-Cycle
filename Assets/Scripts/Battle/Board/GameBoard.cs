@@ -1538,9 +1538,22 @@ namespace Battle.Board {
                         }
                         if (!cascadeFoundThisCheck) PlaySFX("cast1", pitch : 1f + chain*0.1f);
 
+                        // Geo's revenge system
+                        float GeoBoost = 1f;
+                        if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.LastStand){
+                            if((float)hp <= (float)maxHp/4){
+                                GeoBoost = 1.4f;
+                                Debug.Log("Geoboost 25% ver!!!");
+                            }
+                            else if((float)hp <= (float)maxHp/2){
+                                GeoBoost = 1.15f;
+                                Debug.Log("Geoboost 50% ver!!!");
+                            }
+                        }
+
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.
-                        int damage = (int)( (totalPointMult * damagePerMana) * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult]);
+                        int damage = (int)( (totalPointMult * damagePerMana) * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult] *GeoBoost);
 
                         highestSingleDamage = Math.Max(highestSingleDamage, damage);
 
