@@ -151,8 +151,9 @@ namespace Battle.Board {
         /// </summary>
         private List<Tile> ghostTiles;
 
-        /** Amount of times the player has cleared the cycle. Used in daamge formula */
+        /** Amount of times the player has cleared the cycle. Used in damage formula */
         private int cycleLevel = 0;
+        
         // Amount of boost this board gets from each cycle clear
         public int boostPerCycleClear {get; private set;} = 2;
 
@@ -447,6 +448,12 @@ namespace Battle.Board {
             }
 
             tilesInBlobs = new bool[height, width];
+
+            // z?man starts with increased cycle
+            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Osmose){
+                cycleLevel++;
+                Debug.Log("z?man cycle boost");
+            }
 
             cycleLevelDisplay.Set(cycleLevel);
         } // close Start()
