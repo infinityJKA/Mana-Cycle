@@ -60,7 +60,7 @@ public class SoloCharSelectController : MonoBehaviour {
 
     public void OnSelect(InputAction.CallbackContext ctx) {
         if (!ctx.performed) return;
-        charSelector.OnCast();
+        charSelector.OnCast(true);
         charSelector = charSelectMenu.GetActiveSelector();
     }
 
