@@ -31,7 +31,11 @@ namespace VersusMode {
         public Button selectable {get; private set;}
 
         // used by SetBattlerServerRpc to get the index of the selected battler of the other player
-        public int index;
+        public int index {get; private set;}
+        // called by CharSelectMenu on start. used mainly in online mode to send selected icon index to other clients
+        public void SetIndex(int i) {
+            index = i;
+        }
 
         public void Start()
         {

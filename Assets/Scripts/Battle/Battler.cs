@@ -4,7 +4,9 @@ using UnityEngine;
 namespace Battle {
     [CreateAssetMenu(fileName = "Battler", menuName = "ManaCycle/Battler")]
     public class Battler : ScriptableObject {
-        [SerializeField] public string displayName;
+        [SerializeField] public string _displayName;
+        public string displayName => _displayName;
+
         [SerializeField] public Sprite sprite;
 
         /// <summary>Offset of the portrait in the battle view</summary>
@@ -22,7 +24,7 @@ namespace Battle {
         }
 
         /// <summary>Description this battler's passive ability</summary>
-        [SerializeField] public String passiveAbilityDesc;
+        [SerializeField] public string passiveAbilityDesc;
 
         /// <summary>Effect of the active ability</summary>
         [SerializeField] public ActiveAbilityEffect activeAbilityEffect;
@@ -41,11 +43,11 @@ namespace Battle {
         public bool startAtFullMana;
             
         /// <summary>Name of this character's active ability</summary>
-        [SerializeField] public String activeAbilityName;
+        [SerializeField] public string activeAbilityName;
         /// <summary>Describes this battler's active ability</summary>
-        [SerializeField] public String activeAbilityDesc;
+        [SerializeField] public string activeAbilityDesc;
         /// <summary>Describes this character's ability in singleplayer mode, if it is different. Blank for same desc</summary>
-        [SerializeField] public String soloAbilityDesc;
+        [SerializeField] public string soloAbilityDesc;
         /// <summary>Amount of mana required to use active ability</summary>
         [SerializeField] public int activeAbilityMana;
         /// <summary>The piece RNG used for this battler</summary>

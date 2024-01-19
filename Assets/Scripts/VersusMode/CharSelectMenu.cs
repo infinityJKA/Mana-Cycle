@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using Multiplayer;
-using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+
 namespace VersusMode {
     ///<summary> Controls the character selection menu and the cursors within it. </summary>
-    public class CharSelectMenu : NetworkBehaviour {
+    public class CharSelectMenu : MonoBehaviour {
         public static CharSelectMenu Instance {get; private set;}
 
         ///<summary>Selectors for both players</summary>
@@ -53,7 +53,7 @@ namespace VersusMode {
 
             characterIcons = GetComponentsInChildren<CharacterIcon>();
             for (int i = 0; i < characterIcons.Length; i++) {
-                characterIcons[i].index = i;
+                characterIcons[i].SetIndex(i);
             }
         }
 
@@ -113,7 +113,7 @@ namespace VersusMode {
             // Only the host can start the match
             if (ready) {
                 started = true;
-                StartGameClientRpc(); // this will start the match on both the cliemt-host and client non-host
+                StartMatch();
             }
         }
 
@@ -253,11 +253,6 @@ namespace VersusMode {
             } else {
                 return p1Selector;
             }
-        }
-
-        [ClientRpc]
-        public void StartGameClientRpc() {
-            StartMatch();
         }
     }
 }

@@ -280,7 +280,7 @@ namespace Battle {
         public void OnSpellcast(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board && canControlBoard) board.Spellcast();
-            else if (controlMode == ControlMode.CharSelector) charSelector.OnCast();
+            else if (controlMode == ControlMode.CharSelector) charSelector.OnCast(true);
         }
 
         public void OnAbiltyUse(InputAction.CallbackContext ctx) {
