@@ -5,6 +5,6 @@ using UnityEngine;
 [CreateAssetMenu]
 public class FishingTome : FishingItem
 {
-    public string tomeText = "[tomeText here]";
+    public string tomeText;
 
 }

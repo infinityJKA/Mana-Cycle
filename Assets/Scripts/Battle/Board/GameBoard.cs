@@ -61,7 +61,7 @@ namespace Battle.Board {
         [SerializeField] public InputScript[] soloInputScripts;
 
         /** ControlsGraphic that will show the input keys */
-        [SerializeField] public Battle.ControlsDisplaySystem.ControlsGraphic controlsGraphic;
+        // [SerializeField] public Battle.ControlsDisplaySystem.ControlsGraphic controlsGraphic;
 
         /** The board of the enemy of the player/enemy of this board */
         [SerializeField] public GameBoard enemyBoard;
@@ -217,7 +217,7 @@ namespace Battle.Board {
         private SFXDict.sfxDict serializedSoundDict;
         private Dictionary<string,AudioClip> sfx;
 
-        public AudioClip multiBattleMusic;
+        public AudioClip[] usableBattleMusic;
 
         // Transform where particles are drawn to
         [SerializeField] private Transform particleParent;
@@ -299,8 +299,8 @@ namespace Battle.Board {
             }
 
             // don't show controls for player2 if singleplayer and player 2
-            if (mobile) controlsGraphic.gameObject.SetActive(false);
-            else if ((playerSide == 0 || !singlePlayer) && inputScripts.Length > 0 && inputScripts[0] != null) controlsGraphic.SetInputs(inputScripts[0]);
+            // if (mobile) controlsGraphic.gameObject.SetActive(false);
+            // else if ((playerSide == 0 || !singlePlayer) && inputScripts.Length > 0 && inputScripts[0] != null) controlsGraphic.SetInputs(inputScripts[0]);
 
             // load level if applicable
             if (Storage.level != null)
@@ -337,9 +337,9 @@ namespace Battle.Board {
             Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
 
             if (playerSide == 0) {
-                // Debug.Log("stopping bgm");
-                // SoundManager.Instance.UnloadBGM();
-                SoundManager.Instance.SetBGM(singlePlayer ? level.battleMusic : multiBattleMusic);
+                SoundManager.Instance.LoadBGM(singlePlayer ? level.battleMusic : usableBattleMusic[Random.Range(0, usableBattleMusic.Length - 1)]);
+                // wait until after countdown to play mus
+                // SoundManager.Instance.PauseBGM();
             }
 
             if (singlePlayer && !Storage.level.aiBattle) {
@@ -446,8 +446,9 @@ namespace Battle.Board {
 
             // If in solo mode non-arcade or versus mode, hide lives list if only 1 life
             // also hide if arcade mode enemy
-            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && (Storage.level.nextSeriesLevel || Storage.level.generateNextLevel) && playerSide == 0)) {
+            if ((Storage.gamemode == Storage.GameMode.Versus || (Storage.level && (Storage.level.nextSeriesLevel || Storage.level.generateNextLevel || Storage.level.lastSeriesLevel)) && playerSide == 0)) {
                 // when the game starts, have the life transform mirror the amount of lives
+                Debug.Log("erm");
                 foreach (Transform child in lifeTransform) Destroy(child.gameObject);
                 for (int i=0; i<lives; i++) {
                     Instantiate(lifeHeartObj, lifeTransform);
@@ -496,6 +497,8 @@ namespace Battle.Board {
             if (!isInitialized() || isPaused() || isPostGame()) return;
 
             PointerReposition();
+            // debug
+            // if (playerSide == 1) TakeDamage(maxHp);
 
             if (recoveryMode) {
                 recoveryTimer -= Time.deltaTime;
@@ -666,7 +669,6 @@ namespace Battle.Board {
                 Debug.Log("Shapeshifter effect activated");
                 battler = enemyBoard.battler;
                 InitBattler();
-                // maybe experiment with other colors at some point
                 portrait.color = new Color(0.9f,0.2f,0.1f,0.57f);
                 
             }
@@ -1466,6 +1468,7 @@ namespace Battle.Board {
             StartCoroutine(ClearCascadeWithDelay());
             IEnumerator ClearCascadeWithDelay()
             {
+                bool cascadeFoundThisCheck = false;
                 // Brief delay before clearing current color
                 yield return new WaitForSeconds(0.8f);
 
@@ -1490,7 +1493,12 @@ namespace Battle.Board {
                         if (chain > 1) chainPopup.Flash(chain.ToString());
 
                         cascade += 1;
-                        if (cascade > 1) cascadePopup.Flash(cascade.ToString());
+                        if (cascade > 1)
+                        {
+                            PlaySFX("cascade", pitch : 1f + cascade*0.1f, volumeScale: 0.85f);
+                            cascadePopup.Flash(cascade.ToString());
+                            cascadeFoundThisCheck = true;
+                        }
 
                         // Get the average of all tile positions; this is where shoot particle is spawned
                         Vector3 averagePos = Vector3.zero;
@@ -1538,7 +1546,7 @@ namespace Battle.Board {
                                 totalPointMult += ClearTile(pos.x, pos.y + 1, true, onlyClearFragile: true);
                             }
                         }
-                        PlaySFX("cast1", pitch : 1f + chain*0.1f);
+                        if (!cascadeFoundThisCheck) PlaySFX("cast1", pitch : 1f + chain*0.1f);
 
                         // Deal damage for the amount of mana cleared.
                         // DMG is scaled by chain and cascade.

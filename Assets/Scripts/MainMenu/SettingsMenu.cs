@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro;
+using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 namespace MainMenu {
     /// <summary>
@@ -14,6 +17,8 @@ namespace MainMenu {
         [SerializeField] private Button closeButton;
         
         [SerializeField] private InputActionReference closeAction, pauseAction;
+
+        [SerializeField] private TMP_Dropdown windowModeDropdown;
 
         [SerializeField] private Menu3d menu3D;
 
@@ -41,6 +46,8 @@ namespace MainMenu {
                 if (!PlayerPrefs.HasKey("drawGhostPiece")) PlayerPrefs.SetInt("drawGhostPiece", 1);
                 ghostPieceToggle.isOn = PlayerPrefs.GetInt("drawGhostPiece") == 1;
             }
+
+            windowModeDropdown.value = PlayerPrefs.GetInt("windowModeSelection");
         }
 
         void Update()
@@ -53,6 +60,26 @@ namespace MainMenu {
         public void OnGhostPieceToggleChange() {
             bool tickOn = ghostPieceToggle.isOn;
             PlayerPrefs.SetInt("drawGhostPiece", tickOn ? 1 : 0);
+        }
+
+        public void OnWindowModeChange()
+        {
+            int selection = windowModeDropdown.value;
+            switch (windowModeDropdown.options[selection].text)
+            {
+                case "Borderless Fullscreen": 
+                    Screen.SetResolution(1920, 1080, FullScreenMode.FullScreenWindow);
+                    break;
+                case "Exclusive Fullscreen": 
+                    Screen.SetResolution(Screen.width, Screen.height, FullScreenMode.ExclusiveFullScreen);
+                    break;
+                case "Resizable Window":
+                    Screen.SetResolution(Screen.width, Screen.height, FullScreenMode.Windowed);
+                    break;
+            }
+
+            PlayerPrefs.SetInt("windowModeSelection", selection);
+            EventSystem.current.SetSelectedGameObject(windowModeDropdown.gameObject);
         }
 
         
