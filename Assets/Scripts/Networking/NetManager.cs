@@ -9,9 +9,9 @@ public class NetManager : NetworkManager {
         OnlineMenu.singleton.ShowCharSelect();
     }
 
-    public override void OnStartClient()
+    public override void OnClientConnect()
     {
-        base.OnStartClient();
+        base.OnClientConnect();
         OnlineMenu.singleton.ShowCharSelect();
         CharSelectMenu.Instance.p1Selector.Connect();
     }
@@ -20,11 +20,13 @@ public class NetManager : NetworkManager {
     {
         base.OnStopClient();
         OnlineMenu.singleton.ShowOnlineMenu();
+        OnlineMenu.singleton.EnableInteractables();
     }
 
     public override void OnStopHost()
     {
         base.OnStopHost();
         OnlineMenu.singleton.ShowOnlineMenu();
+        OnlineMenu.singleton.EnableInteractables();
     }
 }

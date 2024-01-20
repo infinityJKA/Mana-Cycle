@@ -116,7 +116,7 @@ namespace kcp2k
             client = new KcpClient(
                 () => OnClientConnected.Invoke(),
                 (message, channel) => OnClientDataReceived.Invoke(message, FromKcpChannel(channel)),
-                () => OnClientDisconnected.Invoke(),
+                () => {if (OnClientDisconnected != null) {OnClientDisconnected.Invoke();}},
                 (error, reason) => OnClientError.Invoke(ToTransportError(error), reason),
                 config
             );

@@ -53,11 +53,12 @@ public class SoloCharSelectController : MonoBehaviour {
             else if (Mathf.Abs(angle + 90f) < 45f) charSelector.OnMoveRight();
 
             if (Storage.online) {
-                if (netPlayer.isClient) {
-                    netPlayer.CmdSetSelectedBattlerIndex(charSelector.selectedIcon.index);
-                } else {
-                    netPlayer.RpcSetSelectedBattlerIndex(charSelector.selectedIcon.index);
-                }
+                netPlayer.CmdSetSelectedBattlerIndex(charSelector.selectedIcon.index);
+                // if (netPlayer.isClient) {
+                //     netPlayer.CmdSetSelectedBattlerIndex(charSelector.selectedIcon.index);
+                // } else {
+                //     netPlayer.RpcSetSelectedBattlerIndex(charSelector.selectedIcon.index);
+                // }
             }
         }
     }
@@ -85,11 +86,12 @@ public class SoloCharSelectController : MonoBehaviour {
         charSelector.OnCast(true);
 
         if (Storage.online) {
-            if (netPlayer.isClient) {
-                netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
-            } else {
-                netPlayer.RpcSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
-            }
+            netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+            // if (netPlayer.isClient) {
+            //     netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+            // } else {
+            //     netPlayer.RpcSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+            // }
         } else {
             charSelector = charSelectMenu.GetActiveSelector();
         }
@@ -97,13 +99,19 @@ public class SoloCharSelectController : MonoBehaviour {
 
     public void OnBack(InputAction.CallbackContext ctx) {
         if (!ctx.performed) return;
-        charSelector.OnBack();
-        charSelector = charSelectMenu.GetActiveSelector();
+        OnPauseOrBack();
     }
 
     public void OnPause(InputAction.CallbackContext ctx) {
         if (!ctx.performed) return;
-        charSelector.ReturnToMenu();
+        // charSelector.ReturnToMenu();
+        OnPauseOrBack();
+    }
+
+    private void OnPauseOrBack() {
+        charSelector.OnBack();
+        charSelector = charSelectMenu.GetActiveSelector();
+        netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
     }
 
     public void OnAbilityInfo(InputAction.CallbackContext ctx) {
@@ -115,7 +123,7 @@ public class SoloCharSelectController : MonoBehaviour {
 
     public void OnSettings(InputAction.CallbackContext ctx) {
         if (!charSelectMenu.gameObject.activeInHierarchy) return;
-        
+
         if (!ctx.performed) return;
         charSelector.OnSettings();
     }

@@ -24,7 +24,7 @@ public class NetPlayer : NetworkBehaviour {
 
     [Command]
     public void CmdSetSelectedBattlerIndex(int index) {
-        charSelector.SetSelection(index);
+        RpcSetSelectedBattlerIndex(index);
     }
 
     /// <summary>
