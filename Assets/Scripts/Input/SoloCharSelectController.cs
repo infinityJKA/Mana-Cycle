@@ -54,11 +54,31 @@ public class SoloCharSelectController : MonoBehaviour {
             else if (Mathf.Abs(angle + 90f) < 45f) charSelector.OnMoveRight();
 
             if (Storage.online) {
-                netPlayer.selectionIndex = charSelector.selectedIcon.index;
+                netPlayer.CmdSetSelectedBattlerIndex(charSelector.selectedIcon.index);
+                // if (netPlayer.isClient) {
+                //     netPlayer.CmdSetSelectedBattlerIndex(charSelector.selectedIcon.index);
+                // } else {
+                //     netPlayer.RpcSetSelectedBattlerIndex(charSelector.selectedIcon.index);
+                // }
             }
         }
     }
 
+    // public void OnEnable() {
+    //     selectAction.action.performed += OnSelect;
+    //     backAction.action.performed += OnBack;
+    //     pauseAction.action.performed += OnPause;
+    //     abilityInfoAction.action.performed += OnAbilityInfo;
+    //     settingsAction.action.performed += OnSettings;
+    // }
+
+    // public void OnDisable() {
+    //     selectAction.action.performed -= OnSelect;
+    //     backAction.action.performed -= OnBack;
+    //     pauseAction.action.performed -= OnPause;
+    //     abilityInfoAction.action.performed -= OnAbilityInfo;
+    //     settingsAction.action.performed -= OnSettings;
+    // }
 
     public void OnSelect(InputAction.CallbackContext ctx) {
         if (!charSelectMenu.gameObject.activeInHierarchy) return;
@@ -70,8 +90,7 @@ public class SoloCharSelectController : MonoBehaviour {
             if (charSelector.menu.started) {
                 netPlayer.CmdStartGame();
             } else {
-                netPlayer.randomSelected = charSelector.isRandomSelected;
-                netPlayer.lockedIn = charSelector.lockedIn;
+                netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
             }
         } else {
             charSelector = charSelectMenu.GetActiveSelector();
@@ -92,7 +111,7 @@ public class SoloCharSelectController : MonoBehaviour {
     private void OnPauseOrBack() {
         charSelector.OnBack();
         charSelector = charSelectMenu.GetActiveSelector();
-        if (Storage.online) netPlayer.lockedIn = charSelector.lockedIn;
+        netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
     }
 
     public void OnAbilityInfo(InputAction.CallbackContext ctx) {

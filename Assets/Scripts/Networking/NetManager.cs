@@ -13,12 +13,7 @@ public class NetManager : NetworkManager {
     {
         base.OnClientConnect();
         OnlineMenu.singleton.ShowCharSelect();
-    }
-
-    public override void OnServerAddPlayer(NetworkConnectionToClient conn)
-    {
-        base.OnServerAddPlayer(conn);
-        conn.identity.GetComponent<NetPlayer>().ConnectToCharSelector();
+        CharSelectMenu.Instance.p1Selector.Connect();
     }
 
     public override void OnStopClient()

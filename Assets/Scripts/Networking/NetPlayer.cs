@@ -6,24 +6,17 @@ using UnityEngine;
 using VersusMode;
 
 public class NetPlayer : NetworkBehaviour {
-    public CharSelector charSelector;
+    private CharSelector charSelector;
     
     public GameBoard board;
 
     private void Start() {
         DontDestroyOnLoad(gameObject);
-        RegisterMessages();
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
-        ConnectToCharSelector();
-    }
-
-    bool connectedToCharSelector = false;
-    public void ConnectToCharSelector() {
-        if (connectedToCharSelector) return;
 
         if (isOwned) {
             charSelector = CharSelectMenu.Instance.p1Selector;
@@ -32,64 +25,48 @@ public class NetPlayer : NetworkBehaviour {
             charSelector = CharSelectMenu.Instance.p2Selector;
         }
         charSelector.Connect();
-        connectedToCharSelector = true;
-        
-        OnSelectionIndex(0, selectionIndex);
-        OnLockedIn(false, lockedIn);
     }
 
     private void OnDisable() {
         if (charSelector) charSelector.Disconnect();
     }
 
-    public void RegisterMessages() {
-        // NetworkClient.RegisterHandler<CharSelectionDataMessage>(OnCharSelectionData);
+
+    [Command]
+    public void CmdSetSelectedBattlerIndex(int index) {
+        RpcSetSelectedBattlerIndex(index);
     }
 
     /// <summary>
-    /// Data to send to the other client when they join.
-    /// Describes the current character and lock status of the other client.
+    /// Send to a client the current selected battler's index of this player.
+    /// Wiil not send to the player that called this; it only mirrors the selection to the other player
     /// </summary>
-    public struct CharSelectionDataMessage : NetworkMessage {
-        // index of selected character icon
-        public int index;
-        // whether or not this player is locked in already or not
-        public bool lockedIn;
+    /// <param name="index">the index of the character icon in the scene's CharSelectMenu</param>
+    [ClientRpc(includeOwner = false)]
+    public void RpcSetSelectedBattlerIndex(int index) {
+        charSelector.SetSelection(index);
     }
 
 
-    [SyncVar(hook = nameof(OnSelectionIndex))]
-    public int selectionIndex = 0;
-
-    public void OnSelectionIndex(int oldIndex, int newIndex) {
-        if (!charSelector) ConnectToCharSelector();
-        if (!charSelector) {
-            Debug.LogWarning("Charselector not found!");
-            return;
-        }
-        charSelector.SetSelection(newIndex);
-        Debug.Log(charSelector + " new selection index: "+newIndex);
+    [Command]
+    public void CmdSetLockedIn(int index, bool randomSelected, bool lockedIn) {
+        RpcSetLockedIn(index, randomSelected, lockedIn);
     }
 
-    [SyncVar]
-    public bool randomSelected;
-
-    [SyncVar(hook = nameof(OnLockedIn))]
-    public bool lockedIn;
-
-
-    public void OnLockedIn(bool oldLockedIn, bool newLockedIn) {
-        if (!charSelector) ConnectToCharSelector();
-        if (!charSelector) {
-            Debug.LogWarning("Charselector not found!");
-            return;
-        }
+    /// <summary>
+    /// Mirrors the locked-in status to the other player.
+    /// </summary>
+    /// <param name="index">index of battler selected - this may also be random battler that the opponent's client landed on</param>
+    /// <param name="randomSelected">whether or not opponent selected the random battler</param>
+    /// <param name="lockedIn">lock-in status, true if player locked in, false if player un-locked in</param>
+    [ClientRpc(includeOwner = false)]
+    public void RpcSetLockedIn(int index, bool randomSelected, bool lockedIn) {
         if (randomSelected) {
-            charSelector.randomBattler = CharSelectMenu.Instance.characterIcons[selectionIndex].battler;
+            charSelector.randomBattler = CharSelectMenu.Instance.characterIcons[index].battler;
         } else {
-            charSelector.SetSelection(selectionIndex);
+            charSelector.SetSelection(index);
         }
-        if (newLockedIn != charSelector.lockedIn) charSelector.ToggleLock();
+        if (lockedIn != charSelector.lockedIn) charSelector.ToggleLock();
     }
 
 
