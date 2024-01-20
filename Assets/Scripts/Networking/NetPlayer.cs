@@ -173,11 +173,16 @@ public class NetPlayer : NetworkBehaviour {
 
 
     [Command]
-    public void CmdClearColor(int color) {
-
+    public void CmdAdvanceChain(bool startup) {
+        RpcAdvanceChain(startup);
     }
 
-    private void RpcClearColor(int color) {
-        
+    [ClientRpc(includeOwner = false)]
+    private void RpcAdvanceChain(bool startup) {
+        if (startup) {
+            board.StartupEffect();
+        } else {
+            board.AdvanceChainAndCascade();
+        }
     }
 }
