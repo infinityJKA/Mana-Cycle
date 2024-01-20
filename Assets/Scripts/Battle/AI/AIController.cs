@@ -94,7 +94,7 @@ namespace Battle.AI {
                 }
                 
                 // rotate piece to target rot
-                bool reachedTargetRot = (int)board.GetPiece().getRot() == this.targetRot;
+                bool reachedTargetRot = (int)board.GetPiece().GetRotation() == this.targetRot;
                 if (!reachedTargetRot){
                     board.RotateCCW();
                 }
