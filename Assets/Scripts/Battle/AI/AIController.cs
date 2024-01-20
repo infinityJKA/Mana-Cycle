@@ -108,7 +108,7 @@ namespace Battle.AI {
                             minCol = board.GetPiece().GetCol();
                             MakePlacementDecision();
                             if (ShouldCast()){
-                                board.Spellcast();
+                                board.TrySpellcast();
                             }
                         }
                     }
@@ -117,7 +117,7 @@ namespace Battle.AI {
                             maxCol = board.GetPiece().GetCol();
                             MakePlacementDecision();
                             if (ShouldCast()){
-                                board.Spellcast();
+                                board.TrySpellcast();
                             }
                         }
                     }
@@ -216,7 +216,7 @@ namespace Battle.AI {
 
                 // after placement job, make informed decision to cast/use ability
                 if (ShouldCast()){
-                    board.Spellcast();
+                    board.TrySpellcast();
                 }
 
                 if (ShouldActivateAbility()){

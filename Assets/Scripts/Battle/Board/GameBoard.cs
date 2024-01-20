@@ -266,9 +266,15 @@ namespace Battle.Board {
         public NetPlayer netPlayer;
 
         // if piece will auto place when sliding against the ground for too long.
-        // turned off when this is a board connected by an online opponent
+        // turned on when this is a board connected by an online opponent
         // to make srue pieces aren't placed in the wrong place
-        public bool autoPlaceTiles;
+        private bool autoPlaceTiles = true;
+
+        // If spellcast will automatically continue.
+        // Enabled when this is an online opponent.
+        // If spellcasts happened automatically they could desync if not in sync
+        // with enemy's piece placements, so piece clear RPCs are sent in order with piece placement RPCs
+        public bool manualCastContinue;
 
         // Start is called before the first frame update
         void Start()
@@ -688,10 +694,9 @@ namespace Battle.Board {
 
             UpdateCycleColoredObjects();
 
-            // turn off auto-placing if this is an online opponent
-            if (Storage.online) {
-                autoPlaceTiles = netPlayer.isOwned;
-            }
+            // turn off auto-placing and auto-chaining if this is an online opponent
+            autoPlaceTiles = !Storage.online || netPlayer.isOwned;
+            manualCastContinue = !Storage.online || netPlayer.isOwned;
         }
 
         public void RotateCCW(){
@@ -707,7 +712,7 @@ namespace Battle.Board {
             }
 
             if (Storage.online && netPlayer.isOwned) NetworkUpdatePiece();
-            
+
             RefreshGhostPiece();
 
             PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f), important: false);
@@ -759,7 +764,10 @@ namespace Battle.Board {
             piece.MoveTo(col, row);
         }
 
-        public void Spellcast(){
+        /// <summary>
+        /// Start a new spellcast chain off the current color. Is called when spellcast button is pressed
+        /// </summary>
+        public void TrySpellcast(){
             if (!isInitialized() || isPaused() || isPostGame()) return;
 
             if (convoPaused) {
@@ -774,7 +782,9 @@ namespace Battle.Board {
             if (!casting && blobs.Count != 0) {
                 var shake = pointer.GetComponent<Shake>();
                 if (shake != null) shake.StopShake();
-                Spellcast(1);
+                chain = 1;
+                cascade = 0;
+                Spellcast(refreshBlobs: false);
                 totalManualSpellcasts++;
             }
             else {
@@ -1442,8 +1452,11 @@ namespace Battle.Board {
             RefreshObscuredTiles();
         }
 
+        int chain = 0;
+        int cascade = 0;
+
         // Check the board for blobs of 3 or more of the given color, and clear them from the board, earning points/dealing damage.
-        private void Spellcast(int chain, bool refreshBlobs)
+        private void Spellcast(bool refreshBlobs)
         {
             if (defeated) return;
 
@@ -1451,23 +1464,24 @@ namespace Battle.Board {
 
             // If there were no blobs, do not deal damage, and do not move forward in cycle, 
             // end spellcast if active
-            // also end if defeated, combo shouldn't extend while dead
             if (blobs.Count == 0) {
                 // Check for foresight icon, consuming it and skipping to next color if possible.
                 if (abilityManager.ForesightCheck()) {
                     RefreshBlobs( GetCycleColor(1) );
                     if (totalBlobMana > 0) {
-                        abilityManager.UseForesight();
+                        abilityManager.ActivateForesightSkip();
                         AdvanceCycle();
-                        Spellcast(chain);
+                        Spellcast(refreshBlobs: false);
                     } else {
                         RefreshBlobs( GetCycleColor() );
                         casting = false;
+                        chain = 0;
                         RefreshObjectives();
                         StartCoroutine(CheckMidConvoAfterDelay());
                     }
                 } else {
                     casting = false;
+                    chain = 0;
                     RefreshObjectives();
                     StartCoroutine(CheckMidConvoAfterDelay());
                 }
@@ -1476,124 +1490,118 @@ namespace Battle.Board {
 
             // Keep clearing while mana cleared for current color is greater than 0
             // Begin spellcast
-            int cascade = 0;
+            
             casting = true;
-
             if (chain == 1) PlaySFX("startupCast");
 
-            GlowBlobs(0.8f);
-            StartCoroutine(ClearCascadeWithDelay());
-            IEnumerator ClearCascadeWithDelay()
-            {
-                bool cascadeFoundThisCheck = false;
-                // Brief delay before clearing current color
-                yield return new WaitForSeconds(0.8f);
-
-                if (!defeated) {
-                    // Check for any new blobs that may have formed in those 0.8 seconds
-                    // (Replaces old list)
-                    // update: called on every place, so no longer needed here
-                    // RefreshBlobs(color);
-
-                    while (totalBlobMana > 0) {
-                        // If this is cascading off the same color more than once, short delay between
-                        if (cascade > 0) {
-                            GlowBlobs(0.6f);
-                            yield return new WaitForSeconds(0.6f);
-
-                            if (defeated)
-
-                            // recalculte blobs in case they changed
-                            RefreshBlobs();
-                        }
-
-                        if (chain > 1) chainPopup.Flash(chain.ToString());
-
-                        cascade += 1;
-                        if (cascade > 1)
-                        {
-                            PlaySFX("cascade", pitch : 1f + cascade*0.1f, volumeScale: 0.85f);
-                            cascadePopup.Flash(cascade.ToString());
-                            cascadeFoundThisCheck = true;
-                        }
-
-                        // Get the average of all tile positions; this is where shoot particle is spawned
-                        Vector3 averagePos = Vector3.zero;
-                        foreach (Blob blob in blobs) {
-                            for (int index = 0; index < blob.tiles.Count; index++) {
-                                var pos = blob.tiles[index];
-                                if (tiles[pos.y, pos.x] == null) {
-                                    Debug.LogWarning("Null tile found in blob: "+pos.y+", "+pos.x);
-                                    blob.tiles.RemoveAt(index);
-                                    index--;
-                                    totalBlobMana--;
-                                    continue;
-                                }
-                                averagePos += tiles[pos.y, pos.x].transform.position;
-                            }
-                            
-                        }
-                        averagePos /= totalBlobMana;
-
-                        totalSpellcasts++;
-                        
-                        totalManaCleared += totalBlobMana;
-                        abilityManager.GainMana((int) (totalBlobMana * boardStats[SpecialGainMult]));
-
-                        highestCombo = Math.Max(highestCombo, chain);
-                        highestCascade = Math.Max(highestCascade, cascade);
-
-                        float totalPointMult = 0;
-                        // Clear all blob-contained tiles from the board.
-                        foreach (Blob blob in blobs) {
-                            // run onclear first to check for point multiplier increases (geo gold mine)
-                            foreach (Vector2Int pos in blob.tiles) {
-                                if (tiles[pos.y, pos.x]) {
-                                    tiles[pos.y, pos.x].BeforeClear(blob);
-                                }
-                            }
-                            // then remove the tiles from the board 
-                            foreach (Vector2Int pos in blob.tiles) {
-                                totalPointMult += ClearTile(pos.x, pos.y);
-
-                                // clear adjacent fragile tiles
-                                totalPointMult += ClearTile(pos.x - 1, pos.y, true, onlyClearFragile: true);
-                                totalPointMult += ClearTile(pos.x + 1, pos.y, true, onlyClearFragile: true);
-                                totalPointMult += ClearTile(pos.x, pos.y - 1, true, onlyClearFragile: true);
-                                totalPointMult += ClearTile(pos.x, pos.y + 1, true, onlyClearFragile: true);
-                            }
-                        }
-                        if (!cascadeFoundThisCheck) PlaySFX("cast1", pitch : 1f + chain*0.1f);
-
-                        // Deal damage for the amount of mana cleared.
-                        // DMG is scaled by chain and cascade.
-                        int damage = (int)( (totalPointMult * damagePerMana) * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult]);
-
-                        highestSingleDamage = Math.Max(highestSingleDamage, damage);
-
-                        // Send the damage over. Will counter incoming damage first.
-                        DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
-
-                        // Do gravity everywhere
-                        AllTileGravity();
-
-                        // Check for cascaded blobs (cascade loop will continue if resulting totalBlobMana > 0)
-                        RefreshBlobs();
-                        RefreshGhostPiece();
-
-                        RefreshObjectives();
-                        StartCoroutine(CheckMidConvoAfterDelay());
-                    }
-
-                    // Spellcast for the new next color and check for chain
-                    AdvanceCycle();
-                    Spellcast(chain+1);
-                }            
-            }
+            GlowBlobs(chainDelay);
+            StartCoroutine(AdvanceChainAndCascadeAfterDelay(chainDelay));
         }
 
-        private void Spellcast(int chain) {
-            Spellcast(chain, true);
+        private static readonly float cascadeDelay = 0.6f, chainDelay = 0.8f;
+        IEnumerator AdvanceChainAndCascadeAfterDelay(float delay)
+        {
+            // Brief delay before clearing current color
+            yield return new WaitForSeconds(delay);
+            AdvanceChainAndCascade();
+        }
+
+        public void AdvanceChainAndCascade() {
+            if (defeated) return;
+
+            // Check for any new blobs that may have formed in the delay before this was called.
+            // (Replaces old list)
+            // update: called on every place, so no longer needed here
+            // RefreshBlobs(color);
+
+            if (chain > 1) chainPopup.Flash(chain.ToString());
+
+            // advance cascade count
+            // if 2 or higher will show a notification
+            cascade += 1;
+            if (cascade > 1)
+            {
+                PlaySFX("cascade", pitch : 1f + cascade*0.1f, volumeScale: 0.85f);
+                cascadePopup.Flash(cascade.ToString());
+            }
+
+            // Get the average of all tile positions; this is where shoot particle is spawned
+            Vector3 averagePos = Vector3.zero;
+            foreach (Blob blob in blobs) {
+                for (int index = 0; index < blob.tiles.Count; index++) {
+                    var pos = blob.tiles[index];
+                    if (tiles[pos.y, pos.x] == null) {
+                        Debug.LogWarning("Trying to clear null tile found in blob: "+pos.y+", "+pos.x);
+                        blob.tiles.RemoveAt(index);
+                        index--;
+                        totalBlobMana--;
+                        continue;
+                    }
+                    averagePos += tiles[pos.y, pos.x].transform.position;
+                }
+                
+            }
+            averagePos /= totalBlobMana;
+
+            totalSpellcasts++;
+            
+            totalManaCleared += totalBlobMana;
+            abilityManager.GainMana((int) (totalBlobMana * boardStats[SpecialGainMult]));
+
+            highestCombo = Math.Max(highestCombo, chain);
+            highestCascade = Math.Max(highestCascade, cascade);
+
+            float totalPointMult = 0;
+            // Clear all blob-contained tiles from the board.
+            foreach (Blob blob in blobs) {
+                // run onclear first to check for point multiplier increases or other effects (geo gold mine)
+                foreach (Vector2Int pos in blob.tiles) {
+                    if (tiles[pos.y, pos.x]) {
+                        tiles[pos.y, pos.x].BeforeClear(blob);
+                    }
+                }
+                // then remove the tiles from the board 
+                foreach (Vector2Int pos in blob.tiles) {
+                    totalPointMult += ClearTile(pos.x, pos.y);
+
+                    // clear adjacent fragile tiles (mini z?men)
+                    totalPointMult += ClearTile(pos.x - 1, pos.y, true, onlyClearFragile: true);
+                    totalPointMult += ClearTile(pos.x + 1, pos.y, true, onlyClearFragile: true);
+                    totalPointMult += ClearTile(pos.x, pos.y - 1, true, onlyClearFragile: true);
+                    totalPointMult += ClearTile(pos.x, pos.y + 1, true, onlyClearFragile: true);
+                }
+            }
+            if (cascade <= 1) PlaySFX("cast1", pitch : 1f + chain*0.1f);
+
+            // Deal damage for the amount of mana cleared.
+            // DMG is scaled by chain and cascade.
+            int damage = (int)( totalPointMult * damagePerMana * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult]);
+
+            highestSingleDamage = Math.Max(highestSingleDamage, damage);
+
+            // Send the damage over. Will counter incoming damage first.
+            DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
+
+            // Do gravity everywhere
+            AllTileGravity();
+
+            // Check for cascaded blobs
+            RefreshBlobs();
+
+            RefreshGhostPiece();
+            RefreshObjectives();
+            StartCoroutine(CheckMidConvoAfterDelay());
+
+            // cascade loop will continue if there are any mana blob tiles of the current color available to clear
+            if (totalBlobMana > 0) {
+                GlowBlobs(cascadeDelay);
+                StartCoroutine(AdvanceChainAndCascadeAfterDelay(cascadeDelay));
+            } else {
+                AdvanceCycle();
+                cascade = 0;
+                chain++;
+                Spellcast(refreshBlobs: true);
+            }
         }
 
         private void AdvanceCycle() {
