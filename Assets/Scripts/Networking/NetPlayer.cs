@@ -6,17 +6,19 @@ using UnityEngine;
 using VersusMode;
 
 public class NetPlayer : NetworkBehaviour {
-    private CharSelector charSelector;
+    public CharSelector charSelector;
     
     public GameBoard board;
 
     private void Start() {
         DontDestroyOnLoad(gameObject);
+        ConnectToCharSelector();
     }
 
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
+    bool connectedToCharSelector = false;
+    private void ConnectToCharSelector() {
+        if (connectedToCharSelector) return;
+        connectedToCharSelector = true;
 
         if (isOwned) {
             charSelector = CharSelectMenu.Instance.p1Selector;
@@ -25,6 +27,11 @@ public class NetPlayer : NetworkBehaviour {
             charSelector = CharSelectMenu.Instance.p2Selector;
         }
         charSelector.Connect();
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
     }
 
     private void OnDisable() {
@@ -47,9 +54,15 @@ public class NetPlayer : NetworkBehaviour {
         charSelector.SetSelection(index);
     }
 
+    [Command]
+    public void CmdSetLockedIn() {
+        RpcSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+    }
+
 
     [Command]
     public void CmdSetLockedIn(int index, bool randomSelected, bool lockedIn) {
+        if (!connectedToCharSelector) ConnectToCharSelector();
         RpcSetLockedIn(index, randomSelected, lockedIn);
     }
 
@@ -61,6 +74,7 @@ public class NetPlayer : NetworkBehaviour {
     /// <param name="lockedIn">lock-in status, true if player locked in, false if player un-locked in</param>
     [ClientRpc(includeOwner = false)]
     public void RpcSetLockedIn(int index, bool randomSelected, bool lockedIn) {
+        if (!connectedToCharSelector) ConnectToCharSelector();
         if (randomSelected) {
             charSelector.randomBattler = CharSelectMenu.Instance.characterIcons[index].battler;
         } else {

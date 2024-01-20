@@ -13,7 +13,12 @@ public class NetManager : NetworkManager {
     {
         base.OnClientConnect();
         OnlineMenu.singleton.ShowCharSelect();
-        CharSelectMenu.Instance.p1Selector.Connect();
+    }
+
+    public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+    {
+        base.OnServerAddPlayer(conn);
+        if (!conn.identity.isOwned) NetworkServer.localConnection.identity.GetComponent<NetPlayer>().CmdSetLockedIn();
     }
 
     public override void OnStopClient()
