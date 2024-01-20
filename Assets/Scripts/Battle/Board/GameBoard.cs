@@ -1492,10 +1492,19 @@ namespace Battle.Board {
             // Begin spellcast
             
             casting = true;
-            if (chain == 1) PlaySFX("startupCast");
+            if (chain == 1) {
+                PlaySFX("startupCast");
+                if (Storage.online) netPlayer.CmdAdvanceChain(startup: true);
+            }
 
             GlowBlobs(chainDelay);
-            StartCoroutine(AdvanceChainAndCascadeAfterDelay(chainDelay));
+            if (manualCastContinue) StartCoroutine(AdvanceChainAndCascadeAfterDelay(chainDelay));
+        }
+
+        // Called in online mode to indicate when an opponent is starting their spellcast
+        public void StartupEffect() {
+            GlowBlobs(chainDelay);
+            PlaySFX("startupCast");
         }
 
         private static readonly float cascadeDelay = 0.6f, chainDelay = 0.8f;
@@ -1508,6 +1517,11 @@ namespace Battle.Board {
 
         public void AdvanceChainAndCascade() {
             if (defeated) return;
+
+            // relay to the opponent's client that the chain advance happened at this point in time
+            // RPCs should be guaranteed to execute in order send, so desyncs where piece is placed after when it should in the chain should be prevented.
+            // but if stuff starts breaking it probably has to do with RPC execution order, im not 100% sure its guaranteed.
+            if (Storage.online) netPlayer.CmdAdvanceChain(startup: false);
 
             // Check for any new blobs that may have formed in the delay before this was called.
             // (Replaces old list)
@@ -1595,7 +1609,7 @@ namespace Battle.Board {
             // cascade loop will continue if there are any mana blob tiles of the current color available to clear
             if (totalBlobMana > 0) {
                 GlowBlobs(cascadeDelay);
-                StartCoroutine(AdvanceChainAndCascadeAfterDelay(cascadeDelay));
+                if (manualCastContinue) StartCoroutine(AdvanceChainAndCascadeAfterDelay(cascadeDelay));
             } else {
                 AdvanceCycle();
                 cascade = 0;
