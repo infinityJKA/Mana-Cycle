@@ -131,7 +131,7 @@ namespace VersusMode {
         // when hovering over Random battler, current delay before shown battler changes
         private float randomChangeDelay;
         // current battler being shown as randomly selected fighter
-        private Battle.Battler randomBattler;
+        public Battle.Battler randomBattler;
 
         // CPU difficulty selected by the player - scale of 1-10
         private int cpuLevel;
@@ -656,6 +656,8 @@ namespace VersusMode {
         // Called hen the controller receives a SetBattlerServerRpc.
         // battlerDisplayOnly used for when random is selected by the opponent
         public void SetSelection(int index) {
+            if (selectedIcon.index == index) return;
+
             SetSelection(menu.characterIcons[index].GetComponent<Selectable>());
         }
 
