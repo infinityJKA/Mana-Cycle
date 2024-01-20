@@ -160,7 +160,7 @@ namespace Battle.Board {
             return (board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Foresight && symbolList.childCount > 0);
         }
 
-        public void UseForesight() {
+        public void ActivateForesightSkip() {
             // TODO: some kinda particle effect or other visual effect on foresight symbol consumed
             SoundManager.Instance.PlaySound(foresightConsumeSFX);
             Destroy(symbolList.GetChild(0).gameObject);

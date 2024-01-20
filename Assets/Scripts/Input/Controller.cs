@@ -141,7 +141,7 @@ namespace Battle {
                         }
 
                         if (Input.GetKeyDown(inputScript.Cast)){
-                            board.Spellcast();
+                            board.TrySpellcast();
                         }
 
                         if (board.IsPlayerControlled() && board.GetPiece() != null) {
@@ -253,7 +253,7 @@ namespace Battle {
 
         public void UpdateQuickfall() {
             board.quickFall = quickfallButtonPressed || joystickPressedSouth;
-            board.netPlayer.CmdSetQuickfall(board.quickFall);
+            if (Storage.online) board.netPlayer.CmdSetQuickfall(board.quickFall);
         }
 
         public void PieceTapLeft(InputAction.CallbackContext ctx) {
@@ -284,7 +284,7 @@ namespace Battle {
 
         public void OnSpellcast(InputAction.CallbackContext ctx) {
             if (!ctx.performed) return;
-            if (controlMode == ControlMode.Board && canControlBoard) board.Spellcast();
+            if (controlMode == ControlMode.Board && canControlBoard) board.TrySpellcast();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnCast(true);
         }
 

@@ -130,7 +130,7 @@ namespace Battle {
             var slope = offset.y/Mathf.Abs(offset.x);
             Debug.Log("slope="+slope);
             if (Time.time - touchTime < 0.5f && offset.y*sensitivity > 0.5f && slope > 1.75f) {
-                board.Spellcast();
+                board.TrySpellcast();
             }
 
             board.quickFall = false;

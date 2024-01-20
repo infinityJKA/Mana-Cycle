@@ -170,4 +170,14 @@ public class NetPlayer : NetworkBehaviour {
 
         board.PlacePiece();
     }
+
+
+    [Command]
+    public void CmdClearColor(int color) {
+
+    }
+
+    private void RpcClearColor(int color) {
+        
+    }
 }
