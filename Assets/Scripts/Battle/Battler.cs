@@ -4,15 +4,14 @@ using UnityEngine;
 namespace Battle {
     [CreateAssetMenu(fileName = "Battler", menuName = "ManaCycle/Battler")]
     public class Battler : ScriptableObject {
-        [SerializeField] public string _displayName;
-        public string displayName => _displayName;
+        [SerializeField] public string displayName;
 
         [SerializeField] public Sprite sprite;
 
         /// <summary>Offset of the portrait in the battle view</summary>
         [SerializeField] public Vector2 portraitOffset;
 
-        /// <summary>Effect of the passive ability (if it's not a piece RNG</summary>
+        /// <summary>Effect of the passive ability (if it's not a piece RNG)</summary>
         [SerializeField] public PassiveAbilityEffect passiveAbilityEffect;
         public enum PassiveAbilityEffect
         {

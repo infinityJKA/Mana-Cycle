@@ -94,6 +94,10 @@ namespace VersusMode {
             if (Storage.useDualKeyboardInput) {
                 SwitchToDualKeyboardMode();
             }
+
+            if (Storage.online) {
+                OnlineMenu.singleton.ShowOnlineMenu();
+            }
         }
 
         bool ready { 
