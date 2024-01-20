@@ -21,17 +21,25 @@ public class OnlineMenu : MonoBehaviour {
     }
 
     public void HostButtonPressed() {
-        inputField.interactable = false;
-        hostButton.interactable = false;
-        joinButton.interactable = false;
+        DisableInteractables();
         NetworkManager.singleton.StartHost();
     }
 
     public void JoinButtonPressed() {
+        DisableInteractables();
+        NetworkManager.singleton.StartClient();
+    }
+
+    public void EnableInteractables() {
+        inputField.interactable = true;
+        hostButton.interactable = true;
+        joinButton.interactable = true;
+    } 
+
+    public void DisableInteractables() {
         inputField.interactable = false;
         hostButton.interactable = false;
         joinButton.interactable = false;
-        NetworkManager.singleton.StartClient();
     }
 
     public void ShowCharSelect() {
@@ -40,6 +48,7 @@ public class OnlineMenu : MonoBehaviour {
     }
 
     public void ShowOnlineMenu() {
+        Debug.Log("showing online menu");
         charSelectMenu.SetActive(false);
         onlineMenu.SetActive(true);
     }

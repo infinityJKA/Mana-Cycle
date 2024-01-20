@@ -545,10 +545,12 @@ namespace VersusMode {
                 return;
             }
 
-            if (Storage.online && NetworkManager.singleton.isNetworkActive) {
-                if (NetworkManager.singleton.mode == NetworkManagerMode.Host) {
+            if (Storage.online && NetworkClient.active) {
+                if (NetworkClient.activeHost) {
+                    Debug.Log("Stopping host");
                     NetworkManager.singleton.StopHost();
                 } else {
+                    Debug.Log("Stopping client");
                     NetworkManager.singleton.StopClient();
                 }
             } else {
@@ -558,8 +560,6 @@ namespace VersusMode {
                     TransitionScript.instance.WipeToScene("SoloMenu", reverse: true);
                 }
             }
-
-            
         }
 
         void RefreshLockVisuals() {
