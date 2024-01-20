@@ -6,6 +6,17 @@ using Battle;
 
 public class Utils : MonoBehaviour
 {
+    public static void Shuffle<T>(T[] arr)  
+    {  
+        int n = arr.Length;  
+        while (n > 1) {  
+            n--;  
+            int k = Random.Range(0, n + 1); 
+            T value = arr[k];  
+            arr[k] = arr[n];  
+            arr[n] = value;  
+        }  
+    }
 
     public static void Shuffle<T>(List<T> list)  
     {  
@@ -13,6 +24,18 @@ public class Utils : MonoBehaviour
         while (n > 1) {  
             n--;  
             int k = Random.Range(0, n + 1); 
+            T value = list[k];  
+            list[k] = list[n];  
+            list[n] = value;  
+        }  
+    }
+
+    public static void Shuffle<T>(List<T> list, System.Random rng)  
+    {  
+        int n = list.Count;  
+        while (n > 1) {  
+            n--;  
+            int k = rng.Next(0, n + 1);
             T value = list[k];  
             list[k] = list[n];  
             list[n] = value;  

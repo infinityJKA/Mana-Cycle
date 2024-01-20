@@ -38,14 +38,14 @@ public class InputPrompt : MonoBehaviour {
     }
 
     public void OnDeviceChange(InputDevice device, InputDeviceChange change) {
-        Debug.Log(device.name+": "+change);
+        // Debug.Log(device.name+": "+change);
         if (change == InputDeviceChange.Added || change == InputDeviceChange.Reconnected) {
             // change inputs for all activeInputPrompts
         }
     }
 
     public void OnControlsChanged(PlayerInput playerInput) {
-        Debug.Log($"Input device changed for player {playerInput.playerIndex}: {playerInput.devices[0].name}");
+        // Debug.Log($"Input device changed for player {playerInput.playerIndex}: {playerInput.devices[0].name}");
         InputDevice newDevice = playerInput.devices[0];
 
         if (playerInput.currentControlScheme == "Keyboard&Mouse") {

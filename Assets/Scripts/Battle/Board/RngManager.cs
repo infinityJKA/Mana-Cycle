@@ -2,15 +2,22 @@ using UnityEngine;
 using System.Collections.Generic;
 
 using Battle.Cycle;
+using System;
 
 namespace Battle.Board {    
     public class RngManager : MonoBehaviour {
+        public System.Random rng;
+
         private List<ManaColor> bag; // = new List<ManaColor>();
         // reason for only init on start or method call on this instance: each instance (player) should needs to its own list
         private int CenterMatchCallCount = 0;
 
         void Start() {
             if (bag == null) bag = new List<ManaColor>();
+        }
+
+        public void SetSeed(int seed) {
+            rng = new System.Random(seed);
         }
 
         private void RefillBag()
@@ -27,7 +34,7 @@ namespace Battle.Board {
             }
             // Debug.Log(string.Join(",",newBag));
 
-            Utils.Shuffle(bag);
+            Utils.Shuffle(bag, rng);
         }
 
         // pull the next color from bag
@@ -48,7 +55,7 @@ namespace Battle.Board {
         public ManaColor GetCenterMatch()
         {
             CenterMatchCallCount += 1;
-            return ManaCycle.cycle[(CenterMatchCallCount-1) % ManaCycle.cycle.Count];
+            return ManaCycle.cycle[(CenterMatchCallCount-1) % ManaCycle.cycle.Length];
         }
     }
 }

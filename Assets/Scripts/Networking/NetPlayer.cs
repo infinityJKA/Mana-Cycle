@@ -1,9 +1,18 @@
+using System;
+using Battle.Board;
+using Battle.Cycle;
 using Mirror;
 using UnityEngine;
 using VersusMode;
 
 public class NetPlayer : NetworkBehaviour {
-    [SerializeField] private CharSelector charSelector;
+    private CharSelector charSelector;
+    
+    public GameBoard board;
+
+    private void Start() {
+        DontDestroyOnLoad(gameObject);
+    }
 
     public override void OnStartClient()
     {
@@ -22,6 +31,7 @@ public class NetPlayer : NetworkBehaviour {
         if (charSelector) charSelector.Disconnect();
     }
 
+
     [Command]
     public void CmdSetSelectedBattlerIndex(int index) {
         RpcSetSelectedBattlerIndex(index);
@@ -36,6 +46,7 @@ public class NetPlayer : NetworkBehaviour {
     public void RpcSetSelectedBattlerIndex(int index) {
         charSelector.SetSelection(index);
     }
+
 
     [Command]
     public void CmdSetLockedIn(int index, bool randomSelected, bool lockedIn) {
@@ -56,5 +67,59 @@ public class NetPlayer : NetworkBehaviour {
             charSelector.SetSelection(index);
         }
         if (lockedIn != charSelector.lockedIn) charSelector.ToggleLock();
+    }
+
+
+    [Command]
+    public void CmdStartGame() {
+        RpcStartGame();
+    }
+
+    [ClientRpc(includeOwner = false)]
+    public void RpcStartGame() {
+        charSelector.menu.StartIfReady();
+    }
+
+
+    public readonly static System.Random seedGenerator = new System.Random();
+
+    // Called when the battle begins. Only runs on the host (player 1).
+    // Sets up RNG and other things to synchronize with opponent
+    
+    public void CmdBattleInit() {
+        ManaCycle.GenerateCycle();
+        BattleInitData initData = new BattleInitData
+        {
+            // player 1 generates the RNG seeds for both players.
+            hostSeed = seedGenerator.Next(),
+            nonHostSeed = seedGenerator.Next(),
+            cycle = ManaCycle.cycle,
+        };
+
+        ManaCycle.instance.Boards[0].rngManager.SetSeed(initData.hostSeed);
+        ManaCycle.instance.Boards[1].rngManager.SetSeed(initData.nonHostSeed);
+
+        Debug.LogWarning("sending init data: "+initData);
+        RpcSynchronize(initData);
+    }
+
+    [System.Serializable]
+    public struct BattleInitData {
+        public int hostSeed;
+        public int nonHostSeed;
+        public ManaColor[] cycle;
+
+        public override string ToString()
+        {
+            return $"host seed: {hostSeed}, nonhost seed: {nonHostSeed}, cycle: {string.Join(',', cycle)}";
+        }
+    }
+
+    [ClientRpc(includeOwner = false)]
+    private void RpcSynchronize(BattleInitData initData) {
+        Debug.LogWarning("received init data: "+initData);
+        ManaCycle.instance.Boards[0].rngManager.SetSeed(initData.nonHostSeed);
+        ManaCycle.instance.Boards[1].rngManager.SetSeed(initData.hostSeed);
+        ManaCycle.SetCycle(initData.cycle);
     }
 }

@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VersusMode;
@@ -86,12 +87,11 @@ public class SoloCharSelectController : MonoBehaviour {
         charSelector.OnCast(true);
 
         if (Storage.online) {
-            netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
-            // if (netPlayer.isClient) {
-            //     netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
-            // } else {
-            //     netPlayer.RpcSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
-            // }
+            if (charSelector.menu.started) {
+                netPlayer.CmdStartGame();
+            } else {
+                netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+            }
         } else {
             charSelector = charSelectMenu.GetActiveSelector();
         }
