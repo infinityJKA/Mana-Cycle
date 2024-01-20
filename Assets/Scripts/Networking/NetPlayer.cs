@@ -199,4 +199,16 @@ public class NetPlayer : NetworkBehaviour {
             board.AdvanceChainAndCascade();
         }
     }
+
+
+    [Command]
+    public void CmdUseAbility(int[] data) {
+        RpcUseAbility(data);
+    }
+
+    [ClientRpc(includeOwner = false)]
+    private void RpcUseAbility(int[] data) {
+        board.abilityManager.abilityData = data;
+        board.abilityManager.UseAbility();
+    }
 }

@@ -40,6 +40,10 @@ namespace Battle.Board {
         /// </summary>
         public bool abilityActive;
 
+        // used for synchronizing ability with the opponent's client.
+        public int[] abilityData;
+
+
         void Awake()
         {
             board = GetComponent<GameBoard>();
@@ -112,6 +116,12 @@ namespace Battle.Board {
                     // add 10% of max active ability mana to enemy
                     board.enemyBoard.abilityManager.GainMana(board.enemyBoard.Battler.activeAbilityMana / 10);
                 }
+
+                board.RefreshGhostPiece();
+                if (Storage.online && board.netPlayer.isOwned) {
+                    board.netPlayer.CmdUseAbility(abilityData);
+                }
+                Item.Proc(board.equiped, Item.DeferType.OnSpecialUsed);
             }
         }
 
@@ -128,8 +138,23 @@ namespace Battle.Board {
         /// <summary>
         /// Sends 3 trash tiles to your opponent's board.
         /// </summary>
+        // Treats data as an array of 3 ints of the columns to send each trash tile in.
         private void Whirlpool() {
-            for (int i=0; i<3; i++) board.enemyBoard.AddTrashTile();
+            // If this is the oppoennt's client sending a whirlpool,
+            // use the retrieved data for columns to send to
+            if (Storage.online && !board.netPlayer.isOwned) {
+                for (int i=0; i<3; i++) {
+                    board.enemyBoard.AddTrashTile(board.rngManager.rng, abilityData[i]);
+                }
+            } 
+
+            // if not, send in random columns and save the columns sent to
+            else {
+                abilityData = new int[3];
+                for (int i=0; i<3; i++) {
+                    abilityData[i] = board.enemyBoard.AddTrashTile(board.rngManager.rng);
+                }
+            }
         }
 
         /// <summary>

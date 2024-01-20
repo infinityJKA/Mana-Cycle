@@ -799,8 +799,6 @@ namespace Battle.Board {
 
             if (abilityManager.enabled) {
                 abilityManager.UseAbility();
-                RefreshGhostPiece();
-                Item.Proc(equiped, Item.DeferType.OnSpecialUsed);
             }
         }
 
@@ -813,13 +811,26 @@ namespace Battle.Board {
         }
 
 
-        // Adds a trash tile to this board in a random column.
-        public void AddTrashTile() {
+        /// <summary>
+        /// Adds a trash tile to this board in a random column.
+        /// </summary>
+        /// <param name="rng">rng to use for the trash tile's color</param>
+        /// <param name="col">column to spawn in, -1 for random</param>
+        /// <returns>the column it was spawned in.</returns>
+        public int AddTrashTile(System.Random rng, int col = -1) {
             /// Add a new trash piece with a random color
             SinglePiece trashPiece = Instantiate(abilityManager.singlePiecePrefab).GetComponent<SinglePiece>();
-            trashPiece.GetCenter().SetColor(Piece.RandomColor(), this);
+            trashPiece.GetCenter().SetColor(Piece.RandomColor(rng), this);
             trashPiece.GetCenter().MakeTrashTile(this);
-            SpawnStandalonePiece(trashPiece);
+
+            // if col is -1, send to random tile, will return the column sent in
+            if (col == -1) {
+                col = SpawnStandalonePiece(trashPiece);
+            } 
+            // if not, send in the specified column
+            else {
+                SpawnStandalonePiece(trashPiece, col);
+            }
 
             // start trash damage timer only if at 0 (not running)
             if (trashDamageTimer == 0) {
@@ -828,10 +839,12 @@ namespace Battle.Board {
 
             // start trash timer again if applicable
             if (level != null && level.trashSendRate > 0) Invoke("AddTrashTile", level.trashSendRate);
+
+            return col;
         }
 
         // Add a piece to this board without having the player control or place it (keep their current piece).
-        public void SpawnStandalonePiece(Piece newPiece, int column) {
+        public int SpawnStandalonePiece(Piece newPiece, int column) {
             // Send it to a random color and drop it
             newPiece.transform.SetParent(pieceBoard, false);
             newPiece.MoveTo(column, 1);
@@ -847,17 +860,19 @@ namespace Battle.Board {
             RefreshGhostPiece();
             // may replace with trash sfx later
             PlaySFX("place");
+            return column;
         }
 
         // Spawn the standalone piece in a random column
-        public void SpawnStandalonePiece(Piece piece) {
+        // Returns the column the piece was spawned in
+        public int SpawnStandalonePiece(Piece piece) {
             // Choose a random column to send the piece to.
             // If at any point it overlaps with the piece being dropped, choose a new column
-            // Try this a maximum of 10 times before giving up and destroying the piece
+            // Try this a maximum of 40 times before giving up and destroying the piece
             // note: only checks for the center piece, aka single pieces/trash tiles
-            for (int i=0; i<10; i++) {
+            for (int i=0; i<40; i++) {
                 bool valid = true;
-                int col = (int)Random.Range(0, 8);
+                int col = Random.Range(0, 8);
 
                 int row = 1;
                 while (row < height && !tiles[row, col]) {
@@ -873,12 +888,14 @@ namespace Battle.Board {
 
                 if (valid) {
                     SpawnStandalonePiece(piece, col);
-                    return;
+                    return col;
                 }
             }
 
+            Debug.LogWarning("Standalone tile could not be placed");
             piece.DestroyTiles();
             Destroy(piece.gameObject);
+            return -1;
         }
 
         // Hides all 
