@@ -48,7 +48,6 @@ public class OnlineMenu : MonoBehaviour {
     }
 
     public void ShowOnlineMenu() {
-        Debug.Log("showing online menu");
         charSelectMenu.SetActive(false);
         onlineMenu.SetActive(true);
     }

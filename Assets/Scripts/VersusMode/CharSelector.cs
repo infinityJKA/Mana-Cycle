@@ -707,8 +707,6 @@ namespace VersusMode {
                     + selectedBattler.activeAbilityDesc;
                 }
             }
-
-            Debug.Log(name+" selected "+selectedBattler.displayName);
         }
 
         public void HideSelection() {
