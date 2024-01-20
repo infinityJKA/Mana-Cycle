@@ -10,7 +10,8 @@ public class SoloBoardController : MonoBehaviour {
 
     private void Awake() {
         // Only use this object if there is no second player and no need for multiple device handling. (PlayerConnectionHandler will destroy itself if not)
-        if (Storage.isPlayerControlled2) Destroy(gameObject);
+        // Solo controls will also be used in online when other player is controlled by an online opponent
+        if (Storage.isPlayerControlled2 && !Storage.online) Destroy(gameObject);
 
         GetComponent<Controller>().SetBoard(board);
         if (!Storage.isPlayerControlled1 && !Storage.level) GetComponent<Controller>().canControlBoard = false;

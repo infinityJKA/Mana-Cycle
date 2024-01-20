@@ -265,6 +265,11 @@ namespace Battle.Board {
         // online mode- the netplayer that controls this board
         public NetPlayer netPlayer;
 
+        // if piece will auto place when sliding against the ground for too long.
+        // turned off when this is a board connected by an online opponent
+        // to make srue pieces aren't placed in the wrong place
+        public bool autoPlaceTiles;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -458,8 +463,6 @@ namespace Battle.Board {
             portrait.sprite = battler.sprite;
             portrait.GetComponent<RectTransform>().anchoredPosition = portrait.GetComponent<RectTransform>().anchoredPosition + battler.portraitOffset;
             attackPopup.SetBattler(battler);
-
-            
         }
 
         void SetAIDifficulty(float difficulty) {
@@ -555,7 +558,7 @@ namespace Battle.Board {
                 if (instaDropThisFrame && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
                     PlacePiece();
                 } else {
-                    fallTimeMult = (quickFall ? boardStats[QuickDropSpeed] : 1f);
+                    fallTimeMult = quickFall ? boardStats[QuickDropSpeed] : 1f;
 
                     // Get the time that has passed since the previous piece fall.
                     // If it is greater than fall time (or fallTime/10 if holding down),
@@ -578,12 +581,12 @@ namespace Battle.Board {
                         // Try to move the piece down.
                         bool movedDown = MovePiece(0, 1);
 
-                        if (!movedDown) {
+                        if (!movedDown && autoPlaceTiles) {
                             // If it can't be moved down,
                             // also check for sliding buffer, and place if beyond that
                             // don't use slide time if quick falling
                             if (!quickFall && level) {
-                                finalFallTime += (slideTime*level.slideTimeMult);
+                                finalFallTime += slideTime*level.slideTimeMult;
                             }
 
                             // true if time is up for the extra slide buffer
@@ -594,17 +597,19 @@ namespace Battle.Board {
                                 PlacePiece();
                             }
                         } else {
-                            // If it did move down, adjust numbers.
-                            // reset to 0 if row fallen to is below the last.
-                            // otherwise, increment
-                            if (piece != null && piece.GetRow() > lastRowFall) {
-                                lastRowFall = piece.GetRow();
-                                rowFallCount = 0;
-                            } else {
-                                rowFallCount++;
-                                // if row fall count exceeds 3, auto place
-                                if (rowFallCount > 3) {
-                                    PlacePiece();
+                            if (autoPlaceTiles) {
+                                // If it did move down, adjust numbers.
+                                // reset to 0 if row fallen to is below the last.
+                                // otherwise, increment
+                                if (piece != null && piece.GetRow() > lastRowFall) {
+                                    lastRowFall = piece.GetRow();
+                                    rowFallCount = 0;
+                                } else {
+                                    rowFallCount++;
+                                    // if row fall count exceeds 3, auto place
+                                    if (rowFallCount > 3) {
+                                        PlacePiece();
+                                    }
                                 }
                             }
 
@@ -630,6 +635,9 @@ namespace Battle.Board {
 
             cycleInitialized = true;
             this.cycle = cycle;
+
+            // Don't draw ghost tiles if this is a net controlled board
+            if (Storage.online && !netPlayer.isOwned) drawGhostPiece = false;
 
             piecePreview.Setup(this);
 
@@ -657,7 +665,6 @@ namespace Battle.Board {
                 battler = enemyBoard.battler;
                 InitBattler();
                 portrait.color = new Color(0.9f,0.2f,0.1f,0.57f);
-                
             }
             else
             {
@@ -680,8 +687,12 @@ namespace Battle.Board {
             hpBar.Refresh();
 
             UpdateCycleColoredObjects();
-        }
 
+            // turn off auto-placing if this is an online opponent
+            if (Storage.online) {
+                autoPlaceTiles = netPlayer.isOwned;
+            }
+        }
 
         public void RotateCCW(){
             if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return;
@@ -695,6 +706,8 @@ namespace Battle.Board {
                 if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
             }
 
+            if (Storage.online && netPlayer.isOwned) NetworkUpdatePiece();
+            
             RefreshGhostPiece();
 
             PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f), important: false);
@@ -710,6 +723,8 @@ namespace Battle.Board {
                 // try nudging right, then left, then up. If none work, undo the rotation
                 if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
             }
+
+            if (Storage.online && netPlayer.isOwned) NetworkUpdatePiece();
 
             RefreshGhostPiece();
 
@@ -734,6 +749,14 @@ namespace Battle.Board {
                 return true;
             }
             return false;
+        }
+
+        public void NetworkUpdatePiece() {
+            netPlayer.CmdMovePiece(piece.GetCol(), piece.GetRotation());
+        }
+
+        public void SetPiecePosition(int col, int row) {
+            piece.MoveTo(col, row);
         }
 
         public void Spellcast(){
@@ -889,10 +912,15 @@ namespace Battle.Board {
         // If it falls to this row more than 3 times, it will auto-place.
         private int rowFallCount = 0;
 
-        private void PlacePiece() {
+        public void PlacePiece() {
             if (!piece) return;
             // The piece will only advance the damage cycle when placed if it does not have a special ability
             bool advanceDamage = piece.effect == Battler.ActiveAbilityEffect.None;
+
+            // send placement data to opponent in online mode
+            if (Storage.online && netPlayer.isOwned) {
+                netPlayer.CmdPlacePiece(piece.GetCol(), piece.GetRotation());
+            }
 
             // Place the piece
             PlaceTilesOnBoard();
@@ -991,6 +1019,9 @@ namespace Battle.Board {
             if (col != 0) {
                 RefreshGhostPiece();
             }
+
+            // send movement data to the other player. only update if moving left or right
+            if (Storage.online && col != 0 && netPlayer.isOwned) NetworkUpdatePiece();
 
             return true;
         }

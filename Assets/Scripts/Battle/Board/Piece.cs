@@ -340,7 +340,7 @@ namespace Battle.Board {
             return right;
         }
 
-        public Orientation getRot(){
+        public Orientation GetRotation(){
             return orientation;
         }
     }

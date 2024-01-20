@@ -103,6 +103,7 @@ public class NetPlayer : NetworkBehaviour {
         RpcSynchronize(initData);
     }
 
+
     [System.Serializable]
     public struct BattleInitData {
         public int hostSeed;
@@ -121,5 +122,52 @@ public class NetPlayer : NetworkBehaviour {
         ManaCycle.instance.Boards[0].rngManager.SetSeed(initData.nonHostSeed);
         ManaCycle.instance.Boards[1].rngManager.SetSeed(initData.hostSeed);
         ManaCycle.SetCycle(initData.cycle);
+    }
+
+
+    [Command]
+    public void CmdMovePiece(int targetColumn, Piece.Orientation rotation) {
+        RpcMovePiece(targetColumn, rotation);
+    }
+
+    [ClientRpc(includeOwner = false)]
+    private void RpcMovePiece(int targetColumn, Piece.Orientation rotation) {
+        // ensure piece is not placed inside the ground
+        board.GetPiece().SetRotation(rotation);
+        board.SetPiecePosition(targetColumn, board.GetPiece().GetRow());
+        while (!board.ValidPlacement()) {
+            board.MovePiece(0, -1);
+        }
+    }
+
+    [Command]
+    public void CmdSetQuickfall(bool quickfalling) {
+        RpcSetQuickfall(quickfalling);
+    }
+
+    [ClientRpc(includeOwner = false)]
+    private void RpcSetQuickfall(bool quickfalling) {
+        board.quickFall = quickfalling;
+    }
+
+
+    [Command]
+    public void CmdPlacePiece(int targetColumn, Piece.Orientation rotation) {
+        RpcPlacePiece(targetColumn, rotation);
+    }
+
+    [ClientRpc(includeOwner = false)]
+    private void RpcPlacePiece(int targetColumn, Piece.Orientation rotation) {
+        // possible improvement: If piece index is desynced, ask the other client to send their current board state and piece index
+        // may be needed for UDP which may be switched to
+
+        // ensure piece is not placed inside the ground
+        board.GetPiece().SetRotation(rotation);
+        board.SetPiecePosition(targetColumn, board.GetPiece().GetRow());
+        while (!board.ValidPlacement()) {
+            board.MovePiece(0, -1);
+        }
+
+        board.PlacePiece();
     }
 }

@@ -74,6 +74,13 @@ namespace Battle.Cycle {
                     }
                 }
             }
+
+            // when not in online mode, just pick a random seed for both rngs
+            else {
+                foreach (var board in boards) {
+                    board.rngManager.SetSeed(NetPlayer.seedGenerator.Next());
+                }
+            }
         }
 
         /// <summary>

@@ -168,7 +168,7 @@ namespace Battle {
             controlMode = ControlMode.CharSelector;
         }
 
-        private static float charSelectDeadzone = 0.1f;
+        private static float deadzone = 0.1f;
         private static float charSelectInputMagnitude = 0.5f;
 
         private bool joystickPressed;
@@ -181,11 +181,10 @@ namespace Battle {
         public void OnMove(InputAction.CallbackContext ctx) {
             if (controlMode != ControlMode.CharSelector) return;
 
-            // this isn't used in battle YET but it will be used for controller joystick piece movement EVENTUALLY probably
             movementInput = ctx.ReadValue<Vector2>();
 
             if (joystickPressed) {
-                if (movementInput.magnitude <= charSelectDeadzone) {
+                if (movementInput.magnitude <= deadzone) {
                     joystickPressed = false;
                 }
             }            
@@ -198,7 +197,7 @@ namespace Battle {
                 if (Mathf.Abs(angle) < 45f) charSelector.OnMoveUp();
                 else if (Mathf.Abs(angle - 180f) < 45f) charSelector.OnMoveDown();
                 else if (Mathf.Abs(angle - 90f) < 45f) charSelector.OnMoveLeft();
-                else if (Mathf.Abs(angle + 90f) < 45f) charSelector.OnMoveRight();  
+                else if (Mathf.Abs(angle + 90f) < 45f) charSelector.OnMoveRight();
             } 
         }
 
@@ -209,10 +208,10 @@ namespace Battle {
             movementInput = ctx.ReadValue<Vector2>();
 
             if (joystickPressed) {
-                if (movementInput.magnitude <= charSelectDeadzone) {
+                if (movementInput.magnitude <= deadzone) {
                     joystickPressed = false;
                     joystickPressedSouth = false;
-                    board.quickFall = quickfallButtonPressed || joystickPressedSouth;
+                    UpdateQuickfall();
                 }
             }            
 
@@ -228,11 +227,15 @@ namespace Battle {
 
                 else if (Mathf.Abs(angle - 180f) < 45f) {
                     joystickPressedSouth = true;
-                    board.quickFall = quickfallButtonPressed || joystickPressedSouth;
+                    UpdateQuickfall();
                 }
 
-                else if (Mathf.Abs(angle - 90f) < 45f) board.MoveLeft();
-                else if (Mathf.Abs(angle + 90f) < 45f) board.MoveRight();  
+                else if (Mathf.Abs(angle - 90f) < 45f) {
+                    board.MoveLeft();
+                }
+                else if (Mathf.Abs(angle + 90f) < 45f) {
+                    board.MoveRight();
+                }
             }
         }
 
@@ -240,15 +243,17 @@ namespace Battle {
             if (controlMode == ControlMode.Board && canControlBoard) {
                 if (ctx.performed) {
                     quickfallButtonPressed = true;
-                    board.quickFall = quickfallButtonPressed || joystickPressedSouth;
-                    Debug.Log("quickfalling");
                 }
                 if (ctx.canceled) {
                     quickfallButtonPressed = false;
-                    board.quickFall = quickfallButtonPressed || joystickPressedSouth;
-                    Debug.Log("stopped quickfalling");
                 }
+                UpdateQuickfall();
             }
+        }
+
+        public void UpdateQuickfall() {
+            board.quickFall = quickfallButtonPressed || joystickPressedSouth;
+            board.netPlayer.CmdSetQuickfall(board.quickFall);
         }
 
         public void PieceTapLeft(InputAction.CallbackContext ctx) {
