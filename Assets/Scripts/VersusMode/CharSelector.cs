@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 
 using Sound;
+using Mirror;
 
 namespace VersusMode {
     /// <summary>
@@ -149,9 +150,6 @@ namespace VersusMode {
         // Spectrum of colors to tint the CPU number with increasing difficulty
         [SerializeField] private Color[] cpuLevelSpectrum;
 
-        // cached on validate
-        private TransitionScript transitionHandler;
-
         static readonly int minCpuLevel = 1, maxCpuLevel = 10;
 
         public bool isRandomSelected {
@@ -200,9 +198,10 @@ namespace VersusMode {
                 centerPosition = abilityInfoCanvasGroup.transform.localPosition;
             }
 
+            selectedIcon = menu.characterIcons[0];
+
             tipText.gameObject.SetActive(!menu.Mobile);
             gameObject.SetActive(true);
-            transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
         }
 
         void Update() {
@@ -541,17 +540,26 @@ namespace VersusMode {
         }
 
         public void ReturnToMenu() {
-            if (!transitionHandler) {
-                Debug.LogError("Transition handler not found in scene!");
+            if (!TransitionScript.instance) {
+                Debug.LogError("Transition handler not found!");
                 return;
             }
-            // leave online mode - DontDestroyOnLoad network objects will destroy themselves upon unload.
-            Storage.online = false;
-            if (Storage.gamemode != Storage.GameMode.Solo) {
-                transitionHandler.WipeToScene("MainMenu", reverse: true);
+
+            if (Storage.online && NetworkManager.singleton.isNetworkActive) {
+                if (NetworkManager.singleton.mode == NetworkManagerMode.Host) {
+                    NetworkManager.singleton.StopHost();
+                } else {
+                    NetworkManager.singleton.StopClient();
+                }
             } else {
-                transitionHandler.WipeToScene("SoloMenu", reverse: true);
+                if (Storage.gamemode != Storage.GameMode.Solo) {
+                    TransitionScript.instance.WipeToScene("MainMenu", reverse: true);
+                } else {
+                    TransitionScript.instance.WipeToScene("SoloMenu", reverse: true);
+                }
             }
+
+            
         }
 
         void RefreshLockVisuals() {

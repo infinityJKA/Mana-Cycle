@@ -33,6 +33,8 @@ public class SoloCharSelectController : MonoBehaviour {
     }
 
     public void OnNavigate(InputAction.CallbackContext ctx) {
+        if (!charSelectMenu.gameObject.activeInHierarchy) return;
+
         navigateInput = ctx.action.ReadValue<Vector2>();
 
         // navigation handling for new input system
@@ -50,7 +52,13 @@ public class SoloCharSelectController : MonoBehaviour {
             else if (Mathf.Abs(angle - 90f) < 45f) charSelector.OnMoveLeft();
             else if (Mathf.Abs(angle + 90f) < 45f) charSelector.OnMoveRight();
 
-            if (Storage.online) netPlayer.CmdSetSelectedBattlerIndex(charSelector.selectedIcon.index);
+            if (Storage.online) {
+                if (netPlayer.isClient) {
+                    netPlayer.CmdSetSelectedBattlerIndex(charSelector.selectedIcon.index);
+                } else {
+                    netPlayer.RpcSetSelectedBattlerIndex(charSelector.selectedIcon.index);
+                }
+            }
         }
     }
 
@@ -71,11 +79,17 @@ public class SoloCharSelectController : MonoBehaviour {
     // }
 
     public void OnSelect(InputAction.CallbackContext ctx) {
+        if (!charSelectMenu.gameObject.activeInHierarchy) return;
+
         if (!ctx.performed) return;
         charSelector.OnCast(true);
 
         if (Storage.online) {
-            netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+            if (netPlayer.isClient) {
+                netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+            } else {
+                netPlayer.RpcSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+            }
         } else {
             charSelector = charSelectMenu.GetActiveSelector();
         }
@@ -93,11 +107,15 @@ public class SoloCharSelectController : MonoBehaviour {
     }
 
     public void OnAbilityInfo(InputAction.CallbackContext ctx) {
+        if (!charSelectMenu.gameObject.activeInHierarchy) return;
+
         if (!ctx.performed) return;
         charSelector.OnAbilityInfo();
     }
 
     public void OnSettings(InputAction.CallbackContext ctx) {
+        if (!charSelectMenu.gameObject.activeInHierarchy) return;
+        
         if (!ctx.performed) return;
         charSelector.OnSettings();
     }

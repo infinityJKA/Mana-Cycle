@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class TransitionScript : MonoBehaviour
 {
+    public static TransitionScript instance;
+
     [SerializeField] private GameObject wipeObj;
     [SerializeField] private Image wipeImg;
     public static string transitionState { get; private set; } = "none";
@@ -16,6 +18,10 @@ public class TransitionScript : MonoBehaviour
     private static string gotoScene;
     private static bool wipingOut = false;
     private static bool inverted;
+
+    private void Awake() {
+        instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()
