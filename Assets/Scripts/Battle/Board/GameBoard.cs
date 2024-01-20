@@ -262,6 +262,9 @@ namespace Battle.Board {
 
         [SerializeField] private List<ColorFader> cycleColoredObjects;
 
+        // online mode- the netplayer that controls this board
+        public NetPlayer netPlayer;
+
         // Start is called before the first frame update
         void Start()
         {
