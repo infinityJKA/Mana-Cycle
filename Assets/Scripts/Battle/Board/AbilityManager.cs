@@ -93,6 +93,7 @@ namespace Battle.Board {
 
         public void UseAbility() {
             if (!enabled) return;
+            
             if (board.Battler.activeAbilityEffect != Battler.ActiveAbilityEffect.None && mana >= board.Battler.activeAbilityMana) {
                 mana = 0;
                 RefreshManaBar();
@@ -130,6 +131,7 @@ namespace Battle.Board {
         /// If it is placed or down is pressed, blade quickly shoots through the column and destroys mana in its path.
         /// </summary>
         private void IronSword() {
+            ClearAbilityData();
             SinglePiece ironSwordPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
             ironSwordPiece.MakeIronSword(board);
             board.ReplacePiece(ironSwordPiece);
@@ -161,6 +163,7 @@ namespace Battle.Board {
         /// Replaces current piece and the next 2 in the preview with bombs.
         /// </summary>
         private void PyroBomb() {
+            ClearAbilityData();
             board.ReplacePiece(MakePyroBomb());
             board.piecePreview.ReplaceNextPiece(MakePyroBomb());
             board.piecePreview.ReplaceListPiece(MakePyroBomb(), PiecePreview.previewLength-1);
@@ -176,13 +179,14 @@ namespace Battle.Board {
         /// Gain a foresight symbol, allowing to skip the next unclearable color during a chain.
         /// </summary>
         private void Foresight() {
+            ClearAbilityData();
             SoundManager.Instance.PlaySound(foresightActivateSFX);
             Instantiate(foresightIconPrefab, symbolList);
         }
 
         // If this is Psychic and there is a foresight icon available, consume it and return true
         public bool ForesightCheck() {
-            return (board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Foresight && symbolList.childCount > 0);
+            return board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Foresight && symbolList.childCount > 0;
         }
 
         public void ActivateForesightSkip() {
@@ -195,6 +199,7 @@ namespace Battle.Board {
         /// Replaces the current piece with a gold mine crystal.
         /// </summary>
         private void GoldMine() {
+            ClearAbilityData();
             SinglePiece goldMinePiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
             goldMinePiece.MakeGoldMine(board);
             board.ReplacePiece(goldMinePiece);
@@ -207,7 +212,19 @@ namespace Battle.Board {
         private void ZBlind() {
             SinglePiece zmanPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
             zmanPiece.MakeZman(board);
-            board.enemyBoard.SpawnStandalonePiece(zmanPiece);
+
+            if (Storage.online && !board.netPlayer.isOwned) {
+                board.enemyBoard.SpawnStandalonePiece(zmanPiece, abilityData[0]);
+            } 
+
+            else {
+                abilityData = new int[1];
+                abilityData[0] = board.enemyBoard.SpawnStandalonePiece(zmanPiece);
+            }
+        }
+
+        public void ClearAbilityData() {
+            if (abilityData.Length > 0) abilityData = new int[0];
         }
     }
 }

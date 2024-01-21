@@ -90,7 +90,20 @@ namespace Battle.Board {
         [SerializeField] private BoardDefeatFall boardDefeatFall;
 
         /// If the board is inputting to quick fall the current piece. 
-        public bool quickFall = false;
+        private bool _quickFall = false;
+        public bool quickFall {
+            get {
+                return _quickFall;
+            }
+            set {
+                bool prev = _quickFall;
+                _quickFall = value;
+                if (prev != _quickFall && Storage.online) {
+                    netPlayer.CmdSetQuickfall(_quickFall);
+                }
+            }
+        }
+
         /// If the board has inputted to insta-drop, but only true for one frame until after checked.
         public bool instaDropThisFrame = false;
 
@@ -516,14 +529,6 @@ namespace Battle.Board {
                 } else {
                     recoveryText.text = Mathf.CeilToInt(recoveryTimer)+"";
                 }
-            }
-
-            // debug things
-            if (Application.isEditor)
-            {
-                if (Input.GetKey(KeyCode.F1) && playerSide == 0) enemyBoard.TakeDamage(100);
-                if (Input.GetKey(KeyCode.F2) && playerSide == 0) abilityManager.GainMana(100);
-                if (Input.GetKeyDown(KeyCode.F3) && playerSide == 1) DealDamage(50, Vector3.zero, 0, 1);
             }
 
             // TRASH DAMAGE TIMER
@@ -1229,14 +1234,18 @@ namespace Battle.Board {
             return ClearTile(col, row, true);
         }
 
-        // Get a specific color from the cycle with the given offset.
+        bool useDamageShootParticles = false;
 
-
-        // Deal damage to the other player(s(?))
-        // shootSpawnPos is where the shoot particle is spawned
-        public void DealDamage(int damage, Vector3 shootSpawnPos, int color, int chain)
+        /// <summary>
+        /// Deal damage to the other player
+        /// </summary>
+        /// <param name="damage">damage to deal</param>
+        /// <param name="shootSpawnPos">spawn point of the damage shoot particle</param>
+        /// <param name="color">mana color (unused)</param>
+        /// <param name="chain">current chain (only used for attack anim which is disabled indefinitely)</param>
+        /// <returns>amount of leftover damage that was not used up (only used for online mode where only countering own damage will be evaluated</returns>
+        public int DealDamage(int damage, Vector3 shootSpawnPos, int color, int chain)
         {
-            
             if (postGame) {
                 // just add score if postgame and singleplayer
                 if (singlePlayer && !Storage.level.aiBattle)
@@ -1244,20 +1253,73 @@ namespace Battle.Board {
                     hp += damage;   
                 }
                 // otherwise if versus, nothing will happen, other player is already dead so dont damage
-                return;
+                return 0;
             }
-
-            // Spawn a new damageShoot
-            GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
-            DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
-            shoot.damage = damage;
 
             if (chain >= 2) attackPopup.AttackAnimation();
 
-            // Blend mana color with existing damage shoot color
-            // var image = shootObj.GetComponent<Image>();
-            // image.color = Color.Lerp(image.color, cycle.GetManaColor(color), 0.5f);
+            if (useDamageShootParticles) {
+                GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
+                DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
+                shoot.damage = damage;
+                DamageShootAtTarget(shoot);
+                return 0;
+            } else {
+                return EvaluateInstantOutgoingDamage(damage);
+            }
+        }
 
+        /// <summary>
+        /// Evaluate damage instantly
+        /// </summary>
+        /// <param name="damage"></param>
+        /// <returns>residual damage not dealt (only applicable to online mode where damage is sent to opponent to eval on their client)</returns>
+        public int EvaluateInstantOutgoingDamage(int damage) {
+            // if singleplayer, add to "score" (hp bar)
+            if (singlePlayer && !Storage.level.aiBattle) {
+                AddScore(damage);
+                return 0;
+            }
+
+            // first try to counter incoming damage from right to left
+            if (damage > 0) damage = hpBar.CounterIncoming(damage);
+
+            // then add shield to self
+            if (damage > 0 && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields) damage = AddShield(damage);
+
+            // if in online mode, send remainder of damage to opponent for then to evaluate on their client
+            // if not, evaluate on the other board now
+            if (damage <= 0) return 0;
+            if (Storage.online) {
+                return damage;
+            } else {
+                return enemyBoard.EvaluateInstantIncomingDamage(damage);
+            }
+        }
+
+        public int EvaluateInstantIncomingDamage(int damage) {
+            // Attack enemy shield first
+            if (damage > 0) damage = DamageShield(damage);
+
+            // then enqueue damage to enemy
+            if (damage > 0) {
+                EnqueueDamage(damage);
+                PlaySFX("dmgShoot", pitch: 1f + enemyBoard.hpBar.DamageQueue[0].dmg/1000f, volumeScale: 1.3f);
+                damage = 0;
+            }
+
+            if (Storage.online) {
+                int[] damageQueue = new int[6];
+                for (int i=0; i<6; i++) {
+                    damageQueue[i] = hpBar.DamageQueue[i].dmg;
+                }
+                netPlayer.CmdUpdateDamageQueue(shield, damageQueue);
+            }
+
+            return damage;
+        }
+
+        public void DamageShootAtTarget(DamageShoot shoot) {
             // Send it to the appropriate location
             // if singleplayer, add damage to score, send towards hp bar
             if (singlePlayer && !Storage.level.aiBattle) {
@@ -1280,7 +1342,7 @@ namespace Battle.Board {
                         shoot.target = this;
                         shoot.mode = DamageShoot.Mode.Countering;
                         shoot.destination = hpBar.DamageQueue[i].transform.position;
-                        return;
+                        break;
                     }
                 }
 
@@ -1291,6 +1353,14 @@ namespace Battle.Board {
                     shoot.destination = hpBar.shieldObject.transform.position;
                     return; 
                 }
+
+                // If this is network and not controlled by this player, skip and let other player evaluate dealt for their board.
+                // they will send an rpc back after evaluation with the current damage queue state
+                if (Storage.online && !netPlayer.isOwned) {
+                    return;
+                }
+
+              
 
                 //After shields, try to damage opponent's shield
                 if (enemyBoard.shield > 0) {
@@ -1308,6 +1378,10 @@ namespace Battle.Board {
                 shoot.target = enemyBoard;
                 shoot.mode = DamageShoot.Mode.Attacking;
                 shoot.destination = enemyBoard.hpBar.DamageQueue[0].transform.position;
+            }
+
+            if (DamageShoot.instant) {
+                shoot.InstantEvaluate();
             }
         }
 
@@ -1511,7 +1585,7 @@ namespace Battle.Board {
             casting = true;
             if (chain == 1) {
                 PlaySFX("startupCast");
-                if (Storage.online) netPlayer.CmdAdvanceChain(startup: true);
+                if (Storage.online) netPlayer.CmdAdvanceChain(startup: true, 0);
             }
 
             GlowBlobs(chainDelay);
@@ -1534,11 +1608,6 @@ namespace Battle.Board {
 
         public void AdvanceChainAndCascade() {
             if (defeated) return;
-
-            // relay to the opponent's client that the chain advance happened at this point in time
-            // RPCs should be guaranteed to execute in order send, so desyncs where piece is placed after when it should in the chain should be prevented.
-            // but if stuff starts breaking it probably has to do with RPC execution order, im not 100% sure its guaranteed.
-            if (Storage.online) netPlayer.CmdAdvanceChain(startup: false);
 
             // Check for any new blobs that may have formed in the delay before this was called.
             // (Replaces old list)
@@ -1610,8 +1679,24 @@ namespace Battle.Board {
 
             highestSingleDamage = Math.Max(highestSingleDamage, damage);
 
+            // relay to the opponent's client that the chain advance happened at this point in time
+            // RPCs should be guaranteed to execute in order send, so desyncs where piece is placed after when it should in the chain should be prevented.
+            // but if stuff starts breaking it probably has to do with RPC execution order, im not 100% sure its guaranteed.
+
             // Send the damage over. Will counter incoming damage first.
-            DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
+            // when in onlinemode, residual damage may be left that will be sent to the opponent to add to their damage queue within their client
+            // and they will then send back an rpc with their damage queue state
+            // do not deal damage here if online;
+            // instead the damageSent part of the AdvanceChain rpc will be used to call damage after this was calle dto update the boar dand clear the mana
+            if (Storage.online) {
+                if (netPlayer.isOwned) {
+                    int residualDamage = DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
+                    netPlayer.CmdAdvanceChain(startup: false, damageSent: residualDamage);
+                }
+            // if not net controlled, deal damage as normal
+            } else {
+                DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
+            }
 
             // Do gravity everywhere
             AllTileGravity();
