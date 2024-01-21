@@ -253,7 +253,6 @@ namespace Battle {
 
         public void UpdateQuickfall() {
             board.quickFall = quickfallButtonPressed || joystickPressedSouth;
-            if (Storage.online) board.netPlayer.CmdSetQuickfall(board.quickFall);
         }
 
         public void PieceTapLeft(InputAction.CallbackContext ctx) {

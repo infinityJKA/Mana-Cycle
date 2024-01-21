@@ -186,17 +186,24 @@ public class NetPlayer : NetworkBehaviour {
     }
 
 
+    /// <summary>
+    /// Clear the current color in the chain/cascade and send damage to opponent (as instant damage for now as of writing)
+    /// </summary>
+    /// <param name="startup">is this is true, will just show spellcast startup effect and nothing esle</param>
+    /// <param name="damageSent">amount of damage sent from this clear's damage, not including countering own damage or making own shields. 
+    /// (includes damaging opponent's shield.)</param>
     [Command]
-    public void CmdAdvanceChain(bool startup) {
-        RpcAdvanceChain(startup);
+    public void CmdAdvanceChain(bool startup, int damageSent) {
+        RpcAdvanceChain(startup, damageSent);
     }
 
     [ClientRpc(includeOwner = false)]
-    private void RpcAdvanceChain(bool startup) {
+    private void RpcAdvanceChain(bool startup, int damageSent) {
         if (startup) {
             board.StartupEffect();
         } else {
             board.AdvanceChainAndCascade();
+            board.enemyBoard.EvaluateInstantIncomingDamage(damageSent);
         }
     }
 
@@ -210,5 +217,23 @@ public class NetPlayer : NetworkBehaviour {
     private void RpcUseAbility(int[] data) {
         board.abilityManager.abilityData = data;
         board.abilityManager.UseAbility();
+    }
+
+    [Command]
+    public void CmdUpdateDamageQueue(int shield, int[] damageQueue) {
+        RpcUpdateDamageQueue(shield, damageQueue);
+    }
+
+    /// <summary>
+    /// Shows to the other client the current state of this player's damage queue.
+    /// </summary>
+    /// <param name="damageQueueIndex"></param>
+    /// <param name="justQueued">If damage was just added to the queue. SFX will be played</param> 
+    [ClientRpc(includeOwner = false)]
+    private void RpcUpdateDamageQueue(int shield, int[] damageQueue) {
+        for (int i=0; i<6; i++) {
+            board.hpBar.DamageQueue[i].SetDamage(damageQueue[i]);
+        }
+        board.PlaySFX("dmgShoot", pitch: 1f + board.hpBar.DamageQueue[0].dmg/1000f, volumeScale: 1.3f);
     }
 }
