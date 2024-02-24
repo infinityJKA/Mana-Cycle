@@ -97,6 +97,18 @@ public class NetPlayer : NetworkBehaviour {
 
     public readonly static System.Random seedGenerator = new System.Random();
 
+    [System.Serializable]
+    public struct BattleInitData {
+        public int hostSeed;
+        public int nonHostSeed;
+        public ManaColor[] cycle;
+
+        public override string ToString()
+        {
+            return $"host seed: {hostSeed}, nonhost seed: {nonHostSeed}, cycle: {string.Join(',', cycle)}";
+        }
+    }
+
     // Called when the battle begins. Only runs on the host (player 1).
     // Sets up RNG and other things to synchronize with opponent
     
@@ -115,19 +127,6 @@ public class NetPlayer : NetworkBehaviour {
 
         Debug.LogWarning("sending init data: "+initData);
         RpcSynchronize(initData);
-    }
-
-
-    [System.Serializable]
-    public struct BattleInitData {
-        public int hostSeed;
-        public int nonHostSeed;
-        public ManaColor[] cycle;
-
-        public override string ToString()
-        {
-            return $"host seed: {hostSeed}, nonhost seed: {nonHostSeed}, cycle: {string.Join(',', cycle)}";
-        }
     }
 
     [ClientRpc(includeOwner = false)]
@@ -163,7 +162,6 @@ public class NetPlayer : NetworkBehaviour {
     private void RpcSetQuickfall(bool quickfalling) {
         board.quickFall = quickfalling;
     }
-
 
     [Command]
     public void CmdPlacePiece(int targetColumn, Piece.Orientation rotation) {
