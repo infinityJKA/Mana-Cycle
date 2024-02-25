@@ -270,7 +270,11 @@ namespace Battle.Board {
         [SerializeField] private List<ColorFader> cycleColoredObjects;
 
         // online mode- the netplayer that controls this board
-        public NetPlayer netPlayer;
+        public NetPlayer netPlayer {get; private set;}
+
+        public void SetNetPlayer(NetPlayer netPlayer) {
+            this.netPlayer = netPlayer;
+        }
 
         // if piece will auto place when sliding against the ground for too long.
         // turned on when this is a board connected by an online opponent
