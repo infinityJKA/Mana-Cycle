@@ -12,24 +12,40 @@ namespace Battle.Board {
         // Row position of this piece on the grid.
         [SerializeField] protected int row = 0;
 
+        // IN THE FUTURE this system was stupid maybe make an array of tiles containing each tile and their unrotated offset from the center...
+        // this will allow for kookier tile shapes
+
         // Think of each piece as an L on your left hand. Top is pointer finger and right is thumb.
         // Tile in center
         [SerializeField] protected Tile center; 
         // Tile on top (unrotated)
         [SerializeField] protected Tile top;
-        // Tile on right (unrotated)
+        /// Tile on right (unrotated)
         [SerializeField] protected Tile right;
         
-        // Rotation center - holds all the tile objects. Centered on tile for correct visual rotation.
+        /// <summary>
+        /// Rotation center - holds all the tile objects. Centered on tile for correct visual rotation.
+        /// </summary>
         [SerializeField] protected Transform rotationCenter;
 
-        // This piece's rotation, direction that the top tile is facing. Start out facing up.
+        /// <summary>
+        /// This piece's rotation, direction that the top tile is facing. Start out facing up.
+        /// </summary>
         [SerializeField] protected Orientation orientation = Orientation.up;
 
-        // If this is a ghost piece - tiles will not actually physically exist on the board
+        /// <summary>
+        /// If this is a ghost piece - tiles will not actually physically exist on the board
+        /// </summary>
         public bool ghostPiece { get; private set; }
 
-        // Orientation is the way that the "top" tile is facing
+        /// <summary>
+        /// This piece's ID. Assigned by gameboard. each piece within the board will have a unique ID counting up from 0.
+        /// </summary>
+        public int id = -1;
+
+        /// <summary>
+        /// Orientation is the way that the "top" tile is facing
+        /// </summary>
         public enum Orientation
         {
             up,
@@ -38,20 +54,17 @@ namespace Battle.Board {
             right
         }
 
-        // Special ability effect when this tile is placed. Used only by single pieces
+        /// <summary>
+        /// Special ability effect when this tile is placed. Used only by single pieces
+        /// </summary>
         public Battler.ActiveAbilityEffect effect;
 
         public virtual bool IsRotatable {get {return true;}}
 
-        // If this is a special tile that should fall much slower than other tiles
+        /// <summary>
+        /// If this is a special tile that should fall much slower than other tiles - ex. Infinity's sword
+        /// </summary>
         public bool slowFall { get; protected set; }
-
-        // void Update()
-        // {
-            // Vector3 targetDirection = OrientedDirection();
-            // Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, targetDirection);
-            // rotationCenter.transform.rotation = Quaternion.RotateTowards(rotationCenter.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-        // }
 
         private Vector3 OrientedDirection()
         {
@@ -65,18 +78,6 @@ namespace Battle.Board {
             }
         }
 
-        // private Vector3 UndoOrientedDirection()
-        // {
-        //     switch(orientation)
-        //     {
-        //         case Orientation.up: return Vector3.up;
-        //         case Orientation.left: return Vector3.right;
-        //         case Orientation.down: return Vector3.down;
-        //         case Orientation.right: return Vector3.left;
-        //         default: return Vector3.zero;
-        //     }
-        // }
-
         // Randomize the color of the tiles of this piece.
         public virtual void Randomize(GameBoard board)
         {
@@ -84,9 +85,6 @@ namespace Battle.Board {
 
             if (rng == PieceRng.CurrentColorWeighted)
             {
-                // Randomly choose color from color enum length
-                // Color has a 15% chance to boe current color, and 85% chance to be random color (including current).
-                // color = (Random.value < 0.2) ? board.CurrentColor() : (ManaColor)Random.Range(0,5); <-- will be infinity's rng pattern
                 center.SetColor(ColorWeightedRandom(board), board);
                 top.SetColor(ColorWeightedRandom(board), board);
                 right.SetColor(ColorWeightedRandom(board), board);
@@ -95,8 +93,6 @@ namespace Battle.Board {
             if (rng == PieceRng.PieceSameColorWeighted)
             {
                 center.SetColor(RandomColor(board.rngManager.rng), board);
-
-                
 
                 // for top and right, 40% chance to mirror the center color
                 if (board.rngManager.rng.NextDouble() < 0.4) {
@@ -176,7 +172,11 @@ namespace Battle.Board {
 
         public void UpdatePosition()
         {
-            if (this != null) transform.localPosition = new Vector3(this.col - GameBoard.width/2f, -this.row + GameBoard.physicalHeight/2f + GameBoard.height - GameBoard.physicalHeight, 0);
+            if (!this) {
+                Debug.LogWarning("Trying to move a destroyed piece");
+                return;
+            }
+            transform.localPosition = new Vector3(this.col - GameBoard.width/2f, -this.row + GameBoard.physicalHeight/2f + GameBoard.height - GameBoard.physicalHeight, 0);
         }
             
         // Rotate this piece to the right about the center.
@@ -214,6 +214,10 @@ namespace Battle.Board {
         }
 
         public void SetRotation(Orientation orientation) {
+            if (!this) {
+                Debug.LogWarning("Trying to rotate adestroyed piece");
+                return;
+            }
             this.orientation = orientation;
             UpdateOrientation();
         }
