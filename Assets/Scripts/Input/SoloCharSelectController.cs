@@ -34,7 +34,7 @@ public class SoloCharSelectController : MonoBehaviour {
     }
 
     public void OnNavigate(InputAction.CallbackContext ctx) {
-        if (!charSelectMenu.gameObject.activeInHierarchy) return;
+        if (!charSelectMenu || !charSelectMenu.gameObject.activeInHierarchy) return;
 
         navigateInput = ctx.action.ReadValue<Vector2>();
 
@@ -111,7 +111,7 @@ public class SoloCharSelectController : MonoBehaviour {
     private void OnPauseOrBack() {
         charSelector.OnBack();
         charSelector = charSelectMenu.GetActiveSelector();
-        netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+        if (netPlayer) netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
     }
 
     public void OnAbilityInfo(InputAction.CallbackContext ctx) {

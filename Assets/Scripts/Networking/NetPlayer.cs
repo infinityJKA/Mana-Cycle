@@ -2,13 +2,23 @@ using System;
 using Battle.Board;
 using Battle.Cycle;
 using Mirror;
+using PostGame;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VersusMode;
 
 public class NetPlayer : NetworkBehaviour {
     public CharSelector charSelector;
     
     public GameBoard board;
+
+    /// <summary>
+    /// If this client has requested a rematch in the postgame menu.
+    /// </summary>
+    public bool rematchRequested = false;
+
+
+    private NetPlayer enemyPlayer {get{return board.enemyBoard.netPlayer;}}
 
     private void Start() {
         DontDestroyOnLoad(gameObject);
@@ -132,9 +142,58 @@ public class NetPlayer : NetworkBehaviour {
     [ClientRpc(includeOwner = false)]
     private void RpcSynchronize(BattleInitData initData) {
         Debug.LogWarning("received init data: "+initData);
+
+        // if current scene is Mana Cycle, initialize using received data
+        if (SceneManager.GetActiveScene().name == "ManaCycle") {
+            InitializeBattle(initData);
+        } 
+        // otherwise, run initialization once the scene is loaded by setting up a listener for sceneLoaded
+        else {
+            Debug.Log("waiting for scene load before battle initialize");
+            latestInitData = initData;
+            waitingForSceneStartBeforeInit = true;
+        }
+    }
+
+    private BattleInitData latestInitData;
+    public bool waitingForSceneStartBeforeInit = false;
+
+    /// <summary>
+    /// In the case init data was received before the baattle scene loads, this will init using the data received earlier in ManaCycle.cs's Start method
+    /// </summary>
+    public void OnBattleSceneLoaded() {
+        if (!waitingForSceneStartBeforeInit) return;
+        waitingForSceneStartBeforeInit = false;
+
+        Debug.Log("delayed initialization");
+        InitializeBattle(latestInitData);
+    }
+
+    /// <summary>
+    /// Initializes the data on the CLIENT using data from the HOST (rng data).
+    /// </summary>
+    /// <param name="initData">contains the individual player rng seeds and the randomized cycle colors</param>/
+    public void InitializeBattle(BattleInitData initData) {
         ManaCycle.instance.Boards[0].rngManager.SetSeed(initData.nonHostSeed);
         ManaCycle.instance.Boards[1].rngManager.SetSeed(initData.hostSeed);
         ManaCycle.SetCycle(initData.cycle);
+
+        // match will start 3.5 seconds from when the ready command is sent from the client
+        board.cycle.CountdownHandler.StartTimer(3.5);
+        double startTime = NetworkTime.time + 3.5;
+        CmdClientReady(startTime);
+    }
+
+    [Command]
+    /// <summary>
+    /// Message sent from the client (player 2) to the host when they are ready for the match to begin
+    /// </summary>
+    /// <param name="startTime">Synchronized time client has decided the game will start</param>
+    private void CmdClientReady(double startTime) {
+        Debug.Log("Client is ready");
+
+        double timeUntilStart = startTime - NetworkTime.time;
+        board.cycle.CountdownHandler.StartTimer(timeUntilStart);
     }
 
 
@@ -233,5 +292,23 @@ public class NetPlayer : NetworkBehaviour {
             board.hpBar.DamageQueue[i].SetDamage(damageQueue[i]);
         }
         board.PlaySFX("dmgShoot", pitch: 1f + board.hpBar.DamageQueue[0].dmg/1000f, volumeScale: 1.3f);
+    }
+
+    // Initiate a game rematch.
+    // Called by client when they request a rematch.
+    // Also called by the host when they themselves request a rematch (though it isn't sent as a packet.)
+    [Command]
+    public void CmdRematch() {
+        // Initialize a rematch if the host has also requested a rematch.
+        if (rematchRequested && enemyPlayer.rematchRequested) {
+            RpcStartRematch();
+        }
+    }
+
+    // Called by the host when a rematch is starting.
+    // Reloads the ManaCycle scene on both host and client when CmdRematch calls from host.
+    [ClientRpc]
+    private void RpcStartRematch() {
+        board.winMenu.Replay();
     }
 }

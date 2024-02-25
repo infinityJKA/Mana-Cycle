@@ -36,6 +36,9 @@ namespace Battle.Cycle {
         [SerializeField] private List<GameBoard> boards;
         public List<GameBoard> Boards => boards;
 
+        [SerializeField] private CountdownHandler countdownHandler;
+        public CountdownHandler CountdownHandler => countdownHandler;
+
         // List of all colors in the cycle
         public static ManaColor[] cycle;
 
@@ -67,6 +70,8 @@ namespace Battle.Cycle {
                 foreach (var player in players) {
                     player.board = boards[player.isOwned ? 0 : 1];
                     player.board.netPlayer = player;
+                    // reset rematchRequested to false incase scene is being reloaded during a rematch match
+                    player.board.netPlayer.rematchRequested = false;
 
                     // on host side, call command that will initialize rng & other stuff and send to other client
                     if (NetworkServer.activeHost && player.isLocalPlayer) {
@@ -81,13 +86,38 @@ namespace Battle.Cycle {
                     board.rngManager.SetSeed(NetPlayer.seedGenerator.Next());
                 }
             }
+
+            CreateCycle();
+
+            foreach (var board in boards) {
+                // Setup cycle and many other components on each board (tile grid, etc)
+                board.InitializeWithCycle(this);
+
+                // if any netPlayer is waiting on scene load and this cycle for initialization,
+                // this will call that delayed init
+                if (Storage.online) board.netPlayer.OnBattleSceneLoaded();
+            }
         }
 
         /// <summary>
         /// Initialize boards when the countdown hits 0
         /// </summary>
-        public void InitBoards()
+        public void StartBattle()
         {
+            
+
+            // Start game boards - their first piece will begin falling.
+            foreach (GameBoard board in boards)
+            {
+                if (board.enabled) board.StartBattle();
+                if (!board.enabled) board.pointer.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// Is run near the end of start method, before boards are initialized with cycle. Creates the cycle objects and displays them on the screen.
+        /// </summary>
+        public void CreateCycle() {
             // Check if player 1 is in single player. if so, use its cycle length variables
             if (Storage.level) {
                 cycleLength = Storage.level.cycleLength;
@@ -100,13 +130,21 @@ namespace Battle.Cycle {
                 cycleUniqueColors = 5;
             }
 
-            CreateCycleColorObjects();
+            // Destroy all children (violently, and without remorse)
+            foreach (Transform child in transform) {
+                Destroy(child.gameObject);
+            }
 
-            // Initialize game boards
-            foreach (GameBoard board in boards)
+            cycleObjects = new List<Image>();
+
+            // Create cycle color objects for each cycle color
+            for (int i=0; i<cycleLength; i++)
             {
-                if (board.enabled) board.InitializeCycle(this);
-                if (!board.enabled) board.pointer.SetActive(false);
+                Image cycleObject = Instantiate(manaImage, Vector3.zero, Quaternion.identity);
+                cycleObject.color = manaColors[(int)cycle[i]];
+                if (usingSprites) cycleObject.sprite = manaSprites[(int)cycle[i]];
+                cycleObjects.Add(cycleObject);
+                cycleObject.transform.SetParent(transform, false);
             }
         }
 
@@ -148,29 +186,6 @@ namespace Battle.Cycle {
 
         public static void SetCycle(ManaColor[] cycle) {
             ManaCycle.cycle = cycle;
-        }
-
-        public void CreateCycleColorObjects() {
-            // Destroy all children (violently, and without remorse)
-            foreach (Transform child in transform) {
-                Destroy(child.gameObject);
-            }
-
-            cycleObjects = new List<Image>();
-
-            // Create cycle color objects for each cycle color
-            for (int i=0; i<cycleLength; i++)
-            {
-                Image cycleObject = Instantiate(manaImage, Vector3.zero, Quaternion.identity);
-                // Image bgObject = Instantiate(bgImage, Vector3.zero, Quaternion.identity);
-                cycleObject.color = manaColors[(int)cycle[i]];
-                // bgObject.color = cycleObject.color = manaColors[(int)cycle[i]];
-                if (usingSprites) cycleObject.sprite = manaSprites[(int)cycle[i]];
-                cycleObjects.Add(cycleObject);
-                // cycleObjects.Add(bgObject);
-                cycleObject.transform.SetParent(transform, false);
-                // bgObject.transform.SetParent(transform, false);
-            }
         }
 
         public ManaColor[] GetCycle()

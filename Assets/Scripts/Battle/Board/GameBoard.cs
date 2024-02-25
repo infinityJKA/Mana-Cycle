@@ -40,12 +40,6 @@ namespace Battle.Board {
         /// <summary>0 for left side, 1 for right side</summary>
         [SerializeField] private int playerSide;
 
-        /// <summary>
-        /// In online multiplayer, if this is a network client.
-        /// If also player controlled, the player will control this board.
-        /// </summary>
-        private bool isNetworkClient;
-
         /** Obect where pieces are drawn */
         [SerializeField] public Transform pieceBoard;
 
@@ -183,7 +177,7 @@ namespace Battle.Board {
         // Set to false by the AI controller when acted upon
         public bool pieceSpawned;
 
-        private bool cycleInitialized;
+        private bool battleStarted;
         public bool postGame { get; private set; } = false;
 
         public Pause.PauseMenu pauseMenu;
@@ -334,14 +328,12 @@ namespace Battle.Board {
             {
                 // if not in arcade endless, use default stats
                 boardStats = ArcadeStats.defaultStats;
-                Debug.Log(playerSide);
                 Debug.Log(string.Join("\n",boardStats));
             }
             else 
             {
                 // otherwise, use player stats
                 boardStats = ArcadeStats.playerStats;
-                Debug.Log(playerSide);
                 Debug.Log(string.Join("\n",boardStats));
                 Debug.Log(string.Join("\n",ArcadeStats.playerStats));
                 Debug.Log("This is loading the player stats. Not Default.");
@@ -425,8 +417,6 @@ namespace Battle.Board {
                     SetAIDifficulty(PlayerPrefs.GetInt("CpuLevel", 5)/10f);
                 }
             }
-
-            pointer.SetActive(false);
             
             cyclePosition = 0;
 
@@ -462,9 +452,8 @@ namespace Battle.Board {
 
             // If in solo mode non-arcade or versus mode, hide lives list if only 1 life
             // also hide if arcade mode enemy
-            if ((Storage.gamemode == Storage.GameMode.Versus || (Storage.level && (Storage.level.nextSeriesLevel || Storage.level.generateNextLevel || Storage.level.lastSeriesLevel)) && playerSide == 0)) {
+            if (Storage.gamemode == Storage.GameMode.Versus || Storage.level && (Storage.level.nextSeriesLevel || Storage.level.generateNextLevel || Storage.level.lastSeriesLevel) && playerSide == 0) {
                 // when the game starts, have the life transform mirror the amount of lives
-                Debug.Log("erm");
                 foreach (Transform child in lifeTransform) Destroy(child.gameObject);
                 for (int i=0; i<lives; i++) {
                     Instantiate(lifeHeartObj, lifeTransform);
@@ -508,24 +497,15 @@ namespace Battle.Board {
             // temporarily in update() to find the correct values quicker, keeping in case needed again in the future
             // portrait.GetComponent<RectTransform>().anchoredPosition = initialPos + battler.portraitOffset;
             // wait for cycle to initialize (after countdown) to run game logic
-            if (!isInitialized() || isPaused() || isPostGame()) return;
+            if (!IsBattleStarted() || isPaused() || isPostGame()) return;
 
-            PointerReposition();
-            // debug
-            // if (playerSide == 1) TakeDamage(maxHp);
+            // TODO: this was recently commented out, make sure this doesn't break the game. removed for performance
+            // PointerReposition();
 
             if (recoveryMode) {
                 recoveryTimer -= Time.deltaTime;
                 if (recoveryTimer <= 0f) {
-                    boardBackground.color = boardColor;
-                    recoveryText.enabled = false;
-                    recoveryMode = false;
-                    defeated = false;
-                    hpBar.hpNum.gameObject.SetActive(true);
-                    hp = maxHp;
-                    hpBar.Refresh();
-                    previousFallTime = Time.time;
-                    if (!piece) SpawnPiece();
+                    Respawn();
                 } else {
                     recoveryText.text = Mathf.CeilToInt(recoveryTimer)+"";
                 }
@@ -635,16 +615,41 @@ namespace Battle.Board {
             }
         }
 
+        private void Respawn() {
+            boardBackground.color = boardColor;
+            recoveryText.enabled = false;
+            recoveryMode = false;
+            defeated = false;
+            hpBar.hpNum.gameObject.SetActive(true);
+            hp = maxHp;
+            hpBar.Refresh();
+            previousFallTime = Time.time;
+            if (!piece) SpawnPiece();
+        }
+
         private static float trashDamageTimerDuration = 5f;
         private static int damagePerTrash = 5;
 
+        /// <summary>
+        /// Allows the first piece to begin falling another actions to occur when the countdown reaches 0.
+        /// </summary>
+        public void StartBattle()
+        {
+            battleStarted = true;
+            SpawnPiece();
+            pointer.SetActive(true);
+            PointerReposition();
+
+            CheckMidLevelConversations();
+        }
 
         // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
-        public void InitializeCycle(ManaCycle cycle)
-        {
-            if (!enabled) return;
-
-            cycleInitialized = true;
+        public void InitializeWithCycle(ManaCycle cycle) {
+            if (!enabled) {
+                Debug.LogWarning("Trying to cycle initialize a disabled board!");
+                return;
+            };
+            
             this.cycle = cycle;
 
             // Don't draw ghost tiles if this is a net controlled board
@@ -656,23 +661,15 @@ namespace Battle.Board {
 
             // hide enemy pointer if in single player and not ai battle
             if (playerSide == 0 && singlePlayer && !Storage.level.aiBattle) enemyBoard.pointer.SetActive(false);
-            else enemyBoard.pointer.SetActive(true);
             // if (singlePlayer && !Storage.level.aiBattle) enemyBoard.pointer.SetActive(false);
-            pointer.transform.SetParent(cycle.transform.parent);
-            PointerReposition();
 
             tiles = new Tile[height, width];
             if (drawGhostPiece || lightConnectedMana) simulatedTiles = new Tile[height, width];
-            SpawnPiece();
-
-            CheckMidLevelConversations();
 
             // setup battler variables for the mirrored, take opponent sprite / abilities
             // taken out of start because it relies on enemy board to be properly set up
-            Debug.Log(playerSide + " Ablility: " + battler.passiveAbilityEffect);
             if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shapeshifter)
             {
-                Debug.Log("Shapeshifter effect activated");
                 battler = enemyBoard.battler;
                 InitBattler();
                 portrait.color = new Color(0.9f,0.2f,0.1f,0.57f);
@@ -702,10 +699,15 @@ namespace Battle.Board {
             // turn off auto-placing and auto-chaining if this is an online opponent
             autoPlaceTiles = !Storage.online || netPlayer.isOwned;
             manualCastContinue = !Storage.online || netPlayer.isOwned;
+
+            // move pointer to parent under cycle as a child under so it is not drawn below the cycle container
+            pointer.transform.SetParent(cycle.transform.parent);
+            // keep hidden before countdown reaches 0
+            pointer.SetActive(false);
         }
 
         public void RotateCCW(){
-            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return;
+            if (!IsBattleStarted() || isPaused() || isPostGame() || convoPaused) return;
 
             if (!piece.IsRotatable) return;
             piece.RotateLeft();
@@ -724,7 +726,7 @@ namespace Battle.Board {
         }
 
         public void RotateCW(){
-            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return;
+            if (!IsBattleStarted() || isPaused() || isPostGame() || convoPaused) return;
 
             if (!piece.IsRotatable) return;
             piece.RotateRight();
@@ -742,7 +744,7 @@ namespace Battle.Board {
         }
 
         public bool MoveLeft(){
-            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return false;
+            if (!IsBattleStarted() || isPaused() || isPostGame() || convoPaused) return false;
 
             if (MovePiece(-1, 0)) {
                 PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
@@ -752,7 +754,7 @@ namespace Battle.Board {
         }
 
         public bool MoveRight() {
-            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return false;
+            if (!IsBattleStarted() || isPaused() || isPostGame() || convoPaused) return false;
 
             if (MovePiece(1, 0)) {
                 PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
@@ -773,7 +775,7 @@ namespace Battle.Board {
         /// Start a new spellcast chain off the current color. Is called when spellcast button is pressed
         /// </summary>
         public void TrySpellcast(){
-            if (!isInitialized() || isPaused() || isPostGame()) return;
+            if (!IsBattleStarted() || isPaused() || isPostGame()) return;
 
             if (convoPaused) {
                 convoHandler.Advance();
@@ -800,7 +802,7 @@ namespace Battle.Board {
         }
 
         public void UseAbility(){
-            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return;
+            if (!IsBattleStarted() || isPaused() || isPostGame() || convoPaused) return;
 
             if (abilityManager.enabled) {
                 abilityManager.UseAbility();
@@ -2201,9 +2203,9 @@ namespace Battle.Board {
             return l;
         }
 
-        public bool isInitialized()
+        public bool IsBattleStarted()
         {
-            return cycleInitialized;
+            return battleStarted;
         }
 
         public bool IsCasting() {

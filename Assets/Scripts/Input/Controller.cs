@@ -61,7 +61,7 @@ namespace Battle {
             }
 
             // stop movement while uninitialized, paused, post game or dialogue
-            if (!board.isInitialized() || board.convoPaused) return;
+            if (!board.IsBattleStarted() || board.convoPaused) return;
             // note that this doesn't check if boaard is player controlled
             // this is so the player can control the menu in AI vs AI mode
 

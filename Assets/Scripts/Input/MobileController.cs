@@ -45,7 +45,7 @@ namespace Battle {
         void Update()
         {
             // stop everything while not player controlled, uninitialized, paused, post game or dialogue
-            if ( !board.IsPlayerControlled() || !board.isInitialized() || board.convoPaused
+            if ( !board.IsPlayerControlled() || !board.IsBattleStarted() || board.convoPaused
                 // menu controls above here if ever any
                 || board.recoveryMode || board.isPaused() && board.isPostGame() || !board.Mobile ) return;
 
