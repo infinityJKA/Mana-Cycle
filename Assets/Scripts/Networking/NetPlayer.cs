@@ -331,16 +331,18 @@ public class NetPlayer : NetworkBehaviour {
     // Also called by the host when they themselves request a rematch (though it isn't sent as a packet.)
     [Command]
     public void CmdRematch() {
-        // Initialize a rematch if the host has also requested a rematch.
-        if (rematchRequested && enemyPlayer.rematchRequested) {
-            RpcStartRematch();
-        }
+        RpcStartRematch();
     }
 
     // Called by the host when a rematch is starting.
     // Reloads the ManaCycle scene on both host and client when CmdRematch calls from host.
     [ClientRpc]
     private void RpcStartRematch() {
-        board.winMenu.Replay();
+        Debug.Log(board+" is requesting a rematch");
+        // Initialize a rematch if the host has also requested a rematch.
+        if (rematchRequested && enemyPlayer.rematchRequested) {
+            Debug.Log("both players request rematch; Rematch starting");
+            board.winMenu.Replay();
+        }
     }
 }
