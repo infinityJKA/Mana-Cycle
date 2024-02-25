@@ -27,8 +27,7 @@ public class Shop : MonoBehaviour
     [SerializeField] public ScrollRect scrollRect;
     [SerializeField] public float scrollAmount = 0.1f;
 
-    [SerializeField] AudioClip puchaseSFX;
-    [SerializeField] AudioClip failPuchaseSFX;
+    [SerializeField] GameObject puchaseSFX, failPuchaseSFX;
 
     // Start is called before the first frame update
     void Start()
@@ -133,7 +132,7 @@ public class Shop : MonoBehaviour
             RefreshAllDisplays();
             RefreshText();
             selection.GetComponent<ItemDisplay>().Refresh();
-            SoundManager.Instance.PlaySound(puchaseSFX, pitch: 1.1f, volumeScale: 0.75f);
+            Instantiate(puchaseSFX);
         }
         else
         {
@@ -141,7 +140,7 @@ public class Shop : MonoBehaviour
             Debug.Log("purchase fail");
             if (ArcadeStats.moneyAmount < item.cost) moneyDisplays[0].GetComponent<Animation.Shake>().StartShake();
             if (equipOwnedCheck) ownedText.GetComponent<Animation.ColorFlash>().Flash(0.75f);
-            SoundManager.Instance.PlaySound(failPuchaseSFX, pitch: 1f);
+            Instantiate(failPuchaseSFX);
         }
 
     }

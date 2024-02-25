@@ -34,7 +34,7 @@ namespace VersusMode {
         [SerializeField] private GameObject cpuLevelLeftArrow, cpuLevelRightArrow;
 
         ///<summary>SFX played when interacting with menu</summary>
-        [SerializeField] private AudioClip switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX, settingsToggleSFX, connectSFX;
+        [SerializeField] private GameObject switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX, settingsToggleSFX, connectSFX;
 
         /// Fade in/out speed for the ability info & settings box
         [SerializeField] private float fadeSpeed;
@@ -348,13 +348,13 @@ namespace VersusMode {
                 var toggle = settingsSelection.GetComponent<Toggle>();
                 if (toggle) {
                     toggle.isOn = !toggle.isOn;
-                    SoundManager.Instance.PlaySound(settingsToggleSFX);
+                    Instantiate(settingsToggleSFX);
                 }
 
                 var button = settingsSelection.GetComponent<Button>();
                 if (button) {
                     button.onClick.Invoke();
-                    SoundManager.Instance.PlaySound(settingsToggleSFX);
+                    Instantiate(settingsToggleSFX);
                 }
 
                 // if any battle preferences were just toggled, update its state in Storage and the other player's settings toggle
@@ -367,7 +367,7 @@ namespace VersusMode {
             // if this is CPU and locked into selecting CPU level, give control to other board
             else if (selectingCpuLevel && !menu.Mobile) {
                 selectingCpuLevel = false;
-                SoundManager.Instance.PlaySound(selectSFX);
+                Instantiate(selectSFX);
                 Active = false;
                 opponentSelector.Active = true;
                 RefreshLockVisuals();
@@ -466,9 +466,9 @@ namespace VersusMode {
             lockedIn = !lockedIn;  
 
             if (isPlayer1 && isCpuCursor && !selectingCpuLevel && !menu.Mobile) {
-                SoundManager.Instance.PlaySound(settingsToggleSFX);
+                Instantiate(settingsToggleSFX);
             } else {
-                SoundManager.Instance.PlaySound(lockedIn ? selectSFX : unselectSFX);
+                Instantiate(lockedIn ? selectSFX : unselectSFX);
             }
 
             // when locking in, disable and enable cpu selector
@@ -569,7 +569,7 @@ namespace VersusMode {
             if (settingsDisplayed) ToggleSettings();
             abilityInfoDisplayed = !abilityInfoDisplayed;
             abilityInfoAnimating = true;
-            SoundManager.Instance.PlaySound(abilityInfoDisplayed ? infoOpenSFX : infoCloseSFX);
+            Instantiate(abilityInfoDisplayed ? infoOpenSFX : infoCloseSFX);
         }
 
         void ToggleSettings() {
@@ -577,7 +577,7 @@ namespace VersusMode {
             settingsDisplayed = !settingsDisplayed;
             settingsAnimating = true;
             // selectedIcon.cursorImage.color = new Color(1f, 1f, 1f, settingsDisplayed ? 0.5f : 1f);
-            SoundManager.Instance.PlaySound(settingsDisplayed ? infoOpenSFX : infoCloseSFX);
+            Instantiate(settingsDisplayed ? infoOpenSFX : infoCloseSFX);
         }
 
         static int minLives = 1, maxLives = 15;
@@ -629,7 +629,7 @@ namespace VersusMode {
 
         public void SetSelection(Selectable newSelection) {
             if (!newSelection) {
-                if (Application.isPlaying) SoundManager.Instance.PlaySound(noswitchSFX, 2.5f);
+                if (Application.isPlaying) Instantiate(noswitchSFX);
                 return;
             }
 
@@ -652,7 +652,7 @@ namespace VersusMode {
                 newSelectedIcon.SetSelected(isPlayer1, true);
             }
 
-            SoundManager.Instance.PlaySound(switchSFX, 2.5f);
+            Instantiate(switchSFX);
 
             selectedIcon = newSelectedIcon;
 
@@ -719,7 +719,7 @@ namespace VersusMode {
             portrait.gameObject.SetActive(true);
             nameText.gameObject.SetActive(true);
             connectedThisUpdate = true;
-            SoundManager.Instance.PlaySound(connectSFX);
+            Instantiate(connectSFX);
             RefreshLockVisuals();
         }
     }

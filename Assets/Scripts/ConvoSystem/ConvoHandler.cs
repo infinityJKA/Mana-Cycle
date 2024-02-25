@@ -247,14 +247,14 @@ namespace ConvoSystem {
                 charIndex = Mathf.Clamp(Mathf.FloorToInt(t), 0, formattedText.Length);
 
 
-                AudioClip speakerSFX = null;
+                GameObject speakerSFX = null;
                 // If there is no speaker, don't use a speaker sound. otherwise, use speaker sfx from battler
                 if (line.rightFocused && line.rightSpeaker != null) speakerSFX = line.rightSpeaker.voiceSFX;
                 else if (line.leftSpeaker != null) speakerSFX = line.leftSpeaker.voiceSFX;
 
                 // if char index and previous char index are different, we just drew a new char. play type sound
                 // only play sound every other char because damn thats a lot of sounds
-                if(speakerSFX != null && charIndex != prevCharIndex && charIndex%2 == 0) Sound.SoundManager.Instance.PlaySound(speakerSFX, pitch : Random.Range(1.4f,1.6f));
+                if(speakerSFX != null && charIndex != prevCharIndex && charIndex%2 == 0) Instantiate(speakerSFX);
 
                 textLabel.text = formattedText.Substring(0, charIndex);
                 

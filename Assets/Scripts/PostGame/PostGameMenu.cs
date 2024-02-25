@@ -259,7 +259,7 @@ namespace PostGame {
             var toSelect = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectable(dir);
             if (toSelect != null){
                 EventSystem.current.SetSelectedGameObject(toSelect.gameObject);
-                SoundManager.Instance.PlaySound(moveSFX);
+                Instantiate(moveSFX);
             }
         }
 
@@ -268,7 +268,7 @@ namespace PostGame {
             // Debug.Log(pauseMenuItems[currentSelection]);
             if (Storage.convoEndedThisInput) return;
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().onClick.Invoke();
-            SoundManager.Instance.PlaySound(selectSFX);
+            Instantiate(selectSFX);
         }
 
         public void SelectRematchButton()

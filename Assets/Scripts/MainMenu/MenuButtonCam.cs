@@ -21,12 +21,11 @@ namespace MainMenu {
         // Components to only be enabled when this item is selected
         public MonoBehaviour[] enableWhenSelected;
 
-        public AudioClip selectSFX;
-        public AudioClip clickSFX;
+        public GameObject selectSFX, clickSFX;
 
         public void OnSelect(BaseEventData eventData){
             // if(eventData.selectedObject == this.gameObject){
-                SoundManager.Instance.PlaySound(selectSFX);
+                Instantiate(selectSFX);
                 if (brain && brain.ActiveVirtualCamera != null) brain.ActiveVirtualCamera.Priority = 1;
                 if (thisCam) thisCam.Priority = 30;
                 // textBox.text = text;
@@ -44,7 +43,7 @@ namespace MainMenu {
         }
 
         public void PlayClickSFX(){
-            SoundManager.Instance.PlaySound(clickSFX);
+            Instantiate(clickSFX);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace VersusMode {
         [SerializeField] private GameObject readyObject;
 
         // Sound to play when both players are ready and match is starting
-        [SerializeField] private AudioClip startSFX;
+        [SerializeField] private GameObject startSFX;
         
         // Start button - only used in mobile mode
         [SerializeField] private Button startButton;
@@ -95,7 +95,7 @@ namespace VersusMode {
         // Called when player casts while locked in. If both players are ready, match will begin
         public void StartIfReady() {
             if (ready) {
-                Sound.SoundManager.Instance.PlaySound(startSFX, 0.5f);
+                Instantiate(startSFX);
                 StartMatch();
             }
         }

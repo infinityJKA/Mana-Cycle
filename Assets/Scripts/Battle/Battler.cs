@@ -52,7 +52,7 @@ namespace Battle {
         /// <summary>The piece RNG used for this battler</summary>
         [SerializeField] public PieceRng pieceRng;
 
-        [SerializeField] public AudioClip voiceSFX;
+        [SerializeField] public GameObject voiceSFX;
 
         // used for the attack popup gradients
         [SerializeField] public Material gradientMat;

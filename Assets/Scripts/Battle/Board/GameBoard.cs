@@ -210,12 +210,6 @@ namespace Battle.Board {
         /** Highest single damage spellcast achieved during the battle **/
         public int highestSingleDamage { get; private set; }
 
-
-        // use gameobject for sounds so it can be saved as prefab and shared between boards
-        [SerializeField] private GameObject sfxObject;
-        private SFXDict.sfxDict serializedSoundDict;
-        private Dictionary<string,AudioClip> sfx;
-
         public AudioClip[] usableBattleMusic;
 
         // Transform where particles are drawn to
@@ -263,6 +257,8 @@ namespace Battle.Board {
 
         [SerializeField] private List<ColorFader> cycleColoredObjects;
 
+        [SerializeField] private GameObject moveSFX, rotateSFX, castSFX, fullCycleSFX, loseSFX, PauseSFX, winSFX, failedCastSFX, placeSFX, damageTakenSFX, startupCastSFX, cascadeSFX;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -273,10 +269,6 @@ namespace Battle.Board {
             // also use in player vs. ai
             if ((Storage.gamemode == Storage.GameMode.Solo) 
             || (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2)) inputScripts = soloInputScripts;
-
-            // get sfx as regular dict
-            serializedSoundDict = sfxObject.GetComponent<SFXDict>().sfxDictionary;
-            sfx = serializedSoundDict.asDictionary();
             
             blobs = new List<Blob>();
 
@@ -701,7 +693,7 @@ namespace Battle.Board {
 
             RefreshGhostPiece();
 
-            PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f), important: false);
+            PlaySFX(rotateSFX);
         }
 
         public void RotateCW(){
@@ -717,14 +709,14 @@ namespace Battle.Board {
 
             RefreshGhostPiece();
 
-            PlaySFX("rotate", pitch : Random.Range(0.75f,1.25f), important: false);
+            PlaySFX(rotateSFX);
         }
 
         public bool MoveLeft(){
             if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return false;
 
             if (MovePiece(-1, 0)) {
-                PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
+                PlaySFX(moveSFX);
                 return true;
             }
             return false;
@@ -734,7 +726,7 @@ namespace Battle.Board {
             if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return false;
 
             if (MovePiece(1, 0)) {
-                PlaySFX("move", pitch : Random.Range(0.9f,1.1f), important: false);
+                PlaySFX(moveSFX);
                 return true;
             }
             return false;
@@ -759,7 +751,7 @@ namespace Battle.Board {
                 totalManualSpellcasts++;
             }
             else {
-                PlaySFX("failedCast", pan: 0.3f);
+                PlaySFX(failedCastSFX);
                 var shake = pointer.GetComponent<Shake>();
                 if (shake != null) shake.StartShake();
             }
@@ -817,7 +809,7 @@ namespace Battle.Board {
             RefreshBlobs();
             RefreshGhostPiece();
             // may replace with trash sfx later
-            PlaySFX("place");
+            PlaySFX(placeSFX);
         }
 
         // Spawn the standalone piece in a random column
@@ -1026,7 +1018,7 @@ namespace Battle.Board {
             // After tile objects are moved out, destroy the piece object as it is no longer needed
             Destroy(piece.gameObject);
 
-            if (!postGame) PlaySFX("place");
+            if (!postGame) PlaySFX(placeSFX);
 
             // Keep looping until none of the piece's tiles fall
             // (No other tiles need to be checked as tiles underneath them won't move, only tiles above)
@@ -1287,7 +1279,7 @@ namespace Battle.Board {
             // flash portrait red
             portrait.GetComponent<ColorFlash>().Flash(intensity);
 
-            PlaySFX("damageTaken");
+            PlaySFX(damageTakenSFX);
 
             // subtract from hp
             if (canDamageShield)
@@ -1452,7 +1444,7 @@ namespace Battle.Board {
             int cascade = 0;
             casting = true;
 
-            if (chain == 1) PlaySFX("startupCast");
+            if (chain == 1) PlaySFX(startupCastSFX);
 
             GlowBlobs(0.8f);
             StartCoroutine(ClearCascadeWithDelay());
@@ -1485,7 +1477,7 @@ namespace Battle.Board {
                         cascade += 1;
                         if (cascade > 1)
                         {
-                            PlaySFX("cascade", pitch : 1f + cascade*0.1f, volumeScale: 0.85f);
+                            PlaySFX(cascadeSFX, 1f + cascade * 0.1f);
                             cascadePopup.Flash(cascade.ToString());
                             cascadeFoundThisCheck = true;
                         }
@@ -1536,7 +1528,10 @@ namespace Battle.Board {
                                 totalPointMult += ClearTile(pos.x, pos.y + 1, true, onlyClearFragile: true);
                             }
                         }
-                        if (!cascadeFoundThisCheck) PlaySFX("cast1", pitch : 1f + chain*0.1f);
+                        if (!cascadeFoundThisCheck)
+                        {
+                            PlaySFX(castSFX, 1f + chain * 0.1f);
+                        }
 
                         // Geo's revenge system
                         float GeoBoost = 1f;
@@ -1590,7 +1585,7 @@ namespace Battle.Board {
                 cycleLevel++;
                 cycleLevelDisplay.Set(cycleLevel);
                 Item.Proc(equiped, Item.DeferType.OnFullCycle);
-                PlaySFX("cycle");
+                PlaySFX(fullCycleSFX);
             }
             PointerReposition();
 
@@ -1916,7 +1911,7 @@ namespace Battle.Board {
             Destroy(lifeTransform.GetChild(0).gameObject);
 
             if (lives > 0) {
-                PlaySFX("lose", pitch: 1.35f, volumeScale: 0.75f);
+                PlaySFX(loseSFX);
 
                 recoveryMode = true;
                 recoveryTimer = recoveryDelay;
@@ -1949,7 +1944,7 @@ namespace Battle.Board {
             if (!postGame && !Storage.convoEndedThisInput)
             {
                 pauseMenu.TogglePause();
-                PlaySFX("pause", pan: 0);
+                Instantiate(PauseSFX);
             }
         }
 
@@ -1985,7 +1980,7 @@ namespace Battle.Board {
 
             if (level != null) {
                 winMenu.AppearAfterDelay();
-                PlaySFX("lose");
+                Instantiate(loseSFX);
                 SoundManager.Instance.PauseBGM();
             }
 
@@ -2014,7 +2009,7 @@ namespace Battle.Board {
             StartCoroutine(CheckMidConvoAfterDelay());
 
             SoundManager.Instance.PauseBGM();
-            PlaySFX("win");
+            Instantiate(winSFX);
         }
 
         /** Refreshed the objectives list. Will grant win to this player if all objectives met */
@@ -2124,22 +2119,11 @@ namespace Battle.Board {
         /// <summary>
         /// play a sound from this board.
         /// </summary>
-        /// <param name="key">The key of the sound from the sfx dictionary to play</param>
-        /// <param name="pitch">pitch of the sound, 1f=normal</param>
-        /// <param name="pan">pan of the sound, -1=left, 0=center, 1=right. leave as -2 for default of whichever side board is on</param>
-        /// <param name="important">if this sfx should be prioritized over others and should always be played if possible</param>
-        public void PlaySFX(string key, float pitch = 1, float pan = 0.75f, float volumeScale = 1f, bool important = true)
+        public void PlaySFX(GameObject sfxObject, float pitch = 1f)
         {
-            // flip stereo pan to left side if player1
-            if (enemyBoard.pointer.activeSelf) {
-                if (playerSide == 0) pan = -pan;
-            }
-            // if no enemy, don't pan
-            else {
-                pan = 0;
-            }
-
-            SoundManager.Instance.PlaySound(sfx[key], pitch: pitch, pan: pan, volumeScale: volumeScale, important: important);
+            SFXObject sfx = Instantiate(sfxObject).GetComponent<SFXObject>();
+            if(!singlePlayer) sfx.pan = 0.3f * (playerSide * 2 - 1);
+            sfx.pitch = pitch;
         }
 
         static int obscureRadius = 3;

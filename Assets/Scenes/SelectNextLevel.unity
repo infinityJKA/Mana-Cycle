@@ -445,8 +445,8 @@ MonoBehaviour:
   - {fileID: 1873724355}
   scrollRect: {fileID: 0}
   scrollAmount: 0.1
-  puchaseSFX: {fileID: 8300000, guid: 288a75fcdae004e4f86fcf3a62532dec, type: 3}
-  failPuchaseSFX: {fileID: 8300000, guid: eecb1f7f73821c64b86f064f177d06cd, type: 3}
+  puchaseSFX: {fileID: 7978053776321691471, guid: 4f4eb31abf7f39643bca83b4e8eb2090, type: 3}
+  failPuchaseSFX: {fileID: 7978053776321691471, guid: a77fa25cec5ce6b488eff0e8a4bcb6cf, type: 3}
 --- !u!1 &143434817
 GameObject:
   m_ObjectHideFlags: 0
@@ -1306,8 +1306,8 @@ MonoBehaviour:
   hpText: {fileID: 961202361}
   descriptionObject: {fileID: 1021486710}
   scrollRect: {fileID: 1897364810}
-  equipSFX: {fileID: 8300000, guid: 6cd37d1ef6abb0949a50ff5f637f5295, type: 3}
-  unequipSFX: {fileID: 8300000, guid: 4588f34ff2c9f6346b62b5230dd93797, type: 3}
+  equipSFX: {fileID: 7978053776321691471, guid: 6a0cad5fbcb7b4746bc9571b93055e42, type: 3}
+  unequipSFX: {fileID: 7978053776321691471, guid: 02f5ca559c5423d49b2c4dd6ff45f9b2, type: 3}
 --- !u!1 &419756206
 GameObject:
   m_ObjectHideFlags: 0
@@ -3661,13 +3661,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 56786069}
-          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+        - m_Target: {fileID: 3448692081064892845, guid: 9b76d837da391d1439c536ec0635b8b1, type: 3}
+          m_TargetAssemblyTypeName: Sound.PlaySFX, Assembly-CSharp
           m_MethodName: PlaySound
           m_Mode: 2
           m_Arguments:
-            m_ObjectArgument: {fileID: 8300000, guid: 5350ac1151c0d07459a7aa692b9e88da, type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_ObjectArgument: {fileID: 7978053776321691471, guid: dd02846d30fa54a4d94021592f6191d4, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -3677,13 +3677,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 56786069}
-          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+        - m_Target: {fileID: 3448692081064892845, guid: 9b76d837da391d1439c536ec0635b8b1, type: 3}
+          m_TargetAssemblyTypeName: Sound.PlaySFX, Assembly-CSharp
           m_MethodName: PlaySound
           m_Mode: 2
           m_Arguments:
-            m_ObjectArgument: {fileID: 8300000, guid: 7b2f49b9e77fee244807cd657d5276ae, type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_ObjectArgument: {fileID: 7978053776321691471, guid: 9d926372c82ba884ca940bf83bde5fd9, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -5301,7 +5301,7 @@ GameObject:
   - component: {fileID: 1692377412}
   - component: {fileID: 1692377411}
   - component: {fileID: 1692377410}
-  - component: {fileID: 1692377409}
+  - component: {fileID: 1692377413}
   m_Layer: 5
   m_Name: InvButton
   m_TagString: Untagged
@@ -5329,51 +5329,6 @@ RectTransform:
   m_AnchoredPosition: {x: 150, y: -164.97285}
   m_SizeDelta: {x: 350, y: 100}
   m_Pivot: {x: 1, y: 0}
---- !u!114 &1692377409
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1692377407}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 56786069}
-          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
-          m_MethodName: PlaySound
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 8300000, guid: 5350ac1151c0d07459a7aa692b9e88da, type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: Two players go against each other!
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 15
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 56786069}
-          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
-          m_MethodName: PlaySound
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 8300000, guid: 2ed614660d0f3f5418b8a9aa05a1f7d8, type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1692377410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5468,6 +5423,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1692377407}
   m_CullTransparentMesh: 1
+--- !u!114 &1692377413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692377407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 9
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3448692081064892845, guid: 9b76d837da391d1439c536ec0635b8b1, type: 3}
+          m_TargetAssemblyTypeName: Sound.PlaySFX, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 7978053776321691471, guid: dd02846d30fa54a4d94021592f6191d4, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Two players go against each other!
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 15
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3448692081064892845, guid: 9b76d837da391d1439c536ec0635b8b1, type: 3}
+          m_TargetAssemblyTypeName: Sound.PlaySFX, Assembly-CSharp
+          m_MethodName: PlaySound
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 7978053776321691471, guid: 9d926372c82ba884ca940bf83bde5fd9, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!114 &1727223277 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2325366771608468798, guid: b619406261355b04589ac2863cf824a2, type: 3}
@@ -6784,13 +6784,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 56786069}
-          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+        - m_Target: {fileID: 3448692081064892845, guid: 9b76d837da391d1439c536ec0635b8b1, type: 3}
+          m_TargetAssemblyTypeName: Sound.PlaySFX, Assembly-CSharp
           m_MethodName: PlaySound
           m_Mode: 2
           m_Arguments:
-            m_ObjectArgument: {fileID: 8300000, guid: 5350ac1151c0d07459a7aa692b9e88da, type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_ObjectArgument: {fileID: 7978053776321691471, guid: dd02846d30fa54a4d94021592f6191d4, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: Two players go against each other!
@@ -6800,13 +6800,13 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 56786069}
-          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
+        - m_Target: {fileID: 3448692081064892845, guid: 9b76d837da391d1439c536ec0635b8b1, type: 3}
+          m_TargetAssemblyTypeName: Sound.PlaySFX, Assembly-CSharp
           m_MethodName: PlaySound
           m_Mode: 2
           m_Arguments:
-            m_ObjectArgument: {fileID: 8300000, guid: 2ed614660d0f3f5418b8a9aa05a1f7d8, type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_ObjectArgument: {fileID: 7978053776321691471, guid: 9d926372c82ba884ca940bf83bde5fd9, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 

@@ -17,8 +17,7 @@ namespace Battle {
         [SerializeField] private Battle.Cycle.ManaCycle manaCycle;
         private bool cycleActivated = false;
 
-        [SerializeField] private AudioClip tickSFX;
-        [SerializeField] private AudioClip goSFX;
+        [SerializeField] private GameObject tickSFX, goSFX;
 
         // Player1, level retrieved from if in solo mode
         [SerializeField] private Board.GameBoard player1;
@@ -69,14 +68,14 @@ namespace Battle {
                         }
                         countDownText.text = "GO!";
                         cycleActivated = true;
-                        SoundManager.Instance.PlaySound(goSFX);
+                        Instantiate(goSFX);
                         SoundManager.Instance.PlayBGM();
                     }
 
                     // if not reached 0 yet, tick; update text and play sound
                     else {
                         countDownText.text = GetIntTime(currentTime).ToString();
-                        SoundManager.Instance.PlaySound(tickSFX);
+                        Instantiate(tickSFX);
                     }
                 }
                 lastIntTime = GetIntTime(currentTime);

@@ -20,8 +20,7 @@ namespace SoloMode
         [SerializeField] GameObject itemRewardObject;
         [SerializeField] TextMeshProUGUI itemRewardText;
 
-        [SerializeField] AudioClip selectSFX;
-        [SerializeField] AudioClip submitSFX;
+        [SerializeField] GameObject selectSFX, submitSFX;
 
         TransitionScript transitionHandler;
 
@@ -45,14 +44,14 @@ namespace SoloMode
 
         public void LoadLevel()
         {
-            SoundManager.Instance.PlaySound(submitSFX);
+            Instantiate(submitSFX);
             Storage.level = level;
             transitionHandler.WipeToScene("ManaCycle");
         }
 
         public void OnSelect()
         {
-            SoundManager.Instance.PlaySound(selectSFX, pitch: 1.3f);
+            Instantiate(selectSFX);
         }
         
     }

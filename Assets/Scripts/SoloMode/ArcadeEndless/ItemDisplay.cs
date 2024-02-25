@@ -21,9 +21,8 @@ public class ItemDisplay : MonoBehaviour
     [SerializeField] private GameObject amountDisplayObject;
     [SerializeField] private GameObject equipDisplayObject;
 
-    [SerializeField] private AudioClip selectSFX;
-    [SerializeField] private float sfxPitch = 1f;
-    
+    [SerializeField] private GameObject selectSFX;
+
     // true in shop, false in inventory
     public bool showCost = false;
 
@@ -55,7 +54,7 @@ public class ItemDisplay : MonoBehaviour
     public void OnSelect(BaseEventData data)
     {
         Debug.Log(data);
-        SoundManager.Instance.PlaySound(selectSFX, pitch: sfxPitch);
+        Instantiate(selectSFX);
     }
 
 }

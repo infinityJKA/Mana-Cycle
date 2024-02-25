@@ -28,9 +28,7 @@ namespace Battle.Board {
         // Psychic's foresight icon prefab
         [SerializeField] public GameObject foresightIconPrefab;
 
-        [SerializeField] private AudioClip manaFillSFX;
-        [SerializeField] private AudioClip foresightActivateSFX;
-        [SerializeField] private AudioClip foresightConsumeSFX;
+        [SerializeField] private GameObject manaFillSFX, foresightActivateSFX, foresightConsumeSFX;
 
         /// <summary>Current amount of mana the player has generated</summary>
         public int mana {get; private set;}
@@ -80,7 +78,7 @@ namespace Battle.Board {
             // mana filled to max, play sound and animation. only run if ability requires mana
             if (mana >= board.Battler.activeAbilityMana && board.Battler.activeAbilityMana > 0)
             {
-                SoundManager.Instance.PlaySound(manaFillSFX);
+                Instantiate(manaFillSFX);
                 manaDisp.GetComponent<ColorFlash>().Flash();
             }
         }
@@ -151,7 +149,7 @@ namespace Battle.Board {
         /// Gain a foresight symbol, allowing to skip the next unclearable color during a chain.
         /// </summary>
         private void Foresight() {
-            SoundManager.Instance.PlaySound(foresightActivateSFX);
+            Instantiate(foresightActivateSFX);
             Instantiate(foresightIconPrefab, symbolList);
         }
 
@@ -162,7 +160,7 @@ namespace Battle.Board {
 
         public void UseForesight() {
             // TODO: some kinda particle effect or other visual effect on foresight symbol consumed
-            SoundManager.Instance.PlaySound(foresightConsumeSFX);
+            Instantiate(foresightConsumeSFX);
             Destroy(symbolList.GetChild(0).gameObject);
         }
 

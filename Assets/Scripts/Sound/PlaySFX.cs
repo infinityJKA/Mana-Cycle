@@ -5,10 +5,15 @@ using UnityEngine;
 namespace Sound {
     public class PlaySFX : MonoBehaviour
     {
-        [SerializeField] private AudioClip _clip;
+        [SerializeField] private GameObject _clip;
         void Start()
         {
-            Sound.SoundManager.Instance.PlaySound(_clip);
+            Instantiate(_clip);
+        }
+
+        public void PlaySound(GameObject sfx)
+        {
+            Instantiate(sfx);
         }
     }
 }
