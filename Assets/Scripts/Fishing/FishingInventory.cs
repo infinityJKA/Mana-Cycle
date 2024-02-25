@@ -16,6 +16,7 @@ public class FishingInventory : MonoBehaviour
 
     public FishingWeapon defaultWeapon;
     public FishingArmor defaultArmor;
+    public List<CraftingRecipe> craftingList = new List<CraftingRecipe>();
 
     // public List<FishingItem> GetInventoryList(){
     //     List<FishingItem> L = new List<FishingItem>();
@@ -56,6 +57,25 @@ public class FishingInventory : MonoBehaviour
         else{
             
         }
+    }
+
+    public bool CheckIfCraftable(CraftingRecipe r){
+        bool craftable = true;
+        foreach(FishingItem required in r.requiredItems){
+            bool itemRequirementMet = false;
+            foreach(ItemInInventory i in inventory){
+                if(i.itemData == required){
+                    if(i.stackSize >= r.requiredItemCount[r.requiredItems.IndexOf(required)]){
+                        itemRequirementMet = true;
+                    }
+                }
+            }
+            if(!itemRequirementMet){
+                craftable = false;
+            }
+        }
+
+        return craftable;
     }
 
 }
