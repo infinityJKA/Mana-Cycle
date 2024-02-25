@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class OnlineMenu : MonoBehaviour {
     public static OnlineMenu singleton;
 
-    public TMPro.TMP_InputField inputField;
+    public TMPro.TMP_InputField inputField, networkAddressField;
     public Button hostButton, joinButton;
 
     public GameObject onlineMenu, charSelectMenu;
@@ -15,6 +15,7 @@ public class OnlineMenu : MonoBehaviour {
     }
 
     private void Start() {
+        if (networkAddressField) networkAddressField.text = NetworkManager.singleton.networkAddress;
         if (!Storage.online) {
             ShowCharSelect();
         }
@@ -22,11 +23,13 @@ public class OnlineMenu : MonoBehaviour {
 
     public void HostButtonPressed() {
         DisableInteractables();
+        if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
         NetworkManager.singleton.StartHost();
     }
 
     public void JoinButtonPressed() {
         DisableInteractables();
+        if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
         NetworkManager.singleton.StartClient();
     }
 
