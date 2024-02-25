@@ -66,7 +66,7 @@ namespace Battle.Cycle {
             // Connect players to boards
             if (Storage.online) {
                 var players = FindObjectsByType<NetPlayer>(FindObjectsSortMode.None);
-                Debug.LogWarning("players found: "+players.Length);
+                Debug.Log("players found: "+players.Length);
                 foreach (var player in players) {
                     player.board = boards[player.isOwned ? 0 : 1];
                     player.board.SetNetPlayer(player);

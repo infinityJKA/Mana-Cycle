@@ -92,7 +92,7 @@ namespace Battle.Board {
             set {
                 bool prev = _quickFall;
                 _quickFall = value;
-                if (prev != _quickFall && Storage.online) {
+                if (prev != _quickFall && Storage.online && netPlayer.isOwned) {
                     netPlayer.CmdSetQuickfall(_quickFall);
                 }
             }
@@ -287,6 +287,16 @@ namespace Battle.Board {
         // with enemy's piece placements, so piece clear RPCs are sent in order with piece placement RPCs
         public bool manualCastContinue;
 
+        // used in online mode to assert that order of placements/events has not been jumbled
+        [SerializeField] private BoardSyncAssertion boardSync;
+        public BoardSyncAssertion BoardSync => boardSync;
+
+        /// <summary>
+        /// Keeps track of the total amount of pieces this board has dropped, replaced, or destroyed.
+        /// Used for board sync assertion in online multiplayer to help ensure piece drop order isn't jumbled
+        /// </summary>
+        public int pieceDropIndex {get; private set;}
+
         // Start is called before the first frame update
         void Start()
         {
@@ -332,7 +342,7 @@ namespace Battle.Board {
             {
                 // if not in arcade endless, use default stats
                 boardStats = ArcadeStats.defaultStats;
-                Debug.Log(string.Join("\n",boardStats));
+                // Debug.Log(string.Join("\n",boardStats));
             }
             else 
             {
@@ -346,7 +356,7 @@ namespace Battle.Board {
             // if (playerSide == 1) boardStats = ArcadeStats.defaultStats;
 
             boostPerCycleClear = (int) (boardStats[CycleMultIncrease] * 10);
-            Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
+            // Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
 
             if (playerSide == 0) {
                 SoundManager.Instance.LoadBGM(singlePlayer ? level.battleMusic : usableBattleMusic[Random.Range(0, usableBattleMusic.Length - 1)]);
@@ -831,6 +841,9 @@ namespace Battle.Board {
         public int AddTrashTile(System.Random rng, int col = -1) {
             /// Add a new trash piece with a random color
             SinglePiece trashPiece = Instantiate(abilityManager.singlePiecePrefab).GetComponent<SinglePiece>();
+            // give it a unique id
+            trashPiece.id = piecePreview.NextPieceId();
+
             trashPiece.GetCenter().SetColor(Piece.RandomColor(rng), this);
             trashPiece.GetCenter().MakeTrashTile(this);
 
@@ -856,7 +869,7 @@ namespace Battle.Board {
 
         // Add a piece to this board without having the player control or place it (keep their current piece).
         public int SpawnStandalonePiece(Piece newPiece, int column) {
-            // Send it to a random color and drop it
+            // Send it to the passed column and drop it
             newPiece.transform.SetParent(pieceBoard, false);
             newPiece.MoveTo(column, 1);
             newPiece.PlaceTilesOnBoard(ref tiles, pieceBoard);
@@ -944,6 +957,11 @@ namespace Battle.Board {
             this.fallTimeMult = m;
         }
 
+        private int NextDropIndex() {
+            pieceDropIndex++;
+            return pieceDropIndex;
+        }
+
         // The row that this piece last fell to.
         private int lastRowFall = 0;
         // The amount of times the piece has fallen to this row. 
@@ -952,15 +970,22 @@ namespace Battle.Board {
 
         public void PlacePiece() {
             if (!piece) return;
+
+            // Assert correct order in online mode
+            // ensure the piece drop index is not lower than a drop index already received, this would mean a jumble occured
+            // not sure if this is needed if the player owns this board but just in case for now
+            // because if they desync, the owner of the board shouldnt receive a full board tile refresh from the client that doesn't own this board...
+            // but ig its a good debug tool
+            int dropIndex = NextDropIndex();
+            if (boardSync) boardSync.AssertCorrectPieceDropOrder(dropIndex);
+
             // The piece will only advance the damage cycle when placed if it does not have a special ability
             bool advanceDamage = piece.effect == Battler.ActiveAbilityEffect.None;
 
             // send placement data to opponent in online mode
             if (Storage.online && netPlayer.isOwned) {
-                netPlayer.CmdPlacePiece(piece.GetCol(), piece.GetRotation());
+                netPlayer.CmdPlacePiece(piece.GetCol(), piece.GetRotation(), piece.id, dropIndex);
             }
-
-            // Place the piece
             PlaceTilesOnBoard();
 
             if (advanceDamage) DamageCycle();
@@ -984,6 +1009,7 @@ namespace Battle.Board {
         public void ReplacePiece(Piece nextPiece) {
             if (!nextPiece) return;
             pieceSpawned = true;
+
             // destroy the piece currently being dropped
             piece.DestroyTiles();
             Destroy(piece.gameObject);
@@ -1024,6 +1050,7 @@ namespace Battle.Board {
         {
             pieceSpawned = true;
             piece = piecePreview.SpawnNextPiece();
+
             lastRowFall = piece.GetRow();
             rowFallCount = 0;
 

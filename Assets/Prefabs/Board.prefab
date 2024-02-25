@@ -62,6 +62,7 @@ GameObject:
   - component: {fileID: 109460369072555598}
   - component: {fileID: 109460369072555584}
   - component: {fileID: 2738482425047349209}
+  - component: {fileID: 479170263471720606}
   - component: {fileID: 7561198744834971609}
   - component: {fileID: 4174570119449310702}
   - component: {fileID: 1653424862917905127}
@@ -135,7 +136,6 @@ MonoBehaviour:
   cascadePopup: {fileID: 243502163315262055}
   attackPopup: {fileID: 8221106855628571997}
   boardDefeatFall: {fileID: 8094125696873794837}
-  quickFall: 0
   instaDropThisFrame: 0
   drawGhostPiece: 1
   lightConnectedMana: 1
@@ -169,6 +169,21 @@ MonoBehaviour:
   cycleColoredObjects:
   - {fileID: 9205910468339133678}
   - {fileID: 4849464366322271798}
+  manualCastContinue: 0
+  boardSync: {fileID: 479170263471720606}
+--- !u!114 &479170263471720606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109460369072555597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd8f3e498c2118340a22213c8fbbe048, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  board: {fileID: 2738482425047349209}
 --- !u!114 &7561198744834971609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,6 +207,7 @@ MonoBehaviour:
   foresightActivateSFX: {fileID: 8300000, guid: 06e9b69d1bf99544d930332dd7d26cdf, type: 3}
   foresightConsumeSFX: {fileID: 8300000, guid: c06e8bb8406c8be4b840b461ce069c1c, type: 3}
   abilityActive: 0
+  abilityData: 
 --- !u!114 &4174570119449310702
 MonoBehaviour:
   m_ObjectHideFlags: 0

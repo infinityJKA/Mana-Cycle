@@ -470,7 +470,7 @@ namespace VersusMode {
         public void ToggleLock()
         {
             lockedIn = !lockedIn;  
-            Debug.Log(name+" locked in: "+lockedIn);
+            // Debug.Log(name+" locked in: "+lockedIn);
 
             if (isPlayer1 && isCpuCursor && !selectingCpuLevel && !menu.Mobile) {
                 SoundManager.Instance.PlaySound(settingsToggleSFX);
@@ -707,7 +707,7 @@ namespace VersusMode {
                 }
             }
 
-            Debug.Log(name+" selected "+selectedBattler.displayName);
+            // Debug.Log(name+" selected "+selectedBattler.displayName);
         }
 
         public void HideSelection() {

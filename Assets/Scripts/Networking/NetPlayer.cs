@@ -137,7 +137,7 @@ public class NetPlayer : NetworkBehaviour {
 
         ManaCycle.instance.CreateCycle();
 
-        Debug.LogWarning("sending init data: "+initData);
+        Debug.Log("sending init data: "+initData);
         RpcSynchronize(initData);
 
         // ready to show cycle to player now that cycle is initialized
@@ -218,6 +218,11 @@ public class NetPlayer : NetworkBehaviour {
 
     [ClientRpc(includeOwner = false)]
     private void RpcMovePiece(int targetColumn, Piece.Orientation rotation) {
+        // if a piece deson't exist, probably means there is a recovering/not recovering desync.
+        // not a big deal, because PlacePiece() actually decides where the final position of the piece is.
+        // so if there isn't a piece here just ignore the RPC
+        if (!board.GetPiece()) return;
+
         // ensure piece is not placed inside the ground
         board.GetPiece().SetRotation(rotation);
         board.SetPiecePosition(targetColumn, board.GetPiece().GetRow());
@@ -237,22 +242,31 @@ public class NetPlayer : NetworkBehaviour {
     }
 
     [Command]
-    public void CmdPlacePiece(int targetColumn, Piece.Orientation rotation) {
-        RpcPlacePiece(targetColumn, rotation);
+    public void CmdPlacePiece(int targetColumn, Piece.Orientation rotation, int pieceId, int dropIndex) {
+        RpcPlacePiece(targetColumn, rotation, pieceId, dropIndex);
     }
 
     [ClientRpc(includeOwner = false)]
-    private void RpcPlacePiece(int targetColumn, Piece.Orientation rotation) {
-        // possible improvement: If piece index is desynced, ask the other client to send their current board state and piece index
+    private void RpcPlacePiece(int targetColumn, Piece.Orientation rotation, int pieceId, int dropIndex) {
+        // possible improvement: If piece id is desynced, ask the other client to send their current board state and piece index
         // may be needed for UDP which may be switched to
 
-        // ensure piece is not placed inside the ground
+        //ensure the piece being dropped matches the id of the piece the client is dropping, same with drop index
+        Debug.Assert(board.GetPiece().id == pieceId);
+        Debug.Assert(board.pieceDropIndex+1 == dropIndex);
+
+        // match rotation and column that the other client says before dropping
         board.GetPiece().SetRotation(rotation);
         board.SetPiecePosition(targetColumn, board.GetPiece().GetRow());
+
+        // ensure piece is not placed inside the ground
+        // since column and rotation are ensured to match,
+        // gravity will ensure final tiles' positions match the tiles of the client owning this board.
         while (!board.ValidPlacement()) {
             board.MovePiece(0, -1);
         }
 
+        // drop index assertion will happen within this method, to make sure drop order is not jumbled
         board.PlacePiece();
     }
 
@@ -284,6 +298,10 @@ public class NetPlayer : NetworkBehaviour {
         RpcUseAbility(data);
     }
 
+    // TODO: BIG TODO
+    // fix the synchronization of aqua/zman tiles.
+    // the client receiving the trash tiles needs to be the one to authoritate where they land,
+    // not the client sending the trash tiles.
     [ClientRpc(includeOwner = false)]
     private void RpcUseAbility(int[] data) {
         board.abilityManager.abilityData = data;

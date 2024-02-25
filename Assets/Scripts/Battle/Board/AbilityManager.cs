@@ -127,12 +127,21 @@ namespace Battle.Board {
         }
 
         /// <summary>
+        /// Returns a newly instantiated single piece with a unique ID.
+        /// </summary>
+        private SinglePiece CreateSinglePiece() {
+            SinglePiece newPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            newPiece.id = board.piecePreview.NextPieceId();
+            return newPiece;
+        }
+
+        /// <summary>
         /// Piece is replaced with an iron sword that cannot be rotated.
         /// If it is placed or down is pressed, blade quickly shoots through the column and destroys mana in its path.
         /// </summary>
         private void IronSword() {
             ClearAbilityData();
-            SinglePiece ironSwordPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            SinglePiece ironSwordPiece = CreateSinglePiece();
             ironSwordPiece.MakeIronSword(board);
             board.ReplacePiece(ironSwordPiece);
         }
@@ -142,7 +151,7 @@ namespace Battle.Board {
         /// </summary>
         // Treats data as an array of 3 ints of the columns to send each trash tile in.
         private void Whirlpool() {
-            // If this is the oppoennt's client sending a whirlpool,
+            // If this is the opponent's client sending a whirlpool,
             // use the retrieved data for columns to send to
             if (Storage.online && !board.netPlayer.isOwned) {
                 for (int i=0; i<3; i++) {
@@ -170,7 +179,7 @@ namespace Battle.Board {
         }
 
         private SinglePiece MakePyroBomb() {
-            SinglePiece pyroBombPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            SinglePiece pyroBombPiece = CreateSinglePiece();
             pyroBombPiece.MakePyroBomb(board);
             return pyroBombPiece;
         }
@@ -200,7 +209,7 @@ namespace Battle.Board {
         /// </summary>
         private void GoldMine() {
             ClearAbilityData();
-            SinglePiece goldMinePiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            SinglePiece goldMinePiece = CreateSinglePiece();
             goldMinePiece.MakeGoldMine(board);
             board.ReplacePiece(goldMinePiece);
         }
@@ -210,7 +219,7 @@ namespace Battle.Board {
         /// After a short duration the tile destroys itself
         /// </summary>
         private void ZBlind() {
-            SinglePiece zmanPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            SinglePiece zmanPiece = CreateSinglePiece();
             zmanPiece.MakeZman(board);
 
             if (Storage.online && !board.netPlayer.isOwned) {
