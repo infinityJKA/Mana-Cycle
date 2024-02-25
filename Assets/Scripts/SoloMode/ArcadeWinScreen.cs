@@ -16,6 +16,7 @@ namespace SoloMode
 
         void Start()
         {
+            SoundManager.Instance.StopBGM();
             transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
             if (Storage.level != null)
             {
