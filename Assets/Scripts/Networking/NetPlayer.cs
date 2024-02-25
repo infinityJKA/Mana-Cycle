@@ -135,8 +135,13 @@ public class NetPlayer : NetworkBehaviour {
         ManaCycle.instance.Boards[0].rngManager.SetSeed(initData.hostSeed);
         ManaCycle.instance.Boards[1].rngManager.SetSeed(initData.nonHostSeed);
 
+        ManaCycle.instance.CreateCycle();
+
         Debug.LogWarning("sending init data: "+initData);
         RpcSynchronize(initData);
+
+        // ready to show cycle to player now that cycle is initialized
+        TransitionScript.instance.ReadyToFadeOut();
     }
 
     [ClientRpc(includeOwner = false)]
@@ -177,11 +182,20 @@ public class NetPlayer : NetworkBehaviour {
         ManaCycle.instance.Boards[0].rngManager.SetSeed(initData.nonHostSeed);
         ManaCycle.instance.Boards[1].rngManager.SetSeed(initData.hostSeed);
         ManaCycle.SetCycle(initData.cycle);
+        
+        // Creates the cycle objects and initializes various things on each board.
+        ManaCycle.instance.CreateCycle();
 
-        // match will start 3.5 seconds from when the ready command is sent from the client
-        board.cycle.CountdownHandler.StartTimer(3.5);
-        double startTime = NetworkTime.time + 3.5;
-        CmdClientReady(startTime);
+        // match will officially start 4 seconds after this initialize battle command is executed on the client
+        double startTime = NetworkTime.time + 4;
+        ManaCycle.instance.CountdownHandler.StartTimerNetworkTime(startTime);
+
+        // let host know this client is ready and let it know the time that the match will start
+        Debug.Log("Sending ready cmd to host - start time: "+startTime+", time: "+NetworkTime.time+", timeUntilStart: 4?");
+        enemyPlayer.CmdClientReady(startTime);
+
+        // ready to show cycle to player now that cycle is initialized
+        TransitionScript.instance.ReadyToFadeOut();
     }
 
     [Command]
@@ -190,10 +204,10 @@ public class NetPlayer : NetworkBehaviour {
     /// </summary>
     /// <param name="startTime">Synchronized time client has decided the game will start</param>
     private void CmdClientReady(double startTime) {
-        Debug.Log("Client is ready");
-
         double timeUntilStart = startTime - NetworkTime.time;
-        board.cycle.CountdownHandler.StartTimer(timeUntilStart);
+        Debug.Log("Client is ready - start time: "+startTime+", time: "+NetworkTime.time+", time until start: "+timeUntilStart);
+
+        ManaCycle.instance.CountdownHandler.StartTimerNetworkTime(startTime);
     }
 
 

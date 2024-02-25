@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 
 using Sound;
+using Mirror;
 
 namespace Battle {
     public class CountdownHandler : MonoBehaviour
@@ -28,6 +29,8 @@ namespace Battle {
 
         bool countdownStarted = false;
 
+        double startTime;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -49,13 +52,25 @@ namespace Battle {
             countdownStarted = true;
         }
 
+        public void StartTimerNetworkTime(double startTime) {
+            this.startTime = startTime;
+            Debug.Log("Countdown started - start time: "+startTime);
+            currentTimeUntilStart = startTime - NetworkTime.time;
+            lastIntTime = Mathf.CeilToInt((float)currentTimeUntilStart);
+            countdownStarted = true;
+        }
+
         // Update is called once per frame
         void Update()
         {
             if (!countdownStarted) return;
 
             // update time until "go" - negative if past
-            currentTimeUntilStart -= Time.deltaTime;
+            if (Storage.online) {
+                currentTimeUntilStart = startTime - NetworkTime.time;
+            } else {
+                currentTimeUntilStart -= Time.deltaTime;
+            }
 
             // If 0 reached and cycle has been activated
             if (cycleActivated) {

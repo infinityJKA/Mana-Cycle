@@ -18,6 +18,8 @@ public class TransitionScript : MonoBehaviour
     private static string gotoScene;
     private static bool wipingOut = false;
     private static bool inverted;
+    // if false, will need to manually call ReadyToFadeOut()
+    private static bool readyToFadeOut;
 
     private void Awake() {
         instance = this;
@@ -38,9 +40,9 @@ public class TransitionScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timePassed += Time.deltaTime;
         if (transitionState == "in")
         {
+            timePassed += Time.deltaTime;
             wipeImg.fillAmount = Mathf.Pow((timePassed + 0.1f) / inTime, 2);
             if (timePassed >= inTime){
                 wipingOut = true;
@@ -50,21 +52,19 @@ public class TransitionScript : MonoBehaviour
             }
         }
 
-        else if (transitionState == "out")
+        else if (transitionState == "out" && readyToFadeOut)
         {
+            timePassed += Time.deltaTime;
             wipeImg.fillAmount = Mathf.Pow(timePassed  / outTime, 2) * -1 + 1;
             if (wipeImg.fillAmount <= 0)
             {
                 transitionState = "none";
             }
         }
-        
-
     }
 
-    public void WipeToScene(string scene, float inTime=0.5f, float outTime=0.5f, bool reverse=false)
+    public void WipeToScene(string scene, float inTime=0.5f, float outTime=0.5f, bool reverse=false, bool autoFadeOut=true)
     {
-
         // dont start a transition if one is already in progress
         if (transitionState == "in") return;
 
@@ -83,6 +83,11 @@ public class TransitionScript : MonoBehaviour
         timePassed = 0;
         transitionState = "in";
         gotoScene = scene;
+        readyToFadeOut = autoFadeOut;
+    }
+
+    public void ReadyToFadeOut() {
+        readyToFadeOut = true;
     }
 
     public void WipeOut()
@@ -96,6 +101,7 @@ public class TransitionScript : MonoBehaviour
             wipeImg.fillOrigin = (int) Image.OriginHorizontal.Right;
         }
         timePassed = 0;
+        wipeImg.fillAmount = 1;
         transitionState = "out";
     }
 }

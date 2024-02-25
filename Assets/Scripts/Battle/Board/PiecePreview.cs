@@ -23,7 +23,7 @@ namespace Battle.Board {
         {
             this.board = board;
 
-            // populate the preview list & next piece box; add five pieces to list and one to next piece
+            // populate the preview list & next piece box; add n pieces to list and set next piece
             CreateNewPiece(nextPieceTransform);
             for (int i=0; i<previewLength; i++) CreateNewPiece(previewListTransform);
         }

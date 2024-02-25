@@ -69,10 +69,12 @@ namespace Battle.Cycle {
                 Debug.LogWarning("players found: "+players.Length);
                 foreach (var player in players) {
                     player.board = boards[player.isOwned ? 0 : 1];
-                    player.board.netPlayer = player;
+                    player.board.SetNetPlayer(player);
                     // reset rematchRequested to false incase scene is being reloaded during a rematch match
                     player.board.netPlayer.rematchRequested = false;
+                }
 
+                foreach (var player in players) {
                     // on host side, call command that will initialize rng & other stuff and send to other client
                     if (NetworkServer.activeHost && player.isLocalPlayer) {
                         player.CmdBattleInit();
@@ -87,12 +89,11 @@ namespace Battle.Cycle {
                 }
             }
 
-            CreateCycle();
-
+            // creates the cycle and displays it on the screen.
+            // don't run here if online; postpone this in online wait until data is received from the host
+            if (!Storage.online) CreateCycle();
+            
             foreach (var board in boards) {
-                // Setup cycle and many other components on each board (tile grid, etc)
-                board.InitializeWithCycle(this);
-
                 // if any netPlayer is waiting on scene load and this cycle for initialization,
                 // this will call that delayed init
                 if (Storage.online) board.netPlayer.OnBattleSceneLoaded();
@@ -104,8 +105,6 @@ namespace Battle.Cycle {
         /// </summary>
         public void StartBattle()
         {
-            
-
             // Start game boards - their first piece will begin falling.
             foreach (GameBoard board in boards)
             {
@@ -116,6 +115,7 @@ namespace Battle.Cycle {
 
         /// <summary>
         /// Is run near the end of start method, before boards are initialized with cycle. Creates the cycle objects and displays them on the screen.
+        /// Also runs InitializeWithCycle() on all boards./// 
         /// </summary>
         public void CreateCycle() {
             // Check if player 1 is in single player. if so, use its cycle length variables
@@ -145,6 +145,11 @@ namespace Battle.Cycle {
                 if (usingSprites) cycleObject.sprite = manaSprites[(int)cycle[i]];
                 cycleObjects.Add(cycleObject);
                 cycleObject.transform.SetParent(transform, false);
+            }
+
+            foreach (var board in boards) {
+                // Setup cycle and many other components on each board (tile grid, etc)
+                board.InitializeWithCycle(this);
             }
         }
 
