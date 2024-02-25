@@ -1,3 +1,11 @@
+#if !UNITY_STANDALONE
+  #define DISABLESTEAMWORKS 
+#endif
+
+#if !DISABLESTEAMWORKS
+using Steamworks;
+#endif
+
 using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +17,8 @@ public class OnlineMenu : MonoBehaviour {
     public Button hostButton, joinButton;
 
     public GameObject onlineMenu, charSelectMenu;
+
+    
 
     private void Awake() {
         singleton = this;
@@ -24,7 +34,7 @@ public class OnlineMenu : MonoBehaviour {
     public void HostButtonPressed() {
         DisableInteractables();
         if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
-        NetworkManager.singleton.StartHost();
+        LobbyManager.CreateLobby();
     }
 
     public void JoinButtonPressed() {
@@ -54,5 +64,6 @@ public class OnlineMenu : MonoBehaviour {
         Debug.Log("showing online menu");
         charSelectMenu.SetActive(false);
         onlineMenu.SetActive(true);
+        EnableInteractables();
     }
 }
