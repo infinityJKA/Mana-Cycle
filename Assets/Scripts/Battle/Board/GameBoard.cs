@@ -1618,7 +1618,7 @@ namespace Battle.Board {
             casting = true;
             if (chain == 1) {
                 PlaySFX("startupCast");
-                if (Storage.online) netPlayer.CmdAdvanceChain(startup: true, 0);
+                if (Storage.online && netPlayer.isOwned) netPlayer.CmdAdvanceChain(startup: true, 0);
             }
 
             GlowBlobs(chainDelay);
