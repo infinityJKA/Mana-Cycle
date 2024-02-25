@@ -65,10 +65,7 @@ namespace SoloMode {
         private bool focused; 
 
         // menu sfx
-        [SerializeField] private AudioClip moveSFX;
-        [SerializeField] private AudioClip swapTabSFX;
-        [SerializeField] private AudioClip selectSFX;
-        [SerializeField] private AudioClip errorSFX;
+        [SerializeField] private GameObject moveSFX, swapTabSFX, selectSFX, errorSFX;
 
         [SerializeField] protected SoloMenuTab[] tabs;
 
@@ -223,10 +220,10 @@ namespace SoloMode {
         public void ConfirmLevel(Level pressedLevel) {
             if (!pressedLevel.RequirementsMet()) 
             {
-                SoundManager.Instance.PlaySound(errorSFX);
+                Instantiate(errorSFX);
                 return;
             }
-            SoundManager.Instance.PlaySound(selectSFX);
+            Instantiate(selectSFX);
 
             StoreSelections();
             Storage.level = pressedLevel; 
@@ -245,12 +242,12 @@ namespace SoloMode {
 
         public void LeftTabArrow() {
             MoveTabCursor(-1);
-            SoundManager.Instance.PlaySound(swapTabSFX, pitch : 1.68f);
+            Instantiate(swapTabSFX);
         }
 
         public void RightTabArrow() {
             MoveTabCursor(1);
-            SoundManager.Instance.PlaySound(swapTabSFX, pitch : 1.56f);
+            Instantiate(swapTabSFX);
         }
 
         /// <summary>
@@ -390,9 +387,9 @@ namespace SoloMode {
             RefreshListedLevelText(selectedLevel, selectedText, true);
 
             if (delta == -1) {
-                SoundManager.Instance.PlaySound(moveSFX, pitch : 1.18f);
+                Instantiate(moveSFX);
             } else {
-                SoundManager.Instance.PlaySound(moveSFX, pitch : 1.06f);
+                Instantiate(moveSFX);
             }
 
             // update the level target position to animate to

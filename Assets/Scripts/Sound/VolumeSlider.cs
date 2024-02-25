@@ -33,9 +33,9 @@ namespace Sound {
             soundManager.ChangeSFXVolume(value);
         }
 
-        public void PlaySound(AudioClip clip)
-        {
-            soundManager.PlaySound(clip, 1f);
-        }
+        // public void PlaySound(AudioClip clip)
+        // {
+        //     soundManager.PlaySound(clip, 1f);
+        // }
     }
 }

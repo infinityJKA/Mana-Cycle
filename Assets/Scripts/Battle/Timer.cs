@@ -23,7 +23,7 @@ namespace Battle {
         /** Color shown when time is almost up */
         [SerializeField] private TMPro.TMP_ColorGradient redGradient;
 
-        [SerializeField] private AudioClip beepSFX;
+        [SerializeField] private GameObject beepSFX;
 
         /** if the timer is currently running */
         private bool running = false;
@@ -78,7 +78,7 @@ namespace Battle {
             } else{
                 if(player1.level.time != -1){
                     textbox.text = Utils.FormatTime(timeLeft);
-                    if (timeLeft < 3 && lastDisplayedTime != textbox.text) SoundManager.Instance.PlaySound(beepSFX, pitch: 1.5f, volumeScale: 1f);
+                    if (timeLeft < 3 && lastDisplayedTime != textbox.text) Instantiate(beepSFX);
                 }
             }
 

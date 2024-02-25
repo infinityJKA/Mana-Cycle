@@ -152,7 +152,6 @@ MonoBehaviour:
   timer: {fileID: 0}
   convoHandler: {fileID: 0}
   convoPaused: 0
-  sfxObject: {fileID: 3878394946360508906, guid: 46c0ce93771a39b44b219e70527567c5, type: 3}
   usableBattleMusic: []
   particleParent: {fileID: 4920481684090110958}
   clearParticleSystem: {fileID: 8444103318734970022, guid: 25402455859d44a83abb5c7f5c764f7d, type: 3}
@@ -169,6 +168,18 @@ MonoBehaviour:
   cycleColoredObjects:
   - {fileID: 9205910468339133678}
   - {fileID: 4849464366322271798}
+  moveSFX: {fileID: 7978053776321691471, guid: 6562176b30ccf7a40be71e2291184998, type: 3}
+  rotateSFX: {fileID: 7978053776321691471, guid: 73cf3ed8b50badb468c4935e506d2130, type: 3}
+  castSFX: {fileID: 7978053776321691471, guid: b132fa67adb80e04ebc8b71085aac4c4, type: 3}
+  fullCycleSFX: {fileID: 7978053776321691471, guid: 1921f474cfefd2248b2a4847ef9c78eb, type: 3}
+  loseSFX: {fileID: 7978053776321691471, guid: 810c96ad37c462f498a3cfbe363b4f35, type: 3}
+  PauseSFX: {fileID: 7978053776321691471, guid: f69c1429dd8056a44822213b7f4868a5, type: 3}
+  winSFX: {fileID: 7978053776321691471, guid: b628f349f45e41442bfb9259c86ad68f, type: 3}
+  failedCastSFX: {fileID: 7978053776321691471, guid: f45c82e44b9680b4ea7af4d601e66489, type: 3}
+  placeSFX: {fileID: 7978053776321691471, guid: 657f259e6353da745a1c83f7ada24a57, type: 3}
+  damageTakenSFX: {fileID: 7978053776321691471, guid: 462e137790ae0d44ab8eb61610aeb97d, type: 3}
+  startupCastSFX: {fileID: 7978053776321691471, guid: 59dd3c5389e71d741bdf2cb20e6e879e, type: 3}
+  cascadeSFX: {fileID: 7978053776321691471, guid: dab65cf42c5086941bc34db71cbc8e3e, type: 3}
 --- !u!114 &7561198744834971609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,9 +199,9 @@ MonoBehaviour:
   singlePiecePrefab: {fileID: 9030524263075610063, guid: 04baa513f5c9f4f3594a331fffe01759, type: 3}
   symbolList: {fileID: 842465151080099548}
   foresightIconPrefab: {fileID: 5392420740867616881, guid: e8ee66bf4a40345a29259ae0354dd8e9, type: 3}
-  manaFillSFX: {fileID: 8300000, guid: b1e4678f9663b08428d9eff1a572dfaf, type: 3}
-  foresightActivateSFX: {fileID: 8300000, guid: 06e9b69d1bf99544d930332dd7d26cdf, type: 3}
-  foresightConsumeSFX: {fileID: 8300000, guid: c06e8bb8406c8be4b840b461ce069c1c, type: 3}
+  manaFillSFX: {fileID: 7978053776321691471, guid: 6d01ec257fee09443ac988fa604b3007, type: 3}
+  foresightActivateSFX: {fileID: 7978053776321691471, guid: 96c845517e143904ba16d03dfceb9e95, type: 3}
+  foresightConsumeSFX: {fileID: 7978053776321691471, guid: a70e3da4eb4370945b815df3cf9f472f, type: 3}
   abilityActive: 0
 --- !u!114 &4174570119449310702
 MonoBehaviour:

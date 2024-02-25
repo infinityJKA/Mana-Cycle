@@ -41,6 +41,8 @@ namespace Battle {
         [SerializeField] private bool battleUseInputScripts = false;
         [SerializeField] private bool menuUseInputScripts = true;
 
+        [SerializeField] private GameObject moveSFX;
+
         // set to false whhen this is an AI vs AI match and htis controller can only interact with the pause menu.
         public bool canControlBoard = true;
 
@@ -88,10 +90,10 @@ namespace Battle {
                     {
                         if (Input.GetKeyDown(inputScript.Up)) {
                             board.pauseMenu.MoveCursor(Vector3.up);
-                            board.PlaySFX("move", pitch: 0.8f, important: false);
+                            board.PlaySFX(moveSFX);
                         } else if (Input.GetKeyDown(inputScript.Down)) {
                             board.pauseMenu.MoveCursor(Vector3.down);
-                            board.PlaySFX("move", pitch: 0.75f, important: false);
+                            board.PlaySFX(moveSFX);
                         }
 
                         if (Input.GetKeyDown(inputScript.Cast)){

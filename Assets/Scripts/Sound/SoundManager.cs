@@ -25,30 +25,6 @@ namespace Sound {
             Load();
         }
 
-        public void PlaySound(AudioClip clip, float pitch = 1f, float pan = 0f, float volumeScale = 1f, bool important = true)
-        {
-            // don't play if sound limit exceeded
-            // if (effectSource.transform.childCount >= 19) return;
-
-            // if this is an unimportant sound, don't play if there are a lot of sfx playing
-            // (things like move, rotate, place are not important)
-            // if (effectSource.transform.childCount >= 14 && !important) return; 
-
-            // If sound limit exceeded, remove the topmost sound effect
-            if (effectSource.transform.childCount >= 19) {
-                Destroy(effectSource.transform.GetChild(0).gameObject);
-            }
-
-            // create a new gameobject with an audiosource, to avoid interfering with other sound effects
-            var tempEffectSource = new GameObject("tempEffectSource").AddComponent<AudioSource>();
-            tempEffectSource.transform.SetParent(effectSource.transform);
-            tempEffectSource.pitch = pitch;
-            tempEffectSource.panStereo = pan;
-            tempEffectSource.volume = Mathf.Clamp(tempEffectSource.volume * volumeScale, 0, 1);
-            tempEffectSource.PlayOneShot(clip, Instance.effectSource.volume);
-            Destroy(tempEffectSource.gameObject, clip.length);
-        }
-
         /** Set the background music. If the passed song is already playing, do not replay */
         public void SetBGM(AudioClip clip) {
             if (Instance.musicSource.clip == clip) return;
@@ -85,29 +61,21 @@ namespace Sound {
             Instance.musicSource.clip = null;
         }
 
-        // sliders cannot call functions with more than 1 param (?)
-        public void PlaySound(AudioClip clip)
+        public void SliderSound(AudioClip clip)
         {
-            PlaySound(clip, 1f);
+
         }
 
         public void ChangeMusicVolume(float value)
         {
-            Instance.musicSource.volume = value;
-            Save();
+            PlayerPrefs.SetFloat("musVolumeKey", value);
+            musicSource.volume = value;
         }
 
         public void ChangeSFXVolume(float value)
         {
 
-            Instance.effectSource.volume = value;
-            Save();
-        }
-
-        public void Save()
-        {
-            PlayerPrefs.SetFloat("musVolumeKey", Instance.musicSource.volume);
-            PlayerPrefs.SetFloat("sfxVolumeKey", Instance.effectSource.volume);
+            PlayerPrefs.SetFloat("sfxVolumeKey", value);
         }
 
         public void Load()
@@ -130,6 +98,16 @@ namespace Sound {
             else
             {
                 Instance.effectSource.volume = PlayerPrefs.GetFloat("sfxVolumeKey");
+            }
+
+            // master
+            if (!PlayerPrefs.HasKey("masterVolumeKey"))
+            {
+                PlayerPrefs.SetFloat("masterVolumeKey", 1.0f);
+            }
+            else
+            {
+                Instance.effectSource.volume = PlayerPrefs.GetFloat("masterVolumeKey");
             }
             
         }

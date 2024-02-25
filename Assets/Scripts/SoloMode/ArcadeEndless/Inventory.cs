@@ -27,8 +27,7 @@ public class Inventory : MonoBehaviour
 
     [SerializeField] public ScrollRect scrollRect;
 
-    [SerializeField] private AudioClip equipSFX;
-    [SerializeField] private AudioClip unequipSFX;
+    [SerializeField] private GameObject equipSFX, unequipSFX;
 
     // private float scrollPosTarget = 1f;
 
@@ -156,7 +155,7 @@ public class Inventory : MonoBehaviour
 
             case Item.UseType.Equip: 
                 item.ActivateEffect();
-                SoundManager.Instance.PlaySound(ArcadeStats.equipedItems.Contains(item) ? equipSFX : unequipSFX, volumeScale: 0.75f);
+                Instantiate(ArcadeStats.equipedItems.Contains(item) ? equipSFX : unequipSFX);
                 break;
 
             default: 

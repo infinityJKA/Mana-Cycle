@@ -77,8 +77,8 @@ public class Item : ScriptableObject
     [NonSerialized] public GameBoard board;
 
     // use / equip sound
-    [SerializeField] private AudioClip useSFX;
-    [SerializeField] private float soundPitch = 1f;
+    [SerializeField] private GameObject useSFX;
+    
     public void OnEnable()
     {
         cost = baseCost;
@@ -166,7 +166,7 @@ public class Item : ScriptableObject
             else if (useType == UseType.Consume)
             {
                 // play consumable sound serialized in this item. equip sounds are serialized in inventory
-                SoundManager.Instance.PlaySound(useSFX, pitch: soundPitch);
+                Instantiate(useSFX);
             }
         }
 

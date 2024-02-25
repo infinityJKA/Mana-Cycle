@@ -29,7 +29,7 @@ namespace Battle {
         /** acceleration, in screen widths / sec / sec **/
         public float accel = 1f;
 
-        [SerializeField] private AudioClip dealDmgSFX;
+        [SerializeField] private GameObject dmgShootSFX;
 
         // save initial un-accelerated speed to reset back to if countering
         private float initialSpeed;
@@ -101,7 +101,7 @@ namespace Battle {
 
                     target.EnqueueDamage(damage);
                     Destroy(this.gameObject);
-                    target.PlaySFX("dmgShoot", pitch: 1f + target.hpBar.DamageQueue[0].dmg/1000f, volumeScale: 1.5f);
+                    target.PlaySFX(dmgShootSFX);
                 }
             }
         }
