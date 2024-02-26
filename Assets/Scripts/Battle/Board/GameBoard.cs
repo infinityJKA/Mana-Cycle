@@ -12,7 +12,6 @@ using Animation;
 using Battle.Cycle;
 using Sound;
 using Battle.AI;
-using Achievements;
 
 // may be a bad idea to namespace this, could be changed later
 using static ArcadeStats.Stat;
@@ -1407,10 +1406,11 @@ namespace Battle.Board {
                 }
 
                 // if no incoming damage/enemy shield was found, send straight to opponent
-                // if (enemyBoard.recoveryMode) {
-                //     Destroy(shoot.gameObject);
-                //    return;
-                // }
+                if (enemyBoard.recoveryMode) {
+                    Destroy(shoot.gameObject);
+                   return;
+                }
+                
                 shoot.target = enemyBoard;
                 shoot.mode = DamageShoot.Mode.Attacking;
                 shoot.destination = enemyBoard.hpBar.DamageQueue[0].transform.position;

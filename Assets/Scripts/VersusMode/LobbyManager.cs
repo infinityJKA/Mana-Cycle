@@ -3,7 +3,7 @@ using Mirror;
 using Steamworks;
 using UnityEngine.SceneManagement;
 
-public class LobbyManager : MonoBehaviour {
+public class LobbyManager {
 
     protected static Callback<LobbyCreated_t> lobbyCreated;
     protected static Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
