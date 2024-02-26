@@ -264,7 +264,7 @@ namespace Battle.Board {
 
         [SerializeField] private List<ColorFader> cycleColoredObjects;
 
-        [SerializeField] private GameObject moveSFX, rotateSFX, castSFX, fullCycleSFX, loseSFX, PauseSFX, winSFX, failedCastSFX, placeSFX, damageTakenSFX, startupCastSFX, cascadeSFX;
+        [SerializeField] private GameObject moveSFX, rotateSFX, castSFX, fullCycleSFX, loseSFX, PauseSFX, winSFX, failedCastSFX, placeSFX, damageTakenSFX, startupCastSFX, cascadeSFX, dmgShootSFX;
 
         // online mode- the netplayer that controls this board
         public NetPlayer netPlayer {get; private set;}
@@ -1336,7 +1336,7 @@ namespace Battle.Board {
             // then enqueue damage to enemy
             if (damage > 0) {
                 EnqueueDamage(damage);
-                PlaySFX("dmgShoot", pitch: 1f + enemyBoard.hpBar.DamageQueue[0].dmg/1000f, volumeScale: 1.3f);
+                PlayDamageShootSFX();
                 damage = 0;
             }
 
@@ -1349,6 +1349,10 @@ namespace Battle.Board {
             }
 
             return damage;
+        }
+
+        public void PlayDamageShootSFX() {
+            PlaySFX(dmgShootSFX);
         }
 
         public void DamageShootAtTarget(DamageShoot shoot) {
