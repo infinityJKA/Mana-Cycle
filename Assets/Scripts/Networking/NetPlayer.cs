@@ -323,7 +323,7 @@ public class NetPlayer : NetworkBehaviour {
         for (int i=0; i<6; i++) {
             board.hpBar.DamageQueue[i].SetDamage(damageQueue[i]);
         }
-        board.PlaySFX("dmgShoot", pitch: 1f + board.hpBar.DamageQueue[0].dmg/1000f, volumeScale: 1.3f);
+        board.PlayDamageShootSFX();
     }
 
     // Initiate a game rematch.

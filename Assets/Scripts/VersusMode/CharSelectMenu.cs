@@ -162,7 +162,7 @@ namespace VersusMode {
                 return;
             }
 
-            Sound.SoundManager.Instance.PlaySound(startSFX, 0.5f);
+            Instantiate(startSFX);
             started = true;
             // don't auto fade into battle if online; need to wait for battle initialization to be sent/received
             bool autoFadeOut = !Storage.online;

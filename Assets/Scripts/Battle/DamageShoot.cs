@@ -118,10 +118,9 @@ namespace Battle {
                 //     return;
                 // }
 
-                    target.EnqueueDamage(damage);
-                    Destroy(this.gameObject);
-                    target.PlaySFX(dmgShootSFX);
-                }
+                target.EnqueueDamage(damage);
+                Destroy(this.gameObject);
+                target.PlaySFX(dmgShootSFX);
             }
         }
 
