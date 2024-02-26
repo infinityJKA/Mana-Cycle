@@ -12,7 +12,10 @@ public class LobbyManager {
     static bool usingSteam = false;
     private const string HostAddressKey = "HostAddress";
 
+    static bool steamInitialized = false;
     static LobbyManager() {
+        if (steamInitialized) return;
+        
         if (usingSteam && !SteamManager.Initialized) {
             Debug.LogWarning("SteamManager is not initialized");
             usingSteam = false;
@@ -22,6 +25,8 @@ public class LobbyManager {
         lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
         lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+
+        steamInitialized = true;
     }
 
     public static void CreateLobby() {
