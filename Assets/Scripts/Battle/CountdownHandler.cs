@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 
 using Sound;
+using Mirror;
 
 namespace Battle {
     public class CountdownHandler : MonoBehaviour
@@ -11,7 +12,7 @@ namespace Battle {
         [SerializeField] private double countDownTime;
         [SerializeField] private double countDownDelay;
         [SerializeField] private double goTime;
-        private double currentTime;
+        private double currentTimeUntilStart;
         private int lastIntTime;
         private TMPro.TextMeshProUGUI countDownText;
         [SerializeField] private Battle.Cycle.ManaCycle manaCycle;
@@ -25,29 +26,55 @@ namespace Battle {
         // timer to start when countdown ends
         [SerializeField] private Timer timer;
 
+        bool countdownStarted = false;
+
+        double startTime;
+
         // Start is called before the first frame update
         void Start()
         {
-            countDownText = this.GetComponent<TMPro.TextMeshProUGUI>();
-            currentTime = countDownTime + countDownDelay;
-            // lastIntTime = GetIntTime(currentTime);
-            lastIntTime = 4;
+            countDownText = GetComponent<TMPro.TextMeshProUGUI>();
 
             countDownText.text = "";
 
             timer.gameObject.SetActive(false);
+
+            // start countdown immediately if not online
+            if (!Storage.online) StartTimer(countDownTime + countDownDelay);
+            // in online, will wait for client ready message
+        }
+
+        public void StartTimer(double timeUntilStart) {
+            Debug.Log("Countdown started - delay: "+timeUntilStart);
+            currentTimeUntilStart = timeUntilStart;
+            lastIntTime = Mathf.CeilToInt((float)currentTimeUntilStart);
+            countdownStarted = true;
+        }
+
+        public void StartTimerNetworkTime(double startTime) {
+            this.startTime = startTime;
+            Debug.Log("Countdown started - start time: "+startTime);
+            currentTimeUntilStart = startTime - NetworkTime.time;
+            lastIntTime = Mathf.CeilToInt((float)currentTimeUntilStart);
+            countdownStarted = true;
         }
 
         // Update is called once per frame
         void Update()
         {
+            if (!countdownStarted) return;
+
             // update time until "go" - negative if past
-            currentTime -= Time.deltaTime;
+            if (Storage.online) {
+                currentTimeUntilStart = startTime - NetworkTime.time;
+            } else {
+                currentTimeUntilStart -= Time.deltaTime;
+            }
 
             // If 0 reached and cycle has been activated
             if (cycleActivated) {
                 // hide the go text if past go time
-                if (currentTime <= -goTime)
+                if (currentTimeUntilStart <= -goTime)
                 {
                     gameObject.SetActive(false);
                 }
@@ -56,11 +83,11 @@ namespace Battle {
             // otherwise, still ticking down, cycle not activated yet
             else {
                 // Tick if int time different than last frame
-                if (GetIntTime(currentTime) != lastIntTime){
+                if (intTime != lastIntTime){
                     // if countdown has hit 0; init boards, go text and SFX
-                    if (currentTime <= 0)
+                    if (currentTimeUntilStart <= 0)
                     {
-                        manaCycle.InitBoards();
+                        manaCycle.StartBattle();
                         if (player1.singlePlayer) {
                             timer.gameObject.SetActive(true);
                             timer.duration = player1.GetLevel().time;
@@ -74,17 +101,17 @@ namespace Battle {
 
                     // if not reached 0 yet, tick; update text and play sound
                     else {
-                        countDownText.text = GetIntTime(currentTime).ToString();
+                        countDownText.text = intTime.ToString();
                         Instantiate(tickSFX);
                     }
                 }
-                lastIntTime = GetIntTime(currentTime);
+                lastIntTime = intTime;
             }
         }
 
-        int GetIntTime(double t)
+        int intTime
         {
-            return (int) Math.Ceiling(currentTime);
+            get { return (int) Math.Ceiling(currentTimeUntilStart); }
         }
     }
 

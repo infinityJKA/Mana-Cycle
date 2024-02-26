@@ -1,13 +1,19 @@
+using System.Collections.Generic;
 using Multiplayer;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+
 namespace VersusMode {
     ///<summary> Controls the character selection menu and the cursors within it. </summary>
     public class CharSelectMenu : MonoBehaviour {
+        public static CharSelectMenu Instance {get; private set;}
+
         ///<summary>Selectors for both players</summary>
-        [SerializeField] private CharSelector p1Selector, p2Selector;
+        [SerializeField] public CharSelector p1Selector, p2Selector;
         ///<summary>The grid of characters to select with the selectorss defined in this object</summary>
         [SerializeField] private Transform grid;
+        public CharacterIcon[] characterIcons {get; private set;}
 
         private TransitionScript transitionHandler;
 
@@ -29,8 +35,12 @@ namespace VersusMode {
         [SerializeField] private bool mobile;
         public bool Mobile { get {return mobile;} }
 
+
+        public bool started {get; private set;}
         // (for debug purposes)
         void Awake() {
+            Instance = this;
+
             if (Storage.gamemode == Storage.GameMode.Default) {
                 Storage.gamemode = Storage.GameMode.Versus;
                 Storage.isPlayerControlled1 = false;
@@ -39,6 +49,11 @@ namespace VersusMode {
 
             if (!connectionManager) {
                 connectionManager = FindFirstObjectByType<PlayerConnectionManager>();
+            }
+
+            characterIcons = GetComponentsInChildren<CharacterIcon>();
+            for (int i = 0; i < characterIcons.Length; i++) {
+                characterIcons[i].SetIndex(i);
             }
         }
 
@@ -79,6 +94,10 @@ namespace VersusMode {
             if (Storage.useDualKeyboardInput) {
                 SwitchToDualKeyboardMode();
             }
+
+            if (Storage.online) {
+                OnlineMenu.singleton.ShowOnlineMenu();
+            }
         }
 
         bool ready { 
@@ -94,7 +113,10 @@ namespace VersusMode {
 
         // Called when player casts while locked in. If both players are ready, match will begin
         public void StartIfReady() {
+
+            // Only the host can start the match
             if (ready) {
+                started = true;
                 Instantiate(startSFX);
                 StartMatch();
             }
@@ -140,7 +162,11 @@ namespace VersusMode {
                 return;
             }
 
-            transitionHandler.WipeToScene("ManaCycle");
+            Sound.SoundManager.Instance.PlaySound(startSFX, 0.5f);
+            started = true;
+            // don't auto fade into battle if online; need to wait for battle initialization to be sent/received
+            bool autoFadeOut = !Storage.online;
+            transitionHandler.WipeToScene("ManaCycle", autoFadeOut: autoFadeOut);
         }
 
         // ---- Mobile ----

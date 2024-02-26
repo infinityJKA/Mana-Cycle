@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using Battle;
 using Battle.Board;
 using VersusMode;
+using Mirror;
 
 namespace Multiplayer {
     public class PlayerConnectionManager : MonoBehaviour {
@@ -30,12 +31,15 @@ namespace Multiplayer {
         private bool reparent = false;
 
         private void Awake() {
-            // destroy self if not a multiplayer mode.
-            if (!Storage.isPlayerControlled2) Destroy(gameObject);
+            // destroy self if not a multiplayer mode or in online mode where only player 1 will control
+            if (!Storage.isPlayerControlled2 || Storage.online) Destroy(gameObject);
 
             if (instance == null) {
                 if (connectMode == ConnectMode.DestroyMultiplayer) {
                     Destroy(gameObject);
+                    if (NetworkClient.activeHost) NetworkManager.singleton.StopHost();
+                    else if (NetworkClient.active) NetworkManager.singleton.StopClient();
+                    if (NetworkManager.singleton) Destroy(NetworkManager.singleton.gameObject);
                 } else {
                     instance = this;
                     reparent = true;

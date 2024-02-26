@@ -1,9 +1,17 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VersusMode;
 
 public class SoloCharSelectController : MonoBehaviour {
+    public static SoloCharSelectController instance;
+
     [SerializeField] private CharSelectMenu charSelectMenu;
+
+    /// <summary>
+    /// In online mode, the (client) net player the client is controlling
+    /// </summary>
+    public NetPlayer netPlayer;
 
     private CharSelector charSelector;
 
@@ -16,13 +24,18 @@ public class SoloCharSelectController : MonoBehaviour {
     private bool joystickPressed;
 
     private void Awake() {
+        instance = this;
+
         // Only use this object if there is no second player and no need for multiple device handling. (PlayerConnectionHandler will destroy itself if not)
-        if (Storage.isPlayerControlled2) Destroy(gameObject);
+        // also use if in online mode, where other player will be controlled by the other net client
+        if (Storage.isPlayerControlled2 && !Storage.online) Destroy(gameObject);
 
         charSelector = charSelectMenu.GetActiveSelector();
     }
 
     public void OnNavigate(InputAction.CallbackContext ctx) {
+        if (!charSelectMenu || !charSelectMenu.gameObject.activeInHierarchy) return;
+
         navigateInput = ctx.action.ReadValue<Vector2>();
 
         // navigation handling for new input system
@@ -39,6 +52,15 @@ public class SoloCharSelectController : MonoBehaviour {
             else if (Mathf.Abs(angle - 180f) < 45f) charSelector.OnMoveDown();
             else if (Mathf.Abs(angle - 90f) < 45f) charSelector.OnMoveLeft();
             else if (Mathf.Abs(angle + 90f) < 45f) charSelector.OnMoveRight();
+
+            if (Storage.online) {
+                netPlayer.CmdSetSelectedBattlerIndex(charSelector.selectedIcon.index);
+                // if (netPlayer.isClient) {
+                //     netPlayer.CmdSetSelectedBattlerIndex(charSelector.selectedIcon.index);
+                // } else {
+                //     netPlayer.RpcSetSelectedBattlerIndex(charSelector.selectedIcon.index);
+                // }
+            }
         }
     }
 
@@ -59,28 +81,49 @@ public class SoloCharSelectController : MonoBehaviour {
     // }
 
     public void OnSelect(InputAction.CallbackContext ctx) {
+        if (!charSelectMenu.gameObject.activeInHierarchy) return;
+
         if (!ctx.performed) return;
-        charSelector.OnCast();
-        charSelector = charSelectMenu.GetActiveSelector();
+        charSelector.OnCast(true);
+
+        if (Storage.online) {
+            if (charSelector.menu.started) {
+                netPlayer.CmdStartGame();
+            } else {
+                netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+            }
+        } else {
+            charSelector = charSelectMenu.GetActiveSelector();
+        }
     }
 
     public void OnBack(InputAction.CallbackContext ctx) {
         if (!ctx.performed) return;
-        charSelector.OnBack();
-        charSelector = charSelectMenu.GetActiveSelector();
+        OnPauseOrBack();
     }
 
     public void OnPause(InputAction.CallbackContext ctx) {
         if (!ctx.performed) return;
-        charSelector.ReturnToMenu();
+        // charSelector.ReturnToMenu();
+        OnPauseOrBack();
+    }
+
+    private void OnPauseOrBack() {
+        charSelector.OnBack();
+        charSelector = charSelectMenu.GetActiveSelector();
+        if (netPlayer) netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
     }
 
     public void OnAbilityInfo(InputAction.CallbackContext ctx) {
+        if (!charSelectMenu.gameObject.activeInHierarchy) return;
+
         if (!ctx.performed) return;
         charSelector.OnAbilityInfo();
     }
 
     public void OnSettings(InputAction.CallbackContext ctx) {
+        if (!charSelectMenu.gameObject.activeInHierarchy) return;
+
         if (!ctx.performed) return;
         charSelector.OnSettings();
     }

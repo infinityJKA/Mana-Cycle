@@ -282,11 +282,19 @@ namespace PostGame {
             }
             else
             {
-                // TODO: fix
-                SceneManager.LoadScene("ManaCycle");
+                if (Storage.online) {
+                    // Toggle rematch requested status when in online mode
+                    board.netPlayer.rematchRequested = !board.netPlayer.rematchRequested;
+                    board.netPlayer.CmdRematch();
+                } else {
+                    // restart immediately in local play
+                    Replay();
+                }
             }
+        }
 
-            
+        public void Replay() {
+            SceneManager.LoadScene("ManaCycle");
         }
 
         public void SelectBackToMainButton()

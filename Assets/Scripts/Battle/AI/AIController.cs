@@ -70,7 +70,7 @@ namespace Battle.AI {
         bool readyToInstaDrop = true;
         void Update() {
             // stop piece decision making while uninitialized, paused, post game, dialogue, recovering, or not AI controlled (should be disabled anyways)
-            if (!board.isInitialized() || board.isPaused() || board.isPostGame() || board.convoPaused || board.recoveryMode || !board.IsAiControlled()) return;
+            if (!board.IsBattleStarted() || board.isPaused() || board.isPostGame() || board.convoPaused || board.recoveryMode || !board.IsAiControlled()) return;
 
             // Will be run the frame a piece is spawned
             if (board.pieceSpawned && board.GetPiece()){
@@ -85,7 +85,7 @@ namespace Battle.AI {
             if (!placementJobRunning && (nextMoveTime - Time.time <= 0) && !board.IsDefeated()){
                 // set timer for next move. //// get highest col height so ai speeds up when closer to topout
                 // nextMoveTimer = Time.time + Math.Max(UnityEngine.Random.Range(0.5f,0.8f) - (double) board.getColHeight(FindNthLowestCols(GameBoard.width-1)[0])/15, 0.05f);
-                nextMoveTime = Time.time + UnityEngine.Random.Range(moveDelay*0.5f, moveDelay*1.5f);
+                nextMoveTime = Time.time + Random.Range(moveDelay*0.5f, moveDelay*1.5f);
 
                 if (readyToInstaDrop) {
                     readyToInstaDrop = false;
@@ -94,7 +94,7 @@ namespace Battle.AI {
                 }
                 
                 // rotate piece to target rot
-                bool reachedTargetRot = (int)board.GetPiece().getRot() == this.targetRot;
+                bool reachedTargetRot = (int)board.GetPiece().GetRotation() == this.targetRot;
                 if (!reachedTargetRot){
                     board.RotateCCW();
                 }
@@ -108,7 +108,7 @@ namespace Battle.AI {
                             minCol = board.GetPiece().GetCol();
                             MakePlacementDecision();
                             if (ShouldCast()){
-                                board.Spellcast();
+                                board.TrySpellcast();
                             }
                         }
                     }
@@ -117,7 +117,7 @@ namespace Battle.AI {
                             maxCol = board.GetPiece().GetCol();
                             MakePlacementDecision();
                             if (ShouldCast()){
-                                board.Spellcast();
+                                board.TrySpellcast();
                             }
                         }
                     }
@@ -216,7 +216,7 @@ namespace Battle.AI {
 
                 // after placement job, make informed decision to cast/use ability
                 if (ShouldCast()){
-                    board.Spellcast();
+                    board.TrySpellcast();
                 }
 
                 if (ShouldActivateAbility()){

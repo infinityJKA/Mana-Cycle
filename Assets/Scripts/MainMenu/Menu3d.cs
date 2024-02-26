@@ -98,9 +98,10 @@ namespace MainMenu {
             Storage.gamemode = Storage.GameMode.Versus;
             Storage.level = null;
             switch(setup){
-                case 1: Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = false; break;
-                case 2: Storage.isPlayerControlled1 = false; Storage.isPlayerControlled2 = false; break;
-                default: Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = true; break;
+                case 1: Storage.online = false; Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = false; break;
+                case 2: Storage.online = false; Storage.isPlayerControlled1 = false; Storage.isPlayerControlled2 = false; break;
+                case 3: Storage.online = true; Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = true; break;
+                default: Storage.online = false; Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = true; break;
             }
             TransitionHandler.WipeToScene("CharSelect");
         }
@@ -143,6 +144,7 @@ namespace MainMenu {
         {
             if (BlackjackMenu.blackjackOpened) return;
             Storage.lastMainMenuItem = 1;
+            Storage.online = false;
             TransitionHandler.WipeToScene("SoloMenu");
         }
 

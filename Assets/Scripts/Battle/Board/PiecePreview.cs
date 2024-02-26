@@ -19,11 +19,27 @@ namespace Battle.Board {
         // Length of the preview list
         [SerializeField] public static int previewLength = 2;
 
+        /// <summary>
+        /// The INDEX of the current piece - counts up from 1 each time a new piece is spawned (skips 0), each piece will have a unique index.
+        /// </summary>
+        public int pieceIdIndex {get; private set;}
+
+        /// <summary>
+        /// Returns the next available piece ID by incrementing the index by 1 and returning that value.
+        /// </summary>
+        /// <returns>the next available piece ID to assign to a piece</returns>
+        public int NextPieceId() {
+            pieceIdIndex++;
+            return pieceIdIndex;
+        }
+
         public void Setup(GameBoard board)
         {
             this.board = board;
 
-            // populate the preview list & next piece box; add five pieces to list and one to next piece
+            pieceIdIndex = -1;
+
+            // populate the preview list & next piece box; add n pieces to list and set next piece
             CreateNewPiece(nextPieceTransform);
             for (int i=0; i<previewLength; i++) CreateNewPiece(previewListTransform);
         }
@@ -52,6 +68,7 @@ namespace Battle.Board {
         {
             // Add a new piece to the queue
             Piece newPiece = Instantiate(piecePrefab, Vector3.zero, Quaternion.identity, parent);
+            newPiece.id = NextPieceId();
             newPiece.transform.localPosition = new Vector3(0, 0, 0);
 
             // Randomize the piece's tiles' colors
