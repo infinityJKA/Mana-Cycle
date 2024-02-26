@@ -135,7 +135,7 @@ public class NetPlayer : NetworkBehaviour {
         ManaCycle.instance.Boards[0].rngManager.SetSeed(initData.hostSeed);
         ManaCycle.instance.Boards[1].rngManager.SetSeed(initData.nonHostSeed);
 
-        ManaCycle.instance.CreateCycle();
+        ManaCycle.instance.CreateCycleObjects();
 
         Debug.Log("sending init data: "+initData);
         RpcSynchronize(initData);
@@ -184,7 +184,7 @@ public class NetPlayer : NetworkBehaviour {
         ManaCycle.SetCycle(initData.cycle);
         
         // Creates the cycle objects and initializes various things on each board.
-        ManaCycle.instance.CreateCycle();
+        ManaCycle.instance.CreateCycleObjects();
 
         // match will officially start 4 seconds after this initialize battle command is executed on the client
         double startTime = NetworkTime.time + 4;
