@@ -91,7 +91,7 @@ namespace Battle.Cycle {
 
             // creates the cycle and displays it on the screen.
             // don't run here if online; postpone this in online wait until data is received from the host
-            if (!Storage.online) CreateCycle();
+            if (!Storage.online) CreateCycleObjects();
             
             foreach (var board in boards) {
                 // if any netPlayer is waiting on scene load and this cycle for initialization,
@@ -117,12 +117,9 @@ namespace Battle.Cycle {
         /// Is run near the end of start method, before boards are initialized with cycle. Creates the cycle objects and displays them on the screen.
         /// Also runs InitializeWithCycle() on all boards./// 
         /// </summary>
-        public void CreateCycle() {
+        public void CreateCycleObjects() {
             // Check if player 1 is in single player. if so, use its cycle length variables
             if (Storage.level) {
-                cycleLength = Storage.level.cycleLength;
-                cycleUniqueColors = Storage.level.cycleUniqueColors;
-                lockPieceColors = Storage.level.lockPieceColors;
                 boards[1].pointer.SetActive(false);
                 boards[1].pointer.gameObject.SetActive(false);
             } else {
@@ -155,6 +152,10 @@ namespace Battle.Cycle {
 
         public static void GenerateCycle()
         {
+            cycleLength = Storage.level.cycleLength;
+            cycleUniqueColors = Storage.level.cycleUniqueColors;
+            lockPieceColors = Storage.level.lockPieceColors;
+
             cycle = new ManaColor[cycleLength];
 
             // Add one of each color to the list
