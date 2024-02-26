@@ -157,6 +157,8 @@ namespace Battle.Board {
             return total;
         }
 
+        // Increased by 1 each time the damage advances (including while empty)
+        public int damageQueueIndex {get; private set;} = 0;
         public void AdvanceDamageQueue()
         {
             // Advance the incoming damage cycle
@@ -170,6 +172,8 @@ namespace Battle.Board {
             }
 
             damageQueue[0].SetDamage(0);
+
+            damageQueueIndex++;
 
             Refresh();
         }

@@ -4,6 +4,12 @@ using Sound;
 
 namespace Battle {
     public class DamageShoot : MonoBehaviour {
+        /// <summary>
+        /// If true, shoots will evaluate on the other board instantly.
+        /// This may be the new default since synchronizing animated ones online would be pretty complicated.
+        /// </summary>
+        public readonly static bool instant = true;
+
         /** The amount of damage carried by this DamageShoot */
         public int damage;
 
@@ -38,66 +44,79 @@ namespace Battle {
         }
 
         void Update() {
+            if (instant) return;
             transform.position = Vector3.MoveTowards(transform.position, destination, speed * Screen.width * Time.smoothDeltaTime);
             speed += accel * Time.smoothDeltaTime;
 
             // If this damageShoot has reached its destination, counter/damage
             if (ReachedDestination()) {
-                if (mode == Mode.Countering) {
-                    // Counter incoming
-                    int residualDamage = target.hpBar.CounterIncoming(damage);
+                EvaluateOnDestination();
+            }
+        }
 
-                    // If there is any leftover damage, travel to enemy board and damage them
-                    if (residualDamage > 0) {
-                        damage = residualDamage;
-                        Attack(target.enemyBoard);
-                    } else {
-                        // if not, destroy here
-                        Destroy(this.gameObject);
-                    }
+        public void InstantEvaluate() {
+            if (!instant) return;
+            while (gameObject) {
+                EvaluateOnDestination();
+            }
+        }
+
+        void EvaluateOnDestination() {
+            if (mode == Mode.Countering) {
+                // Counter incoming
+                int residualDamage = target.hpBar.CounterIncoming(damage);
+
+                // If there is any leftover damage, travel to enemy board and damage them
+                if (residualDamage > 0) {
+                    damage = residualDamage;
+                    Attack(target.enemyBoard);
+                } else {
+                    // if not, destroy here
+                    Destroy(gameObject);
                 }
+            }
 
-                else if (mode == Mode.Shielding) {
-                    int overshield = target.AddShield(damage);
+            else if (mode == Mode.Shielding) {
+                int overshield = target.AddShield(damage);
 
-                    // If there is any leftover damage, travel to enemy board and damage them
-                    if (overshield > 0) {
-                        damage = overshield;
-                        Attack(target.enemyBoard);
-                    } else {
-                        // if not, destroy here
-                        Destroy(this.gameObject);
-                    }
+                // If there is any leftover damage, travel to enemy board and damage them
+                if (overshield > 0) {
+                    damage = overshield;
+                    Attack(target.enemyBoard);
+                } else {
+                    // if not, destroy here
+                    Destroy(gameObject);
                 }
+            }
 
-                else if (mode == Mode.AttackingEnemyShield) {
-                    int overflow = target.DamageShield(damage);
+            else if (mode == Mode.AttackingEnemyShield) {
+                int overflow = target.DamageShield(damage);
 
-                    // If there is any leftover damage, travel to enemy board and damage them
-                    if (overflow > 0) {
-                        damage = overflow;
-                        Attack(target);
-                    } else {
-                        // if not, destroy here
-                        Destroy(this.gameObject);
-                    }
+                // If there is any leftover damage, travel to enemy board and damage them
+                if (overflow > 0) {
+                    damage = overflow;
+                    Attack(target);
+                } else {
+                    // if not, destroy here
+                    Destroy(gameObject);
                 }
+            }
 
-                else if (mode == Mode.Heal) { 
-                    // if singleplayer, add to "score" (hp bar)
-                    if (target.singlePlayer && !Storage.level.aiBattle) {
-                        target.AddScore(damage);
-                        Destroy(this.gameObject);
-                    }
+            else if (mode == Mode.Heal) { 
+                // if singleplayer, add to "score" (hp bar)
+                if (target.singlePlayer && !Storage.level.aiBattle) {
+                    target.AddScore(damage);
+                    Destroy(gameObject);
                 }
+            }
 
-                // default: deal damage to target
-                else {
-                    // target is invincible while in recovery mode
-                    // if (target.recoveryMode) {
-                    //     Destroy(this.gameObject); 
-                    //     return;
-                    // }
+            // default: deal damage to target
+            else {
+                // target is invincible while in recovery mode
+                // if (target.recoveryMode) {
+                //     Destroy(this.gameObject); 
+                //     return;
+                // }
 
                     target.EnqueueDamage(damage);
                     Destroy(this.gameObject);

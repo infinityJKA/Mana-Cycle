@@ -38,6 +38,10 @@ namespace Battle.Board {
         /// </summary>
         public bool abilityActive;
 
+        // used for synchronizing ability with the opponent's client.
+        public int[] abilityData;
+
+
         void Awake()
         {
             board = GetComponent<GameBoard>();
@@ -87,6 +91,7 @@ namespace Battle.Board {
 
         public void UseAbility() {
             if (!enabled) return;
+            
             if (board.Battler.activeAbilityEffect != Battler.ActiveAbilityEffect.None && mana >= board.Battler.activeAbilityMana) {
                 mana = 0;
                 RefreshManaBar();
@@ -110,7 +115,22 @@ namespace Battle.Board {
                     // add 10% of max active ability mana to enemy
                     board.enemyBoard.abilityManager.GainMana(board.enemyBoard.Battler.activeAbilityMana / 10);
                 }
+
+                board.RefreshGhostPiece();
+                if (Storage.online && board.netPlayer.isOwned) {
+                    board.netPlayer.CmdUseAbility(abilityData);
+                }
+                Item.Proc(board.equiped, Item.DeferType.OnSpecialUsed);
             }
+        }
+
+        /// <summary>
+        /// Returns a newly instantiated single piece with a unique ID.
+        /// </summary>
+        private SinglePiece CreateSinglePiece() {
+            SinglePiece newPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            newPiece.id = board.piecePreview.NextPieceId();
+            return newPiece;
         }
 
         /// <summary>
@@ -118,7 +138,8 @@ namespace Battle.Board {
         /// If it is placed or down is pressed, blade quickly shoots through the column and destroys mana in its path.
         /// </summary>
         private void IronSword() {
-            SinglePiece ironSwordPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            ClearAbilityData();
+            SinglePiece ironSwordPiece = CreateSinglePiece();
             ironSwordPiece.MakeIronSword(board);
             board.ReplacePiece(ironSwordPiece);
         }
@@ -126,21 +147,37 @@ namespace Battle.Board {
         /// <summary>
         /// Sends 3 trash tiles to your opponent's board.
         /// </summary>
+        // Treats data as an array of 3 ints of the columns to send each trash tile in.
         private void Whirlpool() {
-            for (int i=0; i<3; i++) board.enemyBoard.AddTrashTile();
+            // If this is the opponent's client sending a whirlpool,
+            // use the retrieved data for columns to send to
+            if (Storage.online && !board.netPlayer.isOwned) {
+                for (int i=0; i<3; i++) {
+                    board.enemyBoard.AddTrashTile(board.rngManager.rng, abilityData[i]);
+                }
+            } 
+
+            // if not, send in random columns and save the columns sent to
+            else {
+                abilityData = new int[3];
+                for (int i=0; i<3; i++) {
+                    abilityData[i] = board.enemyBoard.AddTrashTile(board.rngManager.rng);
+                }
+            }
         }
 
         /// <summary>
         /// Replaces current piece and the next 2 in the preview with bombs.
         /// </summary>
         private void PyroBomb() {
+            ClearAbilityData();
             board.ReplacePiece(MakePyroBomb());
             board.piecePreview.ReplaceNextPiece(MakePyroBomb());
             board.piecePreview.ReplaceListPiece(MakePyroBomb(), PiecePreview.previewLength-1);
         }
 
         private SinglePiece MakePyroBomb() {
-            SinglePiece pyroBombPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            SinglePiece pyroBombPiece = CreateSinglePiece();
             pyroBombPiece.MakePyroBomb(board);
             return pyroBombPiece;
         }
@@ -149,16 +186,17 @@ namespace Battle.Board {
         /// Gain a foresight symbol, allowing to skip the next unclearable color during a chain.
         /// </summary>
         private void Foresight() {
+            ClearAbilityData();
             Instantiate(foresightActivateSFX);
             Instantiate(foresightIconPrefab, symbolList);
         }
 
         // If this is Psychic and there is a foresight icon available, consume it and return true
         public bool ForesightCheck() {
-            return (board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Foresight && symbolList.childCount > 0);
+            return board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Foresight && symbolList.childCount > 0;
         }
 
-        public void UseForesight() {
+        public void ActivateForesightSkip() {
             // TODO: some kinda particle effect or other visual effect on foresight symbol consumed
             Instantiate(foresightConsumeSFX);
             Destroy(symbolList.GetChild(0).gameObject);
@@ -168,7 +206,8 @@ namespace Battle.Board {
         /// Replaces the current piece with a gold mine crystal.
         /// </summary>
         private void GoldMine() {
-            SinglePiece goldMinePiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            ClearAbilityData();
+            SinglePiece goldMinePiece = CreateSinglePiece();
             goldMinePiece.MakeGoldMine(board);
             board.ReplacePiece(goldMinePiece);
         }
@@ -178,9 +217,21 @@ namespace Battle.Board {
         /// After a short duration the tile destroys itself
         /// </summary>
         private void ZBlind() {
-            SinglePiece zmanPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+            SinglePiece zmanPiece = CreateSinglePiece();
             zmanPiece.MakeZman(board);
-            board.enemyBoard.SpawnStandalonePiece(zmanPiece);
+
+            if (Storage.online && !board.netPlayer.isOwned) {
+                board.enemyBoard.SpawnStandalonePiece(zmanPiece, abilityData[0]);
+            } 
+
+            else {
+                abilityData = new int[1];
+                abilityData[0] = board.enemyBoard.SpawnStandalonePiece(zmanPiece);
+            }
+        }
+
+        public void ClearAbilityData() {
+            if (abilityData.Length > 0) abilityData = new int[0];
         }
     }
 }

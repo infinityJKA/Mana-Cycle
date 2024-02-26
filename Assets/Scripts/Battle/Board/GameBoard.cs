@@ -40,12 +40,6 @@ namespace Battle.Board {
         /// <summary>0 for left side, 1 for right side</summary>
         [SerializeField] private int playerSide;
 
-        /// <summary>
-        /// In online multiplayer, if this is a network client.
-        /// If also player controlled, the player will control this board.
-        /// </summary>
-        private bool isNetworkClient;
-
         /** Obect where pieces are drawn */
         [SerializeField] public Transform pieceBoard;
 
@@ -90,7 +84,20 @@ namespace Battle.Board {
         [SerializeField] private BoardDefeatFall boardDefeatFall;
 
         /// If the board is inputting to quick fall the current piece. 
-        public bool quickFall = false;
+        private bool _quickFall = false;
+        public bool quickFall {
+            get {
+                return _quickFall;
+            }
+            set {
+                bool prev = _quickFall;
+                _quickFall = value;
+                if (prev != _quickFall && Storage.online && netPlayer.isOwned) {
+                    netPlayer.CmdSetQuickfall(_quickFall);
+                }
+            }
+        }
+
         /// If the board has inputted to insta-drop, but only true for one frame until after checked.
         public bool instaDropThisFrame = false;
 
@@ -171,7 +178,7 @@ namespace Battle.Board {
         // Set to false by the AI controller when acted upon
         public bool pieceSpawned;
 
-        private bool cycleInitialized;
+        private bool battleStarted;
         public bool postGame { get; private set; } = false;
 
         public Pause.PauseMenu pauseMenu;
@@ -259,6 +266,34 @@ namespace Battle.Board {
 
         [SerializeField] private GameObject moveSFX, rotateSFX, castSFX, fullCycleSFX, loseSFX, PauseSFX, winSFX, failedCastSFX, placeSFX, damageTakenSFX, startupCastSFX, cascadeSFX;
 
+        // online mode- the netplayer that controls this board
+        public NetPlayer netPlayer {get; private set;}
+
+        public void SetNetPlayer(NetPlayer netPlayer) {
+            this.netPlayer = netPlayer;
+        }
+
+        // if piece will auto place when sliding against the ground for too long.
+        // turned on when this is a board connected by an online opponent
+        // to make srue pieces aren't placed in the wrong place
+        private bool autoPlaceTiles = true;
+
+        // If spellcast will automatically continue.
+        // Enabled when this is an online opponent.
+        // If spellcasts happened automatically they could desync if not in sync
+        // with enemy's piece placements, so piece clear RPCs are sent in order with piece placement RPCs
+        public bool manualCastContinue;
+
+        // used in online mode to assert that order of placements/events has not been jumbled
+        [SerializeField] private BoardSyncAssertion boardSync;
+        public BoardSyncAssertion BoardSync => boardSync;
+
+        /// <summary>
+        /// Keeps track of the total amount of pieces this board has dropped, replaced, or destroyed.
+        /// Used for board sync assertion in online multiplayer to help ensure piece drop order isn't jumbled
+        /// </summary>
+        public int pieceDropIndex {get; private set;}
+
         // Start is called before the first frame update
         void Start()
         {
@@ -300,14 +335,12 @@ namespace Battle.Board {
             {
                 // if not in arcade endless, use default stats
                 boardStats = ArcadeStats.defaultStats;
-                Debug.Log(playerSide);
-                Debug.Log(string.Join("\n",boardStats));
+                // Debug.Log(string.Join("\n",boardStats));
             }
             else 
             {
                 // otherwise, use player stats
                 boardStats = ArcadeStats.playerStats;
-                Debug.Log(playerSide);
                 Debug.Log(string.Join("\n",boardStats));
                 Debug.Log(string.Join("\n",ArcadeStats.playerStats));
                 Debug.Log("This is loading the player stats. Not Default.");
@@ -316,7 +349,7 @@ namespace Battle.Board {
             // if (playerSide == 1) boardStats = ArcadeStats.defaultStats;
 
             boostPerCycleClear = (int) (boardStats[CycleMultIncrease] * 10);
-            Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
+            // Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
 
             if (playerSide == 0) {
                 SoundManager.Instance.LoadBGM(singlePlayer ? level.battleMusic : usableBattleMusic[Random.Range(0, usableBattleMusic.Length - 1)]);
@@ -391,8 +424,6 @@ namespace Battle.Board {
                     SetAIDifficulty(PlayerPrefs.GetInt("CpuLevel", 5)/10f);
                 }
             }
-
-            pointer.SetActive(false);
             
             cyclePosition = 0;
 
@@ -428,9 +459,8 @@ namespace Battle.Board {
 
             // If in solo mode non-arcade or versus mode, hide lives list if only 1 life
             // also hide if arcade mode enemy
-            if ((Storage.gamemode == Storage.GameMode.Versus || (Storage.level && (Storage.level.nextSeriesLevel || Storage.level.generateNextLevel || Storage.level.lastSeriesLevel)) && playerSide == 0)) {
+            if (Storage.gamemode == Storage.GameMode.Versus || Storage.level && (Storage.level.nextSeriesLevel || Storage.level.generateNextLevel || Storage.level.lastSeriesLevel) && playerSide == 0) {
                 // when the game starts, have the life transform mirror the amount of lives
-                Debug.Log("erm");
                 foreach (Transform child in lifeTransform) Destroy(child.gameObject);
                 for (int i=0; i<lives; i++) {
                     Instantiate(lifeHeartObj, lifeTransform);
@@ -454,8 +484,6 @@ namespace Battle.Board {
             portrait.sprite = battler.sprite;
             portrait.GetComponent<RectTransform>().anchoredPosition = portrait.GetComponent<RectTransform>().anchoredPosition + battler.portraitOffset;
             attackPopup.SetBattler(battler);
-
-            
         }
 
         void SetAIDifficulty(float difficulty) {
@@ -482,35 +510,18 @@ namespace Battle.Board {
             // temporarily in update() to find the correct values quicker, keeping in case needed again in the future
             // portrait.GetComponent<RectTransform>().anchoredPosition = initialPos + battler.portraitOffset;
             // wait for cycle to initialize (after countdown) to run game logic
-            if (!isInitialized() || isPaused() || isPostGame()) return;
+            if (!IsBattleStarted() || isPaused() || isPostGame()) return;
 
-            PointerReposition();
-            // debug
-            // if (playerSide == 1) TakeDamage(maxHp);
+            // TODO: this was recently commented out, make sure this doesn't break the game. removed for performance
+            // PointerReposition();
 
             if (recoveryMode) {
                 recoveryTimer -= Time.deltaTime;
                 if (recoveryTimer <= 0f) {
-                    boardBackground.color = boardColor;
-                    recoveryText.enabled = false;
-                    recoveryMode = false;
-                    defeated = false;
-                    hpBar.hpNum.gameObject.SetActive(true);
-                    hp = maxHp;
-                    hpBar.Refresh();
-                    previousFallTime = Time.time;
-                    if (!piece) SpawnPiece();
+                    Respawn();
                 } else {
                     recoveryText.text = Mathf.CeilToInt(recoveryTimer)+"";
                 }
-            }
-
-            // debug things
-            if (Application.isEditor)
-            {
-                if (Input.GetKey(KeyCode.F1) && playerSide == 0) enemyBoard.TakeDamage(100);
-                if (Input.GetKey(KeyCode.F2) && playerSide == 0) abilityManager.GainMana(100);
-                if (Input.GetKeyDown(KeyCode.F3) && playerSide == 1) DealDamage(50, Vector3.zero, 0, 1);
             }
 
             // TRASH DAMAGE TIMER
@@ -551,7 +562,7 @@ namespace Battle.Board {
                 if (instaDropThisFrame && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
                     PlacePiece();
                 } else {
-                    fallTimeMult = (quickFall ? boardStats[QuickDropSpeed] : 1f);
+                    fallTimeMult = quickFall ? boardStats[QuickDropSpeed] : 1f;
 
                     // Get the time that has passed since the previous piece fall.
                     // If it is greater than fall time (or fallTime/10 if holding down),
@@ -574,12 +585,12 @@ namespace Battle.Board {
                         // Try to move the piece down.
                         bool movedDown = MovePiece(0, 1);
 
-                        if (!movedDown) {
+                        if (!movedDown && autoPlaceTiles) {
                             // If it can't be moved down,
                             // also check for sliding buffer, and place if beyond that
                             // don't use slide time if quick falling
                             if (!quickFall && level) {
-                                finalFallTime += (slideTime*level.slideTimeMult);
+                                finalFallTime += slideTime*level.slideTimeMult;
                             }
 
                             // true if time is up for the extra slide buffer
@@ -590,17 +601,19 @@ namespace Battle.Board {
                                 PlacePiece();
                             }
                         } else {
-                            // If it did move down, adjust numbers.
-                            // reset to 0 if row fallen to is below the last.
-                            // otherwise, increment
-                            if (piece != null && piece.GetRow() > lastRowFall) {
-                                lastRowFall = piece.GetRow();
-                                rowFallCount = 0;
-                            } else {
-                                rowFallCount++;
-                                // if row fall count exceeds 3, auto place
-                                if (rowFallCount > 3) {
-                                    PlacePiece();
+                            if (autoPlaceTiles) {
+                                // If it did move down, adjust numbers.
+                                // reset to 0 if row fallen to is below the last.
+                                // otherwise, increment
+                                if (piece != null && piece.GetRow() > lastRowFall) {
+                                    lastRowFall = piece.GetRow();
+                                    rowFallCount = 0;
+                                } else {
+                                    rowFallCount++;
+                                    // if row fall count exceeds 3, auto place
+                                    if (rowFallCount > 3) {
+                                        PlacePiece();
+                                    }
                                 }
                             }
 
@@ -615,17 +628,45 @@ namespace Battle.Board {
             }
         }
 
+        private void Respawn() {
+            boardBackground.color = boardColor;
+            recoveryText.enabled = false;
+            recoveryMode = false;
+            defeated = false;
+            hpBar.hpNum.gameObject.SetActive(true);
+            hp = maxHp;
+            hpBar.Refresh();
+            previousFallTime = Time.time;
+            if (!piece) SpawnPiece();
+        }
+
         private static float trashDamageTimerDuration = 5f;
         private static int damagePerTrash = 5;
 
+        /// <summary>
+        /// Allows the first piece to begin falling another actions to occur when the countdown reaches 0.
+        /// </summary>
+        public void StartBattle()
+        {
+            battleStarted = true;
+            SpawnPiece();
+            pointer.SetActive(true);
+            PointerReposition();
+
+            CheckMidLevelConversations();
+        }
 
         // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
-        public void InitializeCycle(ManaCycle cycle)
-        {
-            if (!enabled) return;
-
-            cycleInitialized = true;
+        public void InitializeWithCycle(ManaCycle cycle) {
+            if (!enabled) {
+                Debug.LogWarning("Trying to cycle initialize a disabled board!");
+                return;
+            };
+            
             this.cycle = cycle;
+
+            // Don't draw ghost tiles if this is a net controlled board
+            if (Storage.online && !netPlayer.isOwned) drawGhostPiece = false;
 
             piecePreview.Setup(this);
 
@@ -633,27 +674,18 @@ namespace Battle.Board {
 
             // hide enemy pointer if in single player and not ai battle
             if (playerSide == 0 && singlePlayer && !Storage.level.aiBattle) enemyBoard.pointer.SetActive(false);
-            else enemyBoard.pointer.SetActive(true);
             // if (singlePlayer && !Storage.level.aiBattle) enemyBoard.pointer.SetActive(false);
-            pointer.transform.SetParent(cycle.transform.parent);
-            PointerReposition();
 
             tiles = new Tile[height, width];
             if (drawGhostPiece || lightConnectedMana) simulatedTiles = new Tile[height, width];
-            SpawnPiece();
-
-            CheckMidLevelConversations();
 
             // setup battler variables for the mirrored, take opponent sprite / abilities
             // taken out of start because it relies on enemy board to be properly set up
-            Debug.Log(playerSide + " Ablility: " + battler.passiveAbilityEffect);
             if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shapeshifter)
             {
-                Debug.Log("Shapeshifter effect activated");
                 battler = enemyBoard.battler;
                 InitBattler();
                 portrait.color = new Color(0.9f,0.2f,0.1f,0.57f);
-                
             }
             else
             {
@@ -676,11 +708,19 @@ namespace Battle.Board {
             hpBar.Refresh();
 
             UpdateCycleColoredObjects();
+
+            // turn off auto-placing and auto-chaining if this is an online opponent
+            autoPlaceTiles = !Storage.online || netPlayer.isOwned;
+            manualCastContinue = !Storage.online || netPlayer.isOwned;
+
+            // move pointer to parent under cycle as a child under so it is not drawn below the cycle container
+            pointer.transform.SetParent(cycle.transform.parent);
+            // keep hidden before countdown reaches 0
+            pointer.SetActive(false);
         }
 
-
         public void RotateCCW(){
-            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return;
+            if (!IsBattleStarted() || isPaused() || isPostGame() || convoPaused) return;
 
             if (!piece.IsRotatable) return;
             piece.RotateLeft();
@@ -691,13 +731,15 @@ namespace Battle.Board {
                 if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
             }
 
+            if (Storage.online && netPlayer.isOwned) NetworkUpdatePiece();
+
             RefreshGhostPiece();
 
             PlaySFX(rotateSFX);
         }
 
         public void RotateCW(){
-            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return;
+            if (!IsBattleStarted() || isPaused() || isPostGame() || convoPaused) return;
 
             if (!piece.IsRotatable) return;
             piece.RotateRight();
@@ -707,13 +749,15 @@ namespace Battle.Board {
                 if (!MovePiece(1, 0) && !MovePiece(-1, 0) && !MovePiece(0, -1)) piece.RotateLeft();
             }
 
+            if (Storage.online && netPlayer.isOwned) NetworkUpdatePiece();
+
             RefreshGhostPiece();
 
             PlaySFX(rotateSFX);
         }
 
         public bool MoveLeft(){
-            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return false;
+            if (!IsBattleStarted() || isPaused() || isPostGame() || convoPaused) return false;
 
             if (MovePiece(-1, 0)) {
                 PlaySFX(moveSFX);
@@ -723,7 +767,7 @@ namespace Battle.Board {
         }
 
         public bool MoveRight() {
-            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return false;
+            if (!IsBattleStarted() || isPaused() || isPostGame() || convoPaused) return false;
 
             if (MovePiece(1, 0)) {
                 PlaySFX(moveSFX);
@@ -732,8 +776,19 @@ namespace Battle.Board {
             return false;
         }
 
-        public void Spellcast(){
-            if (!isInitialized() || isPaused() || isPostGame()) return;
+        public void NetworkUpdatePiece() {
+            netPlayer.CmdMovePiece(piece.GetCol(), piece.GetRotation());
+        }
+
+        public void SetPiecePosition(int col, int row) {
+            piece.MoveTo(col, row);
+        }
+
+        /// <summary>
+        /// Start a new spellcast chain off the current color. Is called when spellcast button is pressed
+        /// </summary>
+        public void TrySpellcast(){
+            if (!IsBattleStarted() || isPaused() || isPostGame()) return;
 
             if (convoPaused) {
                 convoHandler.Advance();
@@ -747,7 +802,9 @@ namespace Battle.Board {
             if (!casting && blobs.Count != 0) {
                 var shake = pointer.GetComponent<Shake>();
                 if (shake != null) shake.StopShake();
-                Spellcast(1);
+                chain = 1;
+                cascade = 0;
+                Spellcast(refreshBlobs: false);
                 totalManualSpellcasts++;
             }
             else {
@@ -758,12 +815,10 @@ namespace Battle.Board {
         }
 
         public void UseAbility(){
-            if (!isInitialized() || isPaused() || isPostGame() || convoPaused) return;
+            if (!IsBattleStarted() || isPaused() || isPostGame() || convoPaused) return;
 
             if (abilityManager.enabled) {
                 abilityManager.UseAbility();
-                RefreshGhostPiece();
-                Item.Proc(equiped, Item.DeferType.OnSpecialUsed);
             }
         }
 
@@ -776,13 +831,29 @@ namespace Battle.Board {
         }
 
 
-        // Adds a trash tile to this board in a random column.
-        public void AddTrashTile() {
+        /// <summary>
+        /// Adds a trash tile to this board in a random column.
+        /// </summary>
+        /// <param name="rng">rng to use for the trash tile's color</param>
+        /// <param name="col">column to spawn in, -1 for random</param>
+        /// <returns>the column it was spawned in.</returns>
+        public int AddTrashTile(System.Random rng, int col = -1) {
             /// Add a new trash piece with a random color
             SinglePiece trashPiece = Instantiate(abilityManager.singlePiecePrefab).GetComponent<SinglePiece>();
-            trashPiece.GetCenter().SetColor(Piece.RandomColor(), this);
+            // give it a unique id
+            trashPiece.id = piecePreview.NextPieceId();
+
+            trashPiece.GetCenter().SetColor(Piece.RandomColor(rng), this);
             trashPiece.GetCenter().MakeTrashTile(this);
-            SpawnStandalonePiece(trashPiece);
+
+            // if col is -1, send to random tile, will return the column sent in
+            if (col == -1) {
+                col = SpawnStandalonePiece(trashPiece);
+            } 
+            // if not, send in the specified column
+            else {
+                SpawnStandalonePiece(trashPiece, col);
+            }
 
             // start trash damage timer only if at 0 (not running)
             if (trashDamageTimer == 0) {
@@ -791,11 +862,13 @@ namespace Battle.Board {
 
             // start trash timer again if applicable
             if (level != null && level.trashSendRate > 0) Invoke("AddTrashTile", level.trashSendRate);
+
+            return col;
         }
 
         // Add a piece to this board without having the player control or place it (keep their current piece).
-        public void SpawnStandalonePiece(Piece newPiece, int column) {
-            // Send it to a random color and drop it
+        public int SpawnStandalonePiece(Piece newPiece, int column) {
+            // Send it to the passed column and drop it
             newPiece.transform.SetParent(pieceBoard, false);
             newPiece.MoveTo(column, 1);
             newPiece.PlaceTilesOnBoard(ref tiles, pieceBoard);
@@ -810,17 +883,19 @@ namespace Battle.Board {
             RefreshGhostPiece();
             // may replace with trash sfx later
             PlaySFX(placeSFX);
+            return column;
         }
 
         // Spawn the standalone piece in a random column
-        public void SpawnStandalonePiece(Piece piece) {
+        // Returns the column the piece was spawned in
+        public int SpawnStandalonePiece(Piece piece) {
             // Choose a random column to send the piece to.
             // If at any point it overlaps with the piece being dropped, choose a new column
-            // Try this a maximum of 10 times before giving up and destroying the piece
+            // Try this a maximum of 40 times before giving up and destroying the piece
             // note: only checks for the center piece, aka single pieces/trash tiles
-            for (int i=0; i<10; i++) {
+            for (int i=0; i<40; i++) {
                 bool valid = true;
-                int col = (int)Random.Range(0, 8);
+                int col = Random.Range(0, 8);
 
                 int row = 1;
                 while (row < height && !tiles[row, col]) {
@@ -836,12 +911,14 @@ namespace Battle.Board {
 
                 if (valid) {
                     SpawnStandalonePiece(piece, col);
-                    return;
+                    return col;
                 }
             }
 
+            Debug.LogWarning("Standalone tile could not be placed");
             piece.DestroyTiles();
             Destroy(piece.gameObject);
+            return -1;
         }
 
         // Hides all 
@@ -879,18 +956,35 @@ namespace Battle.Board {
             this.fallTimeMult = m;
         }
 
+        private int NextDropIndex() {
+            pieceDropIndex++;
+            return pieceDropIndex;
+        }
+
         // The row that this piece last fell to.
         private int lastRowFall = 0;
         // The amount of times the piece has fallen to this row. 
         // If it falls to this row more than 3 times, it will auto-place.
         private int rowFallCount = 0;
 
-        private void PlacePiece() {
+        public void PlacePiece() {
             if (!piece) return;
+
+            // Assert correct order in online mode
+            // ensure the piece drop index is not lower than a drop index already received, this would mean a jumble occured
+            // not sure if this is needed if the player owns this board but just in case for now
+            // because if they desync, the owner of the board shouldnt receive a full board tile refresh from the client that doesn't own this board...
+            // but ig its a good debug tool
+            int dropIndex = NextDropIndex();
+            if (boardSync) boardSync.AssertCorrectPieceDropOrder(dropIndex);
+
             // The piece will only advance the damage cycle when placed if it does not have a special ability
             bool advanceDamage = piece.effect == Battler.ActiveAbilityEffect.None;
 
-            // Place the piece
+            // send placement data to opponent in online mode
+            if (Storage.online && netPlayer.isOwned) {
+                netPlayer.CmdPlacePiece(piece.GetCol(), piece.GetRotation(), piece.id, dropIndex);
+            }
             PlaceTilesOnBoard();
 
             if (advanceDamage) DamageCycle();
@@ -914,6 +1008,7 @@ namespace Battle.Board {
         public void ReplacePiece(Piece nextPiece) {
             if (!nextPiece) return;
             pieceSpawned = true;
+
             // destroy the piece currently being dropped
             piece.DestroyTiles();
             Destroy(piece.gameObject);
@@ -954,6 +1049,7 @@ namespace Battle.Board {
         {
             pieceSpawned = true;
             piece = piecePreview.SpawnNextPiece();
+
             lastRowFall = piece.GetRow();
             rowFallCount = 0;
 
@@ -987,6 +1083,9 @@ namespace Battle.Board {
             if (col != 0) {
                 RefreshGhostPiece();
             }
+
+            // send movement data to the other player. only update if moving left or right
+            if (Storage.online && col != 0 && netPlayer.isOwned) NetworkUpdatePiece();
 
             return true;
         }
@@ -1167,14 +1266,18 @@ namespace Battle.Board {
             return ClearTile(col, row, true);
         }
 
-        // Get a specific color from the cycle with the given offset.
+        bool useDamageShootParticles = false;
 
-
-        // Deal damage to the other player(s(?))
-        // shootSpawnPos is where the shoot particle is spawned
-        public void DealDamage(int damage, Vector3 shootSpawnPos, int color, int chain)
+        /// <summary>
+        /// Deal damage to the other player
+        /// </summary>
+        /// <param name="damage">damage to deal</param>
+        /// <param name="shootSpawnPos">spawn point of the damage shoot particle</param>
+        /// <param name="color">mana color (unused)</param>
+        /// <param name="chain">current chain (only used for attack anim which is disabled indefinitely)</param>
+        /// <returns>amount of leftover damage that was not used up (only used for online mode where only countering own damage will be evaluated</returns>
+        public int DealDamage(int damage, Vector3 shootSpawnPos, int color, int chain)
         {
-            
             if (postGame) {
                 // just add score if postgame and singleplayer
                 if (singlePlayer && !Storage.level.aiBattle)
@@ -1182,20 +1285,73 @@ namespace Battle.Board {
                     hp += damage;   
                 }
                 // otherwise if versus, nothing will happen, other player is already dead so dont damage
-                return;
+                return 0;
             }
-
-            // Spawn a new damageShoot
-            GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
-            DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
-            shoot.damage = damage;
 
             if (chain >= 2) attackPopup.AttackAnimation();
 
-            // Blend mana color with existing damage shoot color
-            // var image = shootObj.GetComponent<Image>();
-            // image.color = Color.Lerp(image.color, cycle.GetManaColor(color), 0.5f);
+            if (useDamageShootParticles) {
+                GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
+                DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
+                shoot.damage = damage;
+                DamageShootAtTarget(shoot);
+                return 0;
+            } else {
+                return EvaluateInstantOutgoingDamage(damage);
+            }
+        }
 
+        /// <summary>
+        /// Evaluate damage instantly
+        /// </summary>
+        /// <param name="damage"></param>
+        /// <returns>residual damage not dealt (only applicable to online mode where damage is sent to opponent to eval on their client)</returns>
+        public int EvaluateInstantOutgoingDamage(int damage) {
+            // if singleplayer, add to "score" (hp bar)
+            if (singlePlayer && !Storage.level.aiBattle) {
+                AddScore(damage);
+                return 0;
+            }
+
+            // first try to counter incoming damage from right to left
+            if (damage > 0) damage = hpBar.CounterIncoming(damage);
+
+            // then add shield to self
+            if (damage > 0 && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields) damage = AddShield(damage);
+
+            // if in online mode, send remainder of damage to opponent for then to evaluate on their client
+            // if not, evaluate on the other board now
+            if (damage <= 0) return 0;
+            if (Storage.online) {
+                return damage;
+            } else {
+                return enemyBoard.EvaluateInstantIncomingDamage(damage);
+            }
+        }
+
+        public int EvaluateInstantIncomingDamage(int damage) {
+            // Attack enemy shield first
+            if (damage > 0) damage = DamageShield(damage);
+
+            // then enqueue damage to enemy
+            if (damage > 0) {
+                EnqueueDamage(damage);
+                PlaySFX("dmgShoot", pitch: 1f + enemyBoard.hpBar.DamageQueue[0].dmg/1000f, volumeScale: 1.3f);
+                damage = 0;
+            }
+
+            if (Storage.online) {
+                int[] damageQueue = new int[6];
+                for (int i=0; i<6; i++) {
+                    damageQueue[i] = hpBar.DamageQueue[i].dmg;
+                }
+                netPlayer.CmdUpdateDamageQueue(shield, damageQueue);
+            }
+
+            return damage;
+        }
+
+        public void DamageShootAtTarget(DamageShoot shoot) {
             // Send it to the appropriate location
             // if singleplayer, add damage to score, send towards hp bar
             if (singlePlayer && !Storage.level.aiBattle) {
@@ -1218,7 +1374,7 @@ namespace Battle.Board {
                         shoot.target = this;
                         shoot.mode = DamageShoot.Mode.Countering;
                         shoot.destination = hpBar.DamageQueue[i].transform.position;
-                        return;
+                        break;
                     }
                 }
 
@@ -1229,6 +1385,14 @@ namespace Battle.Board {
                     shoot.destination = hpBar.shieldObject.transform.position;
                     return; 
                 }
+
+                // If this is network and not controlled by this player, skip and let other player evaluate dealt for their board.
+                // they will send an rpc back after evaluation with the current damage queue state
+                if (Storage.online && !netPlayer.isOwned) {
+                    return;
+                }
+
+              
 
                 //After shields, try to damage opponent's shield
                 if (enemyBoard.shield > 0) {
@@ -1246,6 +1410,10 @@ namespace Battle.Board {
                 shoot.target = enemyBoard;
                 shoot.mode = DamageShoot.Mode.Attacking;
                 shoot.destination = enemyBoard.hpBar.DamageQueue[0].transform.position;
+            }
+
+            if (DamageShoot.instant) {
+                shoot.InstantEvaluate();
             }
         }
 
@@ -1407,8 +1575,11 @@ namespace Battle.Board {
             RefreshObscuredTiles();
         }
 
+        int chain = 0;
+        int cascade = 0;
+
         // Check the board for blobs of 3 or more of the given color, and clear them from the board, earning points/dealing damage.
-        private void Spellcast(int chain, bool refreshBlobs)
+        private void Spellcast(bool refreshBlobs)
         {
             if (defeated) return;
 
@@ -1416,23 +1587,24 @@ namespace Battle.Board {
 
             // If there were no blobs, do not deal damage, and do not move forward in cycle, 
             // end spellcast if active
-            // also end if defeated, combo shouldn't extend while dead
             if (blobs.Count == 0) {
                 // Check for foresight icon, consuming it and skipping to next color if possible.
                 if (abilityManager.ForesightCheck()) {
                     RefreshBlobs( GetCycleColor(1) );
                     if (totalBlobMana > 0) {
-                        abilityManager.UseForesight();
+                        abilityManager.ActivateForesightSkip();
                         AdvanceCycle();
-                        Spellcast(chain);
+                        Spellcast(refreshBlobs: false);
                     } else {
                         RefreshBlobs( GetCycleColor() );
                         casting = false;
+                        chain = 0;
                         RefreshObjectives();
                         StartCoroutine(CheckMidConvoAfterDelay());
                     }
                 } else {
                     casting = false;
+                    chain = 0;
                     RefreshObjectives();
                     StartCoroutine(CheckMidConvoAfterDelay());
                 }
@@ -1441,97 +1613,97 @@ namespace Battle.Board {
 
             // Keep clearing while mana cleared for current color is greater than 0
             // Begin spellcast
-            int cascade = 0;
+            
             casting = true;
+            if (chain == 1) {
+                PlaySFX(startupCastSFX);
+                if (Storage.online && netPlayer.isOwned) netPlayer.CmdAdvanceChain(startup: true, 0);
+            }
 
-            if (chain == 1) PlaySFX(startupCastSFX);
+            GlowBlobs(chainDelay);
+            if (manualCastContinue) StartCoroutine(AdvanceChainAndCascadeAfterDelay(chainDelay));
+        }
 
-            GlowBlobs(0.8f);
-            StartCoroutine(ClearCascadeWithDelay());
-            IEnumerator ClearCascadeWithDelay()
+        // Called in online mode to indicate when an opponent is starting their spellcast
+        public void StartupEffect() {
+            GlowBlobs(chainDelay);
+            PlaySFX(startupCastSFX);
+        }
+
+        private static readonly float cascadeDelay = 0.6f, chainDelay = 0.8f;
+        IEnumerator AdvanceChainAndCascadeAfterDelay(float delay)
+        {
+            // Brief delay before clearing current color
+            yield return new WaitForSeconds(delay);
+            AdvanceChainAndCascade();
+        }
+
+        public void AdvanceChainAndCascade() {
+            if (defeated) return;
+
+            // Check for any new blobs that may have formed in the delay before this was called.
+            // (Replaces old list)
+            // update: called on every place, so no longer needed here
+            // RefreshBlobs(color);
+
+            if (chain > 1) chainPopup.Flash(chain.ToString());
+
+            // advance cascade count
+            // if 2 or higher will show a notification
+            cascade += 1;
+            if (cascade > 1)
             {
-                bool cascadeFoundThisCheck = false;
-                // Brief delay before clearing current color
-                yield return new WaitForSeconds(0.8f);
+                PlaySFX(cascadeSFX, 1f + cascade * 0.1f);
+                cascadePopup.Flash(cascade.ToString());
+            }
 
-                if (!defeated) {
-                    // Check for any new blobs that may have formed in those 0.8 seconds
-                    // (Replaces old list)
-                    // update: called on every place, so no longer needed here
-                    // RefreshBlobs(color);
+            // Get the average of all tile positions; this is where shoot particle is spawned
+            Vector3 averagePos = Vector3.zero;
+            foreach (Blob blob in blobs) {
+                for (int index = 0; index < blob.tiles.Count; index++) {
+                    var pos = blob.tiles[index];
+                    if (tiles[pos.y, pos.x] == null) {
+                        Debug.LogWarning("Trying to clear null tile found in blob: "+pos.y+", "+pos.x);
+                        blob.tiles.RemoveAt(index);
+                        index--;
+                        totalBlobMana--;
+                        continue;
+                    }
+                    averagePos += tiles[pos.y, pos.x].transform.position;
+                }
+                
+            }
+            averagePos /= totalBlobMana;
 
-                    while (totalBlobMana > 0) {
-                        // If this is cascading off the same color more than once, short delay between
-                        if (cascade > 0) {
-                            GlowBlobs(0.6f);
-                            yield return new WaitForSeconds(0.6f);
+            totalSpellcasts++;
+            
+            totalManaCleared += totalBlobMana;
+            abilityManager.GainMana((int) (totalBlobMana * boardStats[SpecialGainMult]));
 
-                            if (defeated)
+            highestCombo = Math.Max(highestCombo, chain);
+            highestCascade = Math.Max(highestCascade, cascade);
 
-                            // recalculte blobs in case they changed
-                            RefreshBlobs();
-                        }
+            float totalPointMult = 0;
+            // Clear all blob-contained tiles from the board.
+            foreach (Blob blob in blobs) {
+                // run onclear first to check for point multiplier increases or other effects (geo gold mine)
+                foreach (Vector2Int pos in blob.tiles) {
+                    if (tiles[pos.y, pos.x]) {
+                        tiles[pos.y, pos.x].BeforeClear(blob);
+                    }
+                }
+                // then remove the tiles from the board 
+                foreach (Vector2Int pos in blob.tiles) {
+                    totalPointMult += ClearTile(pos.x, pos.y);
 
-                        if (chain > 1) chainPopup.Flash(chain.ToString());
-
-                        cascade += 1;
-                        if (cascade > 1)
-                        {
-                            PlaySFX(cascadeSFX, 1f + cascade * 0.1f);
-                            cascadePopup.Flash(cascade.ToString());
-                            cascadeFoundThisCheck = true;
-                        }
-
-                        // Get the average of all tile positions; this is where shoot particle is spawned
-                        Vector3 averagePos = Vector3.zero;
-                        foreach (Blob blob in blobs) {
-                            for (int index = 0; index < blob.tiles.Count; index++) {
-                                var pos = blob.tiles[index];
-                                if (tiles[pos.y, pos.x] == null) {
-                                    Debug.LogWarning("Null tile found in blob: "+pos.y+", "+pos.x);
-                                    blob.tiles.RemoveAt(index);
-                                    index--;
-                                    totalBlobMana--;
-                                    continue;
-                                }
-                                averagePos += tiles[pos.y, pos.x].transform.position;
-                            }
-                            
-                        }
-                        averagePos /= totalBlobMana;
-
-                        totalSpellcasts++;
-                        
-                        totalManaCleared += totalBlobMana;
-                        abilityManager.GainMana((int) (totalBlobMana * boardStats[SpecialGainMult]));
-
-                        highestCombo = Math.Max(highestCombo, chain);
-                        highestCascade = Math.Max(highestCascade, cascade);
-
-                        float totalPointMult = 0;
-                        // Clear all blob-contained tiles from the board.
-                        foreach (Blob blob in blobs) {
-                            // run onclear first to check for point multiplier increases (geo gold mine)
-                            foreach (Vector2Int pos in blob.tiles) {
-                                if (tiles[pos.y, pos.x]) {
-                                    tiles[pos.y, pos.x].BeforeClear(blob);
-                                }
-                            }
-                            // then remove the tiles from the board 
-                            foreach (Vector2Int pos in blob.tiles) {
-                                totalPointMult += ClearTile(pos.x, pos.y);
-
-                                // clear adjacent fragile tiles
-                                totalPointMult += ClearTile(pos.x - 1, pos.y, true, onlyClearFragile: true);
-                                totalPointMult += ClearTile(pos.x + 1, pos.y, true, onlyClearFragile: true);
-                                totalPointMult += ClearTile(pos.x, pos.y - 1, true, onlyClearFragile: true);
-                                totalPointMult += ClearTile(pos.x, pos.y + 1, true, onlyClearFragile: true);
-                            }
-                        }
-                        if (!cascadeFoundThisCheck)
-                        {
-                            PlaySFX(castSFX, 1f + chain * 0.1f);
-                        }
+                    // clear adjacent fragile tiles (mini z?men)
+                    totalPointMult += ClearTile(pos.x - 1, pos.y, true, onlyClearFragile: true);
+                    totalPointMult += ClearTile(pos.x + 1, pos.y, true, onlyClearFragile: true);
+                    totalPointMult += ClearTile(pos.x, pos.y - 1, true, onlyClearFragile: true);
+                    totalPointMult += ClearTile(pos.x, pos.y + 1, true, onlyClearFragile: true);
+                }
+            }
+            if (cascade <= 1) PlaySFX(castSFX, 1f + chain * 0.1f);
 
                         // Geo's revenge system
                         float GeoBoost = 1f;
@@ -1550,31 +1722,47 @@ namespace Battle.Board {
                         // DMG is scaled by chain and cascade.
                         int damage = (int)( (totalPointMult * damagePerMana) * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult] *GeoBoost);
 
-                        highestSingleDamage = Math.Max(highestSingleDamage, damage);
+            highestSingleDamage = Math.Max(highestSingleDamage, damage);
 
-                        // Send the damage over. Will counter incoming damage first.
-                        DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
+            // relay to the opponent's client that the chain advance happened at this point in time
+            // RPCs should be guaranteed to execute in order send, so desyncs where piece is placed after when it should in the chain should be prevented.
+            // but if stuff starts breaking it probably has to do with RPC execution order, im not 100% sure its guaranteed.
 
-                        // Do gravity everywhere
-                        AllTileGravity();
-
-                        // Check for cascaded blobs (cascade loop will continue if resulting totalBlobMana > 0)
-                        RefreshBlobs();
-                        RefreshGhostPiece();
-
-                        RefreshObjectives();
-                        StartCoroutine(CheckMidConvoAfterDelay());
-                    }
-
-                    // Spellcast for the new next color and check for chain
-                    AdvanceCycle();
-                    Spellcast(chain+1);
-                }            
+            // Send the damage over. Will counter incoming damage first.
+            // when in onlinemode, residual damage may be left that will be sent to the opponent to add to their damage queue within their client
+            // and they will then send back an rpc with their damage queue state
+            // do not deal damage here if online;
+            // instead the damageSent part of the AdvanceChain rpc will be used to call damage after this was calle dto update the boar dand clear the mana
+            if (Storage.online) {
+                if (netPlayer.isOwned) {
+                    int residualDamage = DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
+                    netPlayer.CmdAdvanceChain(startup: false, damageSent: residualDamage);
+                }
+            // if not net controlled, deal damage as normal
+            } else {
+                DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
             }
-        }
 
-        private void Spellcast(int chain) {
-            Spellcast(chain, true);
+            // Do gravity everywhere
+            AllTileGravity();
+
+            // Check for cascaded blobs
+            RefreshBlobs();
+
+            RefreshGhostPiece();
+            RefreshObjectives();
+            StartCoroutine(CheckMidConvoAfterDelay());
+
+            // cascade loop will continue if there are any mana blob tiles of the current color available to clear
+            if (totalBlobMana > 0) {
+                GlowBlobs(cascadeDelay);
+                if (manualCastContinue) StartCoroutine(AdvanceChainAndCascadeAfterDelay(cascadeDelay));
+            } else {
+                AdvanceCycle();
+                cascade = 0;
+                chain++;
+                Spellcast(refreshBlobs: true);
+            }
         }
 
         private void AdvanceCycle() {
@@ -2058,9 +2246,9 @@ namespace Battle.Board {
             return l;
         }
 
-        public bool isInitialized()
+        public bool IsBattleStarted()
         {
-            return cycleInitialized;
+            return battleStarted;
         }
 
         public bool IsCasting() {
