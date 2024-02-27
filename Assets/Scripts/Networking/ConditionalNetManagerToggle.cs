@@ -17,7 +17,11 @@ public class ConditionalNetManagerToggle : MonoBehaviour {
                 webGLManager.SetActive(true);
             } else {
                 #if !DISABLESTEAMWORKS
-                    steamManager.SetActive(true);
+                    if (useSteamNetManager) {
+                        steamManager.SetActive(true);
+                    } else {
+                        pcManager.SetActive(true);
+                    }
                 #else
                     pcManager.SetActive(true);
                 #endif
@@ -26,7 +30,11 @@ public class ConditionalNetManagerToggle : MonoBehaviour {
             #if UNITY_WEBGL
                 webGLManager.SetActive(true);
             #elif !DISABLESTEAMWORKS
-                steamManager.SetActive(true);
+                if (useSteamNetManager) {
+                    steamManager.SetActive(true);
+                } else {
+                    pcManager.SetActive(true);
+                }
             #else
                 pcManager.SetActive(true);
             #endif

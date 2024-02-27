@@ -6,14 +6,14 @@ public class NetManager : NetworkManager {
     public override void OnStartHost()
     {
         base.OnStartHost();
-        Debug.LogWarning("Hosting at address "+NetworkManager.singleton.networkAddress);
+        Debug.Log("Hosting at address "+singleton.networkAddress);
         OnlineMenu.singleton.ShowCharSelect();
     }
 
     public override void OnClientConnect()
     {
         base.OnClientConnect();
-        Debug.LogWarning("Connected to host at address "+NetworkManager.singleton.networkAddress);
+        Debug.Log("Connected to host at address "+singleton.networkAddress);
         OnlineMenu.singleton.ShowCharSelect();
     }
 

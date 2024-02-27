@@ -737,7 +737,6 @@ namespace VersusMode {
         }
 
         public void Disconnect() {
-            Debug.Log(name + " disconnected");
             if (lockedIn) ToggleLock();
             connected = false;
             Active = false;
@@ -755,7 +754,6 @@ namespace VersusMode {
         }
 
         public void Connect() {
-            Debug.Log(name + " connected");
             connected = true;
             Active = true;
             isCpuCursor = false;

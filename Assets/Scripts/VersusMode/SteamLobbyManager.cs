@@ -16,11 +16,13 @@ public class SteamLobbyManager {
     static bool steamInitialized = false;
 
     static LobbyManager() {
-        if (steamInitialized) return;
+        if (steamInitialized) {
+            Debug.LogWarning("SteamManager already initialized");
+            return;
+        }
         
-        if (usingSteam && !SteamManager.Initialized) {
-            Debug.LogWarning("SteamManager is not initialized");
-            usingSteam = false;
+        if (!SteamManager.Initialized) {
+            Debug.LogError("SteamManager is not initialized!");
             return;
         }
 
@@ -34,12 +36,8 @@ public class SteamLobbyManager {
 
     public static void CreateLobby() {
         #if !DISABLESTEAMWORKS
-            if (usingSteam) {
-                Debug.LogWarning("Starting steam lobby");
-                SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, NetworkManager.singleton.maxConnections);
-            } else {
-                NetworkManager.singleton.StartHost();
-            }
+            Debug.Log("Starting steam lobby");
+            SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, NetworkManager.singleton.maxConnections);
         #else
             Debug.LogError("Trying to start a Steam lobby, but Steamworks is disabled!");
         #endif
@@ -48,7 +46,7 @@ public class SteamLobbyManager {
     #if !DISABLESTEAMWORKS
     private static void OnLobbyCreated(LobbyCreated_t callback) {
         if (callback.m_eResult != EResult.k_EResultOK) {
-            Debug.LogError("Error creating lobby "+callback.m_eResult);
+            Debug.LogError("Error creating steam lobby "+callback.m_eResult);
             OnlineMenu.singleton.ShowOnlineMenu();
             return;
         }
@@ -59,7 +57,7 @@ public class SteamLobbyManager {
     }
 
     private static void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback) {
-        Debug.LogWarning("Lobby join requested!");
+        Debug.Log("Steam lobby join requested!");
         // if joining from steam, make sure the charselect scene is loaded first before joining lobby
         if (SceneManager.GetActiveScene().name != "CharSelect") {
             Storage.online = true; Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = true;
