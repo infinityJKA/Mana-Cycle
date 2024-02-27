@@ -1,18 +1,20 @@
 using UnityEngine;
+
+#if !DISABLESTEAMWORKS
 using Mirror;
-using Steamworks;
 using UnityEngine.SceneManagement;
+using Steamworks;
+#endif
 
-public class LobbyManager {
+public class SteamLobbyManager {
 
+    #if !DISABLESTEAMWORKS
     protected static Callback<LobbyCreated_t> lobbyCreated;
     protected static Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
     protected static Callback<LobbyEnter_t> lobbyEntered;
-
-    static bool usingSteam = false;
     private const string HostAddressKey = "HostAddress";
-
     static bool steamInitialized = false;
+
     static LobbyManager() {
         if (steamInitialized) return;
         
@@ -28,16 +30,22 @@ public class LobbyManager {
 
         steamInitialized = true;
     }
+    #endif
 
     public static void CreateLobby() {
-        if (usingSteam) {
-            Debug.LogWarning("Starting steam lobby");
-            SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, NetworkManager.singleton.maxConnections);
-        } else {
-            NetworkManager.singleton.StartHost();
-        }
+        #if !DISABLESTEAMWORKS
+            if (usingSteam) {
+                Debug.LogWarning("Starting steam lobby");
+                SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, NetworkManager.singleton.maxConnections);
+            } else {
+                NetworkManager.singleton.StartHost();
+            }
+        #else
+            Debug.LogError("Trying to start a Steam lobby, but Steamworks is disabled!");
+        #endif
     }
 
+    #if !DISABLESTEAMWORKS
     private static void OnLobbyCreated(LobbyCreated_t callback) {
         if (callback.m_eResult != EResult.k_EResultOK) {
             Debug.LogError("Error creating lobby "+callback.m_eResult);
@@ -69,4 +77,6 @@ public class LobbyManager {
         NetworkManager.singleton.networkAddress = hostAddress;
         NetworkManager.singleton.StartClient();
     }
+    #endif
 }
+
