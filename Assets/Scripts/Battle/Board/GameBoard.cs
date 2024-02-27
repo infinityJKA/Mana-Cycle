@@ -658,7 +658,7 @@ namespace Battle.Board {
         // Initialize with a passed cycle. Taken out of start because it relies on ManaCycle's start method
         public void InitializeWithCycle(ManaCycle cycle) {
             if (!enabled) {
-                Debug.LogWarning("Trying to cycle initialize a disabled board!");
+                Debug.LogError("Trying to cycle initialize a disabled board!");
                 return;
             };
             

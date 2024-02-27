@@ -173,7 +173,7 @@ namespace Battle.Board {
         public void UpdatePosition()
         {
             if (!this) {
-                Debug.LogWarning("Trying to move a destroyed piece");
+                Debug.LogError("Trying to move a destroyed piece");
                 return;
             }
             transform.localPosition = new Vector3(this.col - GameBoard.width/2f, -this.row + GameBoard.physicalHeight/2f + GameBoard.height - GameBoard.physicalHeight, 0);
@@ -215,7 +215,7 @@ namespace Battle.Board {
 
         public void SetRotation(Orientation orientation) {
             if (!this) {
-                Debug.LogWarning("Trying to rotate adestroyed piece");
+                Debug.LogError("Trying to rotate a destroyed piece");
                 return;
             }
             this.orientation = orientation;

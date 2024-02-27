@@ -146,7 +146,7 @@ public class NetPlayer : NetworkBehaviour {
 
     [ClientRpc(includeOwner = false)]
     private void RpcSynchronize(BattleInitData initData) {
-        Debug.LogWarning("received init data: "+initData);
+        Debug.Log("received init data: "+initData);
 
         // if current scene is Mana Cycle, initialize using received data
         if (SceneManager.GetActiveScene().name == "ManaCycle") {

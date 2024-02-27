@@ -15,7 +15,7 @@ namespace MainMenu {
         [SerializeField] private BlackjackMenu blackjackMenu;
 
         string[] konamiCode = {"up", "up", "down", "down", "left", "right", "left", "right", "b", "a"};
-        int konamiIndex = 0;
+        public int konamiIndex = 0;
 
         private Vector2 navigateInput;
         private static float joystickDeadzone = 0.1f;
@@ -88,7 +88,6 @@ namespace MainMenu {
                     konamiIndex = 0;
                 }
             }
-            Debug.Log("konami index " + konamiIndex);
         }
     }
 }

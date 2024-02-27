@@ -47,7 +47,7 @@ namespace Battle.Board {
         public override void PlaceTilesOnBoard(ref Tile[,] board, Transform pieceBoard)
         {
             if (!center) {
-                Debug.LogWarning("trying to place destroyed tile");
+                Debug.LogError("trying to place destroyed tile");
                 return;
             }
             // Place this single piece's tile and set its parent
