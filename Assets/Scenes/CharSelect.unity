@@ -1826,6 +1826,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e55fca1f4e4844593a3dd65a3ecb39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Channels: 0200000001000000
+  Timeout: 25
+  AllowSteamRelay: 1
+  UseNextGenSteamNetworking: 1
 --- !u!114 &483336643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4319,7 +4323,7 @@ MonoBehaviour:
   autoConnectClientBuild: 0
   offlineScene: 
   onlineScene: 
-  transport: {fileID: 1909296829}
+  transport: {fileID: 0}
   networkAddress: localhost
   maxConnections: 2
   disconnectInactiveConnections: 0
@@ -4353,21 +4357,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1909296822}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
+  m_Script: {fileID: 11500000, guid: 6d4f9593ba7f845458730213887b5758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  port: 7777
-  NoDelay: 1
-  SendTimeout: 5000
-  ReceiveTimeout: 30000
-  serverMaxMessageSize: 16384
-  serverMaxReceivesPerTick: 10000
-  serverSendQueueLimitPerConnection: 10000
-  serverReceiveQueueLimitPerConnection: 10000
-  clientMaxMessageSize: 16384
-  clientMaxReceivesPerTick: 1000
-  clientSendQueueLimit: 10000
-  clientReceiveQueueLimit: 10000
+  Port: 7777
+  LoggerLevel: 3
+  TimeoutMS: 1000
+  useRelay: 0
 --- !u!1 &1921309411
 GameObject:
   m_ObjectHideFlags: 0
@@ -5210,7 +5206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea8a17ef391756647b5acaf2bcfc4d85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useSteamNetManager: 1
+  useSteamNetManager: 0
   pcManager: {fileID: 1909296822}
   steamManager: {fileID: 483336640}
   webGLManager: {fileID: 1119216497}
