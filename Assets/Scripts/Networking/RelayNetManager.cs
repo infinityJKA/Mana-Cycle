@@ -6,14 +6,15 @@ public class RelayNetManager : Utp.RelayNetworkManager {
     public override void OnStartHost()
     {
         base.OnStartHost();
-        Debug.Log("Hosting at address "+singleton.networkAddress);
+        Debug.Log("Hosting at address "+networkAddress);
+        Debug.Log("join code: "+relayJoinCode);
         OnlineMenu.singleton.ShowCharSelect();
     }
 
     public override void OnClientConnect()
     {
         base.OnClientConnect();
-        Debug.Log("Connected to host at address "+singleton.networkAddress);
+        Debug.Log("Connected to host at address "+networkAddress);
         OnlineMenu.singleton.ShowCharSelect();
     }
 

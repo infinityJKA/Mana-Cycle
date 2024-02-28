@@ -15,13 +15,15 @@ public class RelayManager {
         await Authentication.Authenticate();
 
         try {
-            // 1 additional opponent allowed - host is not included in this count
-            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(1);
+            Debug.Log("Creating relay host");
+            var relayNetworkManager = NetworkManager.singleton.GetComponent<RelayNetworkManager>();
+            // will start relay and start the host on networkmanager
+            relayNetworkManager.StartRelayHost(1);
 
-            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+            // // 1 additional opponent allowed - host is not included in this count
+            // Allocation allocation = await RelayService.Instance.CreateAllocationAsync(1);
 
-            Debug.Log("joinCode: "+joinCode);
-
+            // string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             
         } catch (RelayServiceException e) {
             Debug.Log(e);

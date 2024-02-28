@@ -14,9 +14,14 @@ namespace Networking {
         protected static Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
         protected static Callback<LobbyEnter_t> lobbyEntered;
         private const string HostAddressKey = "HostAddress";
-        static bool steamInitialized = false;
+        public static bool steamInitialized {get; private set;} = false;
+        #endif
 
-        static SteamLobbyManager() {
+        public static void InitializeSteam() {
+            if (NetworkManagerManager.networkManagerType != NetworkManagerManager.NetworkManagerType.Steam) {
+                Debug.LogWarning("Trying to use steam, but it is disabled");
+            }
+
             if (steamInitialized) {
                 Debug.LogWarning("SteamManager already initialized");
                 return;
@@ -33,7 +38,6 @@ namespace Networking {
 
             steamInitialized = true;
         }
-        #endif
 
         public static void CreateLobby() {
             #if !DISABLESTEAMWORKS
@@ -78,6 +82,4 @@ namespace Networking {
         }
         #endif
     }
-
-
 }

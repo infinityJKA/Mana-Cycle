@@ -20,15 +20,6 @@ public class OnlineMenu : MonoBehaviour {
 
     public GameObject onlineMenu, charSelectMenu;
 
-    
-    // funny assembly directives moment
-    private bool usingSteam =
-    #if UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX
-        true
-    #else
-        false
-    #endif
-    ;
 
     private void Awake() {
         singleton = this;
@@ -41,13 +32,14 @@ public class OnlineMenu : MonoBehaviour {
         }
     }
 
-    public void HostButtonPressed() {
+    public async void HostButtonPressed() {
         DisableInteractables();
         if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
-        if (usingSteam) {
+        if (NetworkManagerManager.networkManagerType == NetworkManagerManager.NetworkManagerType.Steam) {
             SteamLobbyManager.CreateLobby();
-        } else {
             NetworkManager.singleton.StartHost();
+        } else if (NetworkManagerManager.networkManagerType == NetworkManagerManager.NetworkManagerType.Relay) {
+            await RelayManager.CreateRelay();
         }
     }
 
