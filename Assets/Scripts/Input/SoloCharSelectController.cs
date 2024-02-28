@@ -23,6 +23,8 @@ public class SoloCharSelectController : MonoBehaviour {
 
     private bool joystickPressed;
 
+    bool canControl => charSelectMenu && charSelectMenu.gameObject.activeInHierarchy && !PopupUI.showingPopup;
+
     private void Awake() {
         instance = this;
 
@@ -32,9 +34,10 @@ public class SoloCharSelectController : MonoBehaviour {
 
         charSelector = charSelectMenu.GetActiveSelector();
     }
+    
 
     public void OnNavigate(InputAction.CallbackContext ctx) {
-        if (!charSelectMenu || !charSelectMenu.gameObject.activeInHierarchy) return;
+        if (!canControl) return;
 
         navigateInput = ctx.action.ReadValue<Vector2>();
 
@@ -47,6 +50,8 @@ public class SoloCharSelectController : MonoBehaviour {
             joystickPressed = true;
 
             float angle = Vector2.SignedAngle(Vector2.up, navigateInput);
+
+            Debug.Log(angle);
 
             if (Mathf.Abs(angle) < 45f) charSelector.OnMoveUp();
             else if (Mathf.Abs(angle - 180f) < 45f) charSelector.OnMoveDown();
@@ -81,7 +86,7 @@ public class SoloCharSelectController : MonoBehaviour {
     // }
 
     public void OnSelect(InputAction.CallbackContext ctx) {
-        if (!charSelectMenu.gameObject.activeInHierarchy) return;
+        if (!canControl) return;
 
         if (!ctx.performed) return;
         charSelector.OnCast(true);
@@ -109,21 +114,20 @@ public class SoloCharSelectController : MonoBehaviour {
     }
 
     private void OnPauseOrBack() {
+        if (!canControl) return;
         charSelector.OnBack();
         charSelector = charSelectMenu.GetActiveSelector();
         if (netPlayer) netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
     }
 
     public void OnAbilityInfo(InputAction.CallbackContext ctx) {
-        if (!charSelectMenu.gameObject.activeInHierarchy) return;
-
         if (!ctx.performed) return;
+        if (!canControl) return; 
         charSelector.OnAbilityInfo();
     }
 
     public void OnSettings(InputAction.CallbackContext ctx) {
-        if (!charSelectMenu.gameObject.activeInHierarchy) return;
-
+        if (!canControl) return;
         if (!ctx.performed) return;
         charSelector.OnSettings();
     }
