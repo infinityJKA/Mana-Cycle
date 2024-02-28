@@ -65,7 +65,7 @@ namespace Utp
 		/// </summary>
 		private void Awake()
 		{
-			SetupDefaultCallbacks();
+			// SetupDefaultCallbacks();
 
 			//Logging delegates
 			if (LoggerLevel < LogLevel.Verbose) UtpLog.Verbose = _ => { };
@@ -98,6 +98,7 @@ namespace Utp
 
 		private void SetupDefaultCallbacks()
 		{
+			// I DISABLED SOME STUFF - jack
 			if (OnServerConnected == null)
 			{
 				OnServerConnected = (connId) => UtpLog.Warning("OnServerConnected called with no handler");

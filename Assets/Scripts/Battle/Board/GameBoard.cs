@@ -74,9 +74,9 @@ namespace Battle.Board {
         [SerializeField] public Image portrait;
 
         /** Chain popup object */
-        [SerializeField] private Popup chainPopup;
+        [SerializeField] private Animation.Popup chainPopup;
         /** Cascade popup object */
-        [SerializeField] private Popup cascadePopup;
+        [SerializeField] private Animation.Popup cascadePopup;
         /** Attak popup object */
         [SerializeField] private Battle.AttackPopup attackPopup;
         /** Board background. Animated fall down when defeated */
