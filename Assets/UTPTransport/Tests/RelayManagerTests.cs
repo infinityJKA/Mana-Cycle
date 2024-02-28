@@ -39,7 +39,7 @@ namespace Utp
 
 			string validJoinCode = "test";
 			Action onSuccess = () => { didInvokeOnSuccess = true; };
-			Action onFailure = () => { didInvokeOnFailure = true; };
+			Action<Exception> onFailure = (e) => { didInvokeOnFailure = true; };
 			_relayManager.GetAllocationFromJoinCode(joinCode: validJoinCode, onSuccess: onSuccess, onFailure: onFailure);
 
 			LogAssert.Expect(LogType.Error, new Regex(@"Unable to get Relay allocation from join code, encountered an error:"));
@@ -57,7 +57,7 @@ namespace Utp
 
 			string validJoinCode = "test";
 			Action onSuccess = () => { didInvokeOnSuccess = true; };
-			Action onFailure = () => { didInvokeOnFailure = true; };
+			Action<Exception> onFailure = (e) => { didInvokeOnFailure = true; };
 			_relayManager.GetAllocationFromJoinCode(joinCode: validJoinCode, onSuccess: onSuccess, onFailure: onFailure);
 
 			Assert.That(didInvokeOnSuccess, Is.True);
@@ -106,7 +106,7 @@ namespace Utp
 			int validMaxPlayers = 8;
 			string validRegionId = "test";
 			Action<string> onSuccess = (code) => { didInvokeOnSuccess = true; };
-			Action onFailure = () => { didInvokeOnFailure = true; };
+			Action<Exception> onFailure = (err) => { didInvokeOnFailure = true; };
 			_relayManager.AllocateRelayServer(maxPlayers: validMaxPlayers, regionId: validRegionId, onSuccess: onSuccess, onFailure: onFailure);
 
 			LogAssert.Expect(LogType.Error, new Regex(@"Unable to allocate Relay server, encountered an error creating a Relay allocation:"));
@@ -126,7 +126,7 @@ namespace Utp
 			int validMaxPlayers = 8;
 			string validRegionId = "test";
 			Action<string> onSuccess = (code) => { didInvokeOnSuccess = true; };
-			Action onFailure = () => { didInvokeOnFailure = true; };
+			Action<Exception> onFailure = (err) => { didInvokeOnFailure = true; };
 			_relayManager.AllocateRelayServer(maxPlayers: validMaxPlayers, regionId: validRegionId, onSuccess: onSuccess, onFailure: onFailure);
 
 			Assert.That(_relayManager.ServerAllocation, Is.Not.Null);

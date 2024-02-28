@@ -170,7 +170,7 @@ namespace Utp
 		/// <param name="joinCode">The Relay join code.</param>
 		/// <param name="onSuccess">A callback to invoke when the Relay allocation is successfully retrieved from the join code.</param>
 		/// <param name="onFailure">A callback to invoke when the Relay allocation is unsuccessfully retrieved from the join code.</param>
-		public void ConfigureClientWithJoinCode(string joinCode, Action onSuccess, Action onFailure)
+		public void ConfigureClientWithJoinCode(string joinCode, Action onSuccess, Action<Exception> onFailure)
 		{
 			relayManager.GetAllocationFromJoinCode(joinCode, onSuccess, onFailure);
 		}
@@ -192,7 +192,7 @@ namespace Utp
 		/// <param name="regionId">The region ID.</param>
 		/// <param name="onSuccess">A callback to invoke when the Relay server is successfully allocated.</param>
 		/// <param name="onFailure">A callback to invoke when the Relay server is unsuccessfully allocated.</param>
-		public void AllocateRelayServer(int maxPlayers, string regionId, Action<string> onSuccess, Action onFailure)
+		public void AllocateRelayServer(int maxPlayers, string regionId, Action<string> onSuccess, Action<Exception> onFailure)
 		{
 			relayManager.AllocateRelayServer(maxPlayers, regionId, onSuccess, onFailure);
 		}

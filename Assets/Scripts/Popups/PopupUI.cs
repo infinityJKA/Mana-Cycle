@@ -37,6 +37,7 @@ public class PopupUI : MonoBehaviour {
         confirmButton.interactable = false;
         animator.SetBool("show", false);
         
+        if (!PopupManager.instance) return;
         PopupManager.instance.ShowNextPopup();
     }
 }

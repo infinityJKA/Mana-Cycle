@@ -9,7 +9,6 @@ public class RelayNetManager : Utp.RelayNetworkManager {
         Debug.Log("Hosting at address "+networkAddress);
         Debug.Log("join code: "+relayJoinCode);
         OnlineMenu.singleton.ShowCharSelect();
-
         CharSelectMenu.Instance.p2Selector.ShowJoinCode(relayJoinCode);
     }
 
@@ -18,6 +17,11 @@ public class RelayNetManager : Utp.RelayNetworkManager {
         base.OnClientConnect();
         Debug.Log("Connected to host at address "+networkAddress);
         OnlineMenu.singleton.ShowCharSelect();
+    }
+
+    public override void OnClientDisconnect()
+    {
+        PopupManager.instance.ShowBasicPopup("Disconnected", "Disconnected from server");
     }
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)

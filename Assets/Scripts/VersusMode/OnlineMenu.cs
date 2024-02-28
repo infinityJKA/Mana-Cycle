@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Networking;
+using UnityEngine.InputSystem;
 
 public class OnlineMenu : MonoBehaviour {
     public static OnlineMenu singleton;
@@ -19,6 +20,8 @@ public class OnlineMenu : MonoBehaviour {
     public Button hostButton, joinButton;
 
     public GameObject onlineMenu, charSelectMenu;
+
+    public InputActionReference backAction;
 
 
     private void Awake() {
@@ -33,24 +36,37 @@ public class OnlineMenu : MonoBehaviour {
     }
 
     public async void HostButtonPressed() {
+        if (!CheckOnline()) return;
+
         DisableInteractables();
         if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
         if (NetworkManagerManager.networkManagerType == NetworkManagerManager.NetworkManagerType.Steam) {
             SteamLobbyManager.CreateLobby();
             NetworkManager.singleton.StartHost();
         } else if (NetworkManagerManager.networkManagerType == NetworkManagerManager.NetworkManagerType.Relay) {
-            await RelayManager.CreateRelay();
+            bool success = await RelayManager.CreateRelay();
+            if (!success) EnableInteractables();
         }
     }
 
     public async void JoinButtonPressed() {
+        string joinCode = joinCodeField.text;
+
+        if (joinCode.Length != 6) {
+            PopupManager.instance.ShowErrorMessage("Enter a valid join code");
+            return;
+        }
+
+        if (!CheckOnline()) return;
+
         DisableInteractables();
         if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
         if (NetworkManagerManager.networkManagerType == NetworkManagerManager.NetworkManagerType.Steam) {
             // TODO: implement join via friends list or soemthing similar
             NetworkManager.singleton.StartClient();
         } else if (NetworkManagerManager.networkManagerType == NetworkManagerManager.NetworkManagerType.Relay) {
-            await RelayManager.JoinRelay(joinCodeField.text);
+            bool success = await RelayManager.JoinRelay(joinCode);
+            if (!success) EnableInteractables();
         }
     }
 
@@ -76,5 +92,15 @@ public class OnlineMenu : MonoBehaviour {
         charSelectMenu.SetActive(false);
         onlineMenu.SetActive(true);
         EnableInteractables();
+    }
+
+    public static bool CheckOnline() {
+        if(Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            PopupManager.instance.ShowErrorMessage("You seem to be offline. Check your internet connection!");
+            return false;
+        }
+
+        return true;
     }
 }
