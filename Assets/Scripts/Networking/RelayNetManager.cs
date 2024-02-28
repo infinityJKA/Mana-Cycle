@@ -2,14 +2,11 @@ using UnityEngine;
 using Mirror;
 using VersusMode;
 
-public class NetManager : NetworkManager {
-    public override async void OnStartHost()
+public class RelayNetManager : Utp.RelayNetworkManager {
+    public override void OnStartHost()
     {
         base.OnStartHost();
         Debug.Log("Hosting at address "+singleton.networkAddress);
-
-        await RelayManager.CreateRelay();
-
         OnlineMenu.singleton.ShowCharSelect();
     }
 

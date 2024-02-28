@@ -10,6 +10,8 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Networking;
+
 public class OnlineMenu : MonoBehaviour {
     public static OnlineMenu singleton;
 
