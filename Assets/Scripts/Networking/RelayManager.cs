@@ -10,30 +10,37 @@ using System.Threading.Tasks;
 
 public class RelayManager {
 
+    public static RelayNetworkManager relayNetworkManager {
+        get {
+            return NetworkManager.singleton.GetComponent<RelayNetworkManager>();
+        }
+    }
+
     [QC.Command]
     public static async Task CreateRelay() {
         await Authentication.Authenticate();
 
         try {
             Debug.Log("Creating relay host");
-            var relayNetworkManager = NetworkManager.singleton.GetComponent<RelayNetworkManager>();
+            
             // will start relay and start the host on networkmanager
             relayNetworkManager.StartRelayHost(1);
-
-            // // 1 additional opponent allowed - host is not included in this count
-            // Allocation allocation = await RelayService.Instance.CreateAllocationAsync(1);
-
-            // string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             
         } catch (RelayServiceException e) {
             Debug.Log(e);
         }
     }
 
-    public async Task JoinRelay(string joinCode) {
+    [QC.Command]
+    public static async Task JoinRelay(string joinCode) {
+        await Authentication.Authenticate();
+
         try {
             Debug.Log("Joining Relay with code "+joinCode);
-            await RelayService.Instance.JoinAllocationAsync(joinCode);
+            
+            relayNetworkManager.relayJoinCode = joinCode;
+            // starts relay and starts networkmanager as client when connected
+            relayNetworkManager.JoinRelayServer();
         } catch (RelayServiceException e) {
             Debug.Log(e);
         }

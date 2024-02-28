@@ -183,6 +183,7 @@ namespace VersusMode {
         [SerializeField] private Color disconnectBkgdColor, connectBkgdColor;
 
         [SerializeField] private GameObject connectTipLabel;
+        [SerializeField] private TMP_Text joinCodeLabel;
 
         [SerializeField] private GameObject onlineShowWhileNotConnected;
 
@@ -734,6 +735,10 @@ namespace VersusMode {
 
         public bool enableAbilities { 
             get { return abilityToggle.isOn; } 
+        }
+
+        public void ShowJoinCode(string joinCode) {
+            joinCodeLabel.text = joinCode;
         }
 
         public void Disconnect() {

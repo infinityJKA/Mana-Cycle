@@ -9,6 +9,8 @@ public class RelayNetManager : Utp.RelayNetworkManager {
         Debug.Log("Hosting at address "+networkAddress);
         Debug.Log("join code: "+relayJoinCode);
         OnlineMenu.singleton.ShowCharSelect();
+
+        CharSelectMenu.Instance.p2Selector.ShowJoinCode(relayJoinCode);
     }
 
     public override void OnClientConnect()
