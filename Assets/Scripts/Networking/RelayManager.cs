@@ -7,6 +7,7 @@ using QC = QFSW.QC;
 using Mirror;
 using Utp;
 using System.Threading.Tasks;
+using System;
 
 public class RelayManager {
 
@@ -17,32 +18,53 @@ public class RelayManager {
     }
 
     [QC.Command]
-    public static async Task CreateRelay() {
+    public static async Task<bool> CreateRelay() {
         await Authentication.Authenticate();
+
+        if (!AuthenticationService.Instance.IsSignedIn) return false;
 
         try {
             Debug.Log("Creating relay host");
             
             // will start relay and start the host on networkmanager
-            relayNetworkManager.StartRelayHost(1);
+            relayNetworkManager.StartRelayHost(1, onFailure: e => {
+                PopupManager.instance.ShowError(e);
+                OnlineMenu.singleton.EnableInteractables();
+            });
             
         } catch (RelayServiceException e) {
-            Debug.Log(e);
+            PopupManager.instance.ShowError(e);
+            return false;
         }
+
+        return true;
     }
 
     [QC.Command]
-    public static async Task JoinRelay(string joinCode) {
+    /// <summary>
+    /// Connect to another player via Relay.
+    /// </summary>
+    /// <param name="joinCode"></param>
+    /// <returns>if the connection was a success or not</returns>
+    public static async Task<bool> JoinRelay(string joinCode) {
         await Authentication.Authenticate();
+
+        if (!AuthenticationService.Instance.IsSignedIn) return false;
 
         try {
             Debug.Log("Joining Relay with code "+joinCode);
             
             relayNetworkManager.relayJoinCode = joinCode;
             // starts relay and starts networkmanager as client when connected
-            relayNetworkManager.JoinRelayServer();
-        } catch (RelayServiceException e) {
-            Debug.Log(e);
+            relayNetworkManager.JoinRelayServer(onFailure: e => {
+                PopupManager.instance.ShowError(e);
+                OnlineMenu.singleton.EnableInteractables();
+            });
+        } catch (Exception e) {
+            PopupManager.instance.ShowError(e);
+            return false;
         }
+
+        return true;
     }
 }

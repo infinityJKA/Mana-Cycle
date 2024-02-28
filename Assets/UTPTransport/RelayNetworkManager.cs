@@ -93,20 +93,18 @@ namespace Utp
 		/// <summary>
 		/// Ensures Relay is enabled. Starts a network "host" - a server and client in the same application
 		/// </summary>
-		public void StartRelayHost(int maxPlayers, string regionId = null)
+		public void StartRelayHost(int maxPlayers, string regionId = null, Action<Exception> onFailure = null)
 		{
+			if (onFailure == null) onFailure = (e) => UtpLog.Error($"Failed to join Relay server: "+e.Message);
+
 			utpTransport.useRelay = true;
 			utpTransport.AllocateRelayServer(maxPlayers, regionId,
 			(string joinCode) =>
 			{
 				relayJoinCode = joinCode;
-
 				StartHost();
 			},
-			() =>
-			{
-				UtpLog.Error($"Failed to start a Relay host.");
-			});
+			onFailure);
 		}
 
 		/// <summary>
@@ -121,18 +119,15 @@ namespace Utp
 		/// <summary>
 		/// Ensures Relay is enabled. Starts the client, connects to the server with the relayJoinCode.
 		/// </summary>
-		public void JoinRelayServer()
+		public void JoinRelayServer(Action<Exception> onFailure = null)
 		{
+			if (onFailure == null) onFailure = (e) => UtpLog.Error($"Failed to join Relay server: "+e.Message);
+
 			utpTransport.useRelay = true;
 			utpTransport.ConfigureClientWithJoinCode(relayJoinCode,
-			() =>
-			{
-				StartClient();
-			},
-			() =>
-			{
-				UtpLog.Error($"Failed to join Relay server.");
-			});
+			() => StartClient(),
+			onFailure
+			);
 		}
 	}
 }

@@ -42,12 +42,12 @@ namespace Utp
 		/// <param name="joinCode">The join code that will be used to retrieve the JoinAllocation.</param>
 		/// <param name="onSuccess">A callback to invoke when the Relay allocation is successfully retrieved from the join code.</param>
 		/// <param name="onFailure">A callback to invoke when the Relay allocation is unsuccessfully retrieved from the join code.</param>
-		public void GetAllocationFromJoinCode(string joinCode, Action onSuccess, Action onFailure)
+		public void GetAllocationFromJoinCode(string joinCode, Action onSuccess, Action<Exception> onFailure)
 		{
 			StartCoroutine(GetAllocationFromJoinCodeTask(joinCode, onSuccess, onFailure));
 		}
 
-		private IEnumerator GetAllocationFromJoinCodeTask(string joinCode, Action onSuccess, Action onFailure)
+		private IEnumerator GetAllocationFromJoinCodeTask(string joinCode, Action onSuccess, Action<Exception> onFailure)
 		{
 			Task<JoinAllocation> joinAllocation = RelayServiceSDK.JoinAllocationAsync(joinCode);
 
@@ -65,7 +65,7 @@ namespace Utp
 					return true;
 				});
 
-				onFailure?.Invoke();
+				onFailure?.Invoke(joinAllocation.Exception);
 
 				yield break;
 			}
@@ -117,12 +117,12 @@ namespace Utp
 		/// <param name="regionId">The region to allocate the server in. May be null.</param>
 		/// <param name="onSuccess">A callback to invoke when the Relay server is successfully allocated.</param>
 		/// <param name="onFailure">A callback to invoke when the Relay server is unsuccessfully allocated.</param>
-		public void AllocateRelayServer(int maxPlayers, string regionId, Action<string> onSuccess, Action onFailure)
+		public void AllocateRelayServer(int maxPlayers, string regionId, Action<string> onSuccess, Action<Exception> onFailure)
 		{
 			StartCoroutine(AllocateRelayServerTask(maxPlayers, regionId, onSuccess, onFailure));
 		}
 
-		private IEnumerator AllocateRelayServerTask(int maxPlayers, string regionId, Action<string> onSuccess, Action onFailure)
+		private IEnumerator AllocateRelayServerTask(int maxPlayers, string regionId, Action<string> onSuccess, Action<Exception> onFailure)
 		{
 			Task<Allocation> createAllocation = RelayServiceSDK.CreateAllocationAsync(maxPlayers, regionId);
 
@@ -139,7 +139,7 @@ namespace Utp
 					return true;
 				});
 
-				onFailure?.Invoke();
+				onFailure?.Invoke(createAllocation.Exception);
 
 				yield break;
 			}
@@ -151,7 +151,7 @@ namespace Utp
 			StartCoroutine(GetJoinCodeTask(onSuccess, onFailure));
 		}
 
-		private IEnumerator GetJoinCodeTask(Action<string> onSuccess, Action onFailure)
+		private IEnumerator GetJoinCodeTask(Action<string> onSuccess, Action<Exception> onFailure)
 		{
 			Task<string> getJoinCode = RelayServiceSDK.GetJoinCodeAsync(ServerAllocation.AllocationId);
 
@@ -168,7 +168,7 @@ namespace Utp
 					return true;
 				});
 
-				onFailure?.Invoke();
+				onFailure?.Invoke(getJoinCode.Exception);
 
 				yield break;
 			}

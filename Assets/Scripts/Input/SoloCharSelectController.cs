@@ -1,3 +1,4 @@
+using Mirror;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -51,14 +52,12 @@ public class SoloCharSelectController : MonoBehaviour {
 
             float angle = Vector2.SignedAngle(Vector2.up, navigateInput);
 
-            Debug.Log(angle);
-
             if (Mathf.Abs(angle) < 45f) charSelector.OnMoveUp();
             else if (Mathf.Abs(angle - 180f) < 45f) charSelector.OnMoveDown();
             else if (Mathf.Abs(angle - 90f) < 45f) charSelector.OnMoveLeft();
             else if (Mathf.Abs(angle + 90f) < 45f) charSelector.OnMoveRight();
 
-            if (Storage.online) {
+            if (Storage.online && NetworkClient.active) {
                 netPlayer.CmdSetSelectedBattlerIndex(charSelector.selectedIcon.index);
                 // if (netPlayer.isClient) {
                 //     netPlayer.CmdSetSelectedBattlerIndex(charSelector.selectedIcon.index);
@@ -91,7 +90,7 @@ public class SoloCharSelectController : MonoBehaviour {
         if (!ctx.performed) return;
         charSelector.OnCast(true);
 
-        if (Storage.online) {
+        if (Storage.online && NetworkClient.active) {
             if (charSelector.menu.started) {
                 netPlayer.CmdStartGame();
             } else {
@@ -114,10 +113,13 @@ public class SoloCharSelectController : MonoBehaviour {
     }
 
     private void OnPauseOrBack() {
-        if (!canControl) return;
-        charSelector.OnBack();
-        charSelector = charSelectMenu.GetActiveSelector();
-        if (netPlayer) netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+        if (charSelectMenu.gameObject.activeInHierarchy) {
+            charSelector.OnBack();
+            charSelector = charSelectMenu.GetActiveSelector();
+            if (netPlayer && NetworkClient.active) netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+        } else {
+            TransitionScript.instance.WipeToScene("MainMenu", reverse: true);
+        }
     }
 
     public void OnAbilityInfo(InputAction.CallbackContext ctx) {

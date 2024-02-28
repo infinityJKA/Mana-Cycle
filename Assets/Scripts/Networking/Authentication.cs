@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Services.Core;
 using Unity.Services.Authentication;
 using System.Threading.Tasks;
+using System;
 
 public class Authentication {
     static bool signingIn = false;
@@ -13,7 +14,11 @@ public class Authentication {
         signingIn = true;
 
         if (UnityServices.State == ServicesInitializationState.Uninitialized)  {
-            await UnityServices.InitializeAsync();
+            try {
+                await UnityServices.InitializeAsync();
+            } catch (Exception e) {
+                PopupManager.instance.ShowBasicPopup("Error", e.ToString());
+            }
         }
 
         if (AuthenticationService.Instance.IsSignedIn) {
@@ -25,7 +30,11 @@ public class Authentication {
         AuthenticationService.Instance.SignedIn += () => {
             Debug.Log("Signed in with id "+AuthenticationService.Instance.PlayerId);
         };
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        try {
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        } catch (Exception e) {
+            PopupManager.instance.ShowBasicPopup("Authentication Error", e.ToString());
+        }
 
         signingIn = false;
     }

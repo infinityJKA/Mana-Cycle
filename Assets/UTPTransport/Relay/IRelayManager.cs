@@ -22,7 +22,7 @@ namespace Utp
 		/// <param name="joinCode">The code to look up the joinAllocation for.</param>
 		/// <param name="onSuccess">A callback to invoke when the Relay allocation is successfully retrieved from the join code.</param>
 		/// <param name="onFailure">A callback to invoke when the Relay allocation is unsuccessfully retrieved from the join code.</param>
-		public void GetAllocationFromJoinCode(string joinCode, Action onSuccess, Action onFailure);
+		public void GetAllocationFromJoinCode(string joinCode, Action onSuccess, Action<Exception> onFailure);
 
 		/// <summary>
 		/// Get a list of Regions from the Relay Service.
@@ -38,6 +38,6 @@ namespace Utp
 		/// <param name="regionId">The region to allocate the server in. May be null.</param>
 		/// <param name="onSuccess">A callback to invoke when the Relay server is successfully allocated.</param>
 		/// <param name="onFailure">A callback to invoke when the Relay server is unsuccessfully allocated.</param>
-		public void AllocateRelayServer(int maxPlayers, string regionId, Action<string> onSuccess, Action onFailure);
+		public void AllocateRelayServer(int maxPlayers, string regionId, Action<string> onSuccess, Action<Exception> onFailure);
 	}
 }
