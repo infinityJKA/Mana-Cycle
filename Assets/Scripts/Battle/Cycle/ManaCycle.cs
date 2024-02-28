@@ -152,9 +152,11 @@ namespace Battle.Cycle {
 
         public static void GenerateCycle()
         {
-            cycleLength = Storage.level.cycleLength;
-            cycleUniqueColors = Storage.level.cycleUniqueColors;
-            lockPieceColors = Storage.level.lockPieceColors;
+            if (Storage.level) {
+                cycleLength = Storage.level.cycleLength;
+                cycleUniqueColors = Storage.level.cycleUniqueColors;
+                lockPieceColors = Storage.level.lockPieceColors;
+            } // otherwise will use serialized values which should be 7, 5, true
 
             cycle = new ManaColor[cycleLength];
 

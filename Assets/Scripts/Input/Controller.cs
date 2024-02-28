@@ -46,6 +46,8 @@ namespace Battle {
         // set to false whhen this is an AI vs AI match and htis controller can only interact with the pause menu.
         public bool canControlBoard = true;
 
+        private bool gameFocused => !PopupUI.showingPopup;
+
         private void Awake() {
             playerInput = GetComponent<PlayerInput>();
         }
@@ -182,6 +184,7 @@ namespace Battle {
         // charselector only
         public void OnMove(InputAction.CallbackContext ctx) {
             if (controlMode != ControlMode.CharSelector) return;
+            if (!gameFocused) return;
 
             movementInput = ctx.ReadValue<Vector2>();
 
@@ -206,6 +209,8 @@ namespace Battle {
         // board only
         public void OnPieceMoveAnalog(InputAction.CallbackContext ctx) {
             if (controlMode != ControlMode.Board || !canControlBoard) return;
+            if (!gameFocused) return;
+
 
             movementInput = ctx.ReadValue<Vector2>();
 
@@ -242,6 +247,8 @@ namespace Battle {
         }
 
         public void OnQuickfall(InputAction.CallbackContext ctx) {
+            if (!gameFocused) return;
+
             if (controlMode == ControlMode.Board && canControlBoard) {
                 if (ctx.performed) {
                     quickfallButtonPressed = true;
@@ -258,38 +265,45 @@ namespace Battle {
         }
 
         public void PieceTapLeft(InputAction.CallbackContext ctx) {
+            if (!gameFocused) return;
             if (!ctx.performed) return; 
             if (controlMode == ControlMode.Board && canControlBoard) board.MoveLeft();
         }
 
         public void PieceTapRight(InputAction.CallbackContext ctx) {
+            if (!gameFocused) return;
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board && canControlBoard) board.MoveRight();
         }
 
         public void OnRotateLeft(InputAction.CallbackContext ctx) {
+            if (!gameFocused) return;
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board && canControlBoard) board.RotateCCW();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnAbilityInfo();
         }
 
         public void OnRotateRight(InputAction.CallbackContext ctx) {
+            if (!gameFocused) return;
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board && canControlBoard) board.RotateCW();
         }
 
         public void OnSettings(InputAction.CallbackContext ctx) {
+            if (!gameFocused) return;
             if (!ctx.performed) return;
             if (controlMode == ControlMode.CharSelector) charSelector.OnSettings();
         }
 
         public void OnSpellcast(InputAction.CallbackContext ctx) {
+            if (!gameFocused) return;
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board && canControlBoard) board.TrySpellcast();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnCast(true);
         }
 
         public void OnAbiltyUse(InputAction.CallbackContext ctx) {
+            if (!gameFocused) return;
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board && canControlBoard) {
                 board.UseAbility();
@@ -298,11 +312,13 @@ namespace Battle {
         }
 
         public void OnCancel(InputAction.CallbackContext ctx) {
+            if (!gameFocused) return;
             if (!ctx.performed) return;
             else if (controlMode == ControlMode.CharSelector) charSelector.OnBack();
         }
 
         public void OnPause(InputAction.CallbackContext ctx) {
+            if (!gameFocused) return;
             if (!ctx.performed) return;
             if (controlMode == ControlMode.Board) board.Pause();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnBack();

@@ -492,7 +492,7 @@ namespace VersusMode {
                 }
             }
 
-            if (!menu.Mobile) {
+            if (!menu.Mobile && cpuLevelObject) {
                 if (isCpuCursor) {
                     Debug.Log("toggling cpu level obj");
                     cpuLevelObject.SetActive(lockedIn);
