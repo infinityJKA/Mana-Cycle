@@ -65,5 +65,4 @@ public class ArcadeStats
         MoneyMult, // multiplier for money gained in AE. starts at 1x
     }
 
-
 }
