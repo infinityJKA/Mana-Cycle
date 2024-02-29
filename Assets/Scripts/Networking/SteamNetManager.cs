@@ -1,16 +1,17 @@
 using UnityEngine;
 using Mirror;
 using VersusMode;
+using Networking;
+using Steamworks;
 
-public class NetManager : NetworkManager {
-    public override async void OnStartHost()
+public class SteamNetManager : NetworkManager {
+    public override void OnStartHost()
     {
         base.OnStartHost();
         Debug.Log("Hosting at address "+singleton.networkAddress);
 
-        await RelayManager.CreateRelay();
-
         OnlineMenu.singleton.ShowCharSelect();
+        CharSelectMenu.Instance.p2Selector.ShowJoinCode();
     }
 
     public override void OnClientConnect()
@@ -23,6 +24,7 @@ public class NetManager : NetworkManager {
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         base.OnServerAddPlayer(conn);
+
         if (!conn.identity.isOwned) NetworkServer.localConnection.identity.GetComponent<NetPlayer>().CmdSetLockedIn();
     }
 
