@@ -343,7 +343,7 @@ namespace Battle.Board {
                 boardStats = (playerSide == 0) ? ArcadeStats.playerStats : Storage.level.enemyStats;
                 Debug.Log(string.Join("\n",boardStats));
                 Debug.Log(string.Join("\n",ArcadeStats.playerStats));
-                Debug.Log("This is loading the player stats, not default.");
+                Debug.Log("This is loading the player stats, not default. " + playerSide);
 
 
             }
