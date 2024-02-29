@@ -11,19 +11,21 @@ public class CraftingSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHand
     public Image icon;
     public TextMeshProUGUI craftableText;
     public CraftingRecipe recipe;
-    public UIInventoryManager uii;
+    public CraftingManager cm;
     public GameObject cursor;
     public FishingInventory inv;
+    public RequiredCraftingItemsDisplay rq;
 
-    public void Start(){
-        uii = transform.parent.GetComponent<UIInventoryManager>();
+    public void OnEnable(){
         inv = GameObject.Find("Inventory").GetComponent<FishingInventory>();
+        cm = GameObject.Find("Crafting Manager").GetComponent<CraftingManager>();
+        rq = GameObject.Find("Required Items").GetComponent<RequiredCraftingItemsDisplay>();
     }
 
     public void OnPointerEnter(PointerEventData pointerEventData)
     {
-        uii.bigImage.sprite = icon.sprite;
-        uii.bigName.text = recipe.itemToCraft.itemName;
+        cm.bigImage.sprite = icon.sprite;
+        cm.bigName.text = recipe.itemToCraft.itemName;
         
         int val = recipe.itemToCraft.sellValue;
         int atk = 0;
@@ -62,7 +64,7 @@ public class CraftingSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHand
             itemType = "Lure";
         }
 
-        uii.Description.text =
+        cm.Description.text =
         "Value: "+ val.ToString()+
         "\nSTR: "+ atk.ToString()+ damageType+
         "\nDEF: "+ def.ToString()+
@@ -71,7 +73,10 @@ public class CraftingSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHand
         +"\n\n"+desc;
         
         cursor.SetActive(true);
-        //Debug.Log(this.gameObject.name + " was selected");
+        // Debug.Log(this.gameObject.name + " was selected");
+
+        cm.clicked = recipe;
+        rq.UpdateDisplay();
     }
 
     public void OnPointerExit(PointerEventData pointerEventData){
@@ -79,13 +84,15 @@ public class CraftingSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHand
     }
 
     public void DrawSlot(){
-        if(recipe == null){Debug.Log("Null item, wtf????");return;}
+        inv = GameObject.Find("Inventory").GetComponent<FishingInventory>();
+        
+        if(recipe == null){Debug.Log("Null recipe, wtf????");return;}
         
         if(inv.CheckIfCraftable(recipe)){
-            craftableText.text = "V";
+            craftableText.text = "YES";
         }
         else{
-            craftableText.text = "X";
+            craftableText.text = "NO";
         }
         
         icon.sprite = recipe.itemToCraft.icon;
@@ -93,22 +100,22 @@ public class CraftingSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHand
     }
 
     public void InventoryClick(){
-        if(recipe.itemToCraft is FishingArmor){
-            if(inv.armor1 == inv.defaultArmor){
-                inv.armor1 = recipe.itemToCraft as FishingArmor;
-                inv.Remove(recipe.itemToCraft);
-            }
-            else{
-                inv.Add(inv.armor1);
-                inv.armor1 = recipe.itemToCraft as FishingArmor;
-                inv.Remove(recipe.itemToCraft);
-            }
-            uii.CreateInventoryDisplay();
-        }
-        else if(recipe.itemToCraft is FishingWeapon){
-            uii.clicked = recipe.itemToCraft as FishingWeapon;
-            uii.WeaponPopup.gameObject.SetActive(true);
-        }
+        // if(recipe.itemToCraft is FishingArmor){
+        //     if(inv.armor1 == inv.defaultArmor){
+        //         inv.armor1 = recipe.itemToCraft as FishingArmor;
+        //         inv.Remove(recipe.itemToCraft);
+        //     }
+        //     else{
+        //         inv.Add(inv.armor1);
+        //         inv.armor1 = recipe.itemToCraft as FishingArmor;
+        //         inv.Remove(recipe.itemToCraft);
+        //     }
+        //     cm.CreateCraftingDisplay();
+        // }
+        // else if(recipe.itemToCraft is FishingWeapon){
+        //     cm.clicked = recipe.itemToCraft as FishingWeapon;
+        //     cm.WeaponPopup.gameObject.SetActive(true);
+        // }
     }
 
 }

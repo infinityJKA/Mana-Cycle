@@ -11,10 +11,11 @@ public class FishingInventoryBaitAndGoldCounter : MonoBehaviour
     void Start()
     {
         inv = GameObject.Find("Inventory").GetComponent<FishingInventory>();
-        updateText();
+        UpdateText();
     }
 
-    public void updateText(){
+    public void UpdateText(){
+        inv = GameObject.Find("Inventory").GetComponent<FishingInventory>();
         bait.text = inv.bait.ToString();
         gold.text = inv.gold.ToString();
     }

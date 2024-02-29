@@ -50,7 +50,7 @@ public class UIInventoryManager : MonoBehaviour
         FIES.UpdateDisplay();
 
         // Update the bait/gold counter
-        FIBAGC.updateText();
+        FIBAGC.UpdateText();
 
     }
 

@@ -14,7 +14,7 @@ public class CraftingManager : MonoBehaviour
     public TextMeshProUGUI bigName;
     public TextMeshProUGUI Description;
     public string mode = "ALL";
-    public FishingWeapon clicked;
+    public CraftingRecipe clicked;
     public FishingInventoryBaitAndGoldCounter FIBAGC;
 
     public void setMode(string s){
@@ -22,6 +22,7 @@ public class CraftingManager : MonoBehaviour
     }
 
     void OnEnable(){
+        inventory = GameObject.Find("Inventory").GetComponent<FishingInventory>();
         CreateCraftingDisplay();
     }
 
@@ -47,7 +48,7 @@ public class CraftingManager : MonoBehaviour
         //FIES.UpdateDisplay();  ADD CRAFTING ITEM VERSION OF THIS HERE =====================================================
 
         // Update the bait/gold counter
-        FIBAGC.updateText();
+        FIBAGC.UpdateText();
 
     }
 
