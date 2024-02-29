@@ -16,7 +16,7 @@ public class NetPlayer : NetworkBehaviour {
     /// If this client has requested a rematch in the postgame menu.
     /// </summary>
     public bool rematchRequested = false;
-    
+
 
     private NetPlayer enemyPlayer {get{return board.enemyBoard.netPlayer;}}
 
@@ -48,6 +48,7 @@ public class NetPlayer : NetworkBehaviour {
         if (charSelector) charSelector.Disconnect();
     }
 
+
     [Command]
     public void CmdSetSelectedBattlerIndex(int index) {
         RpcSetSelectedBattlerIndex(index);
@@ -64,9 +65,6 @@ public class NetPlayer : NetworkBehaviour {
     }
 
     [Command]
-    /// <summary>
-    /// Sends data to the client about the state of this charselector.
-    /// </summary>
     public void CmdSetLockedIn() {
         RpcSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
     }

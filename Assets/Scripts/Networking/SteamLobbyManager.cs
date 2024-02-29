@@ -22,7 +22,6 @@ namespace Networking {
                 Debug.LogWarning("Trying to use steam, but it is disabled");
             }
 
-            #if !DISABLESTEAMWORKS
             if (steamInitialized) {
                 Debug.LogWarning("SteamManager already initialized");
                 return;
@@ -38,7 +37,6 @@ namespace Networking {
             lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
 
             steamInitialized = true;
-            #endif
         }
 
         public static void CreateLobby() {
@@ -51,12 +49,7 @@ namespace Networking {
         }
 
         #if !DISABLESTEAMWORKS
-        public string lobbyCode;
-
         private static void OnLobbyCreated(LobbyCreated_t callback) {
-            var id = callback.m_ulSteamIDLobby;
-            
-
             if (callback.m_eResult != EResult.k_EResultOK) {
                 Debug.LogError("Error creating steam lobby "+callback.m_eResult);
                 OnlineMenu.singleton.ShowOnlineMenu();
