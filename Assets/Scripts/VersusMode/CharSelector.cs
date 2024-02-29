@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+
+using Sound;
 using Mirror;
 
 namespace VersusMode {
@@ -66,8 +68,6 @@ namespace VersusMode {
 
         /// character grid gameobject used to hide unavailable battlers
         [SerializeField] private GameObject battlerGrid;
-
-        [SerializeField] private TMP_Text usernameLabel;
 
         ///<summary>If the ability info screen is currently being displayed</summary>
         private bool abilityInfoDisplayed = false;
