@@ -78,4 +78,15 @@ public class FishingInventory : MonoBehaviour
         return craftable;
     }
 
+    public int CheckCount(FishingItem f){
+        int c = 0;
+        foreach(ItemInInventory i in inventory){
+            if(i.itemData == f){
+                c = i.stackSize;
+            }
+        }
+
+        return c;
+    }
+
 }
