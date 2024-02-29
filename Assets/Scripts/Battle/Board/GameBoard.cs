@@ -526,11 +526,12 @@ namespace Battle.Board {
             // TRASH DAMAGE TIMER
             // if above 0, tick down
             // If not in a level or level is against an AI, take trash damage
-            if (!defeated && !postGame && (!Storage.level || Storage.level.aiBattle) && trashDamageTimer > 0) {
+            // do not evaluate trash timer if this is an online opponent
+            bool isOnlineOpponent = Storage.online && !netPlayer.isOwned;
+            if (!isOnlineOpponent && !defeated && !postGame && (!Storage.level || Storage.level.aiBattle) && trashDamageTimer > 0) {
                 trashDamageTimer -= Time.deltaTime;
 
                 // if reached 0, check for tiles.
-                
                 if (trashDamageTimer <= 0) {
                     int trashDamage = 0;
                     for (int r=0; r<height; r++) {
@@ -542,11 +543,17 @@ namespace Battle.Board {
                     }
 
                     // if there are tiles, damage and reset the timer.
-                    // if no tiles, set timer to 0 (not running)
-                    if (trashDamage > 0) {
+                    if (trashDamage > 0) 
+                    {
                         TakeDamage(trashDamage, 0.333f, canDamageShield: true);
                         trashDamageTimer = trashDamageTimerDuration;
-                    } else {
+
+                        // send hp to opponent in online mode, since trash timer is nnot evaluated on their board.
+                        if (Storage.online) netPlayer.CmdUpdateHp(hp, intensity: 0.333f);
+                    } 
+                    // if no tiles, set timer to 0 (not running)
+                    else 
+                    {
                         trashDamageTimer = 0;
                     }
                 }
@@ -980,13 +987,14 @@ namespace Battle.Board {
             // The piece will only advance the damage cycle when placed if it does not have a special ability
             bool advanceDamage = piece.effect == Battler.ActiveAbilityEffect.None;
 
-            // send placement data to opponent in online mode
-            if (Storage.online && netPlayer.isOwned) {
-                netPlayer.CmdPlacePiece(piece.GetCol(), piece.GetRotation(), piece.id, dropIndex);
-            }
             PlaceTilesOnBoard();
 
             if (advanceDamage) DamageCycle();
+
+            // send placement and hp data to opponent in online mode
+            if (Storage.online && netPlayer.isOwned) {
+                netPlayer.CmdPlacePiece(piece.GetCol(), piece.GetRotation(), hp, piece.id, dropIndex);
+            }
 
             RefreshObjectives();
 
@@ -1266,16 +1274,40 @@ namespace Battle.Board {
         }
 
         bool useDamageShootParticles = false;
-
+        
         /// <summary>
-        /// Deal damage to the other player
+        /// Deal damage / gain points. Counter incoming damage on this board first in order of closest/furthest.
+        /// Residual damage is sent to the opponent, first damaging their shield and then adding to the start of their damage queue.
+        /// In online mode, counter damage here first and then send residual damage to opponent to eval on their end
         /// </summary>
         /// <param name="damage">damage to deal</param>
-        /// <param name="shootSpawnPos">spawn point of the damage shoot particle</param>
-        /// <param name="color">mana color (unused)</param>
-        /// <param name="chain">current chain (only used for attack anim which is disabled indefinitely)</param>
-        /// <returns>amount of leftover damage that was not used up (only used for online mode where only countering own damage will be evaluated</returns>
-        public int DealDamage(int damage, Vector3 shootSpawnPos, int color, int chain)
+        /// <param name="shootSpawnPos">spawn point of the damage shoot particle if using damage shoots</param>
+        /// <param name="partOfChain">determines waht type of packet is sent to the opponent in online mode</param>
+        public void DealDamage(int damage, Vector3 shootSpawnPos, bool partOfChain) {
+            if (Storage.online) {
+                // when online, only evaluate damage if the client owns this board
+                if (netPlayer.isOwned) {
+                    // evaluate local damage first and then send damage to opponent for them to evaluate on their client
+                    int residualDamage = DealDamageLocal(damage, shootSpawnPos);
+                    if (partOfChain) {
+                        netPlayer.CmdAdvanceChain(startup: false, damageSent: residualDamage);
+                    } else {
+                        netPlayer.CmdUpdateDamageQueue();
+                    }
+                }
+            // if not online, deal damage as normal
+            } else {
+                DealDamageLocal(damage, shootSpawnPos);
+            }
+        }
+
+        /// <summary>
+        /// Locally evaluate dealing damage only for this board - to be specific, either adding points to score, or countering incoming damage.
+        /// </summary>
+        /// <param name="damage">amount of damage to counter with / points to gain</param>
+        /// <param name="shootSpawnPos">spawn position of the damage shoot (ignored if not using shoots)</param>
+        /// <returns>the amount of residual damage after countering/adding shield</returns>
+        public int DealDamageLocal(int damage, Vector3 shootSpawnPos)
         {
             if (postGame) {
                 // just add score if postgame and singleplayer
@@ -1287,7 +1319,8 @@ namespace Battle.Board {
                 return 0;
             }
 
-            if (chain >= 2) attackPopup.AttackAnimation();
+            // ATTACK ANIMATIONS DISABLED (distacting & covers damange queue)
+            // if (chain >= 2) attackPopup.AttackAnimation();
 
             if (useDamageShootParticles) {
                 GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
@@ -1301,9 +1334,9 @@ namespace Battle.Board {
         }
 
         /// <summary>
-        /// Evaluate damage instantly
+        /// Evaluate incoming damage instantly.
         /// </summary>
-        /// <param name="damage"></param>
+        /// <param name="damage">amount of damage to take</param>
         /// <returns>residual damage not dealt (only applicable to online mode where damage is sent to opponent to eval on their client)</returns>
         public int EvaluateInstantOutgoingDamage(int damage) {
             // if singleplayer, add to "score" (hp bar)
@@ -1312,7 +1345,7 @@ namespace Battle.Board {
                 return 0;
             }
 
-            // first try to counter incoming damage from right to left
+            // first try to counter incoming damage from furthest to closest
             if (damage > 0) damage = hpBar.CounterIncoming(damage);
 
             // then add shield to self
@@ -1324,30 +1357,30 @@ namespace Battle.Board {
             if (Storage.online) {
                 return damage;
             } else {
-                return enemyBoard.EvaluateInstantIncomingDamage(damage);
+                enemyBoard.EvaluateInstantIncomingDamage(damage);
+                return 0;
             }
         }
 
-        public int EvaluateInstantIncomingDamage(int damage) {
-            // Attack enemy shield first
+        /// <summary>
+        /// Instantly evaulate receiving damage. Damages shield first and then queues damage if any leftover
+        /// </summary>
+        /// <param name="damage">amount of damage to take</param>
+        /// <returns>amount of residual damage - the amount that </returns>
+        public void EvaluateInstantIncomingDamage(int damage) {
+            // Attack this board's shield first
             if (damage > 0) damage = DamageShield(damage);
 
-            // then enqueue damage to enemy
+            // then enqueue damage
             if (damage > 0) {
                 EnqueueDamage(damage);
                 PlayDamageShootSFX();
-                damage = 0;
             }
 
+            // in online, relay damage queue state to the opponent
             if (Storage.online) {
-                int[] damageQueue = new int[6];
-                for (int i=0; i<6; i++) {
-                    damageQueue[i] = hpBar.DamageQueue[i].dmg;
-                }
-                netPlayer.CmdUpdateDamageQueue(shield, damageQueue);
+                netPlayer.CmdUpdateDamageQueue();
             }
-
-            return damage;
         }
 
         public void PlayDamageShootSFX() {
@@ -1436,7 +1469,8 @@ namespace Battle.Board {
             // dequeue the closest damage
             int dmg = hpBar.DamageQueue[5].dmg;
             if (dmg > 0) {
-                TakeDamage(dmg);
+                // incoming damage should not damage shield, it is already "past" it in the damage queue
+                TakeDamage(dmg, canDamageShield: false);
                 Item.Proc(equiped, Item.DeferType.OnDamageTaken);
             }
 
@@ -1444,14 +1478,16 @@ namespace Battle.Board {
             hpBar.AdvanceDamageQueue();
         }
 
-        public void TakeDamage(int damage, float intensity, bool canDamageShield = false) {
-            // shake the board and portrait when damaged
-            shake.StartShake(intensity);
-            portrait.GetComponent<Shake>().StartShake(intensity);
-            // flash portrait red
-            portrait.GetComponent<ColorFlash>().Flash(intensity);
-
-            PlaySFX(damageTakenSFX);
+        /// <summary>
+        /// Deal damage to this board and subtract HP.
+        /// Player is defeated if HP reaches 0.
+        /// </summary>
+        /// <param name="damage">amount of damage to take</param>
+        /// <param name="intensity">strength in which the board should be shaken</param>
+        /// <param name="canDamageShield">if false, will go through shield</param>
+        /// <param name="allowDeath">if false, player will not die when reaching 0, used in online to prevent desyncs</param>
+        public void TakeDamage(int damage, float intensity = 1f, bool canDamageShield = false) {
+            DamageShake(intensity);
 
             // subtract from hp
             if (canDamageShield)
@@ -1464,13 +1500,21 @@ namespace Battle.Board {
             hpBar.Refresh();
 
             // If this player is out of HP, run defeat
-            if (hp <= 0) Defeat();
+            // if online and not owner, wait for other client to verify this client is dead
+            bool allowDeath = !Storage.online || netPlayer.isOwned;
+            if (allowDeath && hp <= 0) Defeat();
 
             CheckMidLevelConversations();
         }
 
-        public void TakeDamage(int damage) {
-            TakeDamage(damage, 1f);
+        public void DamageShake(float intensity) {
+            // shake the board and portrait when damaged
+            shake.StartShake(intensity);
+            portrait.GetComponent<Shake>().StartShake(intensity);
+            // flash portrait red
+            portrait.GetComponent<ColorFlash>().Flash(intensity);
+
+            PlaySFX(damageTakenSFX);
         }
 
         public void UpdateShield() {
@@ -1709,22 +1753,22 @@ namespace Battle.Board {
             }
             if (cascade <= 1) PlaySFX(castSFX, 1f + chain * 0.1f);
 
-                        // Geo's revenge system
-                        float GeoBoost = 1f;
-                        if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.LastStand){
-                            if((float)hp <= (float)maxHp/4){
-                                GeoBoost = 1.4f;
-                                Debug.Log("Geoboost 25% ver!!!");
-                            }
-                            else if((float)hp <= (float)maxHp/2){
-                                GeoBoost = 1.15f;
-                                Debug.Log("Geoboost 50% ver!!!");
-                            }
-                        }
+            // Geo's revenge system
+            float GeoBoost = 1f;
+            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.LastStand){
+                if((float)hp <= (float)maxHp/4){
+                    GeoBoost = 1.4f;
+                    Debug.Log("Geoboost 25% ver!!!");
+                }
+                else if((float)hp <= (float)maxHp/2){
+                    GeoBoost = 1.15f;
+                    Debug.Log("Geoboost 50% ver!!!");
+                }
+            }
 
-                        // Deal damage for the amount of mana cleared.
-                        // DMG is scaled by chain and cascade.
-                        int damage = (int)( (totalPointMult * damagePerMana) * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult] *GeoBoost);
+            // Deal damage for the amount of mana cleared.
+            // DMG is scaled by chain and cascade.
+            int damage = (int)( totalPointMult * damagePerMana * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult] *GeoBoost);
 
             highestSingleDamage = Math.Max(highestSingleDamage, damage);
 
@@ -1737,15 +1781,7 @@ namespace Battle.Board {
             // and they will then send back an rpc with their damage queue state
             // do not deal damage here if online;
             // instead the damageSent part of the AdvanceChain rpc will be used to call damage after this was calle dto update the boar dand clear the mana
-            if (Storage.online) {
-                if (netPlayer.isOwned) {
-                    int residualDamage = DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
-                    netPlayer.CmdAdvanceChain(startup: false, damageSent: residualDamage);
-                }
-            // if not net controlled, deal damage as normal
-            } else {
-                DealDamage(damage, averagePos, (int)GetCycleColor(), chain);
-            }
+            DealDamage(damage, averagePos, partOfChain: true);
 
             // Do gravity everywhere
             AllTileGravity();
@@ -2306,6 +2342,12 @@ namespace Battle.Board {
         public void Heal(int amount)
         {
             hp = Math.Min(hp, maxHp + amount);
+        }
+
+        public void SetHp(int amount, bool allowDeath = true) {
+            hp = amount;
+            hpBar.Refresh();
+            if (allowDeath && hp <= 0) Defeat();
         }
 
         /// <summary>
