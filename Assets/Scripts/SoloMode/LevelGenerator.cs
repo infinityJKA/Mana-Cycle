@@ -49,7 +49,11 @@ namespace SoloMode
                 // set opponent to random battler
                 newLevel.aiBattle = true;
                 newLevel.opponent = usableBattlerList[(int) Random.Range(0, usableBattlerList.Count-1)];
+                float statDifficulty = 0f;
+                if (difficulty < 2f) statDifficulty = difficulty * (Random.Range(0, 5) / 10f);
                 newLevel.aiDifficulty = difficulty;
+                newLevel.enemyStats[ArcadeStats.Stat.DamageMult] += statDifficulty;
+                // newLevel.enemyStats[ArcadeStats.Stat.DamageMult] = 999f;
                 newLevel.levelName = "Vs. " + newLevel.opponent.displayName;
                 newLevel.description = "Fight a Level " + ((int) (newLevel.aiDifficulty*10f)) + " " + newLevel.opponent.displayName + "!";
                 // 1 in 4 chance for item reward

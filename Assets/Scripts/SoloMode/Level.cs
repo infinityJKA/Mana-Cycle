@@ -75,6 +75,9 @@ namespace SoloMode {
         [NonSerialized] public int rewardAmount = 0;
         [NonSerialized] public Item itemReward = null;
 
+        // enemy stats for ae
+        public Dictionary<ArcadeStats.Stat, float> enemyStats = new Dictionary<ArcadeStats.Stat, float>(ArcadeStats.defaultStats);
+
         // dictates AIController values. 1 is hardest, 0 is worst
         [Range(0,1)]
         public float aiDifficulty = 1;

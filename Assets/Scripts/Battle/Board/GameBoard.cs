@@ -330,7 +330,7 @@ namespace Battle.Board {
             }
 
             // load stats dict
-            if (Storage.level == null || !Storage.level.generateNextLevel || playerSide == 1)
+            if (Storage.level == null || !Storage.level.generateNextLevel)
             {
                 // if not in arcade endless, use default stats
                 boardStats = ArcadeStats.defaultStats;
@@ -339,10 +339,13 @@ namespace Battle.Board {
             else 
             {
                 // otherwise, use player stats
-                boardStats = ArcadeStats.playerStats;
+                
+                boardStats = (playerSide == 0) ? ArcadeStats.playerStats : Storage.level.enemyStats;
                 Debug.Log(string.Join("\n",boardStats));
                 Debug.Log(string.Join("\n",ArcadeStats.playerStats));
-                Debug.Log("This is loading the player stats. Not Default.");
+                Debug.Log("This is loading the player stats, not default. " + playerSide);
+
+
             }
 
             // if (playerSide == 1) boardStats = ArcadeStats.defaultStats;
