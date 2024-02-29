@@ -101,22 +101,38 @@ namespace Battle.Board {
             center.SetColor(ManaColor.Colorless, board, false, false);
             center.image.gameObject.SetActive(false);
             ironSwordImage.gameObject.SetActive(true);
+            accumulatedDamage = 0;
             center.onFallAnimComplete = () => IronSwordDestroyTileBelow(board);
         }
 
         // Destroy the tile below this tile and deal damage
         // Return true if the tile should try to fall again
+        int accumulatedDamage;
         private void IronSwordDestroyTileBelow(GameBoard board)
         {
             row++;
+            // Removes this tile when it reaches the bottom of the board.
             if (row >= GameBoard.height) {
                 board.ClearTile(col, row-1, doParticleEffects: false);
-                return;
+
+                // in online only, wait until after hitting the ground, and then send damage to other client
+                // in case there was a desync due to the very many damage instances in a short burst
+                if (Storage.online && board.netPlayer.isOwned) {
+                    board.DealDamage(accumulatedDamage, center.transform.position, partOfChain: false);
+                }
             }
+            // only locally evaluate damage if either not online or player owns this client and not the opponent
+            int damage = (int)(board.damagePerMana*2.5);
+            if (!Storage.online || board.netPlayer.isOwned) {
+                board.DealDamageLocal(damage, center.transform.position);
+            } else {
+                accumulatedDamage += damage;
+            }
+
             // When iron sword falls, clear tile below, or destroy when at bottom
-            board.DealDamage((int)(board.damagePerMana*2.5), center.transform.position, 0, 0);
             board.ClearTile(col, row);
             board.TileGravity(col, row-1, force: true); // makes this piece's tile fall
+
             // may cause ta tile to not be in a valid clearing blob - check to unglow them
             board.UnglowNotInBlobs();
         }
@@ -152,7 +168,7 @@ namespace Battle.Board {
             // Because this may cause a tile to fall outside of a blob, unglow un blob tiles
             board.UnglowNotInBlobs();
 
-            board.DealDamage((int)(board.damagePerMana*totalPointMult*2f), explosionCenter, 0, 0);
+            board.DealDamage((int)(board.damagePerMana*totalPointMult*2f), explosionCenter, partOfChain: false);
         }
 
         

@@ -241,13 +241,23 @@ public class NetPlayer : NetworkBehaviour {
         board.quickFall = quickfalling;
     }
 
+    /// <summary>
+    /// Sends lots of info to the other client, including the piece position and orientation,
+    /// hp after the damage cycle calculation in case of desync,
+    /// and pieceId and dropIndex to detect desyncs.
+    /// </summary>
+    /// <param name="targetColumn"></param>
+    /// <param name="rotation"></param>
+    /// <param name="pieceId"></param>
+    /// <param name="dropIndex"></param>
+    /// <param name="hp"></param>
     [Command]
-    public void CmdPlacePiece(int targetColumn, Piece.Orientation rotation, int pieceId, int dropIndex) {
-        RpcPlacePiece(targetColumn, rotation, pieceId, dropIndex);
+    public void CmdPlacePiece(int targetColumn, Piece.Orientation rotation, int hp, int pieceId, int dropIndex) {
+        RpcPlacePiece(targetColumn, rotation, hp, pieceId, dropIndex);
     }
 
     [ClientRpc(includeOwner = false)]
-    private void RpcPlacePiece(int targetColumn, Piece.Orientation rotation, int pieceId, int dropIndex) {
+    private void RpcPlacePiece(int targetColumn, Piece.Orientation rotation, int hp, int pieceId, int dropIndex) {
         // possible improvement: If piece id is desynced, ask the other client to send their current board state and piece index
         // may be needed for UDP which may be switched to
 
@@ -268,6 +278,8 @@ public class NetPlayer : NetworkBehaviour {
 
         // drop index assertion will happen within this method, to make sure drop order is not jumbled
         board.PlacePiece();
+
+        board.SetHp(hp);
     }
 
 
@@ -280,6 +292,8 @@ public class NetPlayer : NetworkBehaviour {
     [Command]
     public void CmdAdvanceChain(bool startup, int damageSent) {
         RpcAdvanceChain(startup, damageSent);
+        // NOTE: this might not be needed but want to ensure proper sync, remove if bandwidth concerns
+        CmdUpdateDamageQueue(); 
     }
 
     [ClientRpc(includeOwner = false)]
@@ -308,22 +322,51 @@ public class NetPlayer : NetworkBehaviour {
         board.abilityManager.UseAbility();
     }
 
+    /// <summary>
+    /// Call from a client when damage is queued/countered from the other player.
+    /// </summary>
     [Command]
-    public void CmdUpdateDamageQueue(int shield, int[] damageQueue) {
-        RpcUpdateDamageQueue(shield, damageQueue);
+    public void CmdUpdateDamageQueue() {
+        int[] damageQueue = new int[6];
+        for (int i=0; i<6; i++) {
+            damageQueue[i] = board.hpBar.DamageQueue[i].dmg;
+        }
+        RpcUpdateDamageQueue(board.shield, damageQueue);
     }
 
     /// <summary>
     /// Shows to the other client the current state of this player's damage queue.
+    /// Mirror HP, shield and damagequeue in case they have been desynced.
     /// </summary>
-    /// <param name="damageQueueIndex"></param>
-    /// <param name="justQueued">If damage was just added to the queue. SFX will be played</param> 
     [ClientRpc(includeOwner = false)]
     private void RpcUpdateDamageQueue(int shield, int[] damageQueue) {
+        board.SetShield(shield);
         for (int i=0; i<6; i++) {
             board.hpBar.DamageQueue[i].SetDamage(damageQueue[i]);
         }
         board.PlayDamageShootSFX();
+    }
+
+    /// <summary>
+    /// Call this from a client after it is damaged to mirror hp accurately.
+    /// THis is really only used by the trash damage timer as placePiece also sends hp.
+    /// </summary>
+    /// <param name="hp">amount of hp to set to</param>
+    /// <param name="intensity">if above 0, a damage animation will play with the given intensity.</param>
+    public void CmdUpdateHp(int hp, float intensity) {
+        RpcUpdateHp(hp, intensity);
+    }
+
+    /// <summary>
+    /// Update current HP on this client.
+    /// Allowed to kill the player because the other client has verified themself they have this HP
+    /// </summary>
+    /// <param name="hp">amount of hp to set to</param>
+    /// /// <param name="intensity">if above 0, a damage animation will play with the given intensity.</param>
+    [ClientRpc(includeOwner = false)]
+    private void RpcUpdateHp(int hp, float intensity) {
+        board.SetHp(hp, allowDeath: true);
+        if (intensity > 0) board.DamageShake(intensity);
     }
 
     // Initiate a game rematch.

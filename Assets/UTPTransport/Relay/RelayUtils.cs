@@ -44,7 +44,7 @@ namespace Utp
 			// Prepare the Relay server data and compute the nonce value
 			// The host passes its connectionData twice into this function
 			var relayServerData = new RelayServerData(ref serverEndpoint, 0, ref allocationIdBytes, ref connectionData,
-				ref connectionData, ref key, connectionTypeString == "dtls");
+				ref connectionData, ref key, connectionTypeString == "tcp");
 
 			return relayServerData;
 		}
@@ -85,7 +85,7 @@ namespace Utp
 			// Prepare the Relay server data and compute the nonce values
 			// A player joining the host passes its own connectionData as well as the host's
 			var relayServerData = new RelayServerData(ref serverEndpoint, 0, ref allocationIdBytes, ref connectionData,
-				ref hostConnectionData, ref key, connectionTypeString == "dtls");
+				ref hostConnectionData, ref key, connectionTypeString == "tcp");
 
 			return relayServerData;
 		}
