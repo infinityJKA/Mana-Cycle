@@ -329,28 +329,7 @@ namespace Battle.Board {
                 midLevelConvos = new List<MidLevelConversation>();
             }
 
-            // load stats dict
-            if (Storage.level == null || !Storage.level.generateNextLevel)
-            {
-                // if not in arcade endless, use default stats
-                boardStats = ArcadeStats.defaultStats;
-                // Debug.Log(string.Join("\n",boardStats));
-            }
-            else 
-            {
-                // otherwise, use player stats
-                
-                boardStats = (playerSide == 0) ? ArcadeStats.playerStats : Storage.level.enemyStats;
-                Debug.Log(string.Join("\n",boardStats));
-                Debug.Log(string.Join("\n",ArcadeStats.playerStats));
-                Debug.Log("This is loading the player stats, not default. " + playerSide);
-
-
-            }
-
             // if (playerSide == 1) boardStats = ArcadeStats.defaultStats;
-
-            boostPerCycleClear = (int) (boardStats[CycleMultIncrease] * 10);
             // Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
 
             if (playerSide == 0) {
@@ -374,6 +353,27 @@ namespace Battle.Board {
                 if (enemyBoard != null) enemyBoard.gameObject.SetActive(true);
                 if (objectiveList != null) objectiveList.gameObject.SetActive(false);
             }
+
+            // load stats dict
+            if (Storage.level == null || !Storage.level.generateNextLevel)
+            {
+                // if not in arcade endless, use default stats
+                boardStats = ArcadeStats.defaultStats;
+                // Debug.Log(string.Join("\n",boardStats));
+            }
+            else 
+            {
+                // otherwise, use player stats
+                boardStats = (playerSide == 0) ? ArcadeStats.playerStats : Storage.level.enemyStats;
+                if (Storage.level.lastSeriesLevel != null) maxHp = (playerSide == 0) ? ArcadeStats.maxHp : Storage.level.enemyHp;
+                hp = maxHp;
+                Debug.Log(string.Join("\n",boardStats));
+                Debug.Log(string.Join("\n",ArcadeStats.playerStats));
+                Debug.Log("This is loading the player stats, not default. " + playerSide);
+
+            }
+
+            boostPerCycleClear = (int) (boardStats[CycleMultIncrease] * 10);
 
             shake = GetComponent<Shake>();
 
@@ -516,6 +516,11 @@ namespace Battle.Board {
 
             // TODO: this was recently commented out, make sure this doesn't break the game. removed for performance
             // PointerReposition();
+
+            if (Application.isEditor && Input.GetKey(KeyCode.Alpha1) && playerSide == 0)
+            {
+                enemyBoard.TakeDamage(100);
+            }
 
             if (recoveryMode) {
                 recoveryTimer -= Time.deltaTime;

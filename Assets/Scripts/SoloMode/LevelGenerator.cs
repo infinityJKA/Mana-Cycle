@@ -34,7 +34,7 @@ namespace SoloMode
             newLevel.lastSeriesLevel = lastLevel;
             newLevel.levelDifficulty = difficulty;
             // lowest difficutly = 8 minute timer, every .1 increase of difficulty will subtract 30 seconds. 
-            newLevel.time = (8 * 60) - ((int) (difficulty*10))*30;
+            newLevel.time = (8 * 60) - ((int) Mathf.Floor(difficulty*5))*30;
             // also randomly add from 0-2 minutes in 30sec increments
             newLevel.time += Random.Range(0,4) * 30;
 
@@ -49,16 +49,20 @@ namespace SoloMode
                 // set opponent to random battler
                 newLevel.aiBattle = true;
                 newLevel.opponent = usableBattlerList[(int) Random.Range(0, usableBattlerList.Count-1)];
+
                 float statDifficulty = 0f;
                 if (difficulty < 2f) statDifficulty = difficulty * (Random.Range(0, 5) / 10f);
                 newLevel.aiDifficulty = difficulty;
                 newLevel.enemyStats[ArcadeStats.Stat.DamageMult] += statDifficulty;
+
+                newLevel.enemyHp = (int) Mathf.Min(250 * Mathf.Ceil(difficulty * 5), 10000);
                 // newLevel.enemyStats[ArcadeStats.Stat.DamageMult] = 999f;
                 newLevel.levelName = "Vs. " + newLevel.opponent.displayName;
                 newLevel.description = "Fight a Level " + ((int) (newLevel.aiDifficulty*10f)) + " " + newLevel.opponent.displayName + "!";
                 // 1 in 4 chance for item reward
                 if (Random.Range(0,3) == 0 && ArcadeStats.itemRewardPool != null) newLevel.itemReward = ArcadeStats.itemRewardPool[Random.Range(0, ArcadeStats.itemRewardPool.Count-1)];
                 newLevel.CalculateRewardAmount();
+                Debug.Log("Card difficulty: " + difficulty);
             }
             // generate a solo level with objectives
             else if (SoloLevelsEnabled)
