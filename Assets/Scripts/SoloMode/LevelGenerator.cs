@@ -51,9 +51,39 @@ namespace SoloMode
                 newLevel.opponent = usableBattlerList[(int) Random.Range(0, usableBattlerList.Count-1)];
 
                 float statDifficulty = 0f;
-                if (difficulty < 2f) statDifficulty = difficulty * (Random.Range(0, 5) / 10f);
+                // set ai difficulty and stats
+                if (difficulty >= 0.2f) statDifficulty = difficulty;
                 newLevel.aiDifficulty = difficulty;
-                newLevel.enemyStats[ArcadeStats.Stat.DamageMult] += statDifficulty;
+
+                // list of all stats effected by statDifficulty
+                List<ArcadeStats.Stat> statsToChange = new List<ArcadeStats.Stat>
+                {
+                    ArcadeStats.Stat.DamageMult,
+                    ArcadeStats.Stat.SpecialGainMult,
+                    ArcadeStats.Stat.QuickDropSpeed
+                };
+                Utils.Shuffle(statsToChange);
+
+                Debug.Log(statsToChange.Count - 2);
+
+                // spread statDifficulty across all stats to allocate
+                for (int i = 0; i <= statsToChange.Count - 2; i++)
+                {
+                    ArcadeStats.Stat stat = statsToChange[i];
+
+                    float toAllocate = statDifficulty * (Random.Range(0, 10) / 10f);
+                    Debug.Log("To allocate: " + toAllocate);
+
+                    statDifficulty -= toAllocate;
+                    if (statDifficulty <= 0) break;
+                    Debug.Log("statDifficulty:" + statDifficulty);
+                    float deltaStat;
+                    deltaStat = AllocateToStat(stat, toAllocate);
+
+                    newLevel.enemyStats[stat] += deltaStat;
+                }
+
+                newLevel.enemyStats[statsToChange[statsToChange.Count - 1]] += AllocateToStat(statsToChange[statsToChange.Count - 1], statDifficulty);
 
                 newLevel.enemyHp = (int) Mathf.Min(250 * Mathf.Ceil(difficulty * 5), 10000);
                 // newLevel.enemyStats[ArcadeStats.Stat.DamageMult] = 999f;
@@ -73,6 +103,29 @@ namespace SoloMode
 
             return newLevel;
         }
+
+        private float AllocateToStat(ArcadeStats.Stat stat, float toAllocate)
+        {
+            float deltaStat = 0f;
+
+            // using a switch case because different stats should scale differently.
+            // TODO use serialized curves for each stat instead of a switch case?
+            switch(stat)
+            {
+                case ArcadeStats.Stat.DamageMult:
+                    deltaStat = (float) Math.Floor(20 * toAllocate) / 10f;
+                    break;
+                case ArcadeStats.Stat.SpecialGainMult:
+                    deltaStat = (float) Math.Floor(20 * toAllocate) / 10f;
+                    break;
+                case ArcadeStats.Stat.QuickDropSpeed:
+                    deltaStat = (float) Math.Min(Math.Floor(10 * toAllocate) / 40f * -1f, 0.125/2f);
+                    break;
+            }
+
+            return deltaStat;
+        }
+
         
     }
 }
