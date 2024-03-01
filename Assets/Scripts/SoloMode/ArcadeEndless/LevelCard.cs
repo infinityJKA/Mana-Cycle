@@ -20,6 +20,7 @@ namespace SoloMode
         [SerializeField] GameObject itemRewardObject;
         [SerializeField] TextMeshProUGUI itemRewardText;
         [SerializeField] TextMeshProUGUI enemyStatText;
+        [SerializeField] TextMeshProUGUI enemyHpText;
 
         [SerializeField] GameObject selectSFX, submitSFX;
 
@@ -42,6 +43,8 @@ namespace SoloMode
                 level.enemyStats[ArcadeStats.Stat.DamageMult],
                 level.enemyStats[ArcadeStats.Stat.QuickDropSpeed],
                 level.enemyStats[ArcadeStats.Stat.SpecialGainMult]);
+
+            enemyHpText.text = level.enemyHp + " HP";
 
             if (level.itemReward != null) itemRewardText.text = "+" + level.itemReward.UseTypeToString() + " Item";
             else itemRewardObject.SetActive(false);
