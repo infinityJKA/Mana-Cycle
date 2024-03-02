@@ -181,7 +181,7 @@ namespace SoloMode {
         {
             // to be balanced
             // decrease amount if level has item reward set in generator
-            rewardAmount = (int) ((aiDifficulty / time * 150000) * (itemReward == null ? 1 : 0.5));
+            rewardAmount = (int) (5 * Mathf.Floor((float) ((aiDifficulty * 250) * (itemReward == null ? 1 : 0.6) + 50) / 5));
         }
     }
 
