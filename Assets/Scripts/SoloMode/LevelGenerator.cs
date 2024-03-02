@@ -52,7 +52,7 @@ namespace SoloMode
 
                 float statDifficulty = 0f;
                 // set ai difficulty and stats
-                if (difficulty >= 0.2f) statDifficulty = difficulty;
+                if (difficulty >= 0.2f) statDifficulty = difficulty * (Random.Range(4, 8) / 10f);
                 newLevel.aiDifficulty = difficulty;
 
                 // list of all stats effected by statDifficulty
@@ -113,10 +113,10 @@ namespace SoloMode
             switch(stat)
             {
                 case ArcadeStats.Stat.DamageMult:
-                    deltaStat = (float) Math.Floor(20 * toAllocate) / 10f;
+                    deltaStat = (float) Math.Floor(20 * toAllocate) / 40f;
                     break;
                 case ArcadeStats.Stat.SpecialGainMult:
-                    deltaStat = (float) Math.Floor(20 * toAllocate) / 10f;
+                    deltaStat = (float) Math.Floor(20 * toAllocate) / 20f;
                     break;
                 case ArcadeStats.Stat.QuickDropSpeed:
                     deltaStat = (float) Math.Min(Math.Floor(10 * toAllocate) / 40f * -1f, 0.125/2f);
