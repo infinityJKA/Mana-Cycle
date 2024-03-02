@@ -10,6 +10,10 @@ namespace Battle.AI {
     public class AIController : MonoBehaviour {
         [SerializeField] public Board.GameBoard board;
 
+        // AI's difficulty as decided by gameboard.cs
+        // Translates to AI level / 10
+        public float difficulty;
+
         // AI difficulty params
         // Move delay - approximate delay between piece movements, lower is faster
         [Tooltip("Delay between movements, lower value is faster.")]
@@ -85,7 +89,13 @@ namespace Battle.AI {
             if (!placementJobRunning && (nextMoveTime - Time.time <= 0) && !board.IsDefeated()){
                 // set timer for next move. //// get highest col height so ai speeds up when closer to topout
                 // nextMoveTimer = Time.time + Math.Max(UnityEngine.Random.Range(0.5f,0.8f) - (double) board.getColHeight(FindNthLowestCols(GameBoard.width-1)[0])/15, 0.05f);
-                nextMoveTime = Time.time + Random.Range(moveDelay*0.5f, moveDelay*1.5f);
+                // if this is an insta dropper (Trainbot), give the player some extra mercy and slow the moves a little bit
+                // (unless this is level 10, in case no mercy)
+                if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop && difficulty < 1f) {
+                    nextMoveTime = Time.time + Random.Range(moveDelay*0.8f, moveDelay*2.5f);
+                } else {
+                    nextMoveTime = Time.time + Random.Range(moveDelay*0.5f, moveDelay*1.5f);
+                }
 
                 if (readyToInstaDrop) {
                     readyToInstaDrop = false;
@@ -130,7 +140,7 @@ namespace Battle.AI {
                     if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
 
                         // Only insta-drop once the piece is in the correct spot, even if concurrent actions
-                        var inPosition = (reachedTargetRot && reachedTargetCol);
+                        var inPosition = reachedTargetRot && reachedTargetCol;
 
                         // stop if any column is very high
                         if (rowsFromTop < 2) {
@@ -149,7 +159,7 @@ namespace Battle.AI {
                         if (inPosition) {
                             readyToInstaDrop = true;
                             // give the player some extra mercy, instadrop kinda op
-                            nextMoveTime = Time.time + UnityEngine.Random.Range(moveDelay*0.75f, moveDelay*2f);
+                            nextMoveTime = Time.time + Random.Range(moveDelay*0.75f, moveDelay*2f);
                            
                         }
                     } else {

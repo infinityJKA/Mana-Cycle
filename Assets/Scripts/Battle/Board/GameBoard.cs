@@ -489,6 +489,7 @@ namespace Battle.Board {
         }
 
         void SetAIDifficulty(float difficulty) {
+            aiController.difficulty = difficulty;
             // ai shoudn't bee too dumb or it will just top out and be boring, accuracy shuld actually stay high, speed is what matters
             aiController.accuracy = Mathf.Lerp(0.5f, 1f, difficulty);
 

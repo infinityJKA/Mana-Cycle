@@ -168,7 +168,7 @@ namespace Battle.Board {
             // Because this may cause a tile to fall outside of a blob, unglow un blob tiles
             board.UnglowNotInBlobs();
 
-            board.DealDamage((int)(board.damagePerMana*totalPointMult*2f), explosionCenter, partOfChain: false);
+            board.DealDamage((int)(board.damagePerMana*totalPointMult*3f), explosionCenter, partOfChain: false);
         }
 
         
