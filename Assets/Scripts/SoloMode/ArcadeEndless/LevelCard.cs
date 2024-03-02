@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using Random=UnityEngine.Random;
 using TMPro;
 
 using Sound;
@@ -24,12 +25,21 @@ namespace SoloMode
 
         [SerializeField] GameObject selectSFX, submitSFX;
 
+        [SerializeField] Color[] possibleAccentColors;
+        [SerializeField] Image[] accentColoredObjects;
+
         TransitionScript transitionHandler;
 
         void Start()
         {
             SetCardInfo();
             transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
+
+            Color c = possibleAccentColors[Random.Range(0, possibleAccentColors.Length - 1)];
+            foreach(Image i in accentColoredObjects)
+            {
+                i.color = new Color(c.r, c.g, c.b, i.color.a);
+            }
         }
 
         public void SetCardInfo()
@@ -46,7 +56,7 @@ namespace SoloMode
 
             enemyHpText.text = level.enemyHp + " HP";
 
-            if (level.itemReward != null) itemRewardText.text = "+" + level.itemReward.UseTypeToString() + " Item";
+            if (level.itemReward != null) itemRewardText.text = "+" + level.itemReward.UseTypeToString();
             else itemRewardObject.SetActive(false);
 
         }
