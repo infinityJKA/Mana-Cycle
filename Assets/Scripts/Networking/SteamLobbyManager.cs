@@ -17,6 +17,7 @@ namespace Networking {
         public static bool steamInitialized {get; private set;} = false;
         #endif
 
+        #if !DISABLESTEAMWORKS
         public static void InitializeSteam() {
             if (NetworkManagerManager.networkManagerType != NetworkManagerManager.NetworkManagerType.Steam) {
                 Debug.LogWarning("Trying to use steam, but it is disabled");
@@ -38,6 +39,7 @@ namespace Networking {
 
             steamInitialized = true;
         }
+        #endif
 
         public static void CreateLobby() {
             #if !DISABLESTEAMWORKS

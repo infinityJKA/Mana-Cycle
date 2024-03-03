@@ -332,7 +332,7 @@ namespace Battle.Board {
             if (Storage.level && Storage.level.generateNextLevel) equiped = ArcadeStats.equipedItems;
 
             if (Storage.gamemode != Storage.GameMode.Default && playerSide == 0) {
-                singlePlayer = (Storage.gamemode == Storage.GameMode.Solo);
+                singlePlayer = Storage.gamemode == Storage.GameMode.Solo;
             } else {
                 singlePlayer = false;
             }
@@ -560,26 +560,31 @@ namespace Battle.Board {
             // If not in a level or level is against an AI, take trash damage
             // do not evaluate trash timer if this is an online opponent
             bool isOnlineOpponent = Storage.online && !netPlayer.isOwned;
-            if (!isOnlineOpponent && !defeated && !postGame && (!Storage.level || Storage.level.aiBattle) && trashDamageTimer > 0) {
+            if (!isOnlineOpponent && !defeated && !postGame && trashDamageTimer > 0) {
                 trashDamageTimer -= Time.deltaTime;
+                Vector3 averagePos = Vector3.zero;
 
                 // if reached 0, check for tiles.
+                int trashTiles = 0;
                 if (trashDamageTimer <= 0) {
-                    int trashDamage = 0;
                     for (int r=0; r<height; r++) {
                         for (int c=0; c<width; c++) {
                             if (tiles[r, c] && tiles[r, c].trashTile) {
-                                trashDamage += damagePerTrash;
+                                trashTiles++;
+                                averagePos += tiles[r,c].transform.position;
                             }
                         }
                     }
+
+                    averagePos /= trashTiles;
+                    int trashDamage = trashTiles * damagePerTrash;
 
                     // if there are tiles, damage and reset the timer.
                     if (trashDamage > 0) 
                     {
                         // in singleplayer, trash tiles earn points instead of deal damage to self
-                        if (board.singlePlayer) {
-                            DealDamage(trashDamage);
+                        if (singlePlayer) {
+                            DealDamage(trashDamage, averagePos, partOfChain: false);
                         } else {
                             TakeDamage(trashDamage, 0.333f, canDamageShield: true);
                         }
