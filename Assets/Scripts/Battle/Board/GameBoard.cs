@@ -25,21 +25,31 @@ namespace Battle.Board {
         [SerializeField] private bool mobile;
         public bool Mobile { get { return mobile;} }
 
-        // If this board is in single player mode */
+        /// <summary>
+        /// If this board is in single player mode
+        /// </summary>
         [SerializeField] public bool singlePlayer;
-        // The battler selected for this board.
+        /// <summary>
+        /// The battler selected for this board.
+        /// </summary>
         [SerializeField] private Battler battler;
         public Battler Battler {get {return battler;}}
 
-        // True if the player controls this board. */
+        /// <summary>
+        /// True if the player controls this board.
+        /// </summary>
         [SerializeField] private bool playerControlled;
-        // True if an AI should control this board. */
+        /// <summary>
+        /// True if an AI should control this board.
+        /// </summary>
         [SerializeField] private bool aiControlled;
 
         /// <summary>0 for left side, 1 for right side</summary>
         [SerializeField] private int playerSide;
 
-        /** Obect where pieces are drawn */
+        /// <summary>
+        /// Obect where pieces are drawn
+        /// </summary>
         [SerializeField] public Transform pieceBoard;
 
         /// <summary>
@@ -47,24 +57,37 @@ namespace Battle.Board {
         /// </summary>
         [SerializeField] public Transform ghostPieceBoard;
 
-        /** Input mapping for this board */
+        /// <summary>
+        /// Input mapping for this board (unused as of 1.2.1)
+        /// </summary>
         [SerializeField] public InputScript[] inputScripts;
 
-        /** Inputs that replace inputScripts list if solo mode */
+        /// <summary>
+        /// Inputs that replace inputScripts list if solo mode (unused as of 1.2.1)
+        /// </summary>
         [SerializeField] public InputScript[] soloInputScripts;
 
-        /** ControlsGraphic that will show the input keys */
+        // ControlsGraphic that will show the input keys
         // [SerializeField] public Battle.ControlsDisplaySystem.ControlsGraphic controlsGraphic;
 
-        /** The board of the enemy of the player/enemy of this board */
+        /// <summary>
+        /// The board of the enemy of the player/enemy of this board
+        /// </summary>
         [SerializeField] public GameBoard enemyBoard;
-        /** HP Bar game object on this board */
+
+        /// <summary>
+        /// HP Bar game object on this board
+        /// </summary>
         [SerializeField] public HealthBar hpBar;
 
-        /** Stores the piece preview for this board */
+        /// <summary>
+        /// The piece preview managing component for this board
+        /// </summary>
         [SerializeField] public PiecePreview piecePreview;
 
-        /** Cycle pointer game object that belongs to this board */
+        /// <summary>
+        /// Cycle pointer game object that belongs to this board
+        /// </summary>
         [SerializeField] public GameObject pointer;
         [SerializeField] private Vector3 pointerOffset;
 
@@ -554,7 +577,12 @@ namespace Battle.Board {
                     // if there are tiles, damage and reset the timer.
                     if (trashDamage > 0) 
                     {
-                        TakeDamage(trashDamage, 0.333f, canDamageShield: true);
+                        // in singleplayer, trash tiles earn points instead of deal damage to self
+                        if (board.singlePlayer) {
+                            DealDamage(trashDamage);
+                        } else {
+                            TakeDamage(trashDamage, 0.333f, canDamageShield: true);
+                        }
                         trashDamageTimer = trashDamageTimerDuration;
 
                         // send hp to opponent in online mode, since trash timer is nnot evaluated on their board.

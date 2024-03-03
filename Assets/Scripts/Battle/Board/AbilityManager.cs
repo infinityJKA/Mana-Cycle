@@ -161,7 +161,13 @@ namespace Battle.Board {
             else {
                 abilityData = new int[3];
                 for (int i=0; i<3; i++) {
-                    abilityData[i] = board.enemyBoard.AddTrashTile(board.rngManager.rng);
+                    // in singleplayer, send to own board as score-earning tiles. 
+                    // also don't worry abt saving to abilitydata its unused in singleplayer currently
+                    if (board.singlePlayer) {
+                        board.AddTrashTile(board.rngManager.rng);
+                    } else {
+                        abilityData[i] = board.enemyBoard.AddTrashTile(board.rngManager.rng);
+                    }
                 }
             }
         }
