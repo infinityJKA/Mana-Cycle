@@ -15,11 +15,25 @@ public class CraftingSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHand
     public GameObject cursor;
     public FishingInventory inv;
     public RequiredCraftingItemsDisplay rq;
+    public TextMeshProUGUI bigCraftingText;
+    private Color g1,g2,g3,g4,r1,r2,r3,r4;
 
     public void OnEnable(){
         inv = GameObject.Find("Inventory").GetComponent<FishingInventory>();
         cm = GameObject.Find("Crafting Manager").GetComponent<CraftingManager>();
+        bigCraftingText = cm.craftingText;
         rq = GameObject.Find("Required Items").GetComponent<RequiredCraftingItemsDisplay>();
+
+        g1 = new Color(0f, 255f, 155f);
+        g3 = new Color(248f, 255f, 0f);
+        g2 = new Color(0f, 255f, 155f);
+        g4 = new Color(248f, 255f, 0f);
+
+        r1 = new Color(142f, 0f, 0f);
+        r2 = new Color(255, 35f, 240f);
+        r3 = new Color(142f, 0f, 0f);
+        r4 = new Color(255, 35f, 240f);
+
     }
 
     public void OnPointerEnter(PointerEventData pointerEventData)
@@ -74,6 +88,15 @@ public class CraftingSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHand
         
         cursor.SetActive(true);
         // Debug.Log(this.gameObject.name + " was selected");
+
+        if(inv.CheckIfCraftable(recipe)){
+            bigCraftingText.text = "CRAFTABLE";
+            bigCraftingText.colorGradient = new VertexGradient(g1,g2,g3,g4);
+        }
+        else{
+            bigCraftingText.text = "NOT ENOUGH MATERIALS";
+            bigCraftingText.colorGradient = new VertexGradient(r1,r2,r3,r4);
+        }
 
         cm.clicked = recipe;
         rq.UpdateDisplay();
