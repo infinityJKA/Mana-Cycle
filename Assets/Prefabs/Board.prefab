@@ -1596,6 +1596,8 @@ GameObject:
   - component: {fileID: 8363407567511348994}
   - component: {fileID: 2309921174521375131}
   - component: {fileID: 2939590763881308117}
+  - component: {fileID: 3892372633275359666}
+  - component: {fileID: 3005996401378939230}
   m_Layer: 5
   m_Name: NextLabel
   m_TagString: Untagged
@@ -1719,6 +1721,63 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3892372633275359666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4912926683311606528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:3b14a58029a492f4daf5fec31cad3df1
+    m_TableEntryReference:
+      m_KeyId: 90923380736
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2939590763881308117}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
+--- !u!114 &3005996401378939230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4912926683311606528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea75267d6146d6346ba3915f7822dcad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fontType: 3
+  enMaterialOverride: {fileID: 0}
+  jaMaterialOverride: {fileID: 0}
+  enFontSize: 0
+  jaFontSize: 0
 --- !u!1 &5072852762754729154
 GameObject:
   m_ObjectHideFlags: 0
@@ -4074,6 +4133,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 2738482425047349209}
+  difficulty: 0
   moveDelay: 0.5
   accuracy: 1
   castChanceMultiplier: 1
@@ -4087,6 +4147,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6497960546296106959}
     m_Modifications:
+    - target: {fileID: 529172365641865325, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
+      propertyPath: jaFontSize
+      value: 45
+      objectReference: {fileID: 0}
     - target: {fileID: 4897989443802088406, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
       propertyPath: m_Name
       value: ChainPopup
@@ -4173,6 +4237,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5968351201712007076, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8754348632293449314, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
+      propertyPath: m_fontSize
+      value: 51
+      objectReference: {fileID: 0}
+    - target: {fileID: 8754348632293449314, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 51
+      objectReference: {fileID: 0}
+    - target: {fileID: 8754348632293449314, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
+      propertyPath: m_hasFontAssetChanged
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -5383,6 +5459,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6497960546296106959}
     m_Modifications:
+    - target: {fileID: 529172365641865325, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
+      propertyPath: enFontSize
+      value: 48
+      objectReference: {fileID: 0}
+    - target: {fileID: 529172365641865325, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
+      propertyPath: jaFontSize
+      value: 49
+      objectReference: {fileID: 0}
+    - target: {fileID: 4428584492834628926, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+      value: 1462511120384
+      objectReference: {fileID: 0}
     - target: {fileID: 4897989443802088406, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
       propertyPath: m_Name
       value: CascadePopup
@@ -5493,11 +5581,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8754348632293449314, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
       propertyPath: m_fontSizeBase
-      value: 1
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8754348632293449314, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
       propertyPath: m_characterSpacing
       value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8754348632293449314, guid: 0686efe3546c9435bb6c92a338a81bd9, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

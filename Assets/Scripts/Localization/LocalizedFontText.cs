@@ -22,13 +22,17 @@ public class LocalizedFontText : MonoBehaviour {
         text = GetComponent<TMP_Text>();
 
         switch (fontType) {
+            case LocalizationFontManager.FontType.Sans:
+                text.font = LocalizationFontManager.instance.sans;
+                text.fontSharedMaterial = LocalizationFontManager.instance.sansMaterial;
+                break;
             case LocalizationFontManager.FontType.SansOutline:
                 text.font = LocalizationFontManager.instance.sansOutline;
                 text.fontSharedMaterial = LocalizationFontManager.instance.sansOutlineMaterial;
                 break;
-            case LocalizationFontManager.FontType.Sans:
-                text.font = LocalizationFontManager.instance.sans;
-                text.fontSharedMaterial = LocalizationFontManager.instance.sansMaterial;
+            case LocalizationFontManager.FontType.SansDropShadow:
+                text.font = LocalizationFontManager.instance.sansDropShadow;
+                text.fontSharedMaterial = LocalizationFontManager.instance.sansDropShadowMaterial;
                 break;
             case LocalizationFontManager.FontType.Pixel:
                 text.font = LocalizationFontManager.instance.pixel;

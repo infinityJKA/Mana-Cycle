@@ -53,6 +53,14 @@ namespace Battle.Board {
         public void InitManaBar() {
             if (!enabled || !board || !board.Battler) return;
 
+            // don't show mana bar if battler does not use mana.
+            if(board.Battler.activeAbilityMana == 0) {
+                manaBar.gameObject.SetActive(false);
+                manaBarMask.gameObject.SetActive(false);
+                manaBarOutline.gameObject.SetActive(false);
+                return;
+            }
+
             // set height based on mana required for battler - 7px per mana
             // manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, board.Battler.activeAbilityMana*7f);
             manaBarMask.sizeDelta = new Vector2(manaBarMask.sizeDelta.x, board.Battler.activeAbilityMana*7f);

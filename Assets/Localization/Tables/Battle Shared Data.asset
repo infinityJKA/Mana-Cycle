@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Battle Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: Battle
+  m_TableCollectionNameGuidString: 3b14a58029a492f4daf5fec31cad3df1
+  m_Entries:
+  - m_Id: 90923380736
+    m_Key: NextPieceLabel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 601990934528
+    m_Key: ChainLabel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1462511120384
+    m_Key: CascadeLabel
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8072210979217211406
+  references:
+    version: 2
+    RefIds:
+    - rid: 8072210979217211406
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1709664113196
