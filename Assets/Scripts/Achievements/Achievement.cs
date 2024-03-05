@@ -35,6 +35,11 @@ namespace Achievements {
         public Sprite icon;
 
         /// <summary>
+        /// If details should be hidden unless unlocked.
+        /// </summary>
+        public bool hidden;
+
+        /// <summary>
         /// The stat that this achievement should display the progress of
         /// </summary>
         public ObjectiveCondition progressStat = ObjectiveCondition.None;
