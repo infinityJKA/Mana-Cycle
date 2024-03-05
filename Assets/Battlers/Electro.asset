@@ -12,7 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f3b687c14b984eb5a7f87dcff77275c, type: 3}
   m_Name: Electro
   m_EditorClassIdentifier: 
-  displayName: Electro
+  displayNameEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:c392bbe86b94c48468d1c9f4269f1405
+    m_TableEntryReference:
+      m_KeyId: 299757776896
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   sprite: {fileID: 21300000, guid: ee53d5b8a006ef648a88ca5a849785d8, type: 3}
   portraitOffset: {x: 77.37, y: -1.94}
   passiveAbilityEffect: 0
@@ -27,3 +35,6 @@ MonoBehaviour:
   voiceSFX: {fileID: 7978053776321691471, guid: 50eee854e6772144bb55dc7c5ab9069e, type: 3}
   gradientMat: {fileID: 2100000, guid: e2119ca018db31949bb5d19b8b7dc40c, type: 2}
   textBoxColor: {r: 1, g: 0.6291135, b: 0, a: 1}
+  references:
+    version: 2
+    RefIds: []

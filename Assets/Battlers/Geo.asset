@@ -12,7 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f3b687c14b984eb5a7f87dcff77275c, type: 3}
   m_Name: Geo
   m_EditorClassIdentifier: 
-  displayName: Geo
+  displayNameEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:c392bbe86b94c48468d1c9f4269f1405
+    m_TableEntryReference:
+      m_KeyId: 610425679872
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   sprite: {fileID: 21300000, guid: 22d808126ee4e314ebd0162e62641c59, type: 3}
   portraitOffset: {x: 80, y: 0}
   passiveAbilityEffect: 5
@@ -28,3 +36,6 @@ MonoBehaviour:
   voiceSFX: {fileID: 8300000, guid: e085d0dc29407b64d857820b2cb7526c, type: 3}
   gradientMat: {fileID: 2100000, guid: 1a990fa14325a46fc9eee5708abf0723, type: 2}
   textBoxColor: {r: 0.81960785, g: 0.69411767, b: 0.4, a: 1}
+  references:
+    version: 2
+    RefIds: []

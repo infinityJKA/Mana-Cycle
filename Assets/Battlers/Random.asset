@@ -12,7 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f3b687c14b984eb5a7f87dcff77275c, type: 3}
   m_Name: Random
   m_EditorClassIdentifier: 
-  displayName: Random
+  displayNameEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:c392bbe86b94c48468d1c9f4269f1405
+    m_TableEntryReference:
+      m_KeyId: 942107045888
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   sprite: {fileID: 21300000, guid: 5f3884839784249089d309e1cb90f24a, type: 3}
   portraitOffset: {x: 0, y: 0}
   passiveAbilityEffect: 0
@@ -27,3 +35,6 @@ MonoBehaviour:
   voiceSFX: {fileID: 7978053776321691471, guid: 50eee854e6772144bb55dc7c5ab9069e, type: 3}
   gradientMat: {fileID: 2100000, guid: 7ef949e9956dd44dab5d2a1c39f165fd, type: 2}
   textBoxColor: {r: 0.427451, g: 0.56078434, b: 0.427451, a: 1}
+  references:
+    version: 2
+    RefIds: []

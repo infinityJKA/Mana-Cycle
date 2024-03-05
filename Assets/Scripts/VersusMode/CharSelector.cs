@@ -154,7 +154,7 @@ namespace VersusMode {
 
         public bool isRandomSelected {
             get {
-                return selectedIcon.battler.displayName == "Random";
+                return selectedIcon.battler.name == "Random";
             }
         }
 
@@ -235,11 +235,11 @@ namespace VersusMode {
                 }
             }
 
-            if (selectedIcon.battler.displayName == "Random") {
+            if (isRandomSelected) {
                 if (randomChangeDelay <= 0 && (!lockedIn || !randomBattler)) {
                     randomChangeDelay = 0.125f;
                     var prevBattler = randomBattler;
-                    while (!randomBattler || randomBattler.displayName == "Random" || randomBattler == prevBattler) {
+                    while (!randomBattler || randomBattler.name == "Random" || randomBattler == prevBattler) {
                         randomBattler = battlerGrid.transform.GetChild(Random.Range(0, battlerGrid.transform.childCount-1)).GetComponent<CharacterIcon>().battler;
                     }
 
@@ -572,7 +572,7 @@ namespace VersusMode {
             else {
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
                 nameText.fontStyle = TMPro.FontStyles.Normal;
-                nameText.text = (selectedIcon.battler.displayName == "Random") ? "Random" : selectedBattler.displayName;
+                nameText.text = isRandomSelected ? selectedIcon.battler.displayName : selectedBattler.displayName;
             }
         }
 
@@ -693,7 +693,7 @@ namespace VersusMode {
 
         public void SelectBattler() {
             portrait.sprite = selectedBattler.sprite;
-            nameText.text = (selectedIcon.battler.displayName == "Random") ? "Random" : selectedBattler.displayName;
+            nameText.text = isRandomSelected ? selectedIcon.battler.displayName : selectedBattler.displayName;
 
             if (selectedBattler.passiveAbilityEffect == Battle.Battler.PassiveAbilityEffect.None && selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
                 abilityText.text = "No special abilities";
