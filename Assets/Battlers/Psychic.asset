@@ -12,7 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f3b687c14b984eb5a7f87dcff77275c, type: 3}
   m_Name: Psychic
   m_EditorClassIdentifier: 
-  displayName: Psychic
+  displayNameEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:c392bbe86b94c48468d1c9f4269f1405
+    m_TableEntryReference:
+      m_KeyId: 745016700928
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   sprite: {fileID: 21300000, guid: 5855870478afbce43a4e29c65d50c3d7, type: 3}
   portraitOffset: {x: 68.94, y: 8.57}
   passiveAbilityEffect: 0
@@ -27,3 +35,6 @@ MonoBehaviour:
   voiceSFX: {fileID: 7978053776321691471, guid: 0afcc4bfce0a9d647a74a619e97630df, type: 3}
   gradientMat: {fileID: 2100000, guid: 828c4c85d5f4445acbb9007cf9a4e715, type: 2}
   textBoxColor: {r: 0.8705883, g: 0.28235295, b: 0.82745105, a: 1}
+  references:
+    version: 2
+    RefIds: []

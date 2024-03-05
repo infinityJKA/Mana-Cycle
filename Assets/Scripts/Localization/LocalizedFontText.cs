@@ -2,57 +2,56 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 
-namespace Localizaton {
-    [RequireComponent(typeof(TMP_Text))]
-    public class LocalizedFontText : MonoBehaviour {
-        private TMP_Text text;
 
-        [SerializeField] private LocalizationFontManager.FontType fontType;
+[RequireComponent(typeof(TMP_Text))]
+public class LocalizedFontText : MonoBehaviour {
+    private TMP_Text text;
 
-        [SerializeField] private Material enMaterialOverride, jaMaterialOverride;
-        [Tooltip("0 for no change")]
-        [SerializeField] private float enFontSize, jaFontSize;
+    [SerializeField] private LocalizationFontManager.FontType fontType;
 
-        private void OnEnable() {
-            UpdateFont();
-            LocalizationFontManager.instance.onLanguageChanged.AddListener(UpdateFont);
+    [SerializeField] private Material enMaterialOverride, jaMaterialOverride;
+    [Tooltip("0 for no change")]
+    [SerializeField] private float enFontSize, jaFontSize;
+
+    private void OnEnable() {
+        UpdateFont();
+        LocalizationFontManager.instance.onLanguageChanged.AddListener(UpdateFont);
+    }
+
+    private void UpdateFont() {
+        text = GetComponent<TMP_Text>();
+
+        switch (fontType) {
+            case LocalizationFontManager.FontType.SansOutline:
+                text.font = LocalizationFontManager.instance.sansOutline;
+                text.fontSharedMaterial = LocalizationFontManager.instance.sansOutlineMaterial;
+                break;
+            case LocalizationFontManager.FontType.Sans:
+                text.font = LocalizationFontManager.instance.sans;
+                text.fontSharedMaterial = LocalizationFontManager.instance.sansMaterial;
+                break;
+            case LocalizationFontManager.FontType.Pixel:
+                text.font = LocalizationFontManager.instance.pixel;
+                text.fontSharedMaterial = LocalizationFontManager.instance.pixelMaterial;
+                break;
         }
 
-        private void UpdateFont() {
-            text = GetComponent<TMP_Text>();
-
-            switch (fontType) {
-                case LocalizationFontManager.FontType.SansOutline:
-                    text.font = LocalizationFontManager.instance.sansOutline;
-                    text.fontSharedMaterial = LocalizationFontManager.instance.sansOutlineMaterial;
-                    break;
-                case LocalizationFontManager.FontType.Sans:
-                    text.font = LocalizationFontManager.instance.sans;
-                    text.fontSharedMaterial = LocalizationFontManager.instance.sansMaterial;
-                    break;
-                case LocalizationFontManager.FontType.Pixel:
-                    text.font = LocalizationFontManager.instance.pixel;
-                    text.fontSharedMaterial = LocalizationFontManager.instance.pixelMaterial;
-                    break;
-            }
-
-            string localeCode = LocalizationSettings.SelectedLocale.Identifier.Code;
-            if (localeCode == "en") {
-                if (enMaterialOverride) text.fontSharedMaterial = enMaterialOverride;
-                if (enFontSize > 0) text.fontSize = enFontSize;
-            }
-            else if (localeCode == "ja") {
-                if (jaMaterialOverride) text.fontSharedMaterial = jaMaterialOverride;
-                if (jaFontSize > 0) text.fontSize = jaFontSize;
-            }
-
-            Debug.Log("font updated on "+gameObject);
+        string localeCode = LocalizationSettings.SelectedLocale.Identifier.Code;
+        if (localeCode == "en") {
+            if (enMaterialOverride) text.fontSharedMaterial = enMaterialOverride;
+            if (enFontSize > 0) text.fontSize = enFontSize;
+        }
+        else if (localeCode == "ja") {
+            if (jaMaterialOverride) text.fontSharedMaterial = jaMaterialOverride;
+            if (jaFontSize > 0) text.fontSize = jaFontSize;
         }
 
-        
-        // also called on destroy / when switching scenes
-        private void OnDisable() {
-            LocalizationFontManager.instance.onLanguageChanged.RemoveListener(UpdateFont);
-        }
+        Debug.Log("font updated on "+gameObject);
+    }
+
+    
+    // also called on destroy / when switching scenes
+    private void OnDisable() {
+        LocalizationFontManager.instance.onLanguageChanged.RemoveListener(UpdateFont);
     }
 }

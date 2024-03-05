@@ -1,10 +1,25 @@
 using System;
 using UnityEngine;
+using UnityEngine.Localization;
 
 namespace Battle {
     [CreateAssetMenu(fileName = "Battler", menuName = "ManaCycle/Battler")]
     public class Battler : ScriptableObject {
-        [SerializeField] public string displayName;
+        [SerializeField] private LocalizedString displayNameEntry;
+        public string displayName {get; private set;}
+
+        private void OnEnable() {
+            displayNameEntry.StringChanged += UpdateName;
+        }
+
+        private void OnDisable() {
+            displayNameEntry.StringChanged -= UpdateName;
+        }
+
+        // To be run when the name language string needs to be updated
+        private void UpdateName(string localizedName) {
+            displayName = localizedName;
+        }
 
         [SerializeField] public Sprite sprite;
 
