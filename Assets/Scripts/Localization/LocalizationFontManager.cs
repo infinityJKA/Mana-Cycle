@@ -9,20 +9,25 @@ using UnityEngine.Localization.Settings;
 public class LocalizationFontManager : MonoBehaviour {
     public static LocalizationFontManager instance {get; private set;} = null;
 
-    [SerializeField] private TMP_FontAsset enSansOutline, jaSansOutline;
     [SerializeField] private TMP_FontAsset enSans, jaSans;
+    [SerializeField] private TMP_FontAsset enSansOutline, jaSansOutline;
+    [SerializeField] private TMP_FontAsset enSansDropShadow, jaSansDropShadow;
     [SerializeField] private TMP_FontAsset enPixel, jaPixel;
 
-    [SerializeField] private Material enSansOutlineMaterial, jaSansOutlineMaterial;
     [SerializeField] private Material enSansMaterial, jaSansMaterial;
+    [SerializeField] private Material enSansOutlineMaterial, jaSansOutlineMaterial;
+    [SerializeField] private Material enSansDropShadowMaterial, jaSansDropShadowMaterial;
+
     [SerializeField] private Material enPixelMaterial, jaPixelMaterial;
 
-    public TMP_FontAsset sansOutline {get; private set;}
     public TMP_FontAsset sans {get; private set;}
+    public TMP_FontAsset sansOutline {get; private set;}
+    public TMP_FontAsset sansDropShadow {get; private set;}
     public TMP_FontAsset pixel {get; private set;}
 
-    public Material sansOutlineMaterial {get; private set;}
     public Material sansMaterial {get; private set;}
+    public Material sansOutlineMaterial {get; private set;}
+    public Material sansDropShadowMaterial {get; private set;}
     public Material pixelMaterial {get; private set;}
 
     public UnityEvent onLanguageChanged {get; set;}
@@ -30,7 +35,8 @@ public class LocalizationFontManager : MonoBehaviour {
     public enum FontType {
         SansOutline,
         Sans,
-        Pixel
+        Pixel,
+        SansDropShadow,
     }
 
     private void Awake() {
@@ -64,18 +70,22 @@ public class LocalizationFontManager : MonoBehaviour {
             case "en":
             case "de":
             case "fr":
-                sansOutline = enSansOutline;
-                sansOutlineMaterial = enSansOutlineMaterial;
                 sans = enSans;
                 sansMaterial = enSansMaterial;
+                sansOutline = enSansOutline;
+                sansOutlineMaterial = enSansOutlineMaterial;
+                sansDropShadow = enSansDropShadow;
+                sansDropShadowMaterial = enSansDropShadowMaterial;
                 pixel = enPixel;
                 pixelMaterial = enPixelMaterial;
                 break;
             case "ja":
-                sansOutline = jaSansOutline;
-                sansOutlineMaterial = jaSansOutlineMaterial;
                 sans = jaSans;
                 sansMaterial = jaSansMaterial;
+                sansOutline = jaSansOutline;
+                sansOutlineMaterial = jaSansOutlineMaterial;
+                sansDropShadow = jaSansDropShadow;
+                sansDropShadowMaterial = jaSansDropShadowMaterial;
                 pixel = jaPixel;
                 pixelMaterial = jaPixelMaterial;
                 break;

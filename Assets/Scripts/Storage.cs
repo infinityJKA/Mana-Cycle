@@ -52,6 +52,6 @@ public class Storage
     // If in dual keyboard mode. Player vs player matches will be controlled wtih both sides of the keyboard.
     public static bool useDualKeyboardInput;
 
-    // If in online mode.
-    public static bool online = true;
+    // If in an online mode. (applies only to CharSelect & ManaCycle scenes)
+    public static bool online = false;
 }
