@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
-using System;
-using UnityEngine.SceneManagement;
 
 using Sound;
+using UnityEngine.Localization;
 
 namespace Pause {
     public class PauseMenu : MonoBehaviour
@@ -16,6 +13,10 @@ namespace Pause {
         public bool paused  { get; set; }
         [SerializeField] private GameObject PauseUI;
         [SerializeField] private Transform buttonsTransform;
+
+        [SerializeField] private LocalizedString rematchLocalizedString;
+
+        [SerializeField] private LocalizedString restartLocalizedString;
 
         [SerializeField] private bool mobile;
         
@@ -26,13 +27,14 @@ namespace Pause {
             paused = true;
             TogglePause();
 
-            // Change button text based on gamemode
+            // Change button text based on gamemode - will become "rematch" in versus mode
             if (Storage.gamemode == Storage.GameMode.Versus) {
                 buttonsTransform.Find("RetryButton").GetChild(0).GetComponent<TextMeshProUGUI>()
-                    .text = "Rematch";
+                    .text = rematchLocalizedString.GetLocalizedString();
             }
             
-            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level && Storage.level.availableBattlers != null && Storage.level.availableBattlers.Count > 1)) {
+            if (Storage.gamemode == Storage.GameMode.Versus 
+            || (Storage.level && Storage.level.availableBattlers != null && Storage.level.availableBattlers.Count > 1)) {
                 buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(false);
                 buttonsTransform.Find("CharSelectButton").gameObject.SetActive(true);
             }
@@ -46,8 +48,9 @@ namespace Pause {
 
             if (Storage.level && (Storage.level.lastSeriesLevel || Storage.level.nextSeriesLevel))
             {
+                // show "restart" instead of retry if this is a series of levels
                 buttonsTransform.Find("RetryButton").GetChild(0).GetComponent<TextMeshProUGUI>()
-                    .text = "Restart";
+                    .text = restartLocalizedString.GetLocalizedString();
             }
 
             if (Storage.level && Storage.level.generateNextLevel && Storage.level.lastSeriesLevel != null)

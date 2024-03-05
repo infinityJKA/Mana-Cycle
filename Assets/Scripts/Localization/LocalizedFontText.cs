@@ -49,8 +49,6 @@ public class LocalizedFontText : MonoBehaviour {
             if (jaMaterialOverride) text.fontSharedMaterial = jaMaterialOverride;
             if (jaFontSize > 0) text.fontSize = jaFontSize;
         }
-
-        Debug.Log("font updated on "+gameObject);
     }
 
     

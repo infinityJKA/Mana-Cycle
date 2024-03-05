@@ -11,6 +11,7 @@ using Battle.Board;
 using Sound;
 using SoloMode;
 using Achievements;
+using UnityEngine.Localization;
 
 namespace PostGame {
     public class PostGameMenu : MonoBehaviour
@@ -33,7 +34,7 @@ namespace PostGame {
         private bool displayed = false;
 
         // Rematch button - text changed to "retry" in solo mode
-        public Button retryButton;
+        public Button retryButton, continueButton;
 
         [SerializeField] private AudioClip defeatMusic;
         [SerializeField] private AudioClip winMusic;
@@ -46,6 +47,10 @@ namespace PostGame {
         [SerializeField] private TMPro.TextMeshProUGUI arcadeInfoText;
 
         [SerializeField] private LevelGenerator levelGenerator;
+
+        [SerializeField] private LocalizedString rematchLocalizedString;
+        [SerializeField] private LocalizedString replayLocalizedString;
+        [SerializeField] private LocalizedString restartLocalizedString;
 
         // Start is called before the first frame update
         void Start()
@@ -110,7 +115,7 @@ namespace PostGame {
 
                     // If solo mode win: retry -> replay
                     retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>()
-                        .text = "Replay";
+                        .text = replayLocalizedString.GetLocalizedString();
                 }
 
                 Time.timeScale = 1f;
@@ -144,10 +149,8 @@ namespace PostGame {
                     // if in level series, replay button -> continue button
                     if (Storage.level.nextSeriesLevel && cleared && !Storage.level.generateNextLevel)
                     {
-                        retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Continue";
-                        var ev = new Button.ButtonClickedEvent();
-                        ev.AddListener(() => SelectContinue());
-                        retryButton.onClick = ev;
+                        retryButton.gameObject.SetActive(false);
+                        continueButton.gameObject.SetActive(true);
 
                         buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(true);
                         buttonsTransform.Find("CharSelectButton").gameObject.SetActive(false);
@@ -162,10 +165,8 @@ namespace PostGame {
                     if (Storage.level.generateNextLevel && cleared)
                     {
                         Debug.Log("Curious");
-                        retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Continue";
-                        var ev = new Button.ButtonClickedEvent();
-                        ev.AddListener(() => GotoEndlessLevelSelect());
-                        retryButton.onClick = ev;
+                        retryButton.gameObject.SetActive(false);
+                        continueButton.gameObject.SetActive(true);
 
                         buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(true);
                         buttonsTransform.Find("CharSelectButton").gameObject.SetActive(false);
@@ -204,8 +205,8 @@ namespace PostGame {
             else
             {
                 // In versus mode: retry -> rematch
-                retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>()
-                    .text = "Rematch";
+                retryButton.transform.GetComponentInChildren<TextMeshProUGUI>()
+                    .text = rematchLocalizedString.GetLocalizedString();
 
                 MenuUI.SetActive(true);
                 Time.timeScale = 0f;

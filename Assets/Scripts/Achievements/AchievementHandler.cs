@@ -57,8 +57,6 @@ namespace Achievements
         {
             if (achievement.unlocked) return;
             achievement.Unlock();
-            Debug.Log("Unlocked " + achievement.id + ": " + achievement.displayName);
-
             achievementNotifyQueue.Enqueue(achievement);
         }
 
