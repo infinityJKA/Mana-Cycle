@@ -11,6 +11,8 @@ public class RequiredCraftingItemsDisplay : MonoBehaviour
     public List<RequiredItemDisplay> requiredItemDisplays;
     public TextMeshProUGUI StatsText;
     public CraftingManager cm;
+    [SerializeField] TMP_ColorGradient redGradient;
+    [SerializeField] TMP_ColorGradient greenGradient;
 
     void OnEnable(){
         UpdateDisplay();
@@ -35,6 +37,12 @@ public class RequiredCraftingItemsDisplay : MonoBehaviour
     private void UpdateSprite(int i, RequiredItemDisplay r){
         r.countText.text = cm.inventory.CheckCount(cm.clicked.requiredItems[i])+"/"+cm.clicked.requiredItemCount[i];
         r.icon.sprite = cm.clicked.requiredItems[i].icon;
+        if(cm.inventory.CheckCount(cm.clicked.requiredItems[i]) >= cm.clicked.requiredItemCount[i]){
+            r.countText.colorGradientPreset = greenGradient;
+        }
+        else{
+            r.countText.colorGradientPreset = redGradient;
+        }
     }
 
 }

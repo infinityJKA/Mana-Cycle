@@ -104,9 +104,11 @@ public class CraftingSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHand
         
         if(inv.CheckIfCraftable(recipe)){
             craftableText.text = "YES";
+            craftableText.colorGradientPreset  = greenGradient;
         }
         else{
             craftableText.text = "NO";
+            craftableText.colorGradientPreset  = redGradient;
         }
         
         icon.sprite = recipe.itemToCraft.icon;
