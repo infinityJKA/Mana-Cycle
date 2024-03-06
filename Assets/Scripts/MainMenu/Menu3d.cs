@@ -68,8 +68,6 @@ namespace MainMenu {
         {
             if(!mobile) EventSystem.current.SetSelectedGameObject(buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject);
 
-            UpdateTip();
-
             versionText.text = "v" + Application.version + " (" + Application.platform + ")";
         }
 
@@ -137,7 +135,6 @@ namespace MainMenu {
             SettingsWindow.SetActive(false);
             MainWindow.SetActive(true);
             if (!mobile) EventSystem.current.SetSelectedGameObject(SettingsButton);
-            UpdateTip();
         }
 
         public void SelectSolo()
@@ -146,11 +143,6 @@ namespace MainMenu {
             Storage.lastMainMenuItem = 1;
             Storage.online = false;
             TransitionHandler.WipeToScene("SoloMenu");
-        }
-
-        public void UpdateTip()
-        {
-            tipText.text = String.Format("[Arrow Keys] to move cursor\n[{0}] to select", Utils.KeySymbol(inputScripts[0].Cast));
         }
 
         public void SelectExit()

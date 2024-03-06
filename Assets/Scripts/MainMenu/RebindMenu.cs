@@ -68,7 +68,6 @@ namespace MainMenu {
             gameObject.SetActive(false);
             // settingsWindow.SetActive(true);
             mainMenu.CloseSettings();
-            mainMenu.UpdateTip();
         }
 
         public void refreshText()
