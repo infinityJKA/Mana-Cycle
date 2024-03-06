@@ -1312,7 +1312,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &291048186
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1335,7 +1335,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 0}
+  m_SizeDelta: {x: 250, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &291048187
 MonoBehaviour:
@@ -1358,7 +1358,7 @@ MonoBehaviour:
   m_Spacing: 20
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
+  m_ChildControlWidth: 1
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
@@ -4297,7 +4297,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_SizeDelta.y
@@ -4333,7 +4333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 50
+      value: 125
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4666,11 +4666,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 40
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4702,7 +4698,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 50
+      value: 125
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4727,6 +4723,10 @@ PrefabInstance:
     - target: {fileID: 4708681642179659907, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_Name
       value: RetryButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 6090516027208869401, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8728739208048343770, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -5316,6 +5316,7 @@ GameObject:
   - component: {fileID: 1280025126}
   - component: {fileID: 1280025125}
   - component: {fileID: 1280025124}
+  - component: {fileID: 1280025127}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -5396,6 +5397,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1280025127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280025122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!114 &1327112842 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
@@ -5577,7 +5595,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_SizeDelta.y
@@ -5613,7 +5631,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 50
+      value: 125
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -7617,7 +7635,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_SizeDelta.y
@@ -7653,7 +7671,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 50
+      value: 125
       objectReference: {fileID: 0}
     - target: {fileID: 1070809738200051425, guid: 8f321079b62e63b4e839404dcd899da0, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -7721,14 +7739,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2014209336}
-  - component: {fileID: 2014209337}
   m_Layer: 5
   m_Name: PostGameUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2014209336
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7750,29 +7767,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!223 &2014209337
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2014209335}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
 --- !u!1001 &2023528232
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9602,7 +9596,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 903426984655665}
-  - component: {fileID: 4321311120628870817}
   m_Layer: 5
   m_Name: PauseUI
   m_TagString: Untagged
@@ -9610,29 +9603,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!223 &4321311120628870817
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4321311120628870816}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
 --- !u!222 &5257065006313476953
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10076,6 +10046,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fontType: 0
+  enFontOverride: {fileID: 0}
+  jaFontOverride: {fileID: 0}
   enMaterialOverride: {fileID: 2100000, guid: 12ddffcde3468cf4c99ba01c9a585be3, type: 2}
   jaMaterialOverride: {fileID: 2100000, guid: 5031c75645d47c74b9ea3059f71b390d, type: 2}
   enFontSize: 0

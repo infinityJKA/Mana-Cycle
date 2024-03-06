@@ -225,9 +225,15 @@ namespace PostGame {
             if (board.IsPlayerControlled()) achievementHandler.CheckAchievements(board);
             if (board.enemyBoard.IsPlayerControlled()) achievementHandler.CheckAchievements(board.enemyBoard);
 
-            if (!board.Mobile) {
-                EventSystem.current.SetSelectedGameObject(null);
-                EventSystem.current.SetSelectedGameObject(buttonsTransform.GetChild(0).gameObject);
+            // if (!board.Mobile) {
+            //     EventSystem.current.SetSelectedGameObject(null);
+            //     EventSystem.current.SetSelectedGameObject(buttonsTransform.GetChild(0).gameObject);
+            // }
+
+            if (retryButton.gameObject.activeInHierarchy) {
+                retryButton.Select();
+            } else {
+                continueButton.Select();
             }
         }
 
