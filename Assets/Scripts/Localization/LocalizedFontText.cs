@@ -9,6 +9,7 @@ public class LocalizedFontText : MonoBehaviour {
 
     [SerializeField] private LocalizationFontManager.FontType fontType;
 
+    [SerializeField] private TMP_FontAsset enFontOverride, jaFontOverride;
     [SerializeField] private Material enMaterialOverride, jaMaterialOverride;
     [Tooltip("0 for no change")]
     [SerializeField] private float enFontSize, jaFontSize;
@@ -42,10 +43,12 @@ public class LocalizedFontText : MonoBehaviour {
 
         string localeCode = LocalizationSettings.SelectedLocale.Identifier.Code;
         if (localeCode == "en") {
+            if (enFontOverride) text.font = enFontOverride;
             if (enMaterialOverride) text.fontSharedMaterial = enMaterialOverride;
             if (enFontSize > 0) text.fontSize = enFontSize;
         }
         else if (localeCode == "ja") {
+            if (jaFontOverride) text.font = jaFontOverride;
             if (jaMaterialOverride) text.fontSharedMaterial = jaMaterialOverride;
             if (jaFontSize > 0) text.fontSize = jaFontSize;
         }

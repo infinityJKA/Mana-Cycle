@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using UnityEngine.Localization.Settings;
+using System.Collections;
 
 namespace MainMenu {
     /// <summary>
@@ -82,6 +84,16 @@ namespace MainMenu {
             EventSystem.current.SetSelectedGameObject(windowModeDropdown.gameObject);
         }
 
-        
+        private Coroutine changeLanguageCoroutine;
+        private string[] localeList = {"en", "ja"};
+        public void ChangeLocale(int localeIndex) {
+            if (changeLanguageCoroutine != null) StopCoroutine(changeLanguageCoroutine);
+            changeLanguageCoroutine = StartCoroutine(SetLocale(localeList[localeIndex]));
+        }
+
+        IEnumerator SetLocale(string localeCode) {
+            yield return LocalizationSettings.InitializationOperation;
+            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.GetLocale(localeCode);
+        }
     }
 }
