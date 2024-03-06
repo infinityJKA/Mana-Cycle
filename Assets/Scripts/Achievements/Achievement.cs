@@ -36,6 +36,11 @@ namespace Achievements {
         public Sprite icon;
 
         /// <summary>
+        /// Icon shown for this achievement when not achieved.
+        /// </summary>
+        public Sprite lockedIcon;
+
+        /// <summary>
         /// If details should be hidden unless unlocked.
         /// </summary>
         public bool hidden;

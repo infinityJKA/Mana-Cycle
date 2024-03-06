@@ -34,12 +34,12 @@ namespace Achievements
         public void ShowAchievement(Achievement achievement)
         {
             if (achievement.hidden && !achievement.unlocked) {
-                    descLabel.text = "???";
-                } else {
-                    titleLabel.text = achievement.displayName;
-                }
+                descLabel.text = "???";
+            } else {
+                titleLabel.text = achievement.displayName;
+            }
             
-            iconImage.sprite = achievement.icon;
+            iconImage.sprite = achievement.unlocked ? achievement.icon : achievement.lockedIcon;
 
             // If this is a not a notification and is in the achievmeents list having a bkgd, change icon and bgkd color if not unlocked
             if (backgroundImage)
