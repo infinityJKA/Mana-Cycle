@@ -1,8 +1,10 @@
 using Battle.Board;
-using Steamworks;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if !DISABLESTEAMWORKS
+using Steamworks;
+#endif
 
 namespace Achievements 
 {
