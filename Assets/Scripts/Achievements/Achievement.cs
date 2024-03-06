@@ -66,7 +66,7 @@ namespace Achievements {
             }
         }
 
-        public void Unlock()
+        public void UnlockPlayerPref()
         {
             PlayerPrefs.SetInt("ACH_" + id, 1);
         }
