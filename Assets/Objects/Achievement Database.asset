@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Achievement Database
   m_EditorClassIdentifier: 
   achievements:
-  - displayName: Shadow Wizard Mana Caster
-    id: Lv13Clear
+  - id: Lv13Clear
+    displayName: Shadow Wizard Mana Caster
     description: Clear level 13.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 11
@@ -31,10 +32,11 @@ MonoBehaviour:
       boolValue: 1
       statusOverride: 
       inverted: 0
-  - displayName: IBN Master
-    id: Lv14Clear
+  - id: StoryClear
+    displayName: IBN Master
     description: Complete all Story levels.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 11
@@ -49,52 +51,60 @@ MonoBehaviour:
       boolValue: 1
       statusOverride: 
       inverted: 0
-  - displayName: Undefeatable, probably
-    id: ArcadeWinInfinity
+  - id: ArcadeWinInfinity
+    displayName: Undefeatable, probably
     description: Win Arcade Mode as Infinity.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements: []
-  - displayName: Uncapturable, probably
-    id: ArcadeWinAqua
+  - id: ArcadeWinAqua
+    displayName: Uncapturable, probably
     description: Win Arcade Mode as Aqua.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements: []
-  - displayName: But That Thing... It Scares Me
-    id: ArcadeWinPyro
+  - id: ArcadeWinPyro
+    displayName: But That Thing... It Scares Me
     description: Win Arcade Mode as Pyro.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements: []
-  - displayName: Mind Games
-    id: ArcadeWinPsychic
+  - id: ArcadeWinPsychic
+    displayName: Mind Games
     description: Win Arcade Mode as Psychic.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements: []
-  - displayName: Wallhack
-    id: ArcadeWinTrainbot
+  - id: ArcadeWinTrainbot
+    displayName: Wallhack
     description: Win Arcade Mode as Trainbot.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements: []
-  - displayName: High School Dropout
-    id: ArcadeWinGeo
+  - id: ArcadeWinGeo
+    displayName: High School Dropout
     description: Win Arcade Mode as Geo.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements: []
-  - displayName: something sinister is brewing...
-    id: ArcadeWinzman
+  - id: ArcadeWinzman
+    displayName: something sinister is brewing...
     description: Win Arcade Mode as z?man.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements: []
-  - displayName: We Love Casting Spells
-    id: Spellcast50
+  - id: Spellcast50
+    displayName: We Love Casting Spells
     description: Spellcast 50 times in one battle.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 3
@@ -103,10 +113,11 @@ MonoBehaviour:
       boolValue: 0
       statusOverride: 
       inverted: 0
-  - displayName: Tryhard
-    id: Tryhard
+  - id: Tryhard
+    displayName: Tryhard
     description: Score 2500 or more points on Level 1.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 11
@@ -122,10 +133,11 @@ MonoBehaviour:
       boolValue: 0
       statusOverride: 
       inverted: 0
-  - displayName: Full Cycler
-    id: Combo7
+  - id: Combo7
+    displayName: Full Cycler
     description: Achieve a chain of at least 7.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 5
@@ -134,10 +146,11 @@ MonoBehaviour:
       boolValue: 0
       statusOverride: 
       inverted: 0
-  - displayName: Expert Strategist
-    id: Combo12
+  - id: Combo12
+    displayName: Expert Strategist
     description: Achieve a chain of at least 12.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 5
@@ -146,10 +159,11 @@ MonoBehaviour:
       boolValue: 0
       statusOverride: 
       inverted: 0
-  - displayName: A blessing from Light Infinity
-    id: Combo17
+  - id: Combo17
+    displayName: A blessing from Light Infinity
     description: Achieve a chain of at least 17.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 5
@@ -158,10 +172,11 @@ MonoBehaviour:
       boolValue: 0
       statusOverride: 
       inverted: 0
-  - displayName: who up cascading they mana rn?
-    id: Cascade4
+  - id: Cascade4
+    displayName: who up cascading they mana rn?
     description: Achieve a cascade of 4 or higher.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 6
@@ -170,10 +185,11 @@ MonoBehaviour:
       boolValue: 0
       statusOverride: 
       inverted: 0
-  - displayName: Stairway to Heaven
-    id: Cascade7
+  - id: Cascade7
+    displayName: Stairway to Heaven
     description: Achieve a cascade of 7 or higher.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 6
@@ -182,10 +198,11 @@ MonoBehaviour:
       boolValue: 0
       statusOverride: 
       inverted: 0
-  - displayName: Overkill
-    id: SingleDamage4000
+  - id: SingleDamage4000
+    displayName: Overkill
     description: Deal over 4000 damage in a single hit.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 14
@@ -194,10 +211,11 @@ MonoBehaviour:
       boolValue: 0
       statusOverride: 
       inverted: 0
-  - displayName: YEOWCH!!!
-    id: SingleDamage40000
+  - id: SingleDamage40000
+    displayName: YEOWCH!!!
     description: Deal over 40000 damage in a single hit.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 14
@@ -206,10 +224,11 @@ MonoBehaviour:
       boolValue: 0
       statusOverride: 
       inverted: 0
-  - displayName: Mana Sesh
-    id: Endless10000
+  - id: Endless10000
+    displayName: Mana Sesh
     description: Score 10000+ points in Endless Mode.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 11
@@ -226,10 +245,11 @@ MonoBehaviour:
       boolValue: 0
       statusOverride: 
       inverted: 0
-  - displayName: Mana Enthusiast
-    id: Endless100000
+  - id: Endless100000
+    displayName: Mana Addict
     description: Score 100000+ points in Endless Mode.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 11
@@ -246,10 +266,11 @@ MonoBehaviour:
       boolValue: 0
       statusOverride: 
       inverted: 0
-  - displayName: Winner
-    id: ArcadeWin
+  - id: ArcadeWin
+    displayName: Winner
     description: Complete Arcade Mode.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 11
@@ -264,10 +285,11 @@ MonoBehaviour:
       boolValue: 1
       statusOverride: 
       inverted: 0
-  - displayName: Element Master
-    id: ArcadeWinHard
+  - id: ArcadeWinHard
+    displayName: Element Master
     description: Complete Arcade Mode in Hard mode.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 11
@@ -282,10 +304,11 @@ MonoBehaviour:
       boolValue: 1
       statusOverride: 
       inverted: 0
-  - displayName: Planet Knight
-    id: ArcadeWinUltimate
+  - id: ArcadeWinUltimate
+    displayName: Planet Knight
     description: Complete Arcade Mode in Ultimate mode.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 11
@@ -300,10 +323,11 @@ MonoBehaviour:
       boolValue: 1
       statusOverride: 
       inverted: 0
-  - displayName: Perfectionist
-    id: ArcadeWinNoDamage
+  - id: ArcadeWinNoDamage
+    displayName: Perfectionist
     description: Complete Arcade Mode without taking any damage.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 0
     progressStat: 13
     requirements:
     - condition: 11
@@ -330,10 +354,11 @@ MonoBehaviour:
       boolValue: 1
       statusOverride: 
       inverted: 0
-  - displayName: Champion
-    id: ArcadeWinHardNoDamage
+  - id: ArcadeWinHardNoDamage
+    displayName: Champion
     description: Complete Arcade Mode on Hard difficulty without taking any damage.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 1
     progressStat: 13
     requirements:
     - condition: 11
@@ -360,10 +385,11 @@ MonoBehaviour:
       boolValue: 1
       statusOverride: 
       inverted: 0
-  - displayName: Overlord
-    id: ArcadeWinUltimateNoDamage
+  - id: ArcadeWinUltimateNoDamage
+    displayName: Overlord
     description: Complete Arcade Mode on Ultimate difficulty without taking any damage.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 1
     progressStat: 13
     requirements:
     - condition: 11
@@ -390,10 +416,11 @@ MonoBehaviour:
       boolValue: 1
       statusOverride: 
       inverted: 0
-  - displayName: zizzery
-    id: ZChallengesComplete
+  - id: ZChallengesComplete
+    displayName: zizzery
     description: Complete all of the Z?Challenges.
     icon: {fileID: 21300000, guid: 95682fea60c1c5847830ac8fa0ce5275, type: 3}
+    hidden: 1
     progressStat: 13
     requirements:
     - condition: 11
