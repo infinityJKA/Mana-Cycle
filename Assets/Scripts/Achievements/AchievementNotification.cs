@@ -33,7 +33,12 @@ namespace Achievements
 
         public void ShowAchievement(Achievement achievement)
         {
-            titleLabel.text = achievement.displayName;
+            if (achievement.hidden && !achievement.unlocked) {
+                    descLabel.text = "???";
+                } else {
+                    titleLabel.text = achievement.displayName;
+                }
+            
             iconImage.sprite = achievement.icon;
 
             // If this is a not a notification and is in the achievmeents list having a bkgd, change icon and bgkd color if not unlocked
@@ -51,7 +56,13 @@ namespace Achievements
                 }
             }
 
-            if (descLabel) descLabel.text = achievement.description;
+            if (descLabel) {
+                if (achievement.hidden && !achievement.unlocked) {
+                    descLabel.text = "This is a hidden achivement. Play the game some more and you might unlock it!";
+                } else {
+                    descLabel.text = achievement.description;
+                }
+            }
 
             if (animator) animator.SetTrigger("Appear");
         }

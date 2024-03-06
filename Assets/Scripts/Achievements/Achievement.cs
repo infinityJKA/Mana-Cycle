@@ -14,15 +14,16 @@ namespace Achievements {
     [System.Serializable]
     public class Achievement
     {
+
+        /// <summary>
+        /// Internal ID used to track the status / progress of this achievement
+        /// </summary>
+        public string id;
+
         /// <summary>
         /// Name that is shown to the user in the achievments list.
         /// </summary>
         public string displayName;
-
-        /// <summary>
-        /// Internal ID used to track the progress of this achievement
-        /// </summary>
-        public string id;
 
         /// <summary>
         /// Single sentence or longer description describing this achievement's requirements.
