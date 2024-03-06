@@ -1,4 +1,5 @@
 using Battle.Board;
+using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -56,10 +57,15 @@ namespace Achievements
         public void UnlockAchievement(Achievement achievement)
         {
             if (achievement.unlocked) return;
-            achievement.Unlock();
+            achievement.UnlockPlayerPref();
+            // NOTE: if too much going on, disable this notification if steam is initialized since they'll get the notificaiton there too
             achievementNotifyQueue.Enqueue(achievement);
         }
 
+        /// <summary>
+        /// Unlock an achievement from script via ID, for achievements not using the objective system.
+        /// </summary>
+        /// <param name="id">internal id of the achievement, ex. <c>Lv13Clear</c></param>
         public void UnlockAchievement(string id)
         {
             foreach (Achievement achievement in database.achievements)
@@ -103,6 +109,24 @@ namespace Achievements
                 // if passed all objectives, earn the achievement
                 if (objectivesComplete) UnlockAchievement(achievement);
             }
+
+            // don't run if steamworks disabled - game is either not run through steam or is webgl/standalone pc build
+            #if !DISABLESTEAMWORKS
+            UpdateSteamAchievements();
+            #endif
         }
+
+        #if !DISABLESTEAMWORKS
+        public void UpdateSteamAchievements() {
+            if (!SteamManager.Initialized) return;
+            foreach (Achievement achievement in database.achievements)
+            {
+                if (achievement.unlocked) {
+                    SteamUserStats.SetAchievement(achievement.id);
+                }
+            }
+            SteamUserStats.StoreStats();
+        }
+        #endif
     }
 }
