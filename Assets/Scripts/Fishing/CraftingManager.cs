@@ -17,6 +17,8 @@ public class CraftingManager : MonoBehaviour
     public CraftingRecipe clicked;
     public FishingInventoryBaitAndGoldCounter FIBAGC;
     public TextMeshProUGUI craftingText;
+    public GameObject craftedPopup;
+    public TextMeshProUGUI craftedPopupText;
 
     public void setMode(string s){
         mode = s;
