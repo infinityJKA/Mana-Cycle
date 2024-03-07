@@ -115,23 +115,23 @@ public class CraftingSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHand
     
     }
 
-    public void InventoryClick(){
-        // if(recipe.itemToCraft is FishingArmor){
-        //     if(inv.armor1 == inv.defaultArmor){
-        //         inv.armor1 = recipe.itemToCraft as FishingArmor;
-        //         inv.Remove(recipe.itemToCraft);
-        //     }
-        //     else{
-        //         inv.Add(inv.armor1);
-        //         inv.armor1 = recipe.itemToCraft as FishingArmor;
-        //         inv.Remove(recipe.itemToCraft);
-        //     }
-        //     cm.CreateCraftingDisplay();
-        // }
-        // else if(recipe.itemToCraft is FishingWeapon){
-        //     cm.clicked = recipe.itemToCraft as FishingWeapon;
-        //     cm.WeaponPopup.gameObject.SetActive(true);
-        // }
+    public void Craft(){
+        if(inv.CheckIfCraftable(recipe)){
+            // remove items needed to craft (why am i just now starting to comment after like a hundred functions)
+            for(int i = 0; i < recipe.requiredItems.Count; i++){
+                for(int t = 0; t < recipe.requiredItemCount[i]; t++){
+                    cm.inventory.Remove(recipe.requiredItems[i]);
+                }
+            }
+            // add the crafted item
+            cm.inventory.Add(recipe.itemToCraft);
+            // popup menu
+            cm.craftedPopup.SetActive(true);
+            cm.craftedPopupText.text = "You crafted " + recipe.itemToCraft.name +"!";
+            // refresh inventory
+            cm.CreateCraftingDisplay();
+        }
+
     }
 
 }
