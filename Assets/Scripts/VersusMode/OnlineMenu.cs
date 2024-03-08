@@ -40,10 +40,10 @@ public class OnlineMenu : MonoBehaviour {
 
         DisableInteractables();
         if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
-        if (NetworkManagerManager.networkManagerType == NetworkManagerManager.NetworkManagerType.Steam) {
-            SteamLobbyManager.CreateLobby();
+        if (SteamManager.Initialized) {
+            SteamLobbyManager.instance.CreateLobby();
             NetworkManager.singleton.StartHost();
-        } else if (NetworkManagerManager.networkManagerType == NetworkManagerManager.NetworkManagerType.Relay) {
+        } else {
             bool success = await RelayManager.CreateRelay();
             if (!success) EnableInteractables();
         }
@@ -61,10 +61,10 @@ public class OnlineMenu : MonoBehaviour {
 
         DisableInteractables();
         if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
-        if (NetworkManagerManager.networkManagerType == NetworkManagerManager.NetworkManagerType.Steam) {
+        if (SteamManager.Initialized) {
             // TODO: implement join via friends list or soemthing similar
             NetworkManager.singleton.StartClient();
-        } else if (NetworkManagerManager.networkManagerType == NetworkManagerManager.NetworkManagerType.Relay) {
+        } else {
             bool success = await RelayManager.JoinRelay(joinCode);
             if (!success) EnableInteractables();
         }

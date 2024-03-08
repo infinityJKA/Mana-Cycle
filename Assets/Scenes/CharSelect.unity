@@ -536,6 +536,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fontType: 2
+  enFontOverride: {fileID: 0}
+  jaFontOverride: {fileID: 0}
   enMaterialOverride: {fileID: 0}
   jaMaterialOverride: {fileID: 0}
   enFontSize: 0
@@ -2348,7 +2350,6 @@ GameObject:
   m_Component:
   - component: {fileID: 483336644}
   - component: {fileID: 483336643}
-  - component: {fileID: 483336645}
   - component: {fileID: 483336641}
   m_Layer: 0
   m_Name: NetworkManager Steam
@@ -2356,7 +2357,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &483336641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2369,7 +2370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e55fca1f4e4844593a3dd65a3ecb39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Channels: 0200000001000000
+  Channels: 02000000
   Timeout: 25
   AllowSteamRelay: 1
   UseNextGenSteamNetworking: 1
@@ -2394,7 +2395,7 @@ MonoBehaviour:
   autoConnectClientBuild: 0
   offlineScene: 
   onlineScene: 
-  transport: {fileID: 0}
+  transport: {fileID: 483336641}
   networkAddress: localhost
   maxConnections: 2
   disconnectInactiveConnections: 0
@@ -2434,18 +2435,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &483336645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 483336640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef4bffeda13d7a748973ff9204401c07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &488455716
 GameObject:
   m_ObjectHideFlags: 0
@@ -2747,6 +2736,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fontType: 2
+  enFontOverride: {fileID: 0}
+  jaFontOverride: {fileID: 0}
   enMaterialOverride: {fileID: 0}
   jaMaterialOverride: {fileID: 0}
   enFontSize: 0
@@ -4945,7 +4936,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1909296826
 Transform:
   m_ObjectHideFlags: 0
@@ -5853,7 +5844,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2038976869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5869,7 +5860,7 @@ MonoBehaviour:
   relayManager: {fileID: 1909296822}
   steamManager: {fileID: 483336640}
   webGLManager: {fileID: 1119216497}
-  _networkManagerType: 0
+  _networkManagerType: 1
 --- !u!4 &2038976870
 Transform:
   m_ObjectHideFlags: 0
@@ -6727,6 +6718,63 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 846626345305000408, guid: 933349e09274f407a8270c47548d8fa4, type: 3}
   m_PrefabInstance: {fileID: 4837922402324188694}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7794775271715138159
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1844883842907283034, guid: 6207c27ca144cd04782142535ea2acf7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1039.5244
+      objectReference: {fileID: 0}
+    - target: {fileID: 1844883842907283034, guid: 6207c27ca144cd04782142535ea2acf7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 706.8266
+      objectReference: {fileID: 0}
+    - target: {fileID: 1844883842907283034, guid: 6207c27ca144cd04782142535ea2acf7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.5149066
+      objectReference: {fileID: 0}
+    - target: {fileID: 1844883842907283034, guid: 6207c27ca144cd04782142535ea2acf7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1844883842907283034, guid: 6207c27ca144cd04782142535ea2acf7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1844883842907283034, guid: 6207c27ca144cd04782142535ea2acf7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1844883842907283034, guid: 6207c27ca144cd04782142535ea2acf7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1844883842907283034, guid: 6207c27ca144cd04782142535ea2acf7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1844883842907283034, guid: 6207c27ca144cd04782142535ea2acf7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1844883842907283034, guid: 6207c27ca144cd04782142535ea2acf7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7964340026155225620, guid: 6207c27ca144cd04782142535ea2acf7, type: 3}
+      propertyPath: m_Name
+      value: SteamLobbyManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6207c27ca144cd04782142535ea2acf7, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -6745,3 +6793,4 @@ SceneRoots:
   - {fileID: 224481310}
   - {fileID: 2628917649256165972}
   - {fileID: 1317321756}
+  - {fileID: 7794775271715138159}
