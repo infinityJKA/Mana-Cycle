@@ -134,13 +134,17 @@ namespace Networking {
             Debug.Log("Steam lobby join requested!");
 
             // if joining from steam, make sure the charselect scene is loaded first before joining lobby
-            Storage.online = true; Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = true;
+            Storage.online = true; 
+            Storage.isPlayerControlled1 = true; 
+            Storage.isPlayerControlled2 = true;
             Storage.level = null;
+            Storage.gamemode = Storage.GameMode.Versus;
             if (SceneManager.GetActiveScene().name != "CharSelect") {
-                SceneManager.LoadScene("CharSelect");
+                TransitionScript.instance.onTransitionOut = () => SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
+                TransitionScript.instance.WipeToScene("CharSelect");
+            } else {
+                SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
             }
-
-            SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
         }
 
 
@@ -157,8 +161,8 @@ namespace Networking {
                 NetworkManager.singleton.networkAddress = hostAddress;
                 NetworkManager.singleton.StartClient();
 
-                CSteamID opponentId = SteamMatchmaking.GetLobbyMemberByIndex(lobbyId, 0);
-                RequestUserData(opponentId);
+                CSteamID hostId = SteamMatchmaking.GetLobbyMemberByIndex(lobbyId, 0);
+                RequestUserData(hostId);
             }
         }
         #endif

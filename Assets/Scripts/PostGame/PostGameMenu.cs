@@ -292,8 +292,11 @@ namespace PostGame {
             {
                 if (Storage.online) {
                     // Toggle rematch requested status when in online mode
-                    board.netPlayer.rematchRequested = !board.netPlayer.rematchRequested;
-                    board.netPlayer.CmdRematch();
+                    if (board.netPlayer.postGameIntention != NetPlayer.PostGameIntention.Rematch) {
+                        board.netPlayer.CmdSetPostGameIntention(NetPlayer.PostGameIntention.Rematch);
+                    } else {
+                        board.netPlayer.CmdSetPostGameIntention(NetPlayer.PostGameIntention.Undecided);
+                    }
                 } else {
                     // restart immediately in local play
                     Replay();
@@ -301,7 +304,7 @@ namespace PostGame {
             }
         }
 
-        public void Replay() {
+        public static void Replay() {
             SceneManager.LoadScene("ManaCycle");
         }
 
@@ -314,9 +317,21 @@ namespace PostGame {
 
         public void SelectBackToCSS()
         {
+            if (Storage.online) {
+                if (board.netPlayer.postGameIntention != NetPlayer.PostGameIntention.Rematch) {
+                    board.netPlayer.CmdSetPostGameIntention(NetPlayer.PostGameIntention.Rematch);
+                } else {
+                    board.netPlayer.CmdSetPostGameIntention(NetPlayer.PostGameIntention.Undecided);
+                }
+            } else {
+                BackToCSS();
+            }
+        }
+
+        public static void BackToCSS() {
             setMenuSong();
             Time.timeScale = 1f;
-            transitionHandler.WipeToScene("CharSelect", reverse: true);
+            TransitionScript.instance.WipeToScene("CharSelect", reverse: true);
         }
 
         public void SelectBackToSolo()
@@ -326,7 +341,7 @@ namespace PostGame {
             transitionHandler.WipeToScene("SoloMenu", reverse: true);
         }
 
-        public void setMenuSong(){
+        public static void setMenuSong(){
             SoundManager.Instance.SetBGM(SoundManager.Instance.mainMenuMusic);
         }
 

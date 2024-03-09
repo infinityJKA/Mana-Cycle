@@ -17,11 +17,6 @@ public class NetPlayer : NetworkBehaviour {
     public GameBoard board;
 
     /// <summary>
-    /// If this client has requested a rematch in the postgame menu.
-    /// </summary>
-    public bool rematchRequested = false;
-
-    /// <summary>
     /// the username of this player. may either be retreived from steam or some other relay type service, may change in the future
     /// </summary>
     public string username {get; private set;} = "Connecting...";
@@ -212,12 +207,12 @@ public class NetPlayer : NetworkBehaviour {
         // Creates the cycle objects and initializes various things on each board.
         ManaCycle.instance.CreateCycleObjects();
 
-        // match will officially start 4 seconds after this initialize battle command is executed on the client
-        double startTime = NetworkTime.time + 4;
+        // match will officially start 5 seconds after this initialize battle command is executed on the client
+        double startTime = NetworkTime.time + 5;
         ManaCycle.instance.CountdownHandler.StartTimerNetworkTime(startTime);
 
         // let host know this client is ready and let it know the time that the match will start
-        Debug.Log("Sending ready cmd to host - start time: "+startTime+", time: "+NetworkTime.time+", timeUntilStart: 4?");
+        Debug.Log("Sending ready cmd to host - start time: "+startTime+", time: "+NetworkTime.time+", timeUntilStart: 5?");
         enemyPlayer.CmdClientReady(startTime);
 
         // ready to show cycle to player now that cycle is initialized
@@ -395,23 +390,35 @@ public class NetPlayer : NetworkBehaviour {
         if (intensity > 0) board.DamageShake(intensity);
     }
 
-    // Initiate a game rematch.
-    // Called by client when they request a rematch.
-    // Also called by the host when they themselves request a rematch (though it isn't sent as a packet.)
-    [Command]
-    public void CmdRematch() {
-        RpcStartRematch();
+    public enum PostGameIntention {
+        Undecided,
+        Rematch,
+        CharSelect
     }
 
-    // Called by the host when a rematch is starting.
-    // Reloads the ManaCycle scene on both host and client when CmdRematch calls from host.
+    public PostGameIntention postGameIntention;
+
+    // Set the intention of this player - None, Rematch, CharacterSelect.
+    // Once both players have selected the same non-None intention then that button will be selected on both clients.
+    [Command]
+    public void CmdSetPostGameIntention(PostGameIntention intention)
+    {
+        RpcSetPostGameIntention(intention);
+    }
+
     [ClientRpc]
-    private void RpcStartRematch() {
-        Debug.Log(board+" is requesting a rematch");
-        // Initialize a rematch if the host has also requested a rematch.
-        if (rematchRequested && enemyPlayer.rematchRequested) {
-            Debug.Log("both players request rematch; Rematch starting");
-            board.winMenu.Replay();
+    private void RpcSetPostGameIntention(PostGameIntention intention) {
+        postGameIntention = intention;
+
+        Debug.Log(gameObject+" intention: "+postGameIntention);
+
+        if (postGameIntention == enemyPlayer.postGameIntention) {
+            if (postGameIntention == PostGameIntention.Rematch) {
+                PostGameMenu.Replay();
+            }
+            else if (postGameIntention == PostGameIntention.CharSelect) {
+                PostGameMenu.BackToCSS();
+            }
         }
     }
 }

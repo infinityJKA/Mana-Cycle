@@ -71,7 +71,7 @@ namespace Battle.Cycle {
                     player.board = boards[player.isOwned ? 0 : 1];
                     player.board.SetNetPlayer(player);
                     // reset rematchRequested to false incase scene is being reloaded during a rematch match
-                    player.board.netPlayer.rematchRequested = false;
+                    player.board.netPlayer.postGameIntention = NetPlayer.PostGameIntention.Undecided;
                 }
 
                 foreach (var player in players) {
