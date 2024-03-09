@@ -7,6 +7,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VersusMode;
 
+#if !DISABLESTEAMWORKS
+using Steamworks;
+#endif
+
 public class NetPlayer : NetworkBehaviour {
     public CharSelector charSelector;
     
@@ -17,11 +21,24 @@ public class NetPlayer : NetworkBehaviour {
     /// </summary>
     public bool rematchRequested = false;
 
+    /// <summary>
+    /// the username of this player. may either be retreived from steam or some other relay type service, may change in the future
+    /// </summary>
+    public string username {get; private set;} = "Connecting...";
+
 
     private NetPlayer enemyPlayer {get{return board.enemyBoard.netPlayer;}}
 
     private void Start() {
         DontDestroyOnLoad(gameObject);
+
+        // if using steam & this is local player, set username to be steam local name
+        #if !DISABLESTEAMWORKS
+            if (NetManager.IsUseSteam()) {
+                SetUsername(SteamFriends.GetPersonaName());
+            }
+        #endif
+
         ConnectToCharSelector();
     }
 
@@ -36,7 +53,8 @@ public class NetPlayer : NetworkBehaviour {
         } else {
             charSelector = CharSelectMenu.Instance.p2Selector;
         }
-        charSelector.Connect();
+        
+        charSelector.Connect(this);
     }
 
     public override void OnStartClient()
@@ -48,6 +66,14 @@ public class NetPlayer : NetworkBehaviour {
         if (charSelector) charSelector.Disconnect();
     }
 
+    public void SetUsername(string username) {
+        this.username = username;
+        
+        // in charselect, update username immediately when received
+        if (charSelector != null) {
+            charSelector.SetUsername(username);
+        }
+    }
 
     [Command]
     public void CmdSetSelectedBattlerIndex(int index) {

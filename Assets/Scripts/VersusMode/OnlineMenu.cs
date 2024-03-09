@@ -12,6 +12,7 @@ using UnityEngine.UI;
 
 using Networking;
 using UnityEngine.InputSystem;
+using System;
 
 public class OnlineMenu : MonoBehaviour {
     public static OnlineMenu singleton;
@@ -40,33 +41,62 @@ public class OnlineMenu : MonoBehaviour {
 
         DisableInteractables();
         if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
-        if (SteamManager.Initialized) {
-            SteamLobbyManager.instance.CreateLobby();
-            NetworkManager.singleton.StartHost();
-        } else {
-            bool success = await RelayManager.CreateRelay();
-            if (!success) EnableInteractables();
+        
+        try {
+            // STEAM
+            if (NetManager.IsUseSteam() && SteamManager.Initialized) {
+                SteamLobbyManager.instance.CreateLobby();
+            } 
+            // RELAY
+            else if (RelayManager.relayNetworkManager != null) {
+                bool success = await RelayManager.CreateRelay();
+                if (!success) EnableInteractables();
+            } 
+            // IP
+            else {
+                NetworkManager.singleton.StartHost();
+            }
+        } catch (Exception e) {
+            PopupManager.instance.ShowError(e);
+            EnableInteractables();
         }
     }
 
     public async void JoinButtonPressed() {
         string joinCode = joinCodeField.text;
 
-        if (joinCode.Length != 6) {
-            PopupManager.instance.ShowErrorMessage("Enter a valid join code");
-            return;
-        }
-
         if (!CheckOnline()) return;
 
         DisableInteractables();
         if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
-        if (SteamManager.Initialized) {
-            // TODO: implement join via friends list or soemthing similar
-            NetworkManager.singleton.StartClient();
-        } else {
-            bool success = await RelayManager.JoinRelay(joinCode);
-            if (!success) EnableInteractables();
+        
+        try {
+            // ======== STEAM
+            if (NetManager.IsUseSteam() && SteamManager.Initialized) {
+                // TODO: implement join via friends list or soemthing similar
+                SteamLobbyManager.instance.JoinLobbyWithID(joinCode);
+                // NetworkManager.singleton.StartClient();
+            } 
+            // ======== RELAY
+            else if (RelayManager.relayNetworkManager != null) {
+                // validate code length
+                if (joinCode.Length != 6) {
+                    PopupManager.instance.ShowErrorMessage("Enter a valid join code");
+                    EnableInteractables();
+                    return;
+                }
+                bool success = await RelayManager.JoinRelay(joinCode);
+                if (!success) EnableInteractables();
+            } 
+            // ======== IP (local)
+            else {
+                NetworkManager.singleton.StartClient();
+            }
+        }
+
+        catch (Exception e) {
+            PopupManager.instance.ShowError(e);
+            EnableInteractables();
         }
     }
 
@@ -88,7 +118,6 @@ public class OnlineMenu : MonoBehaviour {
     }
 
     public void ShowOnlineMenu() {
-        Debug.Log("showing online menu");
         charSelectMenu.SetActive(false);
         onlineMenu.SetActive(true);
         EnableInteractables();
