@@ -57,6 +57,7 @@ namespace PostGame {
         {
             transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
             timerRunning = false;
+            continueButton.gameObject.SetActive(false);
         }
 
         // Update is called once per frame
@@ -202,7 +203,7 @@ namespace PostGame {
                 // Debug.Log(Storage.level.lastSeriesLevel);
             }
 
-            else
+            else if (Storage.gamemode == Storage.GameMode.Versus)
             {
                 // In versus mode: retry -> rematch
                 retryButton.transform.GetComponentInChildren<TextMeshProUGUI>()
@@ -223,7 +224,7 @@ namespace PostGame {
 
             AchievementHandler achievementHandler = FindAnyObjectByType<AchievementHandler>();
             if (board.IsPlayerControlled()) achievementHandler.CheckAchievements(board);
-            if (board.enemyBoard.IsPlayerControlled()) achievementHandler.CheckAchievements(board.enemyBoard);
+            if (!Storage.online && board.enemyBoard.IsPlayerControlled()) achievementHandler.CheckAchievements(board.enemyBoard);
 
             // if (!board.Mobile) {
             //     EventSystem.current.SetSelectedGameObject(null);

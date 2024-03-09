@@ -15,6 +15,8 @@ using Battle.AI;
 
 // may be a bad idea to namespace this, could be changed later
 using static ArcadeStats.Stat;
+using TMPro;
+using Steamworks;
 //using static Item.DeferType;
 
 namespace Battle.Board {
@@ -288,11 +290,15 @@ namespace Battle.Board {
 
         [SerializeField] private GameObject moveSFX, rotateSFX, castSFX, fullCycleSFX, loseSFX, PauseSFX, winSFX, failedCastSFX, placeSFX, damageTakenSFX, startupCastSFX, cascadeSFX, dmgShootSFX;
 
+        [SerializeField] private TMP_Text usernameLabel;
+
         // online mode- the netplayer that controls this board
         public NetPlayer netPlayer {get; private set;}
 
         public void SetNetPlayer(NetPlayer netPlayer) {
             this.netPlayer = netPlayer;
+            
+            SetUsername(netPlayer.username);
         }
 
         // if piece will auto place when sliding against the ground for too long.
@@ -499,10 +505,10 @@ namespace Battle.Board {
             // z?man starts with increased cycle
             if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Osmose){
                 cycleLevel++;
-                Debug.Log("z?man cycle boost");
             }
 
             cycleLevelDisplay.Set(cycleLevel);
+
         } // close Start()
 
         void InitBattler() {
@@ -739,8 +745,6 @@ namespace Battle.Board {
             {
                 portrait.color = new Color(1f,1f,1f,0.47f);
             }
-
-            if (playerSide == 1) Debug.Log(battler.name);
 
 
             // setup level trash timer if applicable
@@ -2428,6 +2432,16 @@ namespace Battle.Board {
                     }
                 }
             });
+        }
+
+        // username / local name
+        public void SetUsername(string name) {
+            usernameLabel.gameObject.SetActive(true);
+            usernameLabel.text = name;
+        }
+
+        public void HideUsername() {
+            usernameLabel.gameObject.SetActive(false);
         }
     }
 }

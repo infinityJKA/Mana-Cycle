@@ -132,7 +132,7 @@ public class Item : ScriptableObject
 
     public static void Proc(List<Item> items, DeferType deferType = DeferType.None)
     {
-        Debug.Log("procing with type " + deferType);
+        // Debug.Log("procing with type " + deferType);
         foreach (Item i in items) i.ActivateEffect(deferType);
     }
 

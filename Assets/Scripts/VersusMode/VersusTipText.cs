@@ -5,10 +5,16 @@ using UnityEngine.UI;
 namespace VersusMode {
     ///<summary>Controls the grid of selectable characters in the versus menu.</summary>
     public class VersusTipText : MonoBehaviour {
+        private void Start() {
+            SetInputs(i);
+        }
+
         ///<summary>Cached list of all children</summary>
         [SerializeField] [InspectorName("Input Script")] private InputScript i;
 
         public void SetInputs(InputScript i) {
+            if (!enabled) return;
+
             this.i = i;
             if (!i) {
                 Debug.LogError("Missing input script on versus tip text");
@@ -23,10 +29,6 @@ namespace VersusMode {
                 Utils.KeySymbol(i.RotateCCW),
                 Utils.KeySymbol(i.RotateCW)
             );
-        }
-
-        void OnValidate() {
-            SetInputs(i);
         }
     }
 }

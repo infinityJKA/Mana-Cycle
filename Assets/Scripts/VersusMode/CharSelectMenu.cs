@@ -32,6 +32,8 @@ namespace VersusMode {
         // for handling Controllers
         [SerializeField] private PlayerConnectionManager connectionManager;
 
+        [SerializeField] private Button dualKeyboardButton;
+
         [SerializeField] private bool mobile;
         public bool Mobile { get {return mobile;} }
 
@@ -156,6 +158,8 @@ namespace VersusMode {
                 PlayerPrefs.SetInt("CpuLevel", p2Selector.CpuLevel);
             }
             
+            bool dualKeyboardAvailable = Storage.gamemode == Storage.GameMode.Versus && !Storage.online;
+            dualKeyboardButton.gameObject.SetActive(dualKeyboardAvailable);
 
             if (!transitionHandler) {
                 Debug.LogError("Transition handler not found in scene!");

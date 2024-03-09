@@ -182,7 +182,7 @@ namespace VersusMode {
         public bool connected {get; private set;} = true;
         [SerializeField] private Color disconnectBkgdColor, connectBkgdColor;
 
-        [SerializeField] private GameObject connectTipLabel;
+        [SerializeField] private GameObject connectTipObj, connectCodeObj;
         [SerializeField] private TMP_Text joinCodeLabel;
 
         [SerializeField] private GameObject onlineShowWhileNotConnected;
@@ -191,6 +191,13 @@ namespace VersusMode {
         private bool connectedThisUpdate;
 
         private Vector2 centerPosition;
+
+        // NetPlayer controlling this if online
+        public NetPlayer netPlayer {get; private set;}
+
+        // Username text label
+        public TMP_Text usernameLabel;
+
         void Start() {
             // TEMP FOR TESTING !! ,`:)
             // Storage.gamemode = Storage.GameMode.Solo;
@@ -203,6 +210,10 @@ namespace VersusMode {
 
             tipText.gameObject.SetActive(!menu.Mobile);
             gameObject.SetActive(true);
+
+            usernameLabel.gameObject.SetActive(Storage.online);
+
+            if (Storage.online) Disconnect();
         }
 
         void Update() {
@@ -494,7 +505,6 @@ namespace VersusMode {
 
             if (!menu.Mobile && cpuLevelObject) {
                 if (isCpuCursor) {
-                    Debug.Log("toggling cpu level obj");
                     cpuLevelObject.SetActive(lockedIn);
                 } else {
                     cpuLevelObject.SetActive(menu.Mobile && isCpuCursor);
@@ -738,10 +748,21 @@ namespace VersusMode {
         }
 
         public void ShowJoinCode(string joinCode) {
+            connectCodeObj.SetActive(true);
             joinCodeLabel.text = joinCode;
         }
 
+        public void HideJoinCode() {
+            connectCodeObj.SetActive(false);
+        }
+
+        /// <summary>
+        /// Display this board as disconnected. 
+        /// Shows appropriate labels such as <Press any button to join> or <waiting for opponent code: ######>
+        /// </summary>
         public void Disconnect() {
+            Debug.Log(gameObject+" disconnected");
+
             if (lockedIn) ToggleLock();
             connected = false;
             Active = false;
@@ -749,20 +770,28 @@ namespace VersusMode {
             if (Storage.online) {
                 onlineShowWhileNotConnected.SetActive(true);
             } else {
-                connectTipLabel.SetActive(true);
+                connectTipObj.SetActive(true);
             }
             
             background.color = disconnectBkgdColor;
             HideSelection();
             portrait.gameObject.SetActive(false);
             nameText.gameObject.SetActive(false);
+
+            usernameLabel.gameObject.SetActive(false);
         }
 
-        public void Connect() {
+        /// <summary>
+        /// Display this board as connected.
+        /// </summary>
+        /// <param name="player">Optional netplayer to set if in online mode.</param>
+        public void Connect(NetPlayer player = null) {
+            Debug.Log(gameObject+" connected");
+
             connected = true;
             Active = true;
             isCpuCursor = false;
-            connectTipLabel.SetActive(false);
+            connectTipObj.SetActive(false);
             onlineShowWhileNotConnected.SetActive(false);
             background.color = connectBkgdColor;
             if (selectedIcon != null) selectedIcon.SetSelected(isPlayer1, true);
@@ -771,6 +800,16 @@ namespace VersusMode {
             connectedThisUpdate = true;
             Instantiate(connectSFX);
             RefreshLockVisuals();
+
+            if (player != null) {
+                netPlayer = player;
+                SetUsername(player.username);
+            }
+        }
+
+        public void SetUsername(string username) {
+            usernameLabel.gameObject.SetActive(true);
+            usernameLabel.text = username;
         }
     }
 }

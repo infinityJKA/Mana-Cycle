@@ -2098,7 +2098,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 471933327}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c284152552f04976b4cc0cf60958223, type: 3}
   m_Name: 
@@ -2124,12 +2124,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Arrows - Cursor
-
-    / - Select   Back Space - Back
-
-    , - Info   .
-    - Settings'
+  m_text: ', - Info   . - Settings'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
@@ -2357,7 +2352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &483336641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2420,6 +2415,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
+  useSteam: 1
 --- !u!4 &483336644
 Transform:
   m_ObjectHideFlags: 0
@@ -2493,11 +2489,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'RDFG - Cursor
-
-    E - Select   Tab - Back
-
-    Q - Info   W - Settings'
+  m_text: Q - Info   W - Settings
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
@@ -2581,7 +2573,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 488455716}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c284152552f04976b4cc0cf60958223, type: 3}
   m_Name: 
@@ -2847,6 +2839,7 @@ MonoBehaviour:
   startButton: {fileID: 0}
   startText: {fileID: 0}
   connectionManager: {fileID: 2087488158}
+  dualKeyboardButton: {fileID: 3004535545199556286}
   mobile: 0
 --- !u!1 &608404184
 GameObject:
@@ -3551,6 +3544,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
+  useSteam: 1
 --- !u!4 &1119216500
 Transform:
   m_ObjectHideFlags: 0
@@ -3955,6 +3949,129 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1153907435}
   m_CullTransparentMesh: 1
+--- !u!1 &1164893243
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1164893247}
+  - component: {fileID: 1164893246}
+  - component: {fileID: 1164893245}
+  - component: {fileID: 1164893244}
+  m_Layer: 0
+  m_Name: NetworkManager Local Testing
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1164893244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1164893243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  port: 7777
+  NoDelay: 1
+  SendTimeout: 5000
+  ReceiveTimeout: 30000
+  serverMaxMessageSize: 16384
+  serverMaxReceivesPerTick: 10000
+  serverSendQueueLimitPerConnection: 10000
+  serverReceiveQueueLimitPerConnection: 10000
+  clientMaxMessageSize: 16384
+  clientMaxReceivesPerTick: 1000
+  clientSendQueueLimit: 10000
+  clientReceiveQueueLimit: 10000
+--- !u!114 &1164893245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1164893243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96b149f511061407fb54895c057b7736, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wrap: {fileID: 1164893244}
+  latency: 100
+  jitter: 0.02
+  jitterSpeed: 1
+  unreliableLoss: 2
+  unreliableScramble: 2
+--- !u!114 &1164893246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1164893243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d35c542462668f544bd0fdf63671ca40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  runInBackground: 1
+  headlessStartMode: 1
+  editorAutoStart: 0
+  sendRate: 10
+  autoStartServerBuild: 0
+  autoConnectClientBuild: 0
+  offlineScene: 
+  onlineScene: 
+  transport: {fileID: 1164893245}
+  networkAddress: localhost
+  maxConnections: 2
+  disconnectInactiveConnections: 0
+  disconnectInactiveTimeout: 30
+  authenticator: {fileID: 0}
+  playerPrefab: {fileID: 8512461164183311787, guid: 10d261420d61cdd46a8c31374bdbec64, type: 3}
+  autoCreatePlayer: 1
+  playerSpawnMethod: 0
+  spawnPrefabs: []
+  exceptionsDisconnect: 1
+  snapshotSettings:
+    bufferTimeMultiplier: 2
+    bufferLimit: 32
+    catchupNegativeThreshold: -1
+    catchupPositiveThreshold: 1
+    catchupSpeed: 0.019999999552965164
+    slowdownSpeed: 0.03999999910593033
+    driftEmaDuration: 1
+    dynamicAdjustment: 1
+    dynamicAdjustmentTolerance: 1
+    deliveryTimeEmaDuration: 2
+  evaluationMethod: 0
+  evaluationInterval: 3
+  timeInterpolationGui: 0
+  useSteam: 0
+--- !u!4 &1164893247
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1164893243}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 980.06213, y: 557.58936, z: 872.7736}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1185507092
 GameObject:
   m_ObjectHideFlags: 0
@@ -5828,54 +5945,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
---- !u!1 &2038976868
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2038976870}
-  - component: {fileID: 2038976869}
-  m_Layer: 0
-  m_Name: NetworkManagerManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &2038976869
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2038976868}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea8a17ef391756647b5acaf2bcfc4d85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  relayManager: {fileID: 1909296822}
-  steamManager: {fileID: 483336640}
-  webGLManager: {fileID: 1119216497}
-  _networkManagerType: 1
---- !u!4 &2038976870
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2038976868}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -452.55096, y: 1337.5083, z: -11.318574}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2083137001
 GameObject:
   m_ObjectHideFlags: 0
@@ -6431,6 +6500,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3277254477866277113, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4959647446772890959, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -6491,6 +6564,10 @@ PrefabInstance:
       propertyPath: battlerGrid
       value: 
       objectReference: {fileID: 1471823741}
+    - target: {fileID: 5349231826878265137, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
+      propertyPath: connectTipObj
+      value: 
+      objectReference: {fileID: 3004535545199556287}
     - target: {fileID: 5349231826878265137, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
       propertyPath: soloInputScript
       value: 
@@ -6567,6 +6644,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8052244734135569134, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9117174414044297160, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -6591,6 +6672,22 @@ PrefabInstance:
 --- !u!224 &3004535545199556285 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 339325234147284398, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
+  m_PrefabInstance: {fileID: 3004535545199556284}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3004535545199556286 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9117174414044297160, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
+  m_PrefabInstance: {fileID: 3004535545199556284}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &3004535545199556287 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8052244734135569134, guid: b619e77b43a9348a694f4ecdbc47782d, type: 3}
   m_PrefabInstance: {fileID: 3004535545199556284}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &3004535545199556288 stripped
@@ -6788,8 +6885,8 @@ SceneRoots:
   - {fileID: 1973661427}
   - {fileID: 1909296826}
   - {fileID: 483336644}
+  - {fileID: 1164893247}
   - {fileID: 1119216500}
-  - {fileID: 2038976870}
   - {fileID: 224481310}
   - {fileID: 2628917649256165972}
   - {fileID: 1317321756}

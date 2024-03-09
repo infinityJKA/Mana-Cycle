@@ -53,5 +53,5 @@ public class Storage
     public static bool useDualKeyboardInput;
 
     // If in an online mode. (applies only to CharSelect & ManaCycle scenes)
-    public static bool online = false;
+    public static bool online = true;
 }

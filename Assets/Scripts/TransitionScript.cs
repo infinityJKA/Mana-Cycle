@@ -21,6 +21,11 @@ public class TransitionScript : MonoBehaviour
     // if false, will need to manually call ReadyToFadeOut()
     private static bool readyToFadeOut;
 
+    /// <summary>
+    /// Action that will be invoked when transitioning out, and set to null after it is invoked.
+    /// </summary>
+    public Action onTransitionOut;
+
     private void Awake() {
         instance = this;
     }
@@ -49,6 +54,9 @@ public class TransitionScript : MonoBehaviour
                 SceneManager.LoadScene(gotoScene);
                 // when WipeOut is called here, it runs before the Start method and causes silly activity
                 // WipeOut();
+
+                if (onTransitionOut != null) onTransitionOut.Invoke();
+                onTransitionOut = null;
             }
         }
 
