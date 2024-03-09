@@ -597,7 +597,7 @@ namespace Battle.Board {
                         trashDamageTimer = trashDamageTimerDuration;
 
                         // send hp to opponent in online mode, since trash timer is nnot evaluated on their board.
-                        if (Storage.online) netPlayer.CmdUpdateHp(hp, intensity: 0.333f);
+                        if (Storage.online && netPlayer.isOwned) netPlayer.CmdUpdateHp(hp, intensity: 0.333f);
                     } 
                     // if no tiles, set timer to 0 (not running)
                     else 
@@ -2207,8 +2207,10 @@ namespace Battle.Board {
         }
 
         public void Pause() {
-            Debug.Log("convopaused: "+convoPaused);
-            Debug.Log("convoendedthisinput: "+Storage.convoEndedThisInput);
+            // No pausing in online mode
+            // for now
+            // but will probably stay that way until it becomes a problem if it ever does
+            if (Storage.online) return;
 
             if (convoPaused) {
                 convoHandler.EndConvo();

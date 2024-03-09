@@ -29,6 +29,16 @@ public class NetManager : NetworkManager {
         if (!conn.identity.isOwned) NetworkServer.localConnection.identity.GetComponent<NetPlayer>().CmdSetLockedIn();
     }
 
+    public override void OnServerDisconnect(NetworkConnectionToClient conn)
+    {
+        base.OnServerDisconnect(conn);
+        if (SceneManager.GetActiveScene().name == "ManaCycle") {
+            Time.timeScale = 0f;
+            PopupManager.instance.ShowBasicPopup("Disconnected", "Your opponent has disconnected",
+                onConfirm: BackToOnlineMenu);
+        }
+    }
+
     public override void OnStopHost()
     {
         base.OnStopHost();
@@ -38,13 +48,15 @@ public class NetManager : NetworkManager {
     public override void OnStopClient()
     {
         base.OnStopClient();
-        PopupManager.instance.ShowBasicPopup("Disconnected", "You have been disconnected",
-            onConfirm: BackToOnlineMenu);
+        // PopupManager.instance.ShowBasicPopup("Disconnected", "You have been disconnected",
+        //     onConfirm: BackToOnlineMenu);
+        BackToOnlineMenu();
     }
 
 
     private void BackToOnlineMenu()
     {
+        Time.timeScale = 1f;
         if (SceneManager.GetActiveScene().name == "CharSelect") {
             OnlineMenu.singleton.ShowOnlineMenu();
         } else {

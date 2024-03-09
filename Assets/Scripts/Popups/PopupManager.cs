@@ -58,7 +58,6 @@ public class PopupManager : MonoBehaviour {
         }
     }
 
-    [Command]
     public void ShowBasicPopup(string title, string description, Action onConfirm = null) {
         var popup = new Popup {
             title = title,
