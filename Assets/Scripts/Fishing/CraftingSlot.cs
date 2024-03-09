@@ -16,24 +16,15 @@ public class CraftingSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHand
     public FishingInventory inv;
     public RequiredCraftingItemsDisplay rq;
     public TextMeshProUGUI bigCraftingText;
-    private Color g1,g2,g3,g4,r1,r2,r3,r4;
+    [SerializeField] TMP_ColorGradient redGradient;
+    [SerializeField] TMP_ColorGradient greenGradient;
+
 
     public void OnEnable(){
         inv = GameObject.Find("Inventory").GetComponent<FishingInventory>();
         cm = GameObject.Find("Crafting Manager").GetComponent<CraftingManager>();
         bigCraftingText = cm.craftingText;
         rq = GameObject.Find("Required Items").GetComponent<RequiredCraftingItemsDisplay>();
-
-        g1 = new Color(0f, 255f, 155f);
-        g3 = new Color(248f, 255f, 0f);
-        g2 = new Color(0f, 255f, 155f);
-        g4 = new Color(248f, 255f, 0f);
-
-        r1 = new Color(142f, 0f, 0f);
-        r2 = new Color(255, 35f, 240f);
-        r3 = new Color(142f, 0f, 0f);
-        r4 = new Color(255, 35f, 240f);
-
     }
 
     public void OnPointerEnter(PointerEventData pointerEventData)
@@ -91,11 +82,11 @@ public class CraftingSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHand
 
         if(inv.CheckIfCraftable(recipe)){
             bigCraftingText.text = "CRAFTABLE";
-            bigCraftingText.colorGradient = new VertexGradient(g1,g2,g3,g4);
+            bigCraftingText.colorGradientPreset  = greenGradient;
         }
         else{
             bigCraftingText.text = "NOT ENOUGH MATERIALS";
-            bigCraftingText.colorGradient = new VertexGradient(r1,r2,r3,r4);
+            bigCraftingText.colorGradientPreset  = redGradient;
         }
 
         cm.clicked = recipe;
@@ -113,32 +104,34 @@ public class CraftingSlot : MonoBehaviour, IPointerEnterHandler,IPointerExitHand
         
         if(inv.CheckIfCraftable(recipe)){
             craftableText.text = "YES";
+            craftableText.colorGradientPreset  = greenGradient;
         }
         else{
             craftableText.text = "NO";
+            craftableText.colorGradientPreset  = redGradient;
         }
         
         icon.sprite = recipe.itemToCraft.icon;
     
     }
 
-    public void InventoryClick(){
-        // if(recipe.itemToCraft is FishingArmor){
-        //     if(inv.armor1 == inv.defaultArmor){
-        //         inv.armor1 = recipe.itemToCraft as FishingArmor;
-        //         inv.Remove(recipe.itemToCraft);
-        //     }
-        //     else{
-        //         inv.Add(inv.armor1);
-        //         inv.armor1 = recipe.itemToCraft as FishingArmor;
-        //         inv.Remove(recipe.itemToCraft);
-        //     }
-        //     cm.CreateCraftingDisplay();
-        // }
-        // else if(recipe.itemToCraft is FishingWeapon){
-        //     cm.clicked = recipe.itemToCraft as FishingWeapon;
-        //     cm.WeaponPopup.gameObject.SetActive(true);
-        // }
+    public void Craft(){
+        if(inv.CheckIfCraftable(recipe)){
+            // remove items needed to craft (why am i just now starting to comment after like a hundred functions)
+            for(int i = 0; i < recipe.requiredItems.Count; i++){
+                for(int t = 0; t < recipe.requiredItemCount[i]; t++){
+                    cm.inventory.Remove(recipe.requiredItems[i]);
+                }
+            }
+            // add the crafted item
+            cm.inventory.Add(recipe.itemToCraft);
+            // popup menu
+            cm.craftedPopup.SetActive(true);
+            cm.craftedPopupText.text = "You crafted " + recipe.itemToCraft.name +"!";
+            // refresh inventory
+            cm.CreateCraftingDisplay();
+        }
+
     }
 
 }

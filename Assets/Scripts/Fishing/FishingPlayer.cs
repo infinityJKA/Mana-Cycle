@@ -11,6 +11,7 @@ public class FishingPlayer : MonoBehaviour
     private float gravity;
     public FishingPlayerState controlState;
     public GameObject inventoryMenu;
+    public GameObject craftingMenu;
 
     void Update(){
         if(controlState == FishingPlayerState.Overworld){
@@ -35,15 +36,24 @@ public class FishingPlayer : MonoBehaviour
             }
 
             // Open inventory
-            if(Input.GetButtonDown("Submit")){
+            if(Input.GetButtonDown("Inventory")){
                 OpenInventory();
+            }
+            else if(Input.GetButtonDown("Crafting")){
+                OpenCrafting();
             }
 
         }
         else if(controlState == FishingPlayerState.InventoryMenu){
             // Close inventory
-            if(Input.GetButtonDown("Submit")){
+            if(Input.GetButtonDown("Inventory")){
                 CloseInventory();
+            }
+        }
+        else if(controlState == FishingPlayerState.CraftingMenu){
+            // Close inventory
+            if(Input.GetButtonDown("Crafting")){
+                CloseCrafting();
             }
         }
 
@@ -52,7 +62,9 @@ public class FishingPlayer : MonoBehaviour
     private void OpenInventory(){controlState = FishingPlayerState.InventoryMenu; inventoryMenu.SetActive(true);}
     private void CloseInventory(){inventoryMenu.SetActive(false); controlState = FishingPlayerState.Overworld;}
 
+    private void OpenCrafting(){controlState = FishingPlayerState.CraftingMenu; craftingMenu.SetActive(true);}
+    private void CloseCrafting(){craftingMenu.SetActive(false); controlState = FishingPlayerState.Overworld;}
 
 }
 
-public enum FishingPlayerState{Overworld,InventoryMenu}
+public enum FishingPlayerState{Overworld,InventoryMenu,CraftingMenu}
