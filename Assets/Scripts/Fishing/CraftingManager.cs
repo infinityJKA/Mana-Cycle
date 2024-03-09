@@ -17,9 +17,13 @@ public class CraftingManager : MonoBehaviour
     public CraftingRecipe clicked;
     public FishingInventoryBaitAndGoldCounter FIBAGC;
     public TextMeshProUGUI craftingText;
+    public GameObject craftedPopup;
+    public TextMeshProUGUI craftedPopupText;
+    public RequiredCraftingItemsDisplay RCID;
 
     public void setMode(string s){
         mode = s;
+        CreateCraftingDisplay();
     }
 
     void OnEnable(){
@@ -46,7 +50,7 @@ public class CraftingManager : MonoBehaviour
         }
 
         // Update the equipped items display
-        //FIES.UpdateDisplay();  ADD CRAFTING ITEM VERSION OF THIS HERE =====================================================
+        RCID.UpdateDisplay();
 
         // Update the bait/gold counter
         FIBAGC.UpdateText();
