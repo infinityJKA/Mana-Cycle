@@ -170,6 +170,8 @@ namespace VersusMode {
             started = true;
             // don't auto fade into battle if online; need to wait for battle initialization to be sent/received
             bool autoFadeOut = !Storage.online;
+
+            ManaCycle.initializeFinished = false;
             transitionHandler.WipeToScene("ManaCycle", autoFadeOut: autoFadeOut);
         }
 
