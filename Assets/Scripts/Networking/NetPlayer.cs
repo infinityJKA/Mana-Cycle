@@ -169,8 +169,8 @@ public class NetPlayer : NetworkBehaviour {
     private void RpcSynchronize(BattleInitData initData) {
         Debug.Log("received init data: "+initData);
 
-        // if current scene is Mana Cycle, initialize using received data
-        if (SceneManager.GetActiveScene().name == "ManaCycle") {
+        // if current scene is Mana Cycle & cycle has finished initializing, initialize using received data
+        if (SceneManager.GetActiveScene().name == "ManaCycle" && ManaCycle.initializeFinished) {
             InitializeBattle(initData);
         } 
         // otherwise, run initialization once the scene is loaded by setting up a listener for sceneLoaded
