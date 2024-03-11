@@ -390,6 +390,81 @@ public class NetPlayer : NetworkBehaviour {
         if (intensity > 0) board.DamageShake(intensity);
     }
 
+    // Data to reflect the FULL state of this board to the other client.
+    [System.Serializable]
+    public struct FullBoardData {
+        // 8x20 board
+        // tile-byte format:
+        // 0    1   2   3   4   5   6       7
+        // none red yel gre blu pur goldmine zman
+        // 8    9   10  11  12  13  14      15
+        // 8-15 same as aobve but trash tile (only applies to red thru purple)
+        public byte[] tiles;  // byte[160]
+
+        // current piece [1] + preview [3] * 3 colors each * 1 byte per color = 12
+        public byte[] pieces; // byte[12]
+
+        // ability piece preview overrides. may override what's on the piece preview
+        // 0        1       2       3
+        // none     Sword   Bomb    Crystal
+        public byte[] pieceOverrides; // byte[4]
+
+        // index of piece rng in the seeded order
+        // (does not include the initial generation for the ability rng seed)
+        public int pieceRngIndex;
+
+        // index of ability rng in the seeded order
+        public int abilityRngIndex;
+    }
+
+    [Command]
+    public void CmdSendFullBoardData() {
+        FullBoardData data = new FullBoardData();
+
+        byte[] tiles = new byte[160];
+        for (int c = 0; c < GameBoard.width; c++) {
+            for (int r = 0; r < GameBoard.height; r++) {
+                int i = c*GameBoard.width + r;
+                Tile tile = board.tiles[r,c];
+                tiles[i] = TileToColorByte(tile);
+            }
+        }
+        data.tiles = tiles;
+
+        byte[] pieces = new byte[12];
+        pieces[0] = TileToColorByte(board.GetPiece().GetCenter());
+        pieces[1] = TileToColorByte(board.GetPiece().GetTop());
+        pieces[2] = TileToColorByte(board.GetPiece().GetRight());
+
+        Piece nextPiece = board.piecePreview.GetNextPiece();
+        pieces[3] = TileToColorByte(nextPiece.GetCenter());
+        pieces[4] = TileToColorByte(nextPiece.GetTop());
+        pieces[5] = TileToColorByte(nextPiece.GetRight());
+
+        for (int i = 0; i < PiecePreview.previewLength; i++) {
+            Piece previewPiece = board.piecePreview.GetPreviewPiece(i);
+            pieces[(i+2)*3] = TileToColorByte(previewPiece.GetCenter());
+            pieces[(i+2)*3 + 1] = TileToColorByte(previewPiece.GetTop());
+            pieces[(i+2)*3 + 2] = TileToColorByte(previewPiece.GetRight());
+        }
+        data.pieces = pieces;
+
+        byte[] pieceOverrides = new byte[4];
+    }
+
+    private byte TileToColorByte(Tile tile) {
+        if (tile == null) {
+            return 0;
+        } else {
+            return (byte)((byte)(tile.color) + 1);
+        }
+    }
+
+    [ClientRpc(includeOwner = false)]
+    private void RpcReceiveFullBoardData(FullBoardData data) {
+        
+    }
+
     public enum PostGameIntention {
         Undecided,
         Rematch,

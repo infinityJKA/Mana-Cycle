@@ -33,6 +33,20 @@ namespace Battle.Board {
             return pieceIdIndex;
         }
 
+        /// <summary>
+        /// Retrieve the piece that is currently in th enext piece slot on the piece preview
+        /// </summary>
+        public Piece GetNextPiece() {
+            return nextPieceTransform.GetChild(0).GetComponent<Piece>();
+        }
+
+        /// <summary>
+        /// Get a piece that is NOT in the next slot but is in the list of upcoming tiles below that, from highest/closest to lowest/furthest.
+        /// </summary>
+        public Piece GetPreviewPiece(int index) {
+            return previewListTransform.GetChild(index).GetComponent<Piece>();
+        }
+
         public void Setup(GameBoard board)
         {
             this.board = board;
@@ -49,7 +63,7 @@ namespace Battle.Board {
         public Piece SpawnNextPiece()
         {
             // Spawn the next piece on the baord and move it to the spawn location
-            Piece nextPiece = nextPieceTransform.GetChild(0).GetComponent<Piece>();
+            Piece nextPiece = GetNextPiece();
             // Debug.Log("The next piece is " + nextPiece);
             nextPiece.transform.SetParent(board.pieceBoard.transform, false);
             nextPiece.MoveTo(3,4);
