@@ -305,6 +305,7 @@ namespace PostGame {
         }
 
         public static void Replay() {
+            ManaCycle.initializeFinished = false;
             SceneManager.LoadScene("ManaCycle");
         }
 
