@@ -10,6 +10,11 @@ namespace Battle.Cycle {
     {
         public static ManaCycle instance;
 
+        // Whether or not ManaCycle has been properly loaded in yet.
+        // Set to false when Replay() or match is started and set to true after Start() is finished running here.
+        // Ensures proper logic flow during online rematches
+        public static bool initializeFinished = false;
+
         // Prefab for cycle colors to display
         [SerializeField] private Image manaImage;
         [SerializeField] private Image bgImage;
@@ -93,11 +98,14 @@ namespace Battle.Cycle {
             // don't run here if online; postpone this in online wait until data is received from the host
             if (!Storage.online) CreateCycleObjects();
             
+            ManaCycle.initializeFinished = true;
+
             foreach (var board in boards) {
                 // if any netPlayer is waiting on scene load and this cycle for initialization,
                 // this will call that delayed init
                 if (Storage.online) board.netPlayer.OnBattleSceneLoaded();
             }
+
         }
 
         /// <summary>
