@@ -4,6 +4,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Battle.Cycle;
+
 namespace VersusMode {
     ///<summary> Controls the character selection menu and the cursors within it. </summary>
     public class CharSelectMenu : MonoBehaviour {
