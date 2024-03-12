@@ -8,15 +8,17 @@ public class SwapPanel : MonoBehaviour
 {
     [SerializeField] public GameObject defaultSelectOnOpen;
     [SerializeField] private Animator anim;
+    private bool animationBlocksNavigation = false;
 
     // set by swap panel manager
     [System.NonSerialized] public GameObject selectOnOpen;
 
-    // TODO use animations
     public void Show()
     {
         gameObject.SetActive(true);
         anim.SetTrigger("In");
+
+        if (!animationBlocksNavigation) EventSystem.current.SetSelectedGameObject(selectOnOpen);
     }
 
     public void Hide()
@@ -33,6 +35,11 @@ public class SwapPanel : MonoBehaviour
 
     public void AfterShow()
     {
-        EventSystem.current.SetSelectedGameObject(selectOnOpen);
+        if (animationBlocksNavigation) EventSystem.current.SetSelectedGameObject(selectOnOpen);
+    }
+
+    public void SetAnimationBlocksNavigation(bool b)
+    {
+        animationBlocksNavigation = b;
     }
 }

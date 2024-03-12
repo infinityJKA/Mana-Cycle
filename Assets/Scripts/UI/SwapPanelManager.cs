@@ -8,6 +8,10 @@ public class SwapPanelManager : MonoBehaviour
     [SerializeField] SwapPanel[] panels;
     [SerializeField] int initialPanel = 0;
 
+    // if true, selectables are selected/deselected based on in/out animation time
+    // used to not cause unintentional behavior with automatic navigation
+    [SerializeField] private bool animationBlocksNavigation = false;
+
     // used to re-select the last element you selected when returning to a menu
     // index matches indes in panels, the gameObject is what was selected last in that menu
     private GameObject[] lastSelected;
@@ -22,19 +26,20 @@ public class SwapPanelManager : MonoBehaviour
         foreach (SwapPanel panel in panels)
         {
             panel.gameObject.SetActive(false);
+            panel.SetAnimationBlocksNavigation(animationBlocksNavigation);
         }
 
-        panels[currentPanel].gameObject.SetActive(true);
+        panels[currentPanel].Show();
     }
 
     public void OpenPanel(int index)
     {
         lastSelected[currentPanel] = EventSystem.current.currentSelectedGameObject;
 
+        panels[index].selectOnOpen = ( (lastSelected[index] == null) ? panels[index].defaultSelectOnOpen : lastSelected[index]);
+
         panels[currentPanel].Hide();
         panels[index].Show();
-
-        panels[index].selectOnOpen = ( (lastSelected[index] == null) ? panels[index].defaultSelectOnOpen : lastSelected[index]);
 
         currentPanel = index;
     }
