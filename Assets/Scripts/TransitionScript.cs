@@ -54,14 +54,16 @@ public class TransitionScript : MonoBehaviour
                 SceneManager.LoadScene(gotoScene);
                 // when WipeOut is called here, it runs before the Start method and causes silly activity
                 // WipeOut();
-
-                if (onTransitionOut != null) onTransitionOut.Invoke();
-                onTransitionOut = null;
             }
         }
 
         else if (transitionState == "out" && readyToFadeOut)
         {
+            if (onTransitionOut != null) {
+                onTransitionOut.Invoke();
+                onTransitionOut = null;
+            }
+
             timePassed += Time.deltaTime;
             wipeImg.fillAmount = Mathf.Pow(timePassed  / outTime, 2) * -1 + 1;
             if (wipeImg.fillAmount <= 0)

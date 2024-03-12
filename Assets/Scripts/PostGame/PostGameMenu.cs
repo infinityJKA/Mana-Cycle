@@ -35,7 +35,7 @@ namespace PostGame {
         private bool displayed = false;
 
         // Rematch button - text changed to "retry" in solo mode
-        public Button retryButton, continueButton;
+        public Button retryButton, continueButton, charSelectButton, levelSelectButton;
 
         [SerializeField] private AudioClip defeatMusic;
         [SerializeField] private AudioClip winMusic;
@@ -52,6 +52,12 @@ namespace PostGame {
         [SerializeField] private LocalizedString rematchLocalizedString;
         [SerializeField] private LocalizedString replayLocalizedString;
         [SerializeField] private LocalizedString restartLocalizedString;
+
+        // online vars for the names that show player postgameintentions
+        [SerializeField] private TMP_Text p1Intention, p2Intention;
+        [SerializeField] private Transform p1DecidingPosition, p2DecidingPosition;
+        [SerializeField] private Color decidingColor, decideColor;
+        [SerializeField] private float intentionOffset = 25f;
 
         // Start is called before the first frame update
         void Start()
@@ -94,8 +100,8 @@ namespace PostGame {
 
             if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level != null && Storage.level.availableBattlers != null && Storage.level.availableBattlers.Count > 1))
             {
-                buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(false);
-                buttonsTransform.Find("CharSelectButton").gameObject.SetActive(true);
+                levelSelectButton.gameObject.SetActive(false);
+                charSelectButton.gameObject.SetActive(true);
             }
 
             // Update level clear status
@@ -143,8 +149,8 @@ namespace PostGame {
                     // dont allow char select option in the middle of arcade mode
                     if (Storage.level.nextSeriesLevel) 
                     {
-                        buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(true);
-                        buttonsTransform.Find("CharSelectButton").gameObject.SetActive(false);
+                        levelSelectButton.gameObject.SetActive(true);
+                        charSelectButton.gameObject.SetActive(false);
                     }
                     
 
@@ -154,13 +160,13 @@ namespace PostGame {
                         retryButton.gameObject.SetActive(false);
                         continueButton.gameObject.SetActive(true);
 
-                        buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(true);
-                        buttonsTransform.Find("CharSelectButton").gameObject.SetActive(false);
+                        levelSelectButton.gameObject.SetActive(true);
+                        charSelectButton.gameObject.SetActive(false);
                         
 
                         // set info pannel visibility and text
                         arcadeInfoPannel.SetActive(true);
-                        arcadeInfoText.text = String.Format("{0} more to go\nnext up: {1}", Storage.level.GetAheadCount(), Storage.level.nextSeriesLevel.levelName);
+                        arcadeInfoText.text = string.Format("{0} more to go\nnext up: {1}", Storage.level.GetAheadCount(), Storage.level.nextSeriesLevel.levelName);
                     }
 
                     // arcade endless level won
@@ -170,8 +176,8 @@ namespace PostGame {
                         retryButton.gameObject.SetActive(false);
                         continueButton.gameObject.SetActive(true);
 
-                        buttonsTransform.Find("LevelSelectButton").gameObject.SetActive(true);
-                        buttonsTransform.Find("CharSelectButton").gameObject.SetActive(false);
+                        levelSelectButton.gameObject.SetActive(true);
+                        charSelectButton.gameObject.SetActive(false);
 
                         // setup next level list for arcade endless scene
                         Storage.nextLevelChoices = new List<Level>();
@@ -237,6 +243,14 @@ namespace PostGame {
             } else {
                 continueButton.Select();
             }
+
+            p1Intention.gameObject.SetActive(Storage.online);
+            p2Intention.gameObject.SetActive(Storage.online);
+
+            if (Storage.online) {
+                SetIntention(NetPlayer.PostGameIntention.Undecided, true);
+                SetIntention(NetPlayer.PostGameIntention.Undecided, false);
+            }
         }
 
         public void AppearAfterDelay()
@@ -293,10 +307,10 @@ namespace PostGame {
             {
                 if (Storage.online) {
                     // Toggle rematch requested status when in online mode
-                    if (board.netPlayer.postGameIntention != NetPlayer.PostGameIntention.Rematch) {
-                        board.netPlayer.CmdSetPostGameIntention(NetPlayer.PostGameIntention.Rematch);
-                    } else {
+                    if (board.netPlayer.postGameIntention == NetPlayer.PostGameIntention.Rematch) {
                         board.netPlayer.CmdSetPostGameIntention(NetPlayer.PostGameIntention.Undecided);
+                    } else {
+                        board.netPlayer.CmdSetPostGameIntention(NetPlayer.PostGameIntention.Rematch);
                     }
                 } else {
                     // restart immediately in local play
@@ -320,10 +334,10 @@ namespace PostGame {
         public void SelectBackToCSS()
         {
             if (Storage.online) {
-                if (board.netPlayer.postGameIntention != NetPlayer.PostGameIntention.Rematch) {
-                    board.netPlayer.CmdSetPostGameIntention(NetPlayer.PostGameIntention.Rematch);
-                } else {
+                if (board.netPlayer.postGameIntention == NetPlayer.PostGameIntention.CharSelect) {
                     board.netPlayer.CmdSetPostGameIntention(NetPlayer.PostGameIntention.Undecided);
+                } else {
+                    board.netPlayer.CmdSetPostGameIntention(NetPlayer.PostGameIntention.CharSelect);
                 }
             } else {
                 BackToCSS();
@@ -334,6 +348,39 @@ namespace PostGame {
             setMenuSong();
             Time.timeScale = 1f;
             TransitionScript.instance.WipeToScene("CharSelect", reverse: true);
+        }
+
+        public void OnMainMenuDown() {
+            Debug.Log("down");
+        }
+
+        public void OnMainMenuUp() {
+            Debug.Log("up");
+        }
+
+        public void SetIntention(NetPlayer.PostGameIntention intention, bool isPlayer1) {
+            TMP_Text intentionLabel = isPlayer1 ? p1Intention : p2Intention;
+            Transform intendedButtonTransform;
+            int boardIndex = isPlayer1 ? 0 : 1;
+            string username = ManaCycle.instance.Boards[boardIndex].netPlayer.username;
+
+            switch (intention) {
+                case NetPlayer.PostGameIntention.Undecided:
+                    intentionLabel.transform.position = (isPlayer1 ? p1DecidingPosition : p2DecidingPosition).position;
+                    intentionLabel.text = username+"\nDeciding...";
+                    intentionLabel.color = decidingColor;
+                    return;
+                case NetPlayer.PostGameIntention.Rematch:
+                    intendedButtonTransform = retryButton.transform;
+                    break;
+                default: // charselect
+                    intendedButtonTransform = charSelectButton.transform;
+                    break;
+            }
+
+            intentionLabel.transform.position = intendedButtonTransform.position + (isPlayer1 ? Vector3.left : Vector3.right) * intentionOffset;
+            intentionLabel.text = isPlayer1 ? username+" >" : "< "+username;
+            intentionLabel.color = decideColor;
         }
 
         public void SelectBackToSolo()

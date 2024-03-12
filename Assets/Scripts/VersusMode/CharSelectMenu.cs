@@ -45,12 +45,6 @@ namespace VersusMode {
         void Awake() {
             Instance = this;
 
-            if (Storage.gamemode == Storage.GameMode.Default) {
-                Storage.gamemode = Storage.GameMode.Versus;
-                Storage.isPlayerControlled1 = false;
-                Storage.isPlayerControlled2 = false;
-            }
-
             if (!connectionManager) {
                 connectionManager = FindFirstObjectByType<PlayerConnectionManager>();
             }

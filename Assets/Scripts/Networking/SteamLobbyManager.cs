@@ -100,6 +100,8 @@ namespace Networking {
         }
 
         private void HandleUserData(CSteamID id) {
+            if (SceneManager.GetActiveScene().name != "CharSelect") return;
+
             // set data accordingly 
             if (id == SteamUser.GetSteamID()) {
                 NetPlayer player = CharSelectMenu.Instance.p1Selector.netPlayer;

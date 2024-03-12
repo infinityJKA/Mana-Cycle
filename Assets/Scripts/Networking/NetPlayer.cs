@@ -19,7 +19,7 @@ public class NetPlayer : NetworkBehaviour {
     /// <summary>
     /// the username of this player. may either be retreived from steam or some other relay type service, may change in the future
     /// </summary>
-    public string username {get; private set;} = "Connecting...";
+    public string username {get; private set;} = "";
 
 
     private NetPlayer enemyPlayer {get{return board.enemyBoard.netPlayer;}}
@@ -484,6 +484,7 @@ public class NetPlayer : NetworkBehaviour {
     [ClientRpc]
     private void RpcSetPostGameIntention(PostGameIntention intention) {
         postGameIntention = intention;
+         board.winMenu.SetIntention(intention, isOwned);
 
         Debug.Log(gameObject+" intention: "+postGameIntention);
 
