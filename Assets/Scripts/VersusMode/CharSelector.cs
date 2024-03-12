@@ -63,8 +63,8 @@ namespace VersusMode {
         ///
         [SerializeField] private TextMeshProUGUI livesText;
 
-        /// tip text in the corner, p2 tip text gets hidden in solo
-        [SerializeField] private VersusTipText tipText;
+        /// input prompts in the corner, p2 tip text gets hidden in solo
+        [SerializeField] private GameObject tipText;
 
         /// character grid gameobject used to hide unavailable battlers
         [SerializeField] private GameObject battlerGrid;
@@ -198,6 +198,8 @@ namespace VersusMode {
         // Username text label
         public TMP_Text usernameLabel;
 
+        [SerializeField] private HoldInput returnMenuHoldInput;
+
         void Start() {
             // TEMP FOR TESTING !! ,`:)
             // Storage.gamemode = Storage.GameMode.Solo;
@@ -208,7 +210,7 @@ namespace VersusMode {
 
             selectedIcon = menu.characterIcons[0];
 
-            tipText.gameObject.SetActive(!menu.Mobile);
+            if (tipText) tipText.gameObject.SetActive(!menu.Mobile);
             gameObject.SetActive(true);
 
             usernameLabel.gameObject.SetActive(Storage.online);
@@ -430,7 +432,6 @@ namespace VersusMode {
                     // inputs should be solo inputs scripts, as the player will play in the game
                     inputScript = soloInputScript;
                     opponentSelector.inputScript = soloInputScript;
-                    tipText.SetInputs(inputScript);
                     Active = true;
                 }
             } else {
@@ -442,7 +443,6 @@ namespace VersusMode {
                 // set solo mode inputs 
                 // TODO change tip text depending on inputs
                 inputScript = soloInputScript;
-                tipText.SetInputs(inputScript);
 
                 // hide p2 elements in in solo mode
                 if (!isPlayer1)
@@ -518,7 +518,7 @@ namespace VersusMode {
 
         /// <summary>Is run when the pause button is pressed while controlled
         /// Also called when back button is pressed</summary>
-        public void Back() {
+        public void Back(bool canReturnMenu = true) {
             // close ability info/settings menu if it is open
             if (!menu.Mobile && abilityInfoDisplayed) ToggleAbilityInfo();
             else if (!menu.Mobile && settingsDisplayed) ToggleSettings();
@@ -544,8 +544,32 @@ namespace VersusMode {
             }
 
             // or go back to menu if not locked in
-            else {
-                ReturnToMenu();
+            else if (canReturnMenu) {
+                // player has to hold esc to return to menu / leave match.
+                // the holdInput should have a reference to this charselector's returntomenu call
+                // for when held long enough
+                
+                ReturnMenuPress();
+            }
+        }
+
+        /// <summary>
+        /// will tell the HoldInput that player is holding down to return to menu.
+        /// </summary>
+        public void ReturnMenuPress() {
+            if (returnMenuHoldInput && returnMenuHoldInput.enabled) {
+                returnMenuHoldInput.Press();
+            } else {
+                Back(canReturnMenu: false);
+            }
+        }
+
+        /// <summary>
+        /// used for unpressing the return to menu hold input
+        /// </summary>
+        public void ReturnMenuUnpress() {
+            if (returnMenuHoldInput && returnMenuHoldInput.enabled) {
+                returnMenuHoldInput.Unpress();
             }
         }
 

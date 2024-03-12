@@ -102,14 +102,25 @@ public class SoloCharSelectController : MonoBehaviour {
     }
 
     public void OnBack(InputAction.CallbackContext ctx) {
+        if (ctx.canceled) {
+            charSelector.ReturnMenuUnpress();
+            charSelector = charSelectMenu.GetActiveSelector();
+        }
+
         if (!ctx.performed) return;
         OnPauseOrBack();
     }
 
     public void OnPause(InputAction.CallbackContext ctx) {
+        if (ctx.canceled) {
+            charSelector.ReturnMenuUnpress();
+            charSelector = charSelectMenu.GetActiveSelector();
+        }
+
         if (!ctx.performed) return;
         // charSelector.ReturnToMenu();
-        OnPauseOrBack();
+        // OnPauseOrBack();
+        charSelector.ReturnMenuPress();
     }
 
     private void OnPauseOrBack() {
@@ -117,7 +128,7 @@ public class SoloCharSelectController : MonoBehaviour {
             charSelector.OnBack();
             charSelector = charSelectMenu.GetActiveSelector();
             if (netPlayer && NetworkClient.active) netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
-        } else {
+        } else { // online menu
             TransitionScript.instance.WipeToScene("MainMenu", reverse: true);
         }
     }
