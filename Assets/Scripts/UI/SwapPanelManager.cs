@@ -29,7 +29,7 @@ public class SwapPanelManager : MonoBehaviour
             panel.SetAnimationBlocksNavigation(animationBlocksNavigation);
         }
 
-        panels[currentPanel].Show();
+        OpenPanel(initialPanel);
     }
 
     public void OpenPanel(int index)
