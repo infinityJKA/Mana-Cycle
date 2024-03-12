@@ -32,9 +32,8 @@ public class Storage
     public static int lastTabSelectedIndex = -1;
 
     /** current gamemode selected by player */
-    public static GameMode gamemode;
+    public static GameMode gamemode = GameMode.Versus;
     public enum GameMode {
-        Default,
         Solo,
         Versus
     }
@@ -53,5 +52,5 @@ public class Storage
     public static bool useDualKeyboardInput;
 
     // If in an online mode. (applies only to CharSelect & ManaCycle scenes)
-    public static bool online = true;
+    public static bool online = false;
 }

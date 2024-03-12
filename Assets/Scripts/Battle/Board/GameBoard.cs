@@ -337,7 +337,7 @@ namespace Battle.Board {
 
             if (Storage.level && Storage.level.generateNextLevel) equiped = ArcadeStats.equipedItems;
 
-            if (Storage.gamemode != Storage.GameMode.Default && playerSide == 0) {
+            if (playerSide == 0) {
                 singlePlayer = Storage.gamemode == Storage.GameMode.Solo;
             } else {
                 singlePlayer = false;

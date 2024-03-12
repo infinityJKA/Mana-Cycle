@@ -103,7 +103,13 @@ namespace Battle.Cycle {
             foreach (var board in boards) {
                 // if any netPlayer is waiting on scene load and this cycle for initialization,
                 // this will call that delayed init
-                if (Storage.online) board.netPlayer.OnBattleSceneLoaded();
+                if (Storage.online) {
+                    if (board.netPlayer) {
+                        board.netPlayer.OnBattleSceneLoaded();
+                    } else {
+                        Debug.LogWarning(board+" is missing a NetPlayer while in online mode");
+                    }
+                }
             }
 
         }
