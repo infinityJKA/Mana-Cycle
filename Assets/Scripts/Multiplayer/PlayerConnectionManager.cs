@@ -70,16 +70,17 @@ namespace Multiplayer {
                             controller.EnableInputScripts();
                         }
                     } 
-                    // otherwise, connect players using the player inputs that are already setup and parented under the current instance
-                    else {
-                        foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
-                            OnPlayerJoined(playerInput);
-                        }
-                    }
                 }  
                 
                 // after all this tomfoolery, destroy this gameobject since the existing one should be the only one.
                 Destroy(gameObject);
+            }
+        }
+
+        private void Start() {
+            if (Storage.useDualKeyboardInput) return;
+            foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
+                OnPlayerJoined(playerInput);
             }
         }
         
@@ -100,6 +101,7 @@ namespace Multiplayer {
         }
 
         public void OnDisconnect(PlayerInput playerInput) {
+            if (!enabled) return;
             DisconnectCharSelector(playerInput);
         }
 

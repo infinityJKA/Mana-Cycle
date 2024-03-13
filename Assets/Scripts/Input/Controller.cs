@@ -170,6 +170,8 @@ namespace Battle {
         public void SetCharSelector(CharSelector charSelector) {
             this.charSelector = charSelector;
             controlMode = ControlMode.CharSelector;
+            playerInput = GetComponent<PlayerInput>();
+            charSelector.UpdateInputPrompts(playerInput);
         }
 
         private static float deadzone = 0.1f;

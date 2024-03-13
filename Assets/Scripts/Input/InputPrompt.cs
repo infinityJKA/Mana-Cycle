@@ -13,6 +13,8 @@ public class InputPrompt : MonoBehaviour {
 
     [SerializeField] private InputActionReference inputActionReference;
 
+    [SerializeField] private bool listenForDeviceChange;
+
     public void Press(InputAction.CallbackContext ctx) {
         image.sprite = pressedSprite;
     }
@@ -22,18 +24,22 @@ public class InputPrompt : MonoBehaviour {
     }
 
     private void OnEnable() {
-        InputSystem.onDeviceChange += OnDeviceChange;
-        if (inputActionReference != null) {
-            inputActionReference.action.started += Press;
-            inputActionReference.action.canceled += Unpress;
-        }
+        if (listenForDeviceChange) {
+            InputSystem.onDeviceChange += OnDeviceChange;
+            if (inputActionReference != null) {
+                inputActionReference.action.started += Press;
+                inputActionReference.action.canceled += Unpress;
+            }
+        }    
     }
 
     private void OnDisable() {
-        InputSystem.onDeviceChange -= OnDeviceChange;
-        if (inputActionReference != null) {
-            inputActionReference.action.started -= Press;
-            inputActionReference.action.canceled -= Unpress;
+        if (listenForDeviceChange) {
+            InputSystem.onDeviceChange -= OnDeviceChange;
+            if (inputActionReference != null) {
+                inputActionReference.action.started -= Press;
+                inputActionReference.action.canceled -= Unpress;
+            }
         }
     }
 
@@ -46,12 +52,16 @@ public class InputPrompt : MonoBehaviour {
 
     public void OnControlsChanged(PlayerInput playerInput) {
         // Debug.Log($"Input device changed for player {playerInput.playerIndex}: {playerInput.devices[0].name}");
-        InputDevice newDevice = playerInput.devices[0];
-
+        
         if (playerInput.currentControlScheme == "Keyboard&Mouse") {
             unpressedSprite = keyboardSprite;
             pressedSprite = keyboardPressedSprite;
         } else if (playerInput.currentControlScheme == "Gamepad") {
+            InputDevice newDevice = playerInput.devices[0];
+            if (playerInput.devices.Count < 1) {
+                Debug.LogError("No devices on new playerinput & not keyboard...");
+                return;
+            }
             if (newDevice.description.product.ToLower().Contains("playstation")) {
                 unpressedSprite = playstationSprite;
                 pressedSprite = playstationPressedSprite;
@@ -61,10 +71,21 @@ public class InputPrompt : MonoBehaviour {
             }
         }
 
+        if (!image) {
+            image = GetComponentInChildren<Image>();
+            if (image) {
+                Debug.LogWarning("missing image ref on "+name+", using image from child");
+            } else {
+                Debug.LogError("missing image on "+name);
+            }
+        }
+
         if (inputActionReference != null) {
             image.sprite = inputActionReference.action.IsPressed() ? pressedSprite : unpressedSprite;
         } else {
-            image.sprite = unpressedSprite;
+            if (unpressedSprite != null) image.sprite = unpressedSprite;
+            else if (pressedSprite!= null) image.sprite = pressedSprite;
+            else Debug.LogError(gameObject+" does not have pressed OR unpressed sprite");
         }
     }
 }
