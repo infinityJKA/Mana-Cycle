@@ -319,9 +319,15 @@ namespace Battle {
 
         public void OnPause(InputAction.CallbackContext ctx) {
             if (!gameFocused) return;
-            if (!ctx.performed) return;
-            if (controlMode == ControlMode.Board) board.Pause();
-            else if (controlMode == ControlMode.CharSelector) charSelector.OnBack();
+            if (controlMode == ControlMode.Board && ctx.performed) board.Pause();
+            else if (controlMode == ControlMode.CharSelector) {
+                if (ctx.performed) {
+                    charSelector.OnBack();
+                }
+                else if (ctx.canceled) {
+                    charSelector.ReturnMenuUnpress();
+                }
+            }
         }
 
         public void EnableInputScripts() {
