@@ -4,6 +4,7 @@ using TMPro;
 
 using Sound;
 using Mirror;
+using UnityEngine.InputSystem;
 
 namespace VersusMode {
     /// <summary>
@@ -314,6 +315,11 @@ namespace VersusMode {
             if (Input.GetKeyDown(inputScript.Pause)) 
             {
                 Back();
+            }
+
+            if (Input.GetKeyUp(inputScript.Pause)) 
+            {
+                ReturnMenuUnpress();
             }
 
             // show/hide ability info when rotate CCW is pressed
@@ -785,6 +791,7 @@ namespace VersusMode {
         /// Shows appropriate labels such as <Press any button to join> or <waiting for opponent code: ######>
         /// </summary>
         public void Disconnect() {
+            if (!enabled) return;
             Debug.Log(gameObject+" disconnected");
 
             if (lockedIn) ToggleLock();
@@ -834,6 +841,13 @@ namespace VersusMode {
         public void SetUsername(string username) {
             usernameLabel.gameObject.SetActive(true);
             usernameLabel.text = username;
+        }
+
+        public void UpdateInputPrompts(PlayerInput playerInput) {
+            foreach (InputPrompt inputPrompt in tipText.transform.GetComponentsInChildren<InputPrompt>()) {
+                Debug.Log("change control call on "+inputPrompt.gameObject);
+                inputPrompt.OnControlsChanged(playerInput);
+            }
         }
     }
 }
