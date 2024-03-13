@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1b7abb1cfd2b3646845672a9c589be5, type: 3}
+  m_Name: testEnemy
+  m_EditorClassIdentifier: 
+  enemyName: Test Enemy
+  MaxHP: 10
+  battleSprite: {fileID: 21300000, guid: 117f8639336f40e408f1125e59fa9794, type: 3}
+  element: 4
+  attacks:
+  - {fileID: 0}
+  description: this is where the description goes
+  entryText: Test Enemy stares deeply into your soul...
+  firstHealWitnessedText: Test Enemy blinks at you thrice.
+  firstAttackWitnessedText: He does not relish the pain, but still smiles to the
+    hope he will endure.
+  firstAttackPerformedText: You feel the urge to tumble down a flight of stairs.
+  firstHealPerformedText: zzzz!!!
+  halfHPText: Test Enemy wants to game end you
+  playerDefeatText: Test Enemy wonders how you died to a test enemy
+  deathText: Splouch!
+  randomTexts:
+  - Test Enemy could really use a cigarette right now.
+  - You imagine a jar of dill pickles.
+  randomTextPercent: 30
