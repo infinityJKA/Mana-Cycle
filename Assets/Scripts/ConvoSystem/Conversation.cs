@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace ConvoSystem {
 
-    [CreateAssetMenu(fileName = "Conversations", menuName = "ManaCycle/Conversation")]
+    [CreateAssetMenu(fileName = "Conversation", menuName = "ManaCycle/Conversation")]
     public class Conversation : ScriptableObject {
         // [SerializeField] public string[] dialougeList;
         // [SerializeField] public Battler[] lSpeakerOrder;

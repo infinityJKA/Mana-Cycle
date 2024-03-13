@@ -15,6 +15,8 @@ public class InputPrompt : MonoBehaviour {
 
     [SerializeField] private bool listenForDeviceChange;
 
+    [SerializeField] private InputPromptGlyphTable glyphTable;
+
     public void Press(InputAction.CallbackContext ctx) {
         image.sprite = pressedSprite;
     }
