@@ -312,9 +312,7 @@ public class NetPlayer : NetworkBehaviour {
     /// (includes damaging opponent's shield.)</param>
     [Command]
     public void CmdAdvanceChain(bool startup, int damageSent) {
-        RpcAdvanceChain(startup, damageSent);
-        // NOTE: this might not be needed but want to ensure proper sync, remove if bandwidth concerns
-        CmdUpdateDamageQueue(); 
+        RpcAdvanceChain(startup, damageSent); 
     }
 
     [ClientRpc(includeOwner = false)]
@@ -324,6 +322,8 @@ public class NetPlayer : NetworkBehaviour {
         } else {
             board.AdvanceChainAndCascade();
             board.enemyBoard.EvaluateInstantIncomingDamage(damageSent);
+            // reflect the resulting queue back to the other client after evaluating damage
+            CmdUpdateDamageQueue();
         }
     }
 

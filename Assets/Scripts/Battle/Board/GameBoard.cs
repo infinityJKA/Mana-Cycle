@@ -1340,9 +1340,10 @@ namespace Battle.Board {
                     int residualDamage = DealDamageLocal(damage, shootSpawnPos);
                     if (partOfChain) {
                         netPlayer.CmdAdvanceChain(startup: false, damageSent: residualDamage);
-                    } else {
-                        netPlayer.CmdUpdateDamageQueue();
                     }
+                    netPlayer.CmdUpdateDamageQueue();
+                } else {
+                    Debug.LogWarning("Trying to evaluate damage on a non-owned board");
                 }
             // if not online, deal damage as normal
             } else {
@@ -1426,7 +1427,7 @@ namespace Battle.Board {
                 PlayDamageShootSFX();
             }
 
-            // in online, relay damage queue state to the opponent
+            // in online, relay damage queue state to the opponent afterwards
             if (Storage.online) {
                 netPlayer.CmdUpdateDamageQueue();
             }
