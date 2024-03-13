@@ -115,6 +115,8 @@ namespace ConvoSystem {
 
         public void StartConvo(Conversation convo)
         {
+            Debug.Log("convo "+convo.name+" started");
+
             this.convo = convo;
             enabled = true;
             index = 0;

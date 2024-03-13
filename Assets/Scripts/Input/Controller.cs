@@ -163,6 +163,10 @@ namespace Battle {
         }
 
         public void SetBoard(GameBoard board) {
+            if (!board || !board.gameObject.activeInHierarchy) {
+                Debug.LogWarning("Trying to assign to disabled board");
+                return;
+            }
             this.board = board;
             controlMode = ControlMode.Board;
         }
