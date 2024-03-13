@@ -102,6 +102,9 @@ public class SoloCharSelectController : MonoBehaviour {
     }
 
     public void OnBack(InputAction.CallbackContext ctx) {
+        // dont handle back or pause while shift pressed (messes up steam menu)
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) return;
+
         if (ctx.canceled) {
             charSelector.ReturnMenuUnpress();
             charSelector = charSelectMenu.GetActiveSelector();
@@ -112,21 +115,24 @@ public class SoloCharSelectController : MonoBehaviour {
     }
 
     public void OnPause(InputAction.CallbackContext ctx) {
+        // dont handle back or pause while shift pressed (messes up steam menu)
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) return;
+
         if (ctx.canceled) {
             charSelector.ReturnMenuUnpress();
             charSelector = charSelectMenu.GetActiveSelector();
         }
 
         if (!ctx.performed) return;
-        // charSelector.ReturnToMenu();
-        // OnPauseOrBack();
-        charSelector.ReturnMenuPress();
+        OnPauseOrBack();
+        // charSelector.ReturnMenuPress();
     }
 
     private void OnPauseOrBack() {
         if (charSelectMenu.gameObject.activeInHierarchy) {
             charSelector.OnBack();
             charSelector = charSelectMenu.GetActiveSelector();
+            if (charSelector.lockedIn) charSelector.ToggleLock();
             if (netPlayer && NetworkClient.active) netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
         } else { // online menu
             TransitionScript.instance.WipeToScene("MainMenu", reverse: true);
