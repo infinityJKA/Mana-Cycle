@@ -838,14 +838,17 @@ namespace Battle.Board {
 
         /// <summary>
         /// Start a new spellcast chain off the current color. Is called when spellcast button is pressed
+        /// Can also advance conversations if a midlevelconvo is being shown. /// 
         /// </summary>
         public void TrySpellcast(){
-            if (!IsBattleStarted() || isPaused() || isPostGame()) return;
+            if (!IsBattleStarted() || isPaused()) return;
 
             if (convoPaused) {
                 convoHandler.Advance();
                 return;
             }
+
+            if (isPostGame()) return;
 
             // get current mana color from cycle, and clear that color
             // start at chain of 1

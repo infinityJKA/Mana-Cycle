@@ -3,17 +3,23 @@ using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerInput))]
 public class InputTrackDevice : MonoBehaviour {
-    [SerializeField] private InputPromptGroup inputPromptGroup;
-
     PlayerInput playerInput;
 
     private void OnEnable() {
         playerInput = GetComponent<PlayerInput>();
-        inputPromptGroup.OnControlsChanged(playerInput);
-        playerInput.onControlsChanged += inputPromptGroup.OnControlsChanged;
+        UpdateInputPrompts(playerInput);
+        playerInput.onControlsChanged += UpdateInputPrompts;
+        Debug.Log(gameObject+" listening for device changes");
     }
 
     private void OnDisable() {
-        playerInput.onControlsChanged -= inputPromptGroup.OnControlsChanged;
+        playerInput.onControlsChanged -= UpdateInputPrompts;
+    }
+
+    public void UpdateInputPrompts(PlayerInput playerInput) {
+        foreach (InputPrompt inputPrompt in transform.GetComponentsInChildren<InputPrompt>()) {
+            Debug.Log("change control call on "+inputPrompt.gameObject);
+            inputPrompt.OnControlsChanged(playerInput);
+        }
     }
 }
