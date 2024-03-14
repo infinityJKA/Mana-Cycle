@@ -396,6 +396,7 @@ namespace PostGame {
 
         public void SelectContinue()
         {
+            if (Storage.level.generateNextLevel) GotoEndlessLevelSelect();
             Time.timeScale = 1f;
             Storage.level.nextSeriesLevel.battler = Storage.level.battler;
             Storage.level = Storage.level.nextSeriesLevel;
