@@ -2221,7 +2221,7 @@ namespace Battle.Board {
                 return;
             }
 
-            if (!postGame && !Storage.convoEndedThisInput)
+            if (!postGame && !Storage.convoEndedThisInput && pauseMenu.gameObject.activeInHierarchy)
             {
                 pauseMenu.TogglePause();
                 Instantiate(PauseSFX);

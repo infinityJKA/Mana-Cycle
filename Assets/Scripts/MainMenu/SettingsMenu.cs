@@ -40,7 +40,9 @@ namespace MainMenu {
             if (gameObject == null) return;
             if (!gameObject) return;
             if (!gameObject.activeSelf) return;
-            menu3D.CloseSettings();
+
+            if (menu3D) menu3D.CloseSettings();
+            else closeButton.onClick.Invoke();
         }
 
         void Start() {
