@@ -4,8 +4,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System;
-using UnityEditor.Localization.Plugins.XLIFF.V12;
-using UnityEngine.Localization.PropertyVariants.TrackedProperties;
+// using UnityEditor.Localization.Plugins.XLIFF.V12;
+// using UnityEngine.Localization.PropertyVariants.TrackedProperties;
 
 public class FishingBattleManager : MonoBehaviour
 {
