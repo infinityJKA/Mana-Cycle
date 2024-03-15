@@ -19,6 +19,7 @@ public class FishingEnemy : ScriptableObject
     public string firstAttackPerformedText;
     public string firstHealPerformedText;
     public string halfHPText;
+    public string playerHalfHPText;
     public string playerDefeatText;
     public string deathText;
     public string[] randomTexts;
