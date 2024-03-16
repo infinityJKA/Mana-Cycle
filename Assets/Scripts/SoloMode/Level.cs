@@ -13,6 +13,7 @@ using Random=UnityEngine.Random;
 namespace SoloMode {
     [CreateAssetMenu(fileName = "Level", menuName = "ManaCycle/Level")]
     public class Level : ScriptableObject {
+        [SerializeField] public string levelId = "Level1";
         [SerializeField] public string levelName = "Level";
         [SerializeField] public string description = "One of the levels of time";
 
