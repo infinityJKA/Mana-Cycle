@@ -1811,11 +1811,11 @@ namespace Battle.Board {
             // Geo's revenge system
             float GeoBoost = 1f;
             if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.LastStand){
-                if((float)hp <= (float)maxHp/4){
+                if(hp <= (float)maxHp/4){
                     GeoBoost = 1.4f;
                     Debug.Log("Geoboost 25% ver!!!");
                 }
-                else if((float)hp <= (float)maxHp/2){
+                else if(hp <= (float)maxHp/2){
                     GeoBoost = 1.15f;
                     Debug.Log("Geoboost 50% ver!!!");
                 }
@@ -2223,7 +2223,14 @@ namespace Battle.Board {
         public void Defeat() 
         {
             recoveryMode = false;
-            if (defeated || won) return;
+            if (defeated) {
+                Debug.LogWarning("Trying to defeat while already defeated");
+                return;
+            }
+            if (won) {
+                Debug.LogWarning("Trying to defeat while already won");
+                return;
+            }
 
             piece.DestroyTiles();
             Destroy(piece.gameObject);

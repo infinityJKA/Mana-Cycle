@@ -97,7 +97,7 @@ namespace Battle.Board {
         public void Refresh()
         {
             // if no board setup, use storage.cs hp value
-            if (this.board != null) hpImage.fillAmount = 1f * board.hp / board.maxHp;
+            if (board != null) hpImage.fillAmount = 1f * board.hp / board.maxHp;
             else hpImage.fillAmount = 1f * Storage.hp / ArcadeStats.maxHp;
 
             if (!board) return;
