@@ -58,10 +58,8 @@ namespace Achievements
         /// <param name="achievement">The achievement to unlock</param>
         public void UnlockAchievement(Achievement achievement)
         {
-            if (achievement.unlocked) return;
+            if (!achievement.unlocked) achievementNotifyQueue.Enqueue(achievement);
             achievement.UnlockPlayerPref();
-            // NOTE: if too much going on, disable this notification if steam is initialized since they'll get the notificaiton there too
-            achievementNotifyQueue.Enqueue(achievement);
         }
 
         /// <summary>
