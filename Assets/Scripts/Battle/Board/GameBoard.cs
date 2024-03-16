@@ -158,11 +158,11 @@ namespace Battle.Board {
         public int cyclePosition { get; private set; }
 
         /** Dimensions of the board */
-        public static readonly int width = 8;
-        public static readonly int height = 20;
+        public const int width = 8;
+        public const int height = 20;
         // Visual size of the board; excludes top buffer rows incase piece is somehow moved up there; 
         // and starting position is probably there too
-        public static readonly int physicalHeight = 16;
+        public const int physicalHeight = 16;
 
         /** The last time that the current piece fell down a tile. */
         private float previousFallTime;
@@ -321,6 +321,9 @@ namespace Battle.Board {
         /// Used for board sync assertion in online multiplayer to help ensure piece drop order isn't jumbled
         /// </summary>
         public int pieceDropIndex {get; private set;}
+        
+        [SerializeField] private CosmeticAssets _cosmetics;
+        public CosmeticAssets cosmetics => _cosmetics;
 
         // Start is called before the first frame update
         void Start()
@@ -703,6 +706,7 @@ namespace Battle.Board {
         public void StartBattle()
         {
             battleStarted = true;
+
             SpawnPiece();
             pointer.SetActive(true);
             PointerReposition();
@@ -774,7 +778,7 @@ namespace Battle.Board {
         public void RotateCCW(){
             if (!IsBattleStarted() || isPaused() || isPostGame() || convoPaused) return;
 
-            if (!piece.IsRotatable) return;
+            if (!piece.isRotatable) return;
             piece.RotateLeft();
 
             if(!ValidPlacement()){
@@ -793,7 +797,7 @@ namespace Battle.Board {
         public void RotateCW(){
             if (!IsBattleStarted() || isPaused() || isPostGame() || convoPaused) return;
 
-            if (!piece.IsRotatable) return;
+            if (!piece.isRotatable) return;
             piece.RotateRight();
 
             if(!ValidPlacement()){
@@ -877,14 +881,6 @@ namespace Battle.Board {
             }
         }
 
-        public ManaColor PullColorFromBag() {
-            return rngManager.PullColorFromBag();
-        }
-
-        public ManaColor GetCenterMatch() {
-            return rngManager.GetCenterMatch();
-        }
-
 
         /// <summary>
         /// Adds a trash tile to this board in a random column.
@@ -894,12 +890,12 @@ namespace Battle.Board {
         /// <returns>the column it was spawned in.</returns>
         public int AddTrashTile(System.Random rng, int col = -1) {
             /// Add a new trash piece with a random color
-            SinglePiece trashPiece = Instantiate(abilityManager.singlePiecePrefab).GetComponent<SinglePiece>();
+            Piece trashPiece = Instantiate(abilityManager.singlePiecePrefab).GetComponent<Piece>();
             // give it a unique id
             trashPiece.id = piecePreview.NextPieceId();
 
-            trashPiece.GetCenter().SetColor(Piece.RandomColor(rng), this);
-            trashPiece.GetCenter().MakeTrashTile(this);
+            trashPiece.GetTile(0).SetManaColor(Piece.RandomColor(rng), this);
+            trashPiece.GetTile(0).MakeTrashTile();
 
             // if col is -1, send to random tile, will return the column sent in
             if (col == -1) {
@@ -1218,14 +1214,9 @@ namespace Battle.Board {
             if (piece == null) return;
 
             var ghostPiece = Instantiate(piece.gameObject, piece.transform.parent, true).GetComponent<Piece>();
-
-            ghostPiece.GetCenter().SetColor(piece.GetCenter().color, this, ghost: true);
             
-            if (ghostPiece.GetTop() != null) {
-                ghostPiece.GetTop().SetColor(piece.GetTop().color, this, ghost: true);
-            }
-            if (ghostPiece.GetRight() != null) {
-                ghostPiece.GetRight().SetColor(piece.GetRight().color, this, ghost: true);
+            for (int i = 0; i < ghostPiece.tileCount; i++) {
+                ghostPiece.GetTile(i).SetManaColor(piece.GetTile(i).manaColor, ghost: true);
             }
 
             ghostPiece.MakeGhostPiece(ref ghostTiles);
@@ -1240,25 +1231,38 @@ namespace Battle.Board {
             ghostPiece.PlaceTilesOnBoard(ref simulatedTiles, ghostPieceBoard);
             Destroy(ghostPiece.gameObject);
 
+            // store all board-space positions of simulated tiles - vector2int (col, row)
+            Vector2Int[] tilePositions = new Vector2Int[piece.tileCount];
+            for (int i = 0; i < piece.tileCount; i++) {
+                Tile tile = piece.GetTile(i);
+                tilePositions[i] = piece.PieceToBoardPos(tile);
+            }
+
+            // do gravity on lower tiles before higher tiles
+            Array.Sort(tilePositions, (a, b) => b.y - a.y);
+
             // Keep looping until none of the piece's tiles fall
             // (No other tiles need to be checked as tiles underneath them won't move, only tiles above)
-            bool tileFell = true;
-            while (tileFell) {
-                tileFell = false;
-                
-                // Affect all placed tiles with gravity.
-                foreach (Vector2Int tile in piece)
+            // Affect all placed tiles with gravity.
+            for (int i = 0; i < tilePositions.Length; i++) {
+                // pos.x = col, pos.y = row
+                Vector2Int pos = tilePositions[i];
+                // Only do gravity if this tile is still here and hasn't fallen to gravity yet
+                if (pos.y < height && simulatedTiles[pos.y, pos.x] != null)
                 {
-                    // Only do gravity if this tile is still here and hasn't fallen to gravity yet
-                    if (!(tile.y >= height) && simulatedTiles[tile.y, tile.x] != null)
+                    // If a tile fell, set tileFell to true and the loop will go again after this
+                    int newRow = GhostTileGravity(pos.y, pos.x);
+                    if (newRow != pos.y)
                     {
-                        // If a tile fell, set tileFell to true and the loop will go again after this
-                        if (GhostTileGravity(tile.x, tile.y))
-                        {
-                            tileFell = true;
-                        }
+                        tilePositions[i] = new Vector2Int(pos.x, newRow);
                     }
                 }
+            }
+
+            // light all tiles connected to mana after all tiles have finished falling to reveal current blobs
+            for (int i = 0; i < tilePositions.Length; i++) {
+                var pos = tilePositions[i];
+                LightConnectedMana(pos.y, pos.x);
             }
         }
 
@@ -1295,7 +1299,8 @@ namespace Battle.Board {
                 // set particle color based on tile
                 var particleSystem = tileParticleSystem.GetComponent<ParticleSystem>();
                 var particleSystemMain = particleSystem.main;
-                particleSystemMain.startColor = cycle.GetManaColors()[(int) tiles[row,col].GetManaColor()];
+                int manaColor = tiles[row,col].GetManaColor();
+                particleSystemMain.startColor = manaColor < 0 ? Color.white : cycle.GetManaColors()[manaColor];
 
                 // move to tile position and play burst
                 // offset the x pos by 1 or -1 depending on side, idk why its offset like that /shrug
@@ -1617,11 +1622,11 @@ namespace Battle.Board {
 
         public struct Blob
         {
-            public ManaColor color;
+            public int manaColor;
             public List<Vector2Int> tiles;
 
-            public Blob(ManaColor color) {
-                this.color = color;
+            public Blob(int manaColor) {
+                this.manaColor = manaColor;
                 this.tiles = new List<Vector2Int>();
             }
         }
@@ -1629,9 +1634,9 @@ namespace Battle.Board {
 
         /** Update the blob list this board has recognized. Should be called every time the board changes. */
 
-        public void RefreshBlobs(ManaColor color, float glowDelay = 0f) {
+        public void RefreshBlobs(int manaColor, float glowDelay = 0f) {
             tilesInBlobs = new bool[height, width];
-            FindBlobs(color);
+            FindBlobs(manaColor);
 
             GlowBlobs(glowDelay);
 
@@ -1877,7 +1882,7 @@ namespace Battle.Board {
         {
             foreach (ColorFader cycleColoredObject in cycleColoredObjects)
             {
-                Color cycleColor = cycle.GetManaColor((int)cycle.GetCycle()[cyclePosition]);
+                Color cycleColor = cycle.GetVisualManaColor(cycle.GetCycle()[cyclePosition]);
                 Color brightenedColor = Color.Lerp(cycleColor, fadeToColor, 0.3f);
                 cycleColoredObject.FadeToColor(brightenedColor);
             }
@@ -1891,7 +1896,7 @@ namespace Battle.Board {
         }
 
         // Updates list of all blobs of mana that were cleared.
-        private void FindBlobs(ManaColor color)
+        private void FindBlobs(int manaColor)
         {
             blobs.Clear();
 
@@ -1902,9 +1907,9 @@ namespace Battle.Board {
                 for (int c = 0; c < width; c++)
                 {
                     // Check if indexed tile exists and is correct color, and is not in a blob
-                    if (tiles[r, c] != null && tiles[r, c].GetManaColor() == color && !tilesInBlobs[r, c])
+                    if (tiles[r, c] != null && tiles[r, c].GetManaColor() == manaColor && !tilesInBlobs[r, c])
                     {
-                        Blob blob = CheckBlob(c, r, color);
+                        Blob blob = CheckBlob(c, r, manaColor);
                         if (blob.tiles.Count >= minBlobSize) blobs.Add(blob);
                     }
                 }
@@ -1923,41 +1928,41 @@ namespace Battle.Board {
         }
 
         // Checks for a blob and recursively expands to all connected tiles
-        Blob CheckBlob(int c, int r, ManaColor color)
+        Blob CheckBlob(int c, int r, int manaColor)
         {
-            Blob blob = new Blob(color);
+            Blob blob = new Blob(manaColor);
 
-            ExpandBlob(ref blob, c, r, color);
+            ExpandBlob(ref blob, c, r, manaColor);
 
             return blob;
         }
 
         // Recursively expands the passed blob to all connected tiles
-        void ExpandBlob(ref Blob blob, int c, int r, ManaColor color)
+        void ExpandBlob(ref Blob blob, int c, int r, int manaColor)
         {
             // Don't add to blob if the tile is in an invalid position
             if (c < 0 || c >= width || r < 0 || r >= height) return;
 
-            // Don't add to blob if already in this blob or another blob
+            // Don't add to blob if already in this blob or another blob; this would cause an infinite loop
             if (tilesInBlobs[r, c]) return;
 
             // Don't add if there is not a tile here
             if (tiles[r, c] == null) return;
 
-            // Don't add if the tile is the incorrect color & this or target tile is not multicolor
-            if (tiles[r, c].GetManaColor() != color 
-            && color != ManaColor.Multicolor
-            && tiles[r, c].GetManaColor() != ManaColor.Multicolor) return;
+            // Don't add if the tile is the incorrect color & this or target tile is not set to Any (multicolor) (geo crystal)
+            if (tiles[r, c].GetManaColor() != manaColor 
+            && manaColor != ManaColor.Any
+            && tiles[r, c].GetManaColor() != ManaColor.Any) return;
 
             // Add the tile to the blob and fill in its spot on the tilesInBlobs matrix
             blob.tiles.Add(new Vector2Int(c, r));
             tilesInBlobs[r, c] = true;
 
             // Expand out the current blob on all sides, checking for the same colored tile to add to this blob
-            ExpandBlob(ref blob, c-1, r, color);
-            ExpandBlob(ref blob, c+1, r, color);
-            ExpandBlob(ref blob, c, r-1, color);
-            ExpandBlob(ref blob, c, r+1, color);
+            ExpandBlob(ref blob, c-1, r, manaColor);
+            ExpandBlob(ref blob, c+1, r, manaColor);
+            ExpandBlob(ref blob, c, r-1, manaColor);
+            ExpandBlob(ref blob, c, r+1, manaColor);
         }
 
         // Check the tile at the given index for gravity,
@@ -1985,8 +1990,8 @@ namespace Battle.Board {
                         // I am subtracting half of width and height again here, because it only works tht way,
                         // i don't know enough about transforms to know why. bandaid solution moment.
                         tiles[rFall-1, c].transform.localPosition = new Vector3(
-                            c - GameBoard.width/2f + 0.5f, 
-                            -rFall + 1 + GameBoard.physicalHeight/2f - 0.5f + GameBoard.height - GameBoard.physicalHeight, 
+                            c - width/2f + 0.5f, 
+                            -rFall + 1 + physicalHeight/2f - 0.5f + height - physicalHeight, 
                         0);
 
                         
@@ -2004,15 +2009,17 @@ namespace Battle.Board {
             return false;
         }
 
-        public bool GhostTileGravity(int c, int r)
+        /// <returns>the row that the piece fell to (or stayed at)</returns>
+        public int GhostTileGravity(int r, int c)
         {
             // If there isn't a tile here, it can't fall, because it isnt a tile...
-            if (simulatedTiles[r, c] == null) return false;
-
-            // If the tile is an antigravity tile, do not pull it down. (etc. infinity's sword)
+            // OR, If the tile is an antigravity tile, do not pull it down. (etc. infinity's sword)
             // only pull downward if forced, e.g. by Infinity's ability itslef pulling it down
             // as opposed to from an AllTileGravity from a clear
-            if (!simulatedTiles[r, c].doGravity) return false;
+            if (simulatedTiles[r, c] == null || !simulatedTiles[r, c].doGravity) {
+                Debug.LogWarning("no simulated tile at r="+r+", c="+c);
+                return r;
+            }
 
             // For each tile, check down until there is no longer an empty tile
             for (int rFall = r+1; rFall <= height; rFall++)
@@ -2026,42 +2033,27 @@ namespace Battle.Board {
 
                         // ddo not animate tile; have it immediately snap to where it will fall
                         simulatedTiles[rFall-1, c].transform.localPosition = new Vector3(
-                            c - GameBoard.width/2f + 0.5f, 
-                            -rFall + 1 + GameBoard.physicalHeight/2f - 0.5f + GameBoard.height - GameBoard.physicalHeight, 
-                            0.5f // move tile away from camera so it is rendered behind non-ghost tiles
+                            c - width/2f + 0.5f, 
+                            -rFall + 1 + physicalHeight/2f - 0.5f + height - physicalHeight, 
+                            0.5f // move tile away from camera so it is rendered behind non-ghost (real) tiles
                         );
 
-                        // connect to ghost piece, illuminating connected tiles
-                        ConnectMana();
-
-                        // simulatedTiles[rFall-1, c].transform.localPosition = Vector2.zero;
-
                         simulatedTiles[r, c] = null;
-                        return true;
+                        return rFall-1;
                     }
-                    // will reach here if tile did not fall at all and placed itself right where it is
-                    ConnectMana();
-                    break;
-                }
-
-                void ConnectMana() {
-                    // Connect to the ghost piece that is itself
-                    // simulatedTiles[rFall-1, c].connectedToGhostPiece = true;
-                    // Illuminate all connected tiles
-                    if (lightConnectedMana) LightConnectedMana(rFall-1, c, simulatedTiles[rFall-1, c].color);
                 }
             }
 
-            return false;
+            return r;
         }
 
 
-        // This and ExpandLightBlob are pretty much almost exactly analogous to CheckBlob() and ExpandBlob(), except for lighting tiles
-        void LightConnectedMana(int row, int col, ManaColor color) {
-            Blob blob = new Blob(color);
-            // blob.tiles.Add(new Vector2Int(row, col));
+        // This and ExpandLightBlob are mostly analogous to CheckBlob() and ExpandBlob(), except for lighting tiles & slight differences
+        void LightConnectedMana(int row, int col) {
+            int manaColor = simulatedTiles[row, col].manaColor;
+            Blob blob = new Blob(manaColor);
 
-            ExpandLightBlob(row, col, color, ref blob);
+            ExpandLightBlob(row, col, manaColor, ref blob);
 
             // ExpandLightBlob(row-1, col, color, ref blob);
             // ExpandLightBlob(row+1, col, color, ref blob);
@@ -2079,27 +2071,27 @@ namespace Battle.Board {
             }
         }
 
-        void ExpandLightBlob(int row, int col, ManaColor color, ref Blob blob) {
+        void ExpandLightBlob(int row, int col, int manaColor, ref Blob blob) {
             // return if OOB
             if (row < 0 || row >= height || col < 0 || col >= width) return;
             // return if no sim. tile
             if (!simulatedTiles[row, col]) return;
             // return if incorrect color
-            if (simulatedTiles[row, col].color != color) return;
+            if (simulatedTiles[row, col].manaColor != manaColor) return;
             // return if already connected - covers condition of already being in a blob
             if (simulatedTiles[row, col].connectedToGhostPiece) return;
             // cannot see the color of obscured tiles
             if (simulatedTiles[row, col].obscured) return;
 
-            // Because simulatedTiles copies references to Tile objs on tiles arr, this will affect the correct tile on the tiles arr
+            // Because simulatedTiles copies references to Tile objs on tiles arr, this will affect the correct tile on the real tiles board
             simulatedTiles[row, col].connectedToGhostPiece = true;
             blob.tiles.Add(new Vector2Int(row, col));
 
-            // psread to adjacent tiles
-            ExpandLightBlob(row-1, col, color, ref blob);
-            ExpandLightBlob(row+1, col, color, ref blob);
-            ExpandLightBlob(row, col-1, color, ref blob);
-            ExpandLightBlob(row, col+1, color, ref blob);
+            // spread to adjacent tiles
+            ExpandLightBlob(row-1, col, manaColor, ref blob);
+            ExpandLightBlob(row+1, col, manaColor, ref blob);
+            ExpandLightBlob(row, col-1, manaColor, ref blob);
+            ExpandLightBlob(row, col+1, manaColor, ref blob);
         }
 
         // Affect all tiles with gravity.
@@ -2148,19 +2140,19 @@ namespace Battle.Board {
         }
 
         // Check if the tile at the index is the given color, if there is one there.
-        public bool CheckColor(int r, int c, ManaColor color)
+        public bool CheckColor(int r, int c, int manaColor)
         {
             // return false if there is no tile at the index
             if (tiles[r,c] == null) return false;
             // if there is a tile, return true if it is the given color.
-            return tiles[r,c].GetManaColor() == color;
+            return tiles[r,c].GetManaColor() == manaColor;
         }
 
-        public ManaColor GetCycleColor(int offset) {
+        public int GetCycleColor(int offset) {
             return cycle.GetColor( (cyclePosition+offset) % ManaCycle.cycleLength );
         }
 
-        public ManaColor GetCycleColor()
+        public int GetCycleColor()
         {
             return cycle.GetColor(cyclePosition);
         }

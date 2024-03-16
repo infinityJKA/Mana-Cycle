@@ -9,13 +9,21 @@ using Battle.Cycle;
 namespace Battle.Board {
     public class Tile : MonoBehaviour
     {
-        // Mana color enum value for this tile
-        public ManaColor color { get; private set; }
+        // If within a piece, the row and column relative to that piece, before rotation orientation.
+        // If placed on the board, the row and column of this tile on the grid.
+        public int row;
+        public int col;
+
+        // Mana color int representation value for this tile (changed from ManaColor enum -> int)
+        public int manaColor { get; private set; }
+
         // Seperate image object attached to this
         public Image image;
-        // Target position of this element
+
+        // Target position of this element, used for fall animations
         private Vector3 targetPosition;
-        // Initial movement speed of this object when movmenet animated - distance in tiles per sec
+
+        // Initial movement speed of this object when movemnet animated - distance in tiles per sec
         public float initialSpeed = 0;
         private float speed;
         // Acceleration of this piece when falling
@@ -72,32 +80,35 @@ namespace Battle.Board {
         [SerializeField] private AnimationCurve glowAnimCurve;
         
 
-        public void SetColor(ManaColor color, GameBoard board, bool ghost = false, bool setColor = true, bool setSprite = true)
+        public void SetManaColor(int manaColor, bool setVisualColor = true, bool setSprite = true, bool ghost = false)
         {
-            this.color = color;
+            this.manaColor = manaColor;
+
             // Get image and set color from the list in this scene's cycle
-            if (setColor) {
-                baseColor = board.cycle.GetManaColor( (int)color );
-                litColor = board.cycle.GetLitManaColor( (int)color );
+            if (setVisualColor) {
+                baseColor = ManaCycle.instance.GetVisualManaColor( manaColor );
+                litColor = ManaCycle.instance.GetLitManaColor( manaColor );
             }
-            if (setSprite && board.cycle.usingSprites) {
+            if (setSprite && ManaCycle.instance.usingSprites) {
                 if (ghost) {
-                    image.sprite = board.cycle.ghostManaSprites[ ((int)color) ];
+                    // if below 0, use multicolor ghost sprite
+                    image.sprite = manaColor < 0 ? ManaCycle.instance.multicolorGhostManaSprite : ManaCycle.instance.ghostManaSprites[ manaColor ];
                     baseColor = new Color(baseColor.r, baseColor.g, baseColor.b, 0.4f);
                     image.GetComponent<UnityEngine.UI.Outline>().enabled = true;
                     // image.GetComponent<UnityEngine.UI.Outline>().effectColor = Color.Lerp(image.color, Color.white, 0.4f);
                     image.GetComponent<UnityEngine.UI.Outline>().effectColor = baseColor;
                 } else {
-                    image.sprite = board.cycle.manaSprites[ ((int)color) ];
+                    // if below 0, use multicolor sprite
+                    image.sprite = manaColor < 0 ? ManaCycle.instance.multicolorManaSprite :ManaCycle.instance.manaSprites[ manaColor ];
                 }
             }
 
             image.color = baseColor;
         }
 
-        public ManaColor GetManaColor()
+        public int GetManaColor()
         {
-            return color;
+            return manaColor;
         }
 
         public void SetVisualColor(Color color)
@@ -151,7 +162,7 @@ namespace Battle.Board {
             if (beforeClear != null) beforeClear(blob);
         }
 
-        public void MakeTrashTile(GameBoard board) {
+        public void MakeTrashTile() {
             trashTile = true;
             pointMultiplier -= 1.00f;
             SetVisualColor(Color.Lerp(Color.black, image.color, 0.7f));
@@ -184,7 +195,7 @@ namespace Battle.Board {
         public void Unobscure(GameBoard board) {
             if (obscured) {
                 obscured = false;
-                SetColor(color, board);
+                SetManaColor(manaColor, board);
             }
         }
 
