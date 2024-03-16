@@ -12,17 +12,10 @@ namespace Battle.Board {
         // Row position of this piece on the grid.
         [SerializeField] protected int row = 0;
 
-        // IN THE FUTURE this system was stupid maybe make an array of tiles containing each tile and their unrotated offset from the center...
-        // this will allow for kookier tile shapes
-
         // Think of each piece as an L on your left hand. Top is pointer finger and right is thumb.
         // Tile in center
-        [SerializeField] protected Tile center; 
-        // Tile on top (unrotated)
-        [SerializeField] protected Tile top;
-        /// Tile on right (unrotated)
-        [SerializeField] protected Tile right;
-        
+        [SerializeField] protected Tile[] tiles; 
+
         /// <summary>
         /// Rotation center - holds all the tile objects. Centered on tile for correct visual rotation.
         /// </summary>
@@ -59,12 +52,12 @@ namespace Battle.Board {
         /// </summary>
         public Battler.ActiveAbilityEffect effect;
 
-        public virtual bool IsRotatable {get {return true;}}
+        public bool isRotatable {get; set;} = true;
 
         /// <summary>
         /// If this is a special tile that should fall much slower than other tiles - ex. Infinity's sword
         /// </summary>
-        public bool slowFall { get; protected set; }
+        public bool slowFall { get; private set; }
 
         private Vector3 OrientedDirection()
         {
@@ -85,67 +78,66 @@ namespace Battle.Board {
 
             if (rng == PieceRng.CurrentColorWeighted)
             {
-                center.SetColor(ColorWeightedRandom(board), board);
-                top.SetColor(ColorWeightedRandom(board), board);
-                right.SetColor(ColorWeightedRandom(board), board);
+                foreach (Tile tile in tiles) {
+                    tile.SetManaColor(ColorWeightedRandom(board), board);
+                } 
             }
 
             if (rng == PieceRng.PieceSameColorWeighted)
             {
-                center.SetColor(RandomColor(board.rngManager.rng), board);
+                tiles[0].SetManaColor(RandomColor(board.rngManager.rng), board);
 
                 // for top and right, 40% chance to mirror the center color
-                if (board.rngManager.rng.NextDouble() < 0.4) {
-                    top.SetColor(center.color, board);
-                } else {
-                    top.SetColor(RandomColor(board.rngManager.rng), board);
-                }
-                if (board.rngManager.rng.NextDouble() < 0.4) {
-                    right.SetColor(center.color, board);
-                } else {
-                    right.SetColor(RandomColor(board.rngManager.rng), board);
+                for (int i = 1; i < tiles.Length; i++) {
+                    if (board.rngManager.rng.NextDouble() < 0.4) {
+                        tiles[i].SetManaColor(tiles[0].manaColor, board);
+                    } else {
+                        tiles[i].SetManaColor(RandomColor(board.rngManager.rng), board);
+                    }
                 }
             }
 
             else if (rng == PieceRng.PureRandom)
             {
-                center.SetColor(RandomColor(board.rngManager.rng), board);
-                top.SetColor(RandomColor(board.rngManager.rng), board);
-                right.SetColor(RandomColor(board.rngManager.rng), board);
+                foreach (Tile tile in tiles) {
+                    tile.SetManaColor(RandomColor(board.rngManager.rng), board);
+                } 
             }
 
             else if (rng == PieceRng.Bag)
             {
                 // pull color from randomized bag
-                center.SetColor(board.PullColorFromBag(), board);
-                top.SetColor(board.PullColorFromBag(), board);
-                right.SetColor(board.PullColorFromBag(), board);
-
+                foreach (Tile tile in tiles) {
+                    tile.SetManaColor(board.rngManager.PullColorFromBag(), board);
+                }
             }
 
             else if (rng == PieceRng.CenterMatchesCycle)
             {
-                // center matches cycle order, others are random
-                center.SetColor(board.GetCenterMatch(), board);
-                top.SetColor(RandomColor(board.rngManager.rng), board);
-                right.SetColor(RandomColor(board.rngManager.rng), board);
+                // first tile (center) matches cycle, all others are random
+                tiles[0].SetManaColor(board.rngManager.GetCenterMatch(), board);
+                for (int i = 1; i < tiles.Length; i++) {
+                    tiles[i].SetManaColor(RandomColor(board.rngManager.rng), board);
+                }
             }
         }
 
-        public static ManaColor RandomColor(System.Random rng)
+        // uses a System.Random seeded instance
+        public static int RandomColor(System.Random rng)
         {
-            return (ManaColor)rng.Next(0, ManaCycle.lockPieceColors ? ManaCycle.cycleUniqueColors : 5);
+            return rng.Next(0, ManaCycle.lockPieceColors ? ManaCycle.cycleUniqueColors : 5);
         }
 
-        public static ManaColor RandomColor()
+        // uses built in Unity random
+        public static int RandomColor()
         {
-            return (ManaColor)Random.Range(0, ManaCycle.lockPieceColors ? ManaCycle.cycleUniqueColors : 5);
+            return Random.Range(0, ManaCycle.lockPieceColors ? ManaCycle.cycleUniqueColors : 5);
         }
 
-        protected static ManaColor ColorWeightedRandom(GameBoard board)
+        protected static int ColorWeightedRandom(GameBoard board)
         {
             // still always pull from bag, but replace some with cycle color
-            var bagColor = board.PullColorFromBag();
+            var bagColor = board.rngManager.PullColorFromBag();
             if (board.rngManager.rng.NextDouble() < 0.15)
             {
                 return board.GetCycleColor();
@@ -182,6 +174,11 @@ namespace Battle.Board {
         // Rotate this piece to the right about the center.
         public void RotateRight()
         {
+            if (!isRotatable) {
+                Debug.LogWarning("Trying to rotate an unrotatable piece");
+                return;
+            }
+
             switch (orientation)
             {
                 case Orientation.up:
@@ -199,6 +196,11 @@ namespace Battle.Board {
         // Rotate this piece to the left about the center.
         public void RotateLeft()
         {
+            if (!isRotatable) {
+                Debug.LogWarning("Trying to rotate an unrotatable piece");
+                return;
+            }
+            
             switch (orientation)
             {
                 case Orientation.up:
@@ -225,97 +227,59 @@ namespace Battle.Board {
         // Update the roation of this object's rotation center, after orientation changes.
         public virtual void UpdateOrientation()
         {
+            if (!isRotatable || !rotationCenter) {
+                Debug.LogWarning("Trying to update orientation of unrotatable title");
+                return;
+            }
             rotationCenter.rotation = Quaternion.LookRotation(Vector3.forward, OrientedDirection());
 
             // make the inner tiles face opposite rotation, so animation stays correct
             // var opposite = UndoOrientedDirection();
-            center.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-            top.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-            right.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+            foreach (Tile tile in tiles) {
+                tile.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+            }
         }
 
         // Iteration of all coordinates this piece currently occupies. Returns Vector2Ints of (col, row).
         public virtual IEnumerator<Vector2Int> GetEnumerator()
         {
-            // Center
-            yield return new Vector2Int(col, row);
-
-            // Only return positions off the center if they are taken up by the current orientation
-            // Tile on top
-            if (orientation == Orientation.up || orientation == Orientation.left) 
-                yield return new Vector2Int(col, row-1);
-
-            // Tile to right
-            if (orientation == Orientation.right || orientation == Orientation.up) 
-                yield return new Vector2Int(col+1, row);
-
-            // Tile on bottom
-            if (orientation == Orientation.down || orientation == Orientation.right) 
-                yield return new Vector2Int(col, row+1);
-
-            // Tile to left
-            if (orientation == Orientation.left || orientation == Orientation.down) 
-                yield return new Vector2Int(col-1, row);
+            foreach (Tile tile in tiles) {
+                yield return PieceToBoardPos(tile);
+            }
         }
 
         // Place this tile's pieces onto the passed board.
-        public virtual void PlaceTilesOnBoard(ref Tile[,] tiles, Transform pieceBoard)
+        public virtual void PlaceTilesOnBoard(ref Tile[,] tileGrid, Transform pieceBoard)
         {
-            // Place center tile
-            tiles[row, col] = center;
+            foreach (Tile tile in tiles) {
+                Vector2Int boardPos = PieceToBoardPos(tile);
+                tileGrid[boardPos.y, boardPos.x] = tile;
 
-            // Place top and right tile based on orientation
-            switch (orientation)
-            {
-                case Orientation.up:
-                    tiles[row-1, col] = top;
-                    tiles[row, col+1] = right;
-                    break;
-                case Orientation.left:
-                    tiles[row, col-1] = top;
-                    tiles[row-1, col] = right;
-                    break;
-                case Orientation.down:
-                    tiles[row+1, col] = top;
-                    tiles[row, col-1] = right;
-                    break;
-                case Orientation.right:
-                    tiles[row, col+1] = top;
-                    tiles[row+1, col] = right;
-                    break;
+                tile.transform.SetParent(pieceBoard, true);
+                tile.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
             }
-
-            // Change parent of tiles
-            center.transform.SetParent(pieceBoard, true);
-            center.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-
-            top.transform.SetParent(pieceBoard, true);
-            top.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-
-            right.transform.SetParent(pieceBoard, true);
-            right.transform.rotation = Quaternion.
-            LookRotation(Vector3.forward, Vector3.up);
-        }
-
-        /// <summary>
-        /// Called when this piece is placed
-        /// (used in actie abilities)
-        /// </summary>
-        public virtual void OnPlace(GameBoard board)
-        {  
-            // see SinglePiece.cs for implementation
         }
 
         public virtual void DestroyTiles() {
-            Destroy(center.gameObject);
-            Destroy(top.gameObject);
-            Destroy(right.gameObject);
+            foreach (Tile tile in tiles) {
+                Destroy(tile.gameObject);
+            }
         }
 
         public virtual void MakeGhostPiece(ref List<Tile> ghostTiles) {
-            ghostTiles.Add(center);
-            ghostTiles.Add(top);
-            ghostTiles.Add(right);
+            foreach (Tile tile in tiles) {
+                ghostTiles.Add(tile);
+            }
+
+            if (effect == Battler.ActiveAbilityEffect.IronSword) {
+                center.SetManaColor(ManaColor.None, ghost: true);
+                center.image.rectTransform.sizeDelta = Vector2.one;
+                center.image.transform.position = Vector2.zero;
+            }
+
+            else if (effect == Battler.ActiveAbilityEffect.GoldMine) {
+                transform.GetComponentInChildren<MeshRenderer>().enabled = false;
+            }
         }
 
         // Accessors
@@ -329,23 +293,199 @@ namespace Battle.Board {
             return col;
         }
 
-        public Tile GetCenter()
-        {
-            return center;
-        }
-
-        public Tile GetTop()
-        {
-            return top;
-        }
-
-        public Tile GetRight()
-        {
-            return right;
-        }
-
         public Orientation GetRotation(){
             return orientation;
+        }
+
+        public Tile GetTile(int index) {
+            return tiles[index];
+        }
+
+        public Tile center => tiles[0];
+
+        public Tile[] GetTiles() {
+            return tiles;
+        }
+
+        public Vector2Int TilePos(int index) {
+            return PieceToBoardPos(tiles[index]);
+        }
+
+        public int tileCount => tiles.Length;
+
+        /// <summary>
+        /// Convert the position of a tile within this piece to board position (undo the rotation).
+        /// </summary>
+        /// <param name="piecePosition">row-col position relative to this piece's center</param>
+        /// <returns>position of the tile on the board in format (col, row)</returns>
+        public Vector2Int PieceToBoardPos(Tile tile) {
+            switch (orientation)
+            {
+                case Orientation.up:
+                    return new Vector2Int(col + tile.col, row + tile.row);
+                case Orientation.left:
+                    return new Vector2Int(col + tile.row, row - tile.col);
+                case Orientation.down:
+                    return new Vector2Int(col - tile.col, row - tile.row);
+                case Orientation.right:
+                    return new Vector2Int(col - tile.row, row + tile.col);
+                default:
+                    Debug.LogWarning("Invalid piece orientation somehow");
+                    return Vector2Int.zero;
+            }
+        }
+
+        // ======== ABILITY MANAGEMENT
+            /// <summary>
+        /// Called when this piece is placed
+        /// (used in active abilities)
+        /// </summary>
+        public virtual void OnPlace(GameBoard board)
+        {  
+            switch(effect)
+            {
+                case Battler.ActiveAbilityEffect.IronSword:
+                    // Debug.Log("Iron Sword effect");
+                    Instantiate(board.cosmetics.ironSwordSFX);
+                    IronSwordDestroyTileBelow(board);
+                    break;
+                case Battler.ActiveAbilityEffect.PyroBomb:
+                    // Debug.Log("Pyro Bomb effect");
+                    PyroBombExplode(board);
+                    break;
+                default:
+                    // Debug.Log("default single piece fall");
+                    break;
+            }
+        }
+
+        // ======== ABILITY PIECE CREATION
+        public void MakeIronSword(GameBoard board)
+        {
+            effect = Battler.ActiveAbilityEffect.IronSword;
+            slowFall = true;
+            center.DontDoGravity();
+            center.SetManaColor(ManaColor.Colorless, setVisualColor: false, setSprite: false);
+
+            center.image.sprite = board.cosmetics.ironSwordSprite;
+            center.image.rectTransform.sizeDelta = new Vector2(1, 2);
+            center.image.transform.position = new Vector2(0, 0.5f); // aligns the bottom of the 2 tile large image to the bottom of the single tile
+
+            accumulatedDamage = 0;
+            center.onFallAnimComplete = () => IronSwordDestroyTileBelow(board);
+        }
+
+        // Destroy the tile below this tile and deal damage
+        // Return true if the tile should try to fall again
+        int accumulatedDamage;
+        private void IronSwordDestroyTileBelow(GameBoard board)
+        {
+            row++;
+            // Removes this tile when it reaches the bottom of the board.
+            if (row >= GameBoard.height) {
+                board.ClearTile(col, row-1, doParticleEffects: false);
+
+                // in online only, wait until after hitting the ground, and then send damage to other client
+                // in case there was a desync due to the very many damage instances in a short burst
+                if (Storage.online && board.netPlayer.isOwned) {
+                    board.DealDamage(accumulatedDamage, center.transform.position, partOfChain: false);
+                }
+            }
+            // only locally evaluate damage if either not online or player owns this client and not the opponent
+            int damage = (int)(board.damagePerMana*2.5);
+            if (!Storage.online || board.netPlayer.isOwned) {
+                board.DealDamageLocal(damage, center.transform.position);
+            } else {
+                accumulatedDamage += damage;
+            }
+
+            // When iron sword falls, clear tile below, or destroy when at bottom
+            board.ClearTile(col, row);
+            board.TileGravity(col, row-1, force: true); // makes this piece's tile fall
+
+            // may cause ta tile to not be in a valid clearing blob - check to unglow them
+            board.UnglowNotInBlobs();
+        }
+
+
+        public void MakePyroBomb(GameBoard board)
+        {
+            effect = Battler.ActiveAbilityEffect.PyroBomb;
+            center.SetManaColor(ManaColor.Colorless);
+            center.image.sprite = board.cosmetics.pyroBombSprite;
+            center.SetVisualColor(Color.white);
+            center.image.gameObject.SetActive(true);
+        }
+
+        private void PyroBombExplode(GameBoard board) {
+            Debug.Log("pyro bomb explosion");
+            Instantiate(board.cosmetics.pyroBombSFX);
+            
+            // Destroy tiles in a 3x3 grid (including this piece's bomb tile, which is in the center)
+            // exclude this tile initial count
+
+            var explosionCenter = center.transform.position; // grab this before tile is destroyed
+            float totalPointMult = 0;
+            // Debug.Log(row+", "+col);
+            for (int r = row-1; r <= row+1; r++) {
+                for (int c = col-1; c <= col+1; c++) {
+                    // Debug.Log(r+", "+c);
+                    totalPointMult += board.ClearTile(c, r);
+                }
+            }
+            board.AllTileGravity();
+
+            // Because this may cause a tile to fall outside of a blob, unglow un blob tiles
+            board.UnglowNotInBlobs();
+
+            board.DealDamage((int)(board.damagePerMana*totalPointMult*3f), explosionCenter, partOfChain: false);
+        }
+
+        
+        public void MakeGoldMine(GameBoard board) {
+            Debug.Log("gold mine piece creation");
+
+            effect = Battler.ActiveAbilityEffect.GoldMine;
+
+            // // (Old) Tile color mirrors the center color of the current piece it is replacing
+            // center.SetColor(board.GetPiece().GetCenter().color, board);
+
+            // (New) tile is always multicolor
+            center.SetManaColor(ManaColor.Multicolor, board);
+            // make tile semi transparent white color
+            center.SetVisualColor(new Color(1f, 1f, 1f, 0.5f));
+
+            // This tile's point mult should be 0, unless another mana somehow buffs it
+            center.pointMultiplier -= 1.00f;
+
+            // Before this tile is cleared, add a +200% point multiplier to all connected mana
+            // (Don't buff this mana, it should stay at 0)
+            center.beforeClear = (blob) => {
+                foreach (var tilePos in blob.tiles) {
+                    if (tilePos.y == row && tilePos.x == col) return;
+                    board.tiles[tilePos.y, tilePos.x].pointMultiplier += 2.00f;
+                }
+            };
+
+            // instantiate the crystal object and move it away from the camera, but not beyond the board
+            GameObject crystal = Instantiate(
+                board.cosmetics.goldMineObject, 
+                center.image.transform.position + Vector3.forward*2, 
+                Quaternion.identity, 
+                center.image.transform
+            ); 
+
+            // set material to cycle's corresponding crystal material
+            // (nvm crystals dont have colors anymore)        
+            // crystal.GetComponent<MeshRenderer>().material = board.cycle.crystalMaterials[center.manaColor];
+        }
+
+        public void MakeZman(GameBoard board) {
+            center.SetManaColor(ManaColor.Colorless);
+            center.image.sprite = board.cosmetics.miniZmanSprite;
+            center.MakeObscuresColor();
+            center.MakeFragile();
+            center.pointMultiplier -= 1.0f;
         }
     }
 }

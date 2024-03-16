@@ -135,8 +135,9 @@ namespace Battle.Board {
         /// <summary>
         /// Returns a newly instantiated single piece with a unique ID.
         /// </summary>
-        private SinglePiece CreateSinglePiece() {
-            SinglePiece newPiece = Instantiate(singlePiecePrefab).GetComponent<SinglePiece>();
+        private Piece CreateSinglePiece() {
+            Piece newPiece = Instantiate(singlePiecePrefab).GetComponent<Piece>();
+            newPiece.isRotatable = false;
             newPiece.id = board.piecePreview.NextPieceId();
             return newPiece;
         }
@@ -147,7 +148,7 @@ namespace Battle.Board {
         /// </summary>
         private void IronSword() {
             ClearAbilityData();
-            SinglePiece ironSwordPiece = CreateSinglePiece();
+            Piece ironSwordPiece = CreateSinglePiece();
             ironSwordPiece.MakeIronSword(board);
             board.ReplacePiece(ironSwordPiece);
         }
@@ -187,11 +188,11 @@ namespace Battle.Board {
             ClearAbilityData();
             board.ReplacePiece(MakePyroBomb());
             board.piecePreview.ReplaceNextPiece(MakePyroBomb());
-            board.piecePreview.ReplaceListPiece(MakePyroBomb(), PiecePreview.previewLength-1);
+            board.piecePreview.ReplaceUpcomingPiece(MakePyroBomb(), PiecePreview.previewLength-1);
         }
 
-        private SinglePiece MakePyroBomb() {
-            SinglePiece pyroBombPiece = CreateSinglePiece();
+        private Piece MakePyroBomb() {
+            Piece pyroBombPiece = CreateSinglePiece();
             pyroBombPiece.MakePyroBomb(board);
             return pyroBombPiece;
         }
@@ -221,7 +222,7 @@ namespace Battle.Board {
         /// </summary>
         private void GoldMine() {
             ClearAbilityData();
-            SinglePiece goldMinePiece = CreateSinglePiece();
+            Piece goldMinePiece = CreateSinglePiece();
             goldMinePiece.MakeGoldMine(board);
             board.ReplacePiece(goldMinePiece);
         }
@@ -231,7 +232,7 @@ namespace Battle.Board {
         /// After a short duration the tile destroys itself
         /// </summary>
         private void ZBlind() {
-            SinglePiece zmanPiece = CreateSinglePiece();
+            Piece zmanPiece = CreateSinglePiece();
             zmanPiece.MakeZman(board);
 
             if (Storage.online && !board.netPlayer.isOwned) {

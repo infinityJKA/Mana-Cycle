@@ -14,10 +14,10 @@ namespace Battle.Board {
         [SerializeField] private GameBoard board;
         // Piece prefab, containing an object with Tile gameobject children
         [SerializeField] private Piece piecePrefab;
-        [SerializeField] private SinglePiece singlePiecePrefab;
+        [SerializeField] private Piece singlePiecePrefab;
 
         // Length of the preview list
-        [SerializeField] public static int previewLength = 2;
+        public const int previewLength = 2;
 
         /// <summary>
         /// The INDEX of the current piece - counts up from 1 each time a new piece is spawned (skips 0), each piece will have a unique index.
@@ -98,13 +98,13 @@ namespace Battle.Board {
             newPiece.transform.localScale = nextPieceTransform.GetChild(0).transform.localScale;
         }
 
-        public void ReplaceListPiece(Piece newPiece, int index)
+        public void ReplaceUpcomingPiece(Piece newPiece, int index)
         {
             Destroy(previewListTransform.GetChild(index).gameObject);
             newPiece.transform.SetParent(previewListTransform);
             newPiece.transform.localPosition = previewListTransform.GetChild(index).transform.localPosition;
             newPiece.transform.localScale = previewListTransform.GetChild(index).transform.localScale;
-            newPiece.transform.SetSiblingIndex(PiecePreview.previewLength-index-1);
+            newPiece.transform.SetSiblingIndex(previewLength-index-1);
         }
     }
 }

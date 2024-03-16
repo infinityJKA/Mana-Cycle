@@ -16,6 +16,10 @@ namespace Battle.AI {
         // Coordinate system works like this: array[row * width + col]
         public NativeArray<int> boardTiles;
 
+        // A list of mana colors with their positions as opposed to a full array,
+        // since this will only be holding 3 tiles
+        NativeArray<VirtualTile> virtualTiles;
+
         // A percentage of how "accurate" the determined placement should be.
         public float accuracy;
 
@@ -34,7 +38,6 @@ namespace Battle.AI {
         // list of bools, used to determine which possible placements the AI will "see" and act upon
         public NativeArray<bool> accuracyRng;
 
-        int center, top, right;
         int tileIndex;
 
         // USED IN HIGHEST/LOWEST COLUMN CALCULATIONS oops caps lock
@@ -57,8 +60,13 @@ namespace Battle.AI {
         // true if the current placement will kill the player if placed. will try to avoid these placements but sometimes necessary
         public bool willKill;
 
-        public BestPlacementJob(GameBoard board, NativeArray<int> bestPlacement, float accuracy, int prioritizeColor = ManaColor.Any,
-        int minCol = 0, int maxCol = 7) {
+        public BestPlacementJob(
+            GameBoard board, 
+            NativeArray<int> bestPlacement, 
+            float accuracy, 
+            int prioritizeColor = ManaColor.Any,
+            int minCol = 0, int maxCol = 7) 
+        {
             this.bestPlacement = bestPlacement;
             this.accuracy = accuracy;
             this.prioritizeColor = prioritizeColor;
@@ -73,9 +81,9 @@ namespace Battle.AI {
                     if (board.tiles[r, c]) {
                         // If the tile is obscured by zman, AI will be more likely to remember the color based on accuracy
                         // If not, it knows it's a color, but not what color
-                        // Even the highest accuracy AI will only remember 60% of the colors at a time, 
+                        // Even the highest accuracy AI will only remember 50% of the colors at a time, 
                         // just so zman isnt completely useless against high level AI
-                        if (board.tiles[r, c].obscured && UnityEngine.Random.value > accuracy*0.6f) {
+                        if (board.tiles[r, c].obscured && UnityEngine.Random.value > accuracy*0.5f) {
                             boardTiles[r*GameBoard.width + c] = ManaColor.Colorless;
                         } else {
                             boardTiles[r*GameBoard.width + c] = board.tiles[r, c].manaColor;
@@ -90,9 +98,15 @@ namespace Battle.AI {
             }
 
             var piece = board.GetPiece();
-            center = piece.GetTile(0).manaColor;
-            top = piece.GetTile(1).manaColor;
-            right = piece.GetTile(2).manaColor;
+            virtualTiles = new NativeArray<VirtualTile>(piece.tileCount, Allocator.Temp);
+            for (int i = 0; i < piece.tileCount; i++) {
+                Tile tile = piece.GetTile(0);
+                var pos = piece.PieceToBoardPos(tile);
+                virtualTiles[i] = new VirtualTile(pos.y, pos.x, tile.manaColor);
+            }
+
+            
+
             tileIndex = 0;
             invalidPlacement = false;
             willKill = false;
@@ -106,7 +120,7 @@ namespace Battle.AI {
             // set accuracy rng - each index represents a possible placement that the AI will or will not see
             accuracyRng = new NativeArray<bool>(32, Allocator.TempJob);
             for (int i=0; i<32; i++) {
-                accuracyRng[i] = (UnityEngine.Random.value < accuracy);
+                accuracyRng[i] = UnityEngine.Random.value < accuracy;
             }
 
             // first item is highest column (lowest row value)
@@ -203,6 +217,10 @@ namespace Battle.AI {
             }
         }
 
+        int CompareRows(int a, int b) {
+            return virtualTiles[b].row - virtualTiles[a].row;
+        }
+
         /// <summary>
         /// Simulates placing the virtual piece at the designated location and orientation.
         /// </summary>
@@ -219,13 +237,16 @@ namespace Battle.AI {
             // if (force) Debug.Log("Trying force placement: "+col+", "+rot);
             // else Debug.Log("Trying placement: "+col+", "+rot);
 
-            // A list of mana colors with their positions as opposed to a full array,
-            // since this will only be holding 3 tiles
-            var virtualTiles = new NativeArray<VirtualTile>(3, Allocator.Temp);
-
             invalidPlacement = false;
             manaGain = 0;
             tileIndex = 0;
+
+            // Use an array to sort the order in which tiles are placed; lower tiles first so gravity happens in the right order
+            int[] placeOrder = new int[virtualTiles.Length];
+            for (int i = 0; i < placeOrder.Length; i++) {
+                placeOrder[i] = i;
+            }
+            Array.Sort(placeOrder, CompareRows);
 
             // Tiles should be placed in reverse order of row so gravity happens in the right order.
             switch (rot)
@@ -299,13 +320,15 @@ namespace Battle.AI {
             virtualTiles.Dispose();
         }
 
-        // Place a tile into the passed virtual tile list.
-        void SpawnTile(int col, int color, NativeArray<VirtualTile> tiles) 
+        // Place the virtual tile with the given index onto the virtual board.
+        void SpawnTile(int index) 
         {
             if (invalidPlacement) return;
 
+            VirtualTile vt = virtualTiles[index];
+
             // if this tile's column is outside the board, piece cannot be moved here, and invalidate all other pieces
-            if (col < 0 || col >= GameBoard.width) {
+            if (vt.col < 0 || vt.col >= GameBoard.width) {
                 invalidPlacement = true;
                 return;
             }
@@ -320,7 +343,7 @@ namespace Battle.AI {
             for (int r = 2; r < GameBoard.height; r++) {
                 // place here if reached the bottom of the board
                 if (r+1 == GameBoard.height) {
-                    PlaceTile(tiles, r, col, color);
+                    PlaceVirtualTile(vt, r, vt.col);
                     return;
                 }
 
@@ -351,18 +374,17 @@ namespace Battle.AI {
             }
         }
 
-        // Place the tile onto the board. Increment mana gain if connected to the same color
-        void PlaceTile(NativeArray<VirtualTile> virtualTiles, int row, int col, int color) 
+        // Place the virtual tile onto the board at where gravity has pulled it to. Increment mana gain if connected to the same color
+        // check if a passed row and col position is within the killzone (the area that will block a new standard three-piece being spawned)
+        // if in killzone, mark as invalid placement
+        void PlaceVirtualTile(VirtualTile tile, int row, int col) 
         {
-            // if the tile ended up in the kill zone, don't place here
             if ((col == 3 || col == 4) && row <= 4) {
                 invalidPlacement = true;
-                return;
+            } else {
+                tile.row = row;
+                tile.col = col;
             }
-
-            // add the virtual tile
-            virtualTiles[tileIndex] = new VirtualTile(row, col, color);
-            tileIndex++;
         }
 
         /// <summary>
@@ -372,15 +394,15 @@ namespace Battle.AI {
         void CheckManaConnections(NativeArray<VirtualTile> virtualTiles) {
             for (int i=0; i<3; i++) {
                 var tile = virtualTiles[i];
-                CheckColorMatch(virtualTiles, i, tile.row-1, tile.col, tile.manaColor);
-                CheckColorMatch(virtualTiles, i, tile.row+1, tile.col, tile.manaColor);
-                CheckColorMatch(virtualTiles, i, tile.row, tile.col-1, tile.manaColor);
-                CheckColorMatch(virtualTiles, i, tile.row, tile.col+1, tile.manaColor);
+                CheckColorMatch(virtualTiles, i, tile.row-1, tile.col, tile.color);
+                CheckColorMatch(virtualTiles, i, tile.row+1, tile.col, tile.color);
+                CheckColorMatch(virtualTiles, i, tile.row, tile.col-1, tile.color);
+                CheckColorMatch(virtualTiles, i, tile.row, tile.col+1, tile.color);
             }
         }
 
         // Check the board's tiles and virutal tiles if the color is matched.
-        bool CheckColorMatch(NativeArray<VirtualTile> virtualTiles, int index, int row, int col, int color) {
+        bool CheckColorMatch(NativeArray<VirtualTile> virtualTiles, int index, int row, int col, ManaColor color) {
             if (row < 0 || row >= GameBoard.height || col < 0 || col >= GameBoard.width) return false;
 
             // weight if matches priority color
@@ -392,7 +414,7 @@ namespace Battle.AI {
             for (int i=0; i<3; i++) {
                 if (i == index) continue; // do not check that this tile is this tile
                 
-                if (virtualTiles[i].row == row && virtualTiles[i].col == col && virtualTiles[i].manaColor == color) {
+                if (virtualTiles[i].row == row && virtualTiles[i].col == col && virtualTiles[i].color == color) {
                     if (color == prioritizeColor) {manaGain += 10;} else  {manaGain += 1;}
                     return true;
                 }
@@ -403,12 +425,12 @@ namespace Battle.AI {
 
         public struct VirtualTile
         {
-            public int row, col, manaColor;
+            public int row, col, color;
 
-            public VirtualTile(int row, int col, int manaColor) {
+            public VirtualTile(int row, int col, int color) {
                 this.row = row;
                 this.col = col;
-                this.manaColor = manaColor;
+                this.color = color;
             }
 
             public override string ToString() {

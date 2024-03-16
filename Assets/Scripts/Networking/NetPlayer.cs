@@ -132,7 +132,7 @@ public class NetPlayer : NetworkBehaviour {
     public struct BattleInitData {
         public int hostSeed;
         public int nonHostSeed;
-        public ManaColor[] cycle;
+        public int[] cycle;
 
         public override string ToString()
         {
@@ -415,49 +415,6 @@ public class NetPlayer : NetworkBehaviour {
 
         // index of ability rng in the seeded order
         public int abilityRngIndex;
-    }
-
-    [Command]
-    public void CmdSendFullBoardData() {
-        FullBoardData data = new FullBoardData();
-
-        byte[] tiles = new byte[160];
-        for (int c = 0; c < GameBoard.width; c++) {
-            for (int r = 0; r < GameBoard.height; r++) {
-                int i = c*GameBoard.width + r;
-                Tile tile = board.tiles[r,c];
-                tiles[i] = TileToColorByte(tile);
-            }
-        }
-        data.tiles = tiles;
-
-        byte[] pieces = new byte[12];
-        pieces[0] = TileToColorByte(board.GetPiece().GetCenter());
-        pieces[1] = TileToColorByte(board.GetPiece().GetTop());
-        pieces[2] = TileToColorByte(board.GetPiece().GetRight());
-
-        Piece nextPiece = board.piecePreview.GetNextPiece();
-        pieces[3] = TileToColorByte(nextPiece.GetCenter());
-        pieces[4] = TileToColorByte(nextPiece.GetTop());
-        pieces[5] = TileToColorByte(nextPiece.GetRight());
-
-        for (int i = 0; i < PiecePreview.previewLength; i++) {
-            Piece previewPiece = board.piecePreview.GetPreviewPiece(i);
-            pieces[(i+2)*3] = TileToColorByte(previewPiece.GetCenter());
-            pieces[(i+2)*3 + 1] = TileToColorByte(previewPiece.GetTop());
-            pieces[(i+2)*3 + 2] = TileToColorByte(previewPiece.GetRight());
-        }
-        data.pieces = pieces;
-
-        byte[] pieceOverrides = new byte[4];
-    }
-
-    private byte TileToColorByte(Tile tile) {
-        if (tile == null) {
-            return 0;
-        } else {
-            return (byte)((byte)(tile.color) + 1);
-        }
     }
 
     [ClientRpc(includeOwner = false)]

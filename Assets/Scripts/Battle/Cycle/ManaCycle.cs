@@ -22,7 +22,7 @@ namespace Battle.Cycle {
         // All ManaColor colors to tint the cycle images
         [SerializeField] private List<Color> manaColors;
 
-        // Color to light mana tiles when they are shown as connected to the ghost piece.
+        // Color to light mana tiles when they are shown as connected to a ghost tile in a clearable blob.
         [SerializeField] private List<Color> litManaColors;
 
         // String representations of the mana color
@@ -31,11 +31,17 @@ namespace Battle.Cycle {
         // List of sprites to use for mana of this color (corresponds to indexes in manaColors)
         [SerializeField] public List<Sprite> manaSprites;
 
+        // called Multicolor, but really it's used to display any mana sprite that is represented by a negative ManaColor
+        // such as ManaColor.Multicolor (-1) or ManaColor.None (-2).
+        [SerializeField] public Sprite multicolorManaSprite;
+
         // List of sprites for ghost piece tiles.
         [SerializeField] public List<Sprite> ghostManaSprites;
 
-        // Used for Geo's gold mine crystals that correspond to colors in this cycle.
-        [SerializeField] public List<Material> crystalMaterials;
+        // ghost sprite for tiles with a negative ManaColor.
+        [SerializeField] public Sprite multicolorGhostManaSprite;
+
+
 
         // All GameBoards in the scene that use this cycle
         [SerializeField] private List<GameBoard> boards;
@@ -45,9 +51,9 @@ namespace Battle.Cycle {
         public CountdownHandler CountdownHandler => countdownHandler;
 
         // List of all colors in the cycle
-        public static ManaColor[] cycle;
+        public static int[] cycle;
 
-        // List of all cycleColor objects that represent the colors
+        // List of all cycleColor objects that represent the colors - generated on scene start
         private List<Image> cycleObjects;
 
         // Length of the cycle
@@ -172,18 +178,18 @@ namespace Battle.Cycle {
                 lockPieceColors = Storage.level.lockPieceColors;
             } // otherwise will use serialized values which should be 7, 5, true
 
-            cycle = new ManaColor[cycleLength];
+            cycle = new int[cycleLength];
 
             // Add one of each color to the list
             for (int i=0; i<cycleUniqueColors; i++)
             {
-                cycle[i] = (ManaColor)i;
+                cycle[i] = i;
             }
 
             // Add random colors until length is met
             for (int i=cycleUniqueColors; i<cycleLength; i++)
             {
-                cycle[i] = (ManaColor)Random.Range(0,cycleUniqueColors);
+                cycle[i] = Random.Range(0, cycleUniqueColors);
             }
 
             // Shuffle the list
@@ -194,28 +200,28 @@ namespace Battle.Cycle {
             {
                 // If it is, swap the color to a random color that is not either of the colors next to it
                 // If at the top, tile above is the tile at the bottom, which is the one before it
-                ManaColor colorAbove = (i == 0) ? cycle[cycle.Length-1] : cycle[i-1];
-                ManaColor colorBelow = cycle[i+1];
+                int colorAbove = (i == 0) ? cycle[cycle.Length-1] : cycle[i-1];
+                int colorBelow = cycle[i+1];
 
                 // Keep picking a new color until it is different than the one above & below
                 // don't run if cycle length and unique color amount make this impossible
                 while ((cycle[i] == colorAbove || cycle[i] == colorBelow) && (cycleUniqueColors != 1))
                 {
-                    cycle[i] = (ManaColor)Random.Range(0,cycleUniqueColors);
+                    cycle[i] = Random.Range(0,cycleUniqueColors);
                 }
             }
         }
 
-        public static void SetCycle(ManaColor[] cycle) {
+        public static void SetCycle(int[] cycle) {
             ManaCycle.cycle = cycle;
         }
 
-        public ManaColor[] GetCycle()
+        public int[] GetCycle()
         {
             return cycle;
         }
 
-        public ManaColor GetColor(int index)
+        public int GetColor(int index)
         {
             return cycle[index];
         }
@@ -225,11 +231,19 @@ namespace Battle.Cycle {
             return manaColors;
         }
 
-        public Color GetManaColor(int index) {
+        /// <summary>
+        /// Get the hex color (not manaColor int) of the mana at the specified index.
+        /// </summary>
+        public Color GetVisualManaColor(int index) {
+            // for special flag colors such as Multicolor/Any/None with negative manacolor ID, just return color white.
+            if (index < 0) return Color.white;
+
             return manaColors[index];
         }
 
         public Color GetLitManaColor(int index) {
+            if (index < 0) return Color.white;
+
             return litManaColors[index];
         }
     }
