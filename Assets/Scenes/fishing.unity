@@ -8131,14 +8131,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: FishingEquippedInteract, Assembly-CSharp
-        m_MethodName: Dequip
-        m_Mode: 1
+      - m_Target: {fileID: 1608101640}
+        m_TargetAssemblyTypeName: FishingBattleManager, Assembly-CSharp
+        m_MethodName: AttackButtonPressed
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -10594,10 +10594,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: FishingEquippedInteract, Assembly-CSharp
-        m_MethodName: Dequip
-        m_Mode: 1
+      - m_Target: {fileID: 1608101640}
+        m_TargetAssemblyTypeName: FishingBattleManager, Assembly-CSharp
+        m_MethodName: AttackButtonPressed
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -11507,6 +11507,12 @@ MonoBehaviour:
   - {fileID: 1538021375}
   - {fileID: 1309267855}
   - {fileID: 2118571035}
+  firstHeal: 0
+  firstEnemyHeal: 0
+  firstAttack: 0
+  firstEnemyAttack: 0
+  enemyHalfTriggered: 0
+  playerHalfTriggered: 0
 --- !u!1 &1638714865
 GameObject:
   m_ObjectHideFlags: 0
@@ -14216,7 +14222,7 @@ MonoBehaviour:
     stackSize: 1
   bait: 0
   gold: 0
-  maxHP: 0
+  maxHP: 20
   weapon1: {fileID: 11400000, guid: 7ee20dcdf9b35084fa6224919f05625f, type: 2}
   weapon2: {fileID: 11400000, guid: 7ee20dcdf9b35084fa6224919f05625f, type: 2}
   armor1: {fileID: 11400000, guid: 0ebfbd0d06b39db4fa0601665564dfb7, type: 2}
@@ -15857,14 +15863,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: FishingEquippedInteract, Assembly-CSharp
-        m_MethodName: Dequip
-        m_Mode: 1
+      - m_Target: {fileID: 1608101640}
+        m_TargetAssemblyTypeName: FishingBattleManager, Assembly-CSharp
+        m_MethodName: AttackButtonPressed
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
