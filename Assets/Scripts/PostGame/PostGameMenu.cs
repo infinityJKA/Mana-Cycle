@@ -396,23 +396,19 @@ namespace PostGame {
 
         public void SelectContinue()
         {
-            if (Storage.level.generateNextLevel) GotoEndlessLevelSelect();
-            Time.timeScale = 1f;
-            Storage.level.nextSeriesLevel.battler = Storage.level.battler;
-            Storage.level = Storage.level.nextSeriesLevel;
-            Storage.lives = board.recoveryMode ? 2000 : board.lives;
-            Storage.hp = board.hp;
-            transitionHandler.WipeToScene("ManaCycle");
-        }
-
-        public void GotoEndlessLevelSelect()
-        {
             Time.timeScale = 1f;
             Storage.lives = board.recoveryMode ? 2000 : board.lives;
             Storage.hp = board.hp;
-            transitionHandler.WipeToScene("SelectNextLevel");
+            if (Storage.level.generateNextLevel) 
+            {
+                transitionHandler.WipeToScene("SelectNextLevel");
+            }
+            else
+            {
+                Storage.level.nextSeriesLevel.battler = Storage.level.battler;
+                Storage.level = Storage.level.nextSeriesLevel; 
+                transitionHandler.WipeToScene("ManaCycle");
+            }
         }
-
-
     }
 }

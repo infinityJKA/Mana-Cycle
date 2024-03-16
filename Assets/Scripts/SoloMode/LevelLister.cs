@@ -229,6 +229,8 @@ namespace SoloMode {
             Storage.level = pressedLevel; 
             Storage.lives = Storage.level.lives;
             Storage.gamemode = Storage.GameMode.Solo;
+            Storage.isPlayerControlled1 = true;
+            Storage.isPlayerControlled2 = false;
             convoHandler.StartLevel(pressedLevel);
             focused = false;
             Storage.levelSelectedThisInput = true;
