@@ -135,9 +135,6 @@ namespace MainMenu {
             SettingsWindow.SetActive(false);
             MainWindow.SetActive(true);
             if (!mobile) EventSystem.current.SetSelectedGameObject(SettingsButton);
-
-            // will save any possibly-edited player prefs to the file for steam cloud sync.
-            FBPP.Save();
         }
 
         public void SelectSolo()
