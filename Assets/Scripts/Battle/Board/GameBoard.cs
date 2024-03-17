@@ -323,8 +323,8 @@ namespace Battle.Board {
         /// </summary>
         public int pieceDropIndex {get; private set;}
         
-        [SerializeField] private CosmeticAssets _cosmetics;
-        public CosmeticAssets cosmetics => _cosmetics;
+        [SerializeField] private BoardCosmeticAssets _cosmetics;
+        public BoardCosmeticAssets cosmetics => _cosmetics;
 
         // Start is called before the first frame update
         void Start()
@@ -1222,10 +1222,10 @@ namespace Battle.Board {
             var ghostPiece = Instantiate(piece.gameObject, piece.transform.parent, true).GetComponent<Piece>();
             
             for (int i = 0; i < ghostPiece.tileCount; i++) {
-                ghostPiece.GetTile(i).SetManaColor(piece.GetTile(i).manaColor, ghost: true);
+                ghostPiece.GetTile(i).SetManaColor(piece.GetTile(i).manaColor, this, ghost: true);
             }
 
-            ghostPiece.MakeGhostPiece(ref ghostTiles);
+            ghostPiece.MakeGhostPiece(this, ref ghostTiles);
 
             // unlight all lit tiles connected by the previous ghost piece
             ForEachTile(tile => {
@@ -1299,7 +1299,7 @@ namespace Battle.Board {
 
             if (doParticleEffects) {
                 int manaColor = tiles[row,col].GetManaColor();
-                Color color = manaColor < 0 ? Color.white : cycle.GetManaColors()[manaColor];
+                Color color = manaColor < 0 ? Color.white : cosmetics.manaColors[manaColor];
                 SpawnParticles(row, col, color);
             }
 
@@ -1899,7 +1899,7 @@ namespace Battle.Board {
         {
             foreach (ColorFader cycleColoredObject in cycleColoredObjects)
             {
-                Color cycleColor = cycle.GetVisualManaColor(cycle.GetCycle()[cyclePosition]);
+                Color cycleColor = cosmetics.GetVisualManaColor(cycle.GetCycle()[cyclePosition]);
                 Color brightenedColor = Color.Lerp(cycleColor, fadeToColor, 0.3f);
                 cycleColoredObject.FadeToColor(brightenedColor);
             }

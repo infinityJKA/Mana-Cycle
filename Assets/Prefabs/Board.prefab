@@ -65,7 +65,6 @@ GameObject:
   - component: {fileID: 7561198744834971609}
   - component: {fileID: 4174570119449310702}
   - component: {fileID: 1653424862917905127}
-  - component: {fileID: 2707061295273543776}
   m_Layer: 5
   m_Name: Board
   m_TagString: Untagged
@@ -88,6 +87,7 @@ RectTransform:
   - {fileID: 8294321625449943403}
   - {fileID: 6497960546296106959}
   - {fileID: 5772421829298210278}
+  - {fileID: 2142335207694440474}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
@@ -184,7 +184,7 @@ MonoBehaviour:
   usernameLabel: {fileID: 4187717598879313423}
   manualCastContinue: 0
   boardSync: {fileID: 0}
-  _cosmetics: {fileID: 2707061295273543776}
+  _cosmetics: {fileID: 6991995059331469407}
 --- !u!114 &7561198744834971609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,25 +238,6 @@ MonoBehaviour:
   magnitude: 8
   frequency: 5
   duration: 1
---- !u!114 &2707061295273543776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 109460369072555597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ace346dcd3574b31801bac3eab0bd04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ironSwordSFX: {fileID: 7978053776321691471, guid: ef9163ae115d1634e96aa1e91b5a9f70, type: 3}
-  pyroBombSFX: {fileID: 7978053776321691471, guid: 368c2811a404b1246b332ac2c6138945, type: 3}
-  ironSwordSprite: {fileID: 21300000, guid: 7c875b6c9441c0346943c046695ae0b3, type: 3}
-  pyroBombSprite: {fileID: 21300000, guid: f4840e5f6c31746c0b74e6ab67a88efc, type: 3}
-  goldMineObject: {fileID: 304507001450775626, guid: cdf0240e00ea19d40ac4d0151fe35812, type: 3}
-  miniZmanSprite: {fileID: 21300000, guid: e47d53c8c57e4422f8c285c78faa6038, type: 3}
-  pyroBombParticleEffect: {fileID: 5484401357604061577, guid: 304d4da4a446ae64abecc5f69036bac6, type: 3}
 --- !u!1 &135124126067777765
 GameObject:
   m_ObjectHideFlags: 0
@@ -4136,6 +4117,89 @@ MonoBehaviour:
   board: {fileID: 2738482425047349209}
   piecePrefab: {fileID: 3850751940514783652, guid: df27f25c78f064ccda6c5a44e3ce70f5, type: 3}
   singlePiecePrefab: {fileID: 0}
+--- !u!1 &9103223812357977302
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2142335207694440474}
+  - component: {fileID: 6991995059331469407}
+  m_Layer: 0
+  m_Name: CosmeticAssets
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2142335207694440474
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9103223812357977302}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 109460369072555598}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6991995059331469407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9103223812357977302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ace346dcd3574b31801bac3eab0bd04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manaColors:
+  - {r: 0.05882353, g: 0.42745098, b: 0.94509804, a: 1}
+  - {r: 0.972549, g: 0.23137255, b: 0.14117648, a: 1}
+  - {r: 0.09019608, g: 0.85882354, b: 0.07058824, a: 1}
+  - {r: 1, g: 0.9137255, b: 0.18431373, a: 1}
+  - {r: 0.6313726, g: 0.15294118, b: 0.93333334, a: 1}
+  litManaColors:
+  - {r: 0.45882353, g: 0.7647059, b: 1, a: 1}
+  - {r: 0.98039216, g: 0.5764706, b: 0.5058824, a: 1}
+  - {r: 0.69411767, g: 1, b: 0.63529414, a: 1}
+  - {r: 1, g: 0.99215686, b: 0.8235294, a: 1}
+  - {r: 0.8156863, g: 0.5647059, b: 0.972549, a: 1}
+  manaColorStrings:
+  - blue
+  - red
+  - green
+  - yellow
+  - purple
+  manaSprites:
+  - {fileID: 21300000, guid: 749625d35167664499f50604cbaf1070, type: 3}
+  - {fileID: 21300000, guid: 6c00edb0e630fff4385878e8a1f0bce8, type: 3}
+  - {fileID: 21300000, guid: 78ca81de301aba147ac031e778df681e, type: 3}
+  - {fileID: 21300000, guid: acfdb99bd844c4f499596ef7a3a0d4c6, type: 3}
+  - {fileID: 21300000, guid: 9ebe250264858a2418ba7d098a055ca8, type: 3}
+  ghostManaSprites:
+  - {fileID: 21300000, guid: 87a982ee6901b47fab29026be6e891ae, type: 3}
+  - {fileID: 21300000, guid: 172e884dd8dad459aacd3d0c4123996c, type: 3}
+  - {fileID: 21300000, guid: 0e4f2457b5288460887743225dcb3e17, type: 3}
+  - {fileID: 21300000, guid: 64bae642123c848809217cc82ce5380d, type: 3}
+  - {fileID: 21300000, guid: 55264cc43d7b54ad1b89e97535fd3f44, type: 3}
+  multicolorManaSprite: {fileID: 21300000, guid: 110095ab06250fb4187f17590dded736, type: 3}
+  multicolorGhostManaSprite: {fileID: 21300000, guid: 0a3361063e5344e679fae0d0f3ad6d31, type: 3}
+  ironSwordSFX: {fileID: 7978053776321691471, guid: ef9163ae115d1634e96aa1e91b5a9f70, type: 3}
+  pyroBombSFX: {fileID: 7978053776321691471, guid: 368c2811a404b1246b332ac2c6138945, type: 3}
+  ironSwordSprite: {fileID: 21300000, guid: 7c875b6c9441c0346943c046695ae0b3, type: 3}
+  pyroBombSprite: {fileID: 21300000, guid: f4840e5f6c31746c0b74e6ab67a88efc, type: 3}
+  miniZmanSprite: {fileID: 21300000, guid: e47d53c8c57e4422f8c285c78faa6038, type: 3}
+  goldMineObject: {fileID: 304507001450775626, guid: cdf0240e00ea19d40ac4d0151fe35812, type: 3}
+  pyroBombParticleEffect: {fileID: 5484401357604061577, guid: 304d4da4a446ae64abecc5f69036bac6, type: 3}
 --- !u!1 &9159051575835955899
 GameObject:
   m_ObjectHideFlags: 0
