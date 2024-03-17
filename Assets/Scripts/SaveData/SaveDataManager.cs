@@ -11,13 +11,13 @@ public class SaveDataManager : MonoBehaviour {
 
         var config = new FBPPConfig()
         {
-            SaveFileName = "save.data",
+            SaveFilePath = Application.persistentDataPath,
+            SaveFileName = "manacycledata.sav",
             AutoSaveData = false,
             ScrambleSaveData = false,
-            EncryptionSecret = "my-secret",
-            SaveFilePath = Application.persistentDataPath
         };
 
+        Debug.Log("Using save data file at "+config.SaveFilePath+"/"+config.SaveFileName);
         FBPP.Start(config);
     }
 

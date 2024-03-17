@@ -12,28 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level5
   m_EditorClassIdentifier: 
+  levelId: Level5
   levelName: Level 5
   description: Score 1250 points and build a combo of at least 4!
   conversation: {fileID: 11400000, guid: 49dfade63deb647c29f0c72ade660a25, type: 2}
   midLevelConversations: []
   time: 180
   scoreGoal: 1250
+  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
   lockPieceColors: 1
   fallTime: 0.8
   slideTimeMult: 1
+  battler: {fileID: 0}
   availableBattlers:
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
   objectives:
   - condition: 5
     value: 4
+    stringValue: Item1, Item2
+    boolValue: 1
+    statusOverride: 
     inverted: 0
   levelRequirement: {fileID: 11400000, guid: 0c50c0c157910ec4cb31067448d6dd57, type: 2}
   nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
+  generateNextLevel: 0
   aiDifficulty: 1
+  levelDifficulty: 0
   trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: 3a4403bef2b6ae34bb6708ca501dc5c3, type: 3}
