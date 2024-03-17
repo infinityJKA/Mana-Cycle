@@ -12,15 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level3
   m_EditorClassIdentifier: 
+  levelId: Level3
   levelName: Level 3
   description: Survive the timer! Pieces fall faster in this stage!
   conversation: {fileID: 11400000, guid: 6b17c9aeb16624238933645f08185eaf, type: 2}
   midLevelConversations: []
   time: 60
   scoreGoal: 0
+  lives: 1
   cycleLength: 5
   cycleUniqueColors: 4
+  lockPieceColors: 1
   fallTime: 0.5
+  slideTimeMult: 1
+  battler: {fileID: 0}
   availableBattlers:
   - {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
   objectives: []
@@ -29,4 +34,8 @@ MonoBehaviour:
   survivalWin: 1
   aiBattle: 0
   opponent: {fileID: 0}
+  generateNextLevel: 0
+  aiDifficulty: 1
+  levelDifficulty: 0
+  trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: 72ec2e399e3965549b110f6723209287, type: 3}
