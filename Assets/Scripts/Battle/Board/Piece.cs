@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 using Battle.Cycle;
+using System;
 
 namespace Battle.Board {
     public class Piece : MonoBehaviour
@@ -128,11 +129,11 @@ namespace Battle.Board {
             return rng.Next(0, ManaCycle.lockPieceColors ? ManaCycle.cycleUniqueColors : 5);
         }
 
-        // uses built in Unity random
-        public static int RandomColor()
-        {
-            return Random.Range(0, ManaCycle.lockPieceColors ? ManaCycle.cycleUniqueColors : 5);
-        }
+        // uses built in Unity random - not seeded! shouldnt be used in online
+        // public static int RandomColor()
+        // {
+        //     return UnityEngine.Random.Range(0, ManaCycle.lockPieceColors ? ManaCycle.cycleUniqueColors : 5);
+        // }
 
         protected static int ColorWeightedRandom(GameBoard board)
         {
@@ -422,16 +423,21 @@ namespace Battle.Board {
         private void PyroBombExplode(GameBoard board) {
             Debug.Log("pyro bomb explosion");
             Instantiate(board.cosmetics.pyroBombSFX);
+
             
-            // Destroy tiles in a 3x3 grid (including this piece's bomb tile, which is in the center)
+            // Destroy tiles in a 5x5 grid (including this piece's bomb tile, which is in the center)
             // exclude this tile initial count
 
             var explosionCenter = center.transform.position; // grab this before tile is destroyed
+            board.SpawnParticles(row, col, board.cosmetics.pyroBombParticleEffect, new Vector3(0, 0, 2));
+
             float totalPointMult = 0;
-            // Debug.Log(row+", "+col);
-            for (int r = row-1; r <= row+1; r++) {
-                for (int c = col-1; c <= col+1; c++) {
-                    // Debug.Log(r+", "+c);
+            for (int r = row-2; r <= row+2; r++) {
+                for (int c = col-2; c <= col+2; c++) {
+                    // White clear particles around border to emphasize 5x5 shape
+                    // if (Math.Abs(r-row) == 2 || Math.Abs(c-col) == 2) {
+                    //     board.SpawnParticles(r, c, Color.white);
+                    // }
                     totalPointMult += board.ClearTile(c, r);
                 }
             }
@@ -440,7 +446,8 @@ namespace Battle.Board {
             // Because this may cause a tile to fall outside of a blob, unglow un blob tiles
             board.UnglowNotInBlobs();
 
-            board.DealDamage((int)(board.damagePerMana*totalPointMult*3f), explosionCenter, partOfChain: false);
+            float bombDamageMult = 1.5f;
+            board.DealDamage((int)(board.damagePerMana*totalPointMult*bombDamageMult), explosionCenter, partOfChain: false);
         }
 
         

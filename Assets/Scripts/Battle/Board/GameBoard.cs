@@ -247,6 +247,7 @@ namespace Battle.Board {
         [SerializeField] private Transform particleParent;
         // Particle system for when a tile is cleared
         [SerializeField] private GameObject clearParticleSystem;
+        public GameObject clearParticlePrefab => clearParticleSystem;
 
         // AI controller connected to this board for non-human opponents.
         [SerializeField] private AIController aiController;
@@ -553,6 +554,11 @@ namespace Battle.Board {
             if (Application.isEditor && Input.GetKey(KeyCode.Alpha1) && playerSide == 0)
             {
                 enemyBoard.TakeDamage(100);
+            }
+
+            if (Application.isEditor && Input.GetKey(KeyCode.Alpha2) && playerSide == 0)
+            {
+                abilityManager.GainMana(100);
             }
 
             if (recoveryMode) {
@@ -1292,25 +1298,9 @@ namespace Battle.Board {
             if (onlyClearFragile && !tiles[row, col].fragile) return 0;
 
             if (doParticleEffects) {
-                // play clearing particles before clearing
-                // instantiate particle system to have multiple bursts at once
-                GameObject tileParticleSystem = Instantiate(clearParticleSystem, particleParent, false);
-
-                // set particle color based on tile
-                var particleSystem = tileParticleSystem.GetComponent<ParticleSystem>();
-                var particleSystemMain = particleSystem.main;
                 int manaColor = tiles[row,col].GetManaColor();
-                particleSystemMain.startColor = manaColor < 0 ? Color.white : cycle.GetManaColors()[manaColor];
-
-                // move to tile position and play burst
-                // offset the x pos by 1 or -1 depending on side, idk why its offset like that /shrug
-                // tileParticles.transform.localPosition = new Vector3(tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.x+(playerSide==0 ? 2 : -2), tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition.y);
-                tileParticleSystem.transform.position = tiles[row,col].transform.position;
-
-                // Debug.Log(tileParticles + "at " + tiles[row,col].gameObject.GetComponent<RectTransform>().localPosition);
-                // Debug.Log("actually at " + tileParticles.GetComponent<Transform>().position);
-                particleSystem.Play();
-                // particle system will automatically remove itself from the parent when animation is done, via ParticleSystem script
+                Color color = manaColor < 0 ? Color.white : cycle.GetManaColors()[manaColor];
+                SpawnParticles(row, col, color);
             }
 
             float pointMultiplier = tiles[row, col].pointMultiplier;
@@ -1321,6 +1311,33 @@ namespace Battle.Board {
 
             // point multiplier should not be negative & lower damage
             return Math.Max(pointMultiplier, 0f);
+        }
+
+        /// <summary>
+        /// Play the default piece-clearing partifle effect at the given row and col with specified color.
+        /// </summary>
+        public void SpawnParticles(int row, int col, Color color) {
+            // instantiate particle system to have multiple bursts at once
+            GameObject tileParticleSystem = Instantiate(clearParticleSystem, particleParent, false);
+
+            // set particle color based on tile
+            var particleSystem = tileParticleSystem.GetComponent<ParticleSystem>();
+            var particleSystemMain = particleSystem.main;
+            particleSystemMain.startColor = color;
+
+            // move to tile position and play burst
+            tileParticleSystem.transform.localPosition = BoardToLocalSpace(row, col);
+
+            particleSystem.Play();
+        }
+
+        /// <summary>
+        /// Make a clone of the passed particle effect object and spawn it at the given row and col.
+        /// </summary>
+        public void SpawnParticles(int row, int col, GameObject particleObject, Vector3 offset) {
+            ParticleSystem particleSystem = Instantiate(particleObject, particleParent, true).GetComponent<ParticleSystem>();
+            particleSystem.transform.localPosition = BoardToLocalSpace(row, col) + offset;
+            particleSystem.Play();
         }
 
         public float ClearTile(int col, int row) {
@@ -1984,22 +2001,22 @@ namespace Battle.Board {
                 // Once a non-empty is found, or reached the bottom move the tile to right above it
                 if (rFall == height || tiles[rFall, c] != null)
                 {
+                    // this is the row that the tile fell to (fr) (for real) (frfr)
+                    int fr = rFall-1;
                     // only fall if tile is in a different position than before
-                    if (rFall-1 != r) {
-                        tiles[rFall-1, c] = tiles[r, c];
+                    if (fr != r) {
+                        tiles[fr, c] = tiles[r, c];
                         // I am subtracting half of width and height again here, because it only works tht way,
                         // i don't know enough about transforms to know why. bandaid solution moment.
-                        tiles[rFall-1, c].transform.localPosition = new Vector3(
-                            c - width/2f + 0.5f, 
-                            -rFall + 1 + physicalHeight/2f - 0.5f + height - physicalHeight, 
-                        0);
+                        tiles[fr, c].transform.localPosition = BoardToLocalSpace(fr, c);
 
-                        
-                        tiles[rFall-1, c].AnimateMovement(
-                            new Vector2(0, (rFall-1)-r),
+                        // Animate falling from offset from current row down to current row.
+                        tiles[fr, c].AnimateMovement(
+                            new Vector2(0, fr - r),
                             new Vector2(0, 0)
                         );
 
+                        // clear old reference to this tile from old position
                         tiles[r, c] = null;
                         return true;
                     }
@@ -2007,6 +2024,17 @@ namespace Battle.Board {
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Translate a row and col position into the correct local position on the pieceBoard.transform.
+        /// </summary>
+        public Vector3 BoardToLocalSpace(int row, int col) {
+            return new Vector3(
+                col - width/2f + 0.5f, 
+                -row + physicalHeight/2f - 0.5f + height - physicalHeight, 
+                0
+            );
         }
 
         /// <returns>the row that the piece fell to (or stayed at)</returns>

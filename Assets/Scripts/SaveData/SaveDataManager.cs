@@ -22,7 +22,7 @@ public class SaveDataManager : MonoBehaviour {
     }
 
     private void OnApplicationQuit() {
-        
+        FBPP.Save();
     }
 
     public void Save() {
