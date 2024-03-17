@@ -28,9 +28,10 @@ namespace Achievements
                 
                 foreach (var ach in database.achievements)
                 {
-                    PlayerPrefs.DeleteKey("ACH_" + ach.id);
+                    FBPP.DeleteKey("ACH_" + ach.id);  
                 }
 
+                FBPP.Save();
                 Debug.Log("Achievement progress reset");
             }
         }

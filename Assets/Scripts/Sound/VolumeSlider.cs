@@ -17,9 +17,9 @@ namespace Sound {
             // Debug.Log(soundManager);
 
             // set slider positions
-            if (PlayerPrefs.HasKey(valueKey))
+            if (FBPP.HasKey(valueKey))
             {
-                slider.value = PlayerPrefs.GetFloat(valueKey);
+                slider.value = FBPP.GetFloat(valueKey);
             }
         }
 

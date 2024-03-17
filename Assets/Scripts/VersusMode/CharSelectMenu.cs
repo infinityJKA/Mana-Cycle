@@ -68,21 +68,21 @@ namespace VersusMode {
             p2Selector.MenuInit();
             p1Selector.MenuInit();
 
-            p1Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
-            p2Selector.doGhostPiece = PlayerPrefs.GetInt("drawGhostPieceP2", 1) == 1;
+            p1Selector.doGhostPiece = FBPP.GetInt("drawGhostPiece", 1) == 1;
+            p2Selector.doGhostPiece = FBPP.GetInt("drawGhostPieceP2", 1) == 1;
 
             if (Storage.gamemode == Storage.GameMode.Solo && Storage.level.lives != -1) {
                 p1Selector.SetLives(Storage.level.lives);
                 p1Selector.livesSelectable.gameObject.SetActive(false);
             } else {
-                p1Selector.SetLives(PlayerPrefs.GetInt("versusLives", 1));
+                p1Selector.SetLives(FBPP.GetInt("versusLives", 1));
             }
 
             if (!Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) {
-                p1Selector.CpuLevel = PlayerPrefs.GetInt("CpuVsCpuP1Level", 5);
-                p2Selector.CpuLevel = PlayerPrefs.GetInt("CpuVsCpuP2Level", 5);
+                p1Selector.CpuLevel = FBPP.GetInt("CpuVsCpuP1Level", 5);
+                p2Selector.CpuLevel = FBPP.GetInt("CpuVsCpuP2Level", 5);
             } else if (Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) {
-                p2Selector.CpuLevel = PlayerPrefs.GetInt("CpuLevel", 5);
+                p2Selector.CpuLevel = FBPP.GetInt("CpuLevel", 5);
             }
 
             transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
@@ -128,10 +128,10 @@ namespace VersusMode {
             // if (Storage.isPlayer1 == null) Storage.isPlayer1 = true;
             // if (Storage.isPlayer2 == null) Storage.isPlayer2 = true;
 
-            PlayerPrefs.SetInt("drawGhostPiece", p1Selector.doGhostPiece ? 1 : 0);
-            PlayerPrefs.SetInt("enableAbilities", p1Selector.enableAbilities ? 1 : 0);
+            FBPP.SetInt("drawGhostPiece", p1Selector.doGhostPiece ? 1 : 0);
+            FBPP.SetInt("enableAbilities", p1Selector.enableAbilities ? 1 : 0);
 
-            if (!Storage.level) PlayerPrefs.SetInt("versusLives", p1Selector.lives);
+            if (!Storage.level) FBPP.SetInt("versusLives", p1Selector.lives);
             Storage.lives = p1Selector.lives;
 
             if (Storage.gamemode != Storage.GameMode.Solo)
@@ -140,7 +140,7 @@ namespace VersusMode {
                 Storage.battler2 = p2Selector.selectedBattler;
                 Storage.level = null;
                 Storage.gamemode = Storage.GameMode.Versus;
-                PlayerPrefs.SetInt("drawGhostPieceP2", p2Selector.doGhostPiece ? 1 : 0);
+                FBPP.SetInt("drawGhostPieceP2", p2Selector.doGhostPiece ? 1 : 0);
             }
             else 
             {
@@ -148,10 +148,10 @@ namespace VersusMode {
             }
 
             if (p1Selector.isCpuCursor && p2Selector.isCpuCursor) {
-                PlayerPrefs.SetInt("CpuVsCpuP1Level", p1Selector.CpuLevel);
-                PlayerPrefs.SetInt("CpuVsCpuP2Level", p2Selector.CpuLevel);
+                FBPP.SetInt("CpuVsCpuP1Level", p1Selector.CpuLevel);
+                FBPP.SetInt("CpuVsCpuP2Level", p2Selector.CpuLevel);
             } else if (!p1Selector.isCpuCursor && p2Selector.isCpuCursor) {
-                PlayerPrefs.SetInt("CpuLevel", p2Selector.CpuLevel);
+                FBPP.SetInt("CpuLevel", p2Selector.CpuLevel);
             }
             
             bool dualKeyboardAvailable = Storage.gamemode == Storage.GameMode.Versus && !Storage.online;

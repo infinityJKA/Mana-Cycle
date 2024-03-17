@@ -52,7 +52,7 @@ namespace Achievements
         }
 
         /// <summary>
-        /// Unlock the passed achievement and save its unlock status in playerPrefs.
+        /// Unlock the passed achievement and save its unlock status in playerPrefs
         /// After unlocked it will no longer be greyed out in the achievements list.
         /// </summary>
         /// <param name="achievement">The achievement to unlock</param>
@@ -109,6 +109,9 @@ namespace Achievements
                 // if passed all objectives, earn the achievement
                 if (objectivesComplete) UnlockAchievement(achievement);
             }
+
+            // update player prefs file
+            FBPP.Save();
 
             // don't run if steamworks disabled - game is either not run through steam or is webgl/standalone pc build
             #if !DISABLESTEAMWORKS

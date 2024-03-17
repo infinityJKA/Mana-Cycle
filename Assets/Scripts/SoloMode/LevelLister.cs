@@ -218,7 +218,7 @@ namespace SoloMode {
         }
 
         public void ConfirmLevel(Level pressedLevel) {
-            if (!pressedLevel.RequirementsMet()) 
+            if (!pressedLevel.requirementsMet) 
             {
                 Instantiate(errorSFX);
                 return;
@@ -311,7 +311,7 @@ namespace SoloMode {
                     listedLevel.transform.localPosition = offset;
 
                     // add new player notif to level 1
-                    if (level.levelName == "Level 1")
+                    if (level.levelId == "Level1" && !Level.IsLevelCleared("Level1"))
                     {
                         GameObject notif = Instantiate(newPlayerNotifPrefab, listedLevel.transform);
                         notif.transform.position = new Vector2(notif.transform.position.x + 50, notif.transform.position.y);
@@ -323,7 +323,7 @@ namespace SoloMode {
                     if (levelsClickable) {
                         var button = listedLevel.gameObject.GetComponent<UnityEngine.UI.Button>();
                         button.onClick.AddListener(() => ConfirmLevel(level));
-                        if (!level.RequirementsMet()) button.interactable = false;
+                        if (!level.requirementsMet) button.interactable = false;
                     }
 
                     offset += Vector2.down*levelYSpacing;
@@ -342,8 +342,8 @@ namespace SoloMode {
         }
 
         protected void RefreshListedLevelText(Level level, TextMeshProUGUI listedLevel, bool selected) {
-            if (!levelsClickable) listedLevel.color = level.RequirementsMet() ? ((selected) ? selectedColor : levelColor) : lockedColor; // i love nested ternary statements
-            listedLevel.text = level.levelName + ((selected && showLevelCursor) ? " <" : "") + (level.IsCleared() ? "  <color=#00ffdf>X" : "  <color=#00000000>X");
+            if (!levelsClickable) listedLevel.color = level.requirementsMet ? (selected ? selectedColor : levelColor) : lockedColor; // i love nested ternary statements
+            listedLevel.text = level.levelName + ((selected && showLevelCursor) ? " <" : "") + (level.isSeriesCleared ? "  <color=#00ffdf>X" : "  <color=#00000000>X");
         }
 
         void MakeFlavorLines(Transform parent, ref Vector2 offset) {
@@ -445,9 +445,9 @@ namespace SoloMode {
             // display the description and time of the selected level
             descriptionText.text = selectedLevel.description;
 
-            bool selectedCleared = selectedLevel.IsCleared();
+            bool selectedCleared = selectedLevel.isSeriesCleared;
             highScoreBG.SetActive(selectedCleared);
-            highScoreText.text = "High Score: "+selectedLevel.GetHighScore();
+            highScoreText.text = "High Score: "+selectedLevel.finalHighScore;
 
             // if level series, show length instead of time
             if (selectedLevel.nextSeriesLevel == null)
@@ -456,7 +456,7 @@ namespace SoloMode {
             }
             else 
             {
-                timeText.text = (selectedLevel.GetAheadCount() + 1) + " Matches";
+                timeText.text = (selectedLevel.aheadCount + 1) + " Matches";
             }
         }
 
@@ -497,7 +497,7 @@ namespace SoloMode {
         {
             for (int i = 0; i < selectedTab.levelsList.Length; i++)
             {
-                if (!(PlayerPrefs.GetInt(selectedTab.levelsList[i].levelName+"_Cleared", 0) == 1)) return i;
+                if (!selectedTab.levelsList[i].isCleared) return i;
             }
             // if all levels are cleared, start at 0
             return 0;

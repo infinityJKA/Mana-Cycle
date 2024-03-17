@@ -9,10 +9,23 @@ public class SaveDataManager : MonoBehaviour {
             return;
         }
 
-        SerializationManager.Load();
+        var config = new FBPPConfig()
+        {
+            SaveFileName = "save.data",
+            AutoSaveData = false,
+            ScrambleSaveData = false,
+            EncryptionSecret = "my-secret",
+            SaveFilePath = Application.persistentDataPath
+        };
+
+        FBPP.Start(config);
     }
 
     private void OnApplicationQuit() {
-        SerializationManager.Save();
+        
+    }
+
+    public void Save() {
+        FBPP.Save();
     }
 }

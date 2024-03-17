@@ -107,19 +107,18 @@ namespace PostGame {
             // Update level clear status
             if (Storage.gamemode == Storage.GameMode.Solo)
             {
-                string levelID = Storage.level.levelName;
+                string levelID = Storage.level.levelId;
 
                 // if not endless mode and is winner, level is cleared
-                bool clearedBefore = PlayerPrefs.GetInt(levelID+"_Cleared", 0) == 1;
+                bool clearedBefore = Storage.level.isCleared;
                 bool cleared = board.IsWinner() || (Storage.level.time == -1 && Storage.level.scoreGoal == 0);
 
                 // set highscore if level was cleared
                 if (cleared) {        
-                    PlayerPrefs.SetInt(levelID+"_Cleared", 1);
+                    Storage.level.isCleared = true;
 
-                    int score = Storage.level.IsEndless() ? board.hp : board.hp + (board.lives-1)*2000; // add 2000 to score for each remaining life
-                    int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
-                    PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(score, highScore));
+                    int score = Storage.level.isEndless ? board.hp : board.hp + (board.lives-1)*2000; // add 2000 to score for each extra life
+                    Storage.level.highScore = Math.Max(score, Storage.level.highScore);
 
                     // If solo mode win: retry -> replay
                     retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>()
@@ -166,7 +165,7 @@ namespace PostGame {
 
                         // set info pannel visibility and text
                         arcadeInfoPannel.SetActive(true);
-                        arcadeInfoText.text = string.Format("{0} more to go\nnext up: {1}", Storage.level.GetAheadCount(), Storage.level.nextSeriesLevel.levelName);
+                        arcadeInfoText.text = string.Format("{0} more to go\nnext up: {1}", Storage.level.aheadCount, Storage.level.nextSeriesLevel.levelName);
                     }
 
                     // arcade endless level won
@@ -185,7 +184,7 @@ namespace PostGame {
                         for (int i = 0; i < 3; i++)
                         {
                             Storage.nextLevelChoices.Add(levelGenerator.Generate(
-                            difficulty: ((Storage.level.GetBehindCount() + 1) * 0.05f) + (i * 0.05f) + 0.05f,
+                            difficulty: ((Storage.level.behindCount + 1) * 0.05f) + (i * 0.05f) + 0.05f,
                             battler: Storage.level.battler,
                             lastLevel: Storage.level));
                         }
@@ -298,7 +297,7 @@ namespace PostGame {
         {
             if (Storage.level && Storage.level.lastSeriesLevel != null)
             {
-                Storage.level = Storage.level.GetRootLevel();
+                Storage.level = Storage.level.rootLevel;
                 Storage.lives = Storage.level.lives;
                 transitionHandler.WipeToScene("ManaCycle", reverse: true);
                 Time.timeScale = 1f;

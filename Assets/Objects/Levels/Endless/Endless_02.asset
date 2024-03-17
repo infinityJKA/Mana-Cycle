@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
-  m_Name: Endless_01
+  m_Name: Endless_02
   m_EditorClassIdentifier: 
-  levelName: Endless
-  description: Survive as long as you can in this endurance challenge!
+  levelId: EndlessHard
+  levelName: Endless Hard
+  description: Survive as long as you can in this endurance challenge, extra challenging!
   conversation: {fileID: 11400000, guid: 9c38ca2555dba4adc94e279b679ec319, type: 2}
   midLevelConversations: []
   time: -1
@@ -22,7 +23,7 @@ MonoBehaviour:
   cycleLength: 7
   cycleUniqueColors: 5
   lockPieceColors: 1
-  fallTime: 0.8
+  fallTime: 0.125
   slideTimeMult: 1
   availableBattlers:
   - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
@@ -44,4 +45,4 @@ MonoBehaviour:
   aiDifficulty: 1
   levelDifficulty: 0
   trashSendRate: -1
-  battleMusic: {fileID: 8300000, guid: 72ec2e399e3965549b110f6723209287, type: 3}
+  battleMusic: {fileID: 8300000, guid: b9bb2c746a5f8e443825278af7a74436, type: 3}
