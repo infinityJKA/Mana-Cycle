@@ -80,26 +80,26 @@ namespace Battle.Board {
         [SerializeField] private AnimationCurve glowAnimCurve;
         
 
-        public void SetManaColor(int manaColor, bool setVisualColor = true, bool setSprite = true, bool ghost = false)
+        public void SetManaColor(int manaColor, GameBoard board, bool setVisualColor = true, bool setSprite = true, bool ghost = false)
         {
             this.manaColor = manaColor;
 
             // Get image and set color from the list in this scene's cycle
             if (setVisualColor) {
-                baseColor = ManaCycle.instance.GetVisualManaColor( manaColor );
-                litColor = ManaCycle.instance.GetLitManaColor( manaColor );
+                baseColor = board.cosmetics.GetVisualManaColor( manaColor );
+                litColor = board.cosmetics.GetLitManaColor( manaColor );
             }
             if (setSprite && ManaCycle.instance.usingSprites) {
                 if (ghost) {
                     // if below 0, use multicolor ghost sprite
-                    image.sprite = manaColor < 0 ? ManaCycle.instance.multicolorGhostManaSprite : ManaCycle.instance.ghostManaSprites[ manaColor ];
+                    image.sprite = manaColor < 0 ? board.cosmetics.multicolorGhostManaSprite : board.cosmetics.ghostManaSprites[ manaColor ];
                     baseColor = new Color(baseColor.r, baseColor.g, baseColor.b, 0.4f);
                     image.GetComponent<UnityEngine.UI.Outline>().enabled = true;
                     // image.GetComponent<UnityEngine.UI.Outline>().effectColor = Color.Lerp(image.color, Color.white, 0.4f);
                     image.GetComponent<UnityEngine.UI.Outline>().effectColor = baseColor;
                 } else {
                     // if below 0, use multicolor sprite
-                    image.sprite = manaColor < 0 ? ManaCycle.instance.multicolorManaSprite :ManaCycle.instance.manaSprites[ manaColor ];
+                    image.sprite = manaColor < 0 ? board.cosmetics.multicolorManaSprite : board.cosmetics.manaSprites[ manaColor ];
                 }
             }
 

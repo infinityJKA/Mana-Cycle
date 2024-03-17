@@ -267,13 +267,13 @@ namespace Battle.Board {
             }
         }
 
-        public virtual void MakeGhostPiece(ref List<Tile> ghostTiles) {
+        public virtual void MakeGhostPiece(GameBoard board, ref List<Tile> ghostTiles) {
             foreach (Tile tile in tiles) {
                 ghostTiles.Add(tile);
             }
 
             if (effect == Battler.ActiveAbilityEffect.IronSword) {
-                center.SetManaColor(ManaColor.None, ghost: true);
+                center.SetManaColor(ManaColor.None, board, ghost: true);
                 center.image.rectTransform.sizeDelta = Vector2.one;
                 center.image.transform.position = Vector2.zero;
             }
@@ -366,7 +366,7 @@ namespace Battle.Board {
             effect = Battler.ActiveAbilityEffect.IronSword;
             slowFall = true;
             center.DontDoGravity();
-            center.SetManaColor(ManaColor.Colorless, setVisualColor: false, setSprite: false);
+            center.SetManaColor(ManaColor.Colorless, board, setVisualColor: false, setSprite: false);
             center.SetVisualColor(Color.white);
 
             center.image.sprite = board.cosmetics.ironSwordSprite;
@@ -414,7 +414,7 @@ namespace Battle.Board {
         public void MakePyroBomb(GameBoard board)
         {
             effect = Battler.ActiveAbilityEffect.PyroBomb;
-            center.SetManaColor(ManaColor.Colorless);
+            center.SetManaColor(ManaColor.Colorless, board);
             center.image.sprite = board.cosmetics.pyroBombSprite;
             center.SetVisualColor(Color.white);
             center.image.gameObject.SetActive(true);
@@ -490,7 +490,7 @@ namespace Battle.Board {
         }
 
         public void MakeZman(GameBoard board) {
-            center.SetManaColor(ManaColor.Colorless);
+            center.SetManaColor(ManaColor.Colorless, board);
             center.image.sprite = board.cosmetics.miniZmanSprite;
             center.MakeObscuresColor();
             center.MakeFragile();

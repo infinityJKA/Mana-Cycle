@@ -19,30 +19,6 @@ namespace Battle.Cycle {
         [SerializeField] private Image manaImage;
         [SerializeField] private Image bgImage;
 
-        // All ManaColor colors to tint the cycle images
-        [SerializeField] private List<Color> manaColors;
-
-        // Color to light mana tiles when they are shown as connected to a ghost tile in a clearable blob.
-        [SerializeField] private List<Color> litManaColors;
-
-        // String representations of the mana color
-        [SerializeField] public List<string> manaColorStrings;
-
-        // List of sprites to use for mana of this color (corresponds to indexes in manaColors)
-        [SerializeField] public List<Sprite> manaSprites;
-
-        // called Multicolor, but really it's used to display any mana sprite that is represented by a negative ManaColor
-        // such as ManaColor.Multicolor (-1) or ManaColor.None (-2).
-        [SerializeField] public Sprite multicolorManaSprite;
-
-        // List of sprites for ghost piece tiles.
-        [SerializeField] public List<Sprite> ghostManaSprites;
-
-        // ghost sprite for tiles with a negative ManaColor.
-        [SerializeField] public Sprite multicolorGhostManaSprite;
-
-
-
         // All GameBoards in the scene that use this cycle
         [SerializeField] private List<GameBoard> boards;
         public List<GameBoard> Boards => boards;
@@ -138,6 +114,9 @@ namespace Battle.Cycle {
         /// Also runs InitializeWithCycle() on all boards./// 
         /// </summary>
         public void CreateCycleObjects() {
+            // Display the icons and colors for player 1's board.
+            BoardCosmeticAssets cosmetics = boards[0].cosmetics;
+
             // Check if player 1 is in single player. if so, use its cycle length variables
             if (Storage.level) {
                 boards[1].pointer.SetActive(false);
@@ -158,8 +137,8 @@ namespace Battle.Cycle {
             for (int i=0; i<cycleLength; i++)
             {
                 Image cycleObject = Instantiate(manaImage, Vector3.zero, Quaternion.identity);
-                cycleObject.color = manaColors[(int)cycle[i]];
-                if (usingSprites) cycleObject.sprite = manaSprites[(int)cycle[i]];
+                cycleObject.color = cosmetics.manaColors[cycle[i]];
+                if (usingSprites) cycleObject.sprite = cosmetics.manaSprites[cycle[i]];
                 cycleObjects.Add(cycleObject);
                 cycleObject.transform.SetParent(transform, false);
             }
@@ -224,27 +203,6 @@ namespace Battle.Cycle {
         public int GetColor(int index)
         {
             return cycle[index];
-        }
-
-        public List<Color> GetManaColors()
-        {
-            return manaColors;
-        }
-
-        /// <summary>
-        /// Get the hex color (not manaColor int) of the mana at the specified index.
-        /// </summary>
-        public Color GetVisualManaColor(int index) {
-            // for special flag colors such as Multicolor/Any/None with negative manacolor ID, just return color white.
-            if (index < 0) return Color.white;
-
-            return manaColors[index];
-        }
-
-        public Color GetLitManaColor(int index) {
-            if (index < 0) return Color.white;
-
-            return litManaColors[index];
         }
     }
 }
