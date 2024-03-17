@@ -107,18 +107,19 @@ namespace PostGame {
             // Update level clear status
             if (Storage.gamemode == Storage.GameMode.Solo)
             {
-                string levelID = Storage.level.levelId;
+                string levelID = Storage.level.levelName;
 
                 // if not endless mode and is winner, level is cleared
-                bool clearedBefore = Storage.level.isCleared;
+                bool clearedBefore = PlayerPrefs.GetInt(levelID+"_Cleared", 0) == 1;
                 bool cleared = board.IsWinner() || (Storage.level.time == -1 && Storage.level.scoreGoal == 0);
 
                 // set highscore if level was cleared
                 if (cleared) {        
-                    Storage.level.isCleared = true;
+                    PlayerPrefs.SetInt(levelID+"_Cleared", 1);
 
-                    int score = Storage.level.isEndless ? board.hp : board.hp + (board.lives-1)*2000; // add 2000 to score for each extra life
-                    Storage.level.highScore = Math.Max(score, Storage.level.highScore);
+                    int score = Storage.level.IsEndless() ? board.hp : board.hp + (board.lives-1)*2000; // add 2000 to score for each remaining life
+                    int highScore = PlayerPrefs.GetInt(levelID+"_HighScore", 0);
+                    PlayerPrefs.SetInt(levelID+"_HighScore", Math.Max(score, highScore));
 
                     // If solo mode win: retry -> replay
                     retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>()
@@ -165,7 +166,7 @@ namespace PostGame {
 
                         // set info pannel visibility and text
                         arcadeInfoPannel.SetActive(true);
-                        arcadeInfoText.text = string.Format("{0} more to go\nnext up: {1}", Storage.level.aheadCount, Storage.level.nextSeriesLevel.levelName);
+                        arcadeInfoText.text = string.Format("{0} more to go\nnext up: {1}", Storage.level.GetAheadCount(), Storage.level.nextSeriesLevel.levelName);
                     }
 
                     // arcade endless level won
@@ -184,7 +185,7 @@ namespace PostGame {
                         for (int i = 0; i < 3; i++)
                         {
                             Storage.nextLevelChoices.Add(levelGenerator.Generate(
-                            difficulty: ((Storage.level.behindCount + 1) * 0.05f) + (i * 0.05f) + 0.05f,
+                            difficulty: ((Storage.level.GetBehindCount() + 1) * 0.05f) + (i * 0.05f) + 0.05f,
                             battler: Storage.level.battler,
                             lastLevel: Storage.level));
                         }
@@ -297,7 +298,7 @@ namespace PostGame {
         {
             if (Storage.level && Storage.level.lastSeriesLevel != null)
             {
-                Storage.level = Storage.level.rootLevel;
+                Storage.level = Storage.level.GetRootLevel();
                 Storage.lives = Storage.level.lives;
                 transitionHandler.WipeToScene("ManaCycle", reverse: true);
                 Time.timeScale = 1f;
@@ -395,19 +396,23 @@ namespace PostGame {
 
         public void SelectContinue()
         {
+            if (Storage.level.generateNextLevel) GotoEndlessLevelSelect();
+            Time.timeScale = 1f;
+            Storage.level.nextSeriesLevel.battler = Storage.level.battler;
+            Storage.level = Storage.level.nextSeriesLevel;
+            Storage.lives = board.recoveryMode ? 2000 : board.lives;
+            Storage.hp = board.hp;
+            transitionHandler.WipeToScene("ManaCycle");
+        }
+
+        public void GotoEndlessLevelSelect()
+        {
             Time.timeScale = 1f;
             Storage.lives = board.recoveryMode ? 2000 : board.lives;
             Storage.hp = board.hp;
-            if (Storage.level.generateNextLevel) 
-            {
-                transitionHandler.WipeToScene("SelectNextLevel");
-            }
-            else
-            {
-                Storage.level.nextSeriesLevel.battler = Storage.level.battler;
-                Storage.level = Storage.level.nextSeriesLevel; 
-                transitionHandler.WipeToScene("ManaCycle");
-            }
+            transitionHandler.WipeToScene("SelectNextLevel");
         }
+
+
     }
 }

@@ -52,14 +52,16 @@ namespace Achievements
         }
 
         /// <summary>
-        /// Unlock the passed achievement and save its unlock status in playerPrefs
+        /// Unlock the passed achievement and save its unlock status in playerPrefs.
         /// After unlocked it will no longer be greyed out in the achievements list.
         /// </summary>
         /// <param name="achievement">The achievement to unlock</param>
         public void UnlockAchievement(Achievement achievement)
         {
-            if (!achievement.unlocked) achievementNotifyQueue.Enqueue(achievement);
+            if (achievement.unlocked) return;
             achievement.UnlockPlayerPref();
+            // NOTE: if too much going on, disable this notification if steam is initialized since they'll get the notificaiton there too
+            achievementNotifyQueue.Enqueue(achievement);
         }
 
         /// <summary>
@@ -109,9 +111,6 @@ namespace Achievements
                 // if passed all objectives, earn the achievement
                 if (objectivesComplete) UnlockAchievement(achievement);
             }
-
-            // update player prefs file
-            FBPP.Save();
 
             // don't run if steamworks disabled - game is either not run through steam or is webgl/standalone pc build
             #if !DISABLESTEAMWORKS
