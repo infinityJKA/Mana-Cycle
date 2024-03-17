@@ -56,7 +56,7 @@ namespace ConvoSystem {
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return 104;
+            return 112;
         }
 
         // Draw the property inside the given rect

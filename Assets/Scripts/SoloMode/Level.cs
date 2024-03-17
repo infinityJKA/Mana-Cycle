@@ -12,7 +12,7 @@ using Battle;
 namespace SoloMode {
     [CreateAssetMenu(fileName = "Level", menuName = "ManaCycle/Level")]
     public class Level : ScriptableObject {
-        [SerializeField] public string levelId = "LevelID";
+        [SerializeField] public string levelId = "";
         [SerializeField] public string levelName = "Level";
         [SerializeField] public string description = "One of the levels of time";
 
@@ -92,12 +92,10 @@ namespace SoloMode {
         // Battle music
         public AudioClip battleMusic;
 
-        public void Awake()
-        {
-            // this doesn't run consistiently for some reason, moved to gameboard
-            // set LastSeriesLevel
-            // Debug.Log("there i am 0,0");
-            // if (nextSeriesLevel != null) nextSeriesLevel.lastSeriesLevel = this;
+        private void OnValidate() {
+            if (levelId == "" || levelId == null) {
+                levelId = levelName.Replace(" ", "");
+            }
         }
 
         public bool requirementsMet

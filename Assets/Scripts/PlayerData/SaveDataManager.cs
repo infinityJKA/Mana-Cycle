@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// the SaveDataManager object can be on the PlayerManager prefab along with the PlayerManager singleton there
 public class SaveDataManager : MonoBehaviour {
     public static SaveDataManager instance {get; private set;}
 
@@ -19,6 +20,8 @@ public class SaveDataManager : MonoBehaviour {
 
         Debug.Log("Using save data file at "+config.SaveFilePath+"/"+config.SaveFileName);
         FBPP.Start(config);
+
+        PlayerManager.LoginGuest();
     }
 
     private void OnApplicationQuit() {

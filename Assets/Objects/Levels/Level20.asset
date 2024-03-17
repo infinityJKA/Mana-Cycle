@@ -12,17 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level20
   m_EditorClassIdentifier: 
+  levelId: Level20
   levelName: FINAL
   description: The ultimate challenge...
   conversation: {fileID: 11400000, guid: 85a30af1ecaec48448148545cee8ac33, type: 2}
   midLevelConversations: []
   time: 200
   scoreGoal: 2000
+  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
+  lockPieceColors: 1
   fallTime: 0.1
+  slideTimeMult: 1
   battler: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+  availableBattlers: []
   objectives: []
   levelRequirement: {fileID: 0}
+  nextSeriesLevel: {fileID: 0}
   survivalWin: 0
+  aiBattle: 0
+  opponent: {fileID: 0}
+  generateNextLevel: 0
+  aiDifficulty: 1
+  levelDifficulty: 0
+  trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: b9bb2c746a5f8e443825278af7a74436, type: 3}

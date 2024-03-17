@@ -53,11 +53,16 @@ public class Utils : MonoBehaviour
     }
 
     // get formatted time from seconds
-    public static string FormatTime(float s)
+    public static string FormatTime(float s, bool showMilliseconds = false)
     {
-        int seconds = (int)(s % 60);
         int minutes = (int)(s/60);
-        return minutes + ":" + (seconds+"").PadLeft(2, '0');
+        int seconds = (int)(s % 60);
+        int milliseconds = (int)((s * 1000) % 1000);
+        if (showMilliseconds) {
+            return minutes + ":" + (seconds+"").PadLeft(2, '0')+"<size=40%>."+(milliseconds+"").PadLeft(2, '0');
+        } else {
+            return minutes + ":" + (seconds+"").PadLeft(3, '0');
+        }
     }
 
     public static string KeySymbol(KeyCode keyCode) {

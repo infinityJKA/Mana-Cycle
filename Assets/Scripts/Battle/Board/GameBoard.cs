@@ -140,7 +140,7 @@ namespace Battle.Board {
         private float lastPlaceTime;
 
         /** Win/lose text that appears over the board */
-        [SerializeField] private TMPro.TextMeshProUGUI winText;
+        [SerializeField] private TextMeshProUGUI winText;
 
         /** Starting HP of this character. */
         public int maxHp { get; private set; }

@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: ArcadeHard
   m_EditorClassIdentifier: 
-  levelId: ArcadeHard
+  levelId: ArcadeHard1
   levelName: Arcade Hard
-  description: Go against several challengers in a row, extra challenging!
+  description: Go against several challengers in a row, only for the experienced
+    users!
   conversation: {fileID: 11400000, guid: 021d54915f16345fe960892ed4591d63, type: 2}
   midLevelConversations: []
   time: 300
@@ -23,8 +24,9 @@ MonoBehaviour:
   cycleLength: 7
   cycleUniqueColors: 5
   lockPieceColors: 1
-  fallTime: 0.8
+  fallTime: 0.6
   slideTimeMult: 1
+  battler: {fileID: 0}
   availableBattlers:
   - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
@@ -44,4 +46,4 @@ MonoBehaviour:
   aiDifficulty: 0.33
   levelDifficulty: 0
   trashSendRate: -1
-  battleMusic: {fileID: 8300000, guid: bb2df057ec31041e08a2010acaf4872e, type: 3}
+  battleMusic: {fileID: 8300000, guid: f24191f50e4a24f38a6b5b468d49c5fc, type: 3}
