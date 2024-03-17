@@ -10,39 +10,37 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
-  m_Name: Endless D4
+  m_Name: ArcadeUlt6
   m_EditorClassIdentifier: 
-  levelName: Endless D4
-  description: Survive as long as you can as pieces drop from the sky with light
-    speed, increase drop speed as well! Good for practicing safe building!
-  conversation: {fileID: 11400000, guid: 9c38ca2555dba4adc94e279b679ec319, type: 2}
+  levelId: ArcadeUlt6
+  levelName: Vs. Geo
+  description: Go against several challengers in a row!
+  conversation: {fileID: 11400000, guid: 2b9231dd0e1a56a4a80539e2ca3c1d37, type: 2}
   midLevelConversations: []
-  time: -1
+  time: 300
   scoreGoal: 0
   lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
   lockPieceColors: 1
-  fallTime: 0.4
+  fallTime: 0.6
   slideTimeMult: 1
   availableBattlers:
-  - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
   - {fileID: 11400000, guid: 91c504e9689114ce0bf46b0f721e8f16, type: 2}
+  - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   - {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
   - {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
-  - {fileID: 11400000, guid: 1c93cc654a75a784a838ad03a98b9304, type: 2}
   - {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
   - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
-  - {fileID: 11400000, guid: 2e37b36be2db849e9a8b3a10ee09f403, type: 2}
   objectives: []
   levelRequirement: {fileID: 0}
-  nextSeriesLevel: {fileID: 0}
+  nextSeriesLevel: {fileID: 11400000, guid: ebec9cc969c084068b3c0c95dccc6203, type: 2}
   survivalWin: 0
-  aiBattle: 0
-  opponent: {fileID: 0}
+  aiBattle: 1
+  opponent: {fileID: 11400000, guid: 91c504e9689114ce0bf46b0f721e8f16, type: 2}
   generateNextLevel: 0
-  aiDifficulty: 1
+  aiDifficulty: 0.875
   levelDifficulty: 0
-  trashSendRate: 0.7
-  battleMusic: {fileID: 8300000, guid: 3e70433f9b965084d94f63f9c5244ecb, type: 3}
+  trashSendRate: -1
+  battleMusic: {fileID: 8300000, guid: 3ae6f862584dbd44dbd058debdebe7ef, type: 3}

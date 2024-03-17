@@ -20,7 +20,7 @@ namespace Sound
             audioSource.clip = audioClips[0];
             if (pitch < 0) audioSource.pitch = Random.Range(pitchRange.x, pitchRange.y);
             else audioSource.pitch = pitch;
-            audioSource.volume = volumeScale * PlayerPrefs.GetFloat("sfxVolumeKey") * PlayerPrefs.GetFloat("masterVolumeKey");
+            audioSource.volume = volumeScale * FBPP.GetFloat("sfxVolumeKey") * FBPP.GetFloat("masterVolumeKey");
             audioSource.panStereo = pan;
 
             audioSource.Play();
