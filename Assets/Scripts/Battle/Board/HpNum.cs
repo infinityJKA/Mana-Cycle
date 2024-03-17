@@ -15,6 +15,7 @@ namespace Battle.Board {
 
         public void SetHealth(int health)
         {
+            if (!label) label = GetComponent<TMP_Text>();
             label.text = Math.Max(health, 0).ToString().PadLeft(4, '0');
         }
     }

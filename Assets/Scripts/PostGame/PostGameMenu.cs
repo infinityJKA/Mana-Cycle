@@ -120,6 +120,11 @@ namespace PostGame {
                     int score = Storage.level.isEndless ? board.hp : board.hp + (board.lives-1)*2000; // add 2000 to score for each extra life
                     Storage.level.highScore = Math.Max(score, Storage.level.highScore);
 
+                    // Upload high score to LootLocker
+                    if (PlayerManager.loggedIn) {
+                        LeaderboardManager.UploadScore(Storage.level, score);
+                    }
+
                     // If solo mode win: retry -> replay
                     retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>()
                         .text = replayLocalizedString.GetLocalizedString();

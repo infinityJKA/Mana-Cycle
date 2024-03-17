@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: z3
   m_EditorClassIdentifier: 
+  levelId: z3
   levelName: z-3
   description: Score 3000 points in 60 seconds with increased drop speed and decreased
     slide time!
@@ -19,21 +20,29 @@ MonoBehaviour:
   midLevelConversations: []
   time: 60
   scoreGoal: 0
+  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
   lockPieceColors: 1
   fallTime: 0.4
   slideTimeMult: 0.3
+  battler: {fileID: 0}
   availableBattlers:
   - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
   objectives:
   - condition: 1
     value: 3000
+    stringValue: Item1, Item2
+    boolValue: 1
+    statusOverride: 
+    inverted: 0
   levelRequirement: {fileID: 11400000, guid: 5434b2e8c6df94f55be97f140d33ff1e, type: 2}
   nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
+  generateNextLevel: 0
   aiDifficulty: 1
+  levelDifficulty: 0
   trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: ae4319d602fb7c545a36366596510a7c, type: 3}

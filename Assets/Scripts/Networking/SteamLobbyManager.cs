@@ -92,6 +92,10 @@ namespace Networking {
             steamInitialized = true;
         }
 
+        private void OnDestroy() {
+            SteamAPI.Shutdown();
+        }
+
         private void RequestUserData(CSteamID id) {
             bool needsFetch = SteamFriends.RequestUserInformation(id, bRequireNameOnly: true); // eventually need both username and avatar
             if (!needsFetch) HandleUserData(id);

@@ -1,15 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-using Sound;
 
 namespace Battle {
     // Timer that ticks down. If time is reached, player loses
     public class Timer : MonoBehaviour
     {
         // Player 1 in the scene. they will lose once the timer is up
-        [SerializeField] public Battle.Board.GameBoard player1;
+        [SerializeField] public Board.GameBoard player1;
 
         /** Duration of this timer in seconds. */
         [SerializeField] public int duration;
@@ -59,31 +55,31 @@ namespace Battle {
                 textbox.colorGradientPreset = redGradient;
             }
 
+            if(player1.level.time == -1){
+                textbox.text = "∞:∞";
+                enabled = false;
+                return;
+            }
+
             if (timeLeft <= 0) {
-                if(player1.level.time != -1){
-                    textbox.text = "0:00";
-                    if (!player1.level.survivalWin){
-                        if (!player1.IsDefeated()) player1.Defeat();
-                    }
-                    else if(player1.level.time != -1){
-                        if (!player1.IsDefeated()) {
-                            player1.RefreshObjectives();
-                            if (!player1.IsWinner()) player1.Defeat();
-                        }
-                    }
+                textbox.text = "0:00";
+                if (!player1.level.survivalWin){
+                    if (!player1.IsDefeated()) player1.Defeat();
                 }
-                else{
-                    textbox.text = "∞:∞";
+                else if(player1.level.time != -1){
+                    if (!player1.IsDefeated()) {
+                        player1.RefreshObjectives();
+                        if (!player1.IsWinner()) player1.Defeat();
+                    }
                 }
             } else{
                 if(player1.level.time != -1){
-                    textbox.text = Utils.FormatTime(timeLeft);
+                    textbox.text = Utils.FormatTime(timeLeft, showMilliseconds: true);
                     if (timeLeft < 3 && lastDisplayedTime != textbox.text) Instantiate(beepSFX);
                 }
             }
 
             lastDisplayedTime = textbox.text;
-            
         }
 
         public float SecondsRemaining() {

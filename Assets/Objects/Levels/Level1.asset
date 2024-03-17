@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level1
   m_EditorClassIdentifier: 
+  levelId: Level1
   levelName: Level 1
   description: Learn the basics of the game!
   conversation: {fileID: 11400000, guid: a8f7eda06f98c46919a29cdb6a1ed9bb, type: 2}
@@ -21,14 +22,23 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e6820c27a95a044839fef0d535b720e2, type: 2}
   time: 120
   scoreGoal: 150
+  lives: 1
   cycleLength: 3
   cycleUniqueColors: 3
+  lockPieceColors: 1
   fallTime: 0.8
+  slideTimeMult: 1
+  battler: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   availableBattlers:
   - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   objectives: []
   levelRequirement: {fileID: 0}
+  nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
+  generateNextLevel: 0
+  aiDifficulty: 1
+  levelDifficulty: 0
+  trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: bb2df057ec31041e08a2010acaf4872e, type: 3}
