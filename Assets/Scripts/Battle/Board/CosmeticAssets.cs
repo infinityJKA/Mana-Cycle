@@ -19,6 +19,8 @@ namespace Battle.Board {
         //     instance = this;
         // }
 
+        // some of these probably won't change with cosmetics but im just using this to hold some ability assets together
+
         [SerializeField] public GameObject ironSwordSFX, pyroBombSFX;
 
         [SerializeField] public Sprite ironSwordSprite, pyroBombSprite;
@@ -26,5 +28,7 @@ namespace Battle.Board {
         [SerializeField] public GameObject goldMineObject;
 
         [SerializeField] public Sprite miniZmanSprite;
+
+        [SerializeField] public GameObject pyroBombParticleEffect;
     }
 }
