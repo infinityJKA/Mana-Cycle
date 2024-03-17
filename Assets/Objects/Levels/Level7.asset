@@ -12,20 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level7
   m_EditorClassIdentifier: 
-  levelId: Level7
   levelName: Level 7
   description: Score 1800 points with extreme speed! Act quickly!
   conversation: {fileID: 11400000, guid: 43678d47c071f6e4aae1acd4dd065abe, type: 2}
   midLevelConversations: []
   time: 100
   scoreGoal: 1800
-  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
-  lockPieceColors: 1
   fallTime: 0.6
-  slideTimeMult: 1
-  battler: {fileID: 0}
   availableBattlers:
   - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
@@ -33,12 +28,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
   objectives: []
   levelRequirement: {fileID: 11400000, guid: 96c1c48d14b6d414f9a1fb93fbbd56ab, type: 2}
-  nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
-  generateNextLevel: 0
-  aiDifficulty: 1
-  levelDifficulty: 0
-  trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: 3e70433f9b965084d94f63f9c5244ecb, type: 3}

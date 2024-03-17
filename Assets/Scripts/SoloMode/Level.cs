@@ -8,11 +8,11 @@ using UnityEditor;
 
 using ConvoSystem;
 using Battle;
+using Random=UnityEngine.Random;
 
 namespace SoloMode {
     [CreateAssetMenu(fileName = "Level", menuName = "ManaCycle/Level")]
     public class Level : ScriptableObject {
-        [SerializeField] public string levelId = "LevelID";
         [SerializeField] public string levelName = "Level";
         [SerializeField] public string description = "One of the levels of time";
 
@@ -44,10 +44,10 @@ namespace SoloMode {
         [SerializeField] public float slideTimeMult = 1f;
 
         // the actual char you play as in the level, chosen by char select or automatically
-        [HideInInspector] public Battler battler;
+        [System.NonSerialized] public Battle.Battler battler;
 
         // the battlers to choose from in charselect. if only one, they get auto picked like old system
-        [SerializeField] public List<Battler> availableBattlers;
+        [SerializeField] public List<Battle.Battler> availableBattlers;
 
         /** List of additional objectives that must be met to clear the stage **/
         [SerializeField] public List<Objective> objectives;
@@ -100,103 +100,88 @@ namespace SoloMode {
             // if (nextSeriesLevel != null) nextSeriesLevel.lastSeriesLevel = this;
         }
 
-        public bool requirementsMet
+        public bool RequirementsMet()
         {
-            get {
-                if (levelRequirement != null) return levelRequirement.isCleared;
-                else return true;
-            }
+            if (levelRequirement != null) return PlayerPrefs.GetInt(levelRequirement.levelName+"_Cleared", 0) == 1;
+            else return true;
         }
 
-        public bool isCleared {
-            get {
-                return FBPP.GetInt(levelId+"_Cleared", 0) == 1;
+        public bool IsCleared()
+        {
+            // get to last level in series, and return if it is cleared. an entire series must be cleared for it to show as cleared
+            Level refLevel = this;
+            while (refLevel.nextSeriesLevel != null) 
+            {
+                refLevel = refLevel.nextSeriesLevel;
             }
-            set {
-                FBPP.SetInt(levelId+"_Cleared", value ? 1 : 0);
-            }
-        }
 
-        public static bool IsLevelCleared(string id) {
-            return FBPP.GetInt(id+"_Cleared", 0) == 1;
+            return PlayerPrefs.GetInt(refLevel.levelName+"_Cleared", 0) == 1;
         }
-
-        public bool isSeriesCleared => finalLevel.isCleared;
 
         /// <summary> get amount of levels ahead of this one in the series </summary>
-        public int aheadCount
+        public int GetAheadCount()
         {
-            get {
-                int count = 0;
-                Level refLevel = this;
-                while (refLevel.nextSeriesLevel != null) 
-                {
-                    count++;
-                    refLevel = refLevel.nextSeriesLevel;
-                }
-
-                return count;
+            int count = 0;
+            Level refLevel = this;
+            while (refLevel.nextSeriesLevel != null) 
+            {
+                count++;
+                refLevel = refLevel.nextSeriesLevel;
             }
+
+            return count;
         }
 
         /// <summary> get amount of levels behind this one in the series </summary>
-        public int behindCount
+        public int GetBehindCount()
         {
-            get {
-                int count = 0;
-                Level refLevel = this;
-                while (refLevel.lastSeriesLevel != null) 
-                {
-                    count++;
-                    refLevel = refLevel.lastSeriesLevel;
-                }
-
-                return count;
+            int count = 0;
+            Level refLevel = this;
+            while (refLevel.lastSeriesLevel != null) 
+            {
+                count++;
+                refLevel = refLevel.lastSeriesLevel;
             }
+
+            return count;
         }
 
         /// <summary> return first level in series </summary>
-        public Level rootLevel {
-            get {
-                Level refLevel = this;
-                while (refLevel.lastSeriesLevel != null)
-                {
-                    refLevel = refLevel.lastSeriesLevel;
-                }
-
-                return refLevel;
+        public Level GetRootLevel()
+        {
+            Level refLevel = this;
+            while (refLevel.lastSeriesLevel != null)
+            {
+                refLevel = refLevel.lastSeriesLevel;
             }
+
+            return refLevel;
         }
 
-        /// <summary> return last level in series </summary>
-        public Level finalLevel {
-            get {
-                Level refLevel = this;
-                while (refLevel.nextSeriesLevel != null) 
-                {
-                    refLevel = refLevel.nextSeriesLevel;
-                }
-                return refLevel;
+        /// <summary>Get the highscore of this level, or of the last level if in a series</summary>
+        public int GetHighScore()
+        {
+            int score =  PlayerPrefs.GetInt(this.levelName+"_HighScore", 0);
+            Level refLevel = this.nextSeriesLevel;
+            
+            while (refLevel != null)
+            {
+                score = PlayerPrefs.GetInt(refLevel.levelName+"_HighScore", 0);
+                refLevel = refLevel.nextSeriesLevel;
             }
+
+            return score;
         }
 
-        public int highScore {
-            get {
-                return FBPP.GetInt(levelId+"_HighScore", 0);
-            }
-            set {
-                FBPP.SetInt(levelId+"_HighScore", value);
-            }
+        public bool IsEndless() {
+            return time == -1 && scoreGoal == 0;
         }
-        public int finalHighScore => finalLevel.highScore;
-
-        public bool isEndless => time == -1 && scoreGoal == 0;
 
         public void CalculateRewardAmount()
         {
             // to be balanced
             // decrease amount if level has item reward set in generator
-            rewardAmount = (int) (5 * Mathf.Floor((float) (aiDifficulty * 250 * (itemReward == null ? 1 : 0.6) + 50) / 5));
+            rewardAmount = (int) (5 * Mathf.Floor((float) ((aiDifficulty * 250) * (itemReward == null ? 1 : 0.6) + 50) / 5));
         }
     }
 
@@ -209,27 +194,27 @@ namespace SoloMode {
             Level level = (Level) target;
 
             GUILayout.Label("PlayerPrefs progress:");
-            GUILayout.Label("High score: "+level.highScore);
+            GUILayout.Label("High score: "+PlayerPrefs.GetInt(level.levelName+"_HighScore", 0));
 
-            GUILayout.Label(level.requirementsMet ? "Level unlocked" : "Unlock this level");
+            GUILayout.Label(level.RequirementsMet() ? "Level unlocked" : "Unlock this level");
 
             if (GUILayout.Button("Unlock this level")) {
-                level.levelRequirement.isCleared = true;
+                PlayerPrefs.SetInt(level.levelRequirement.levelName+"_Cleared", 1);
                 Debug.Log("cleared progress of "+level.levelName);
             }
             
             GUILayout.Label("Reset the progress of this level");
 
             if (GUILayout.Button("Reset Level Progress")) {
-                FBPP.DeleteKey(level.levelId+"_Cleared");
-                FBPP.DeleteKey(level.levelId+"_HighScore");
+                PlayerPrefs.DeleteKey(level.levelName+"_Cleared");
+                PlayerPrefs.DeleteKey(level.levelName+"_HighScore");
                 Debug.Log("cleared progress of "+level.levelName);
             }
 
-            GUILayout.Label("Reset ALL player preferences, including levels, settings, etc");
+            GUILayout.Label("Reset ALL player preferences and level status");
 
             if (GUILayout.Button("Reset ALL Progress")) {
-                FBPP.DeleteAll();
+                PlayerPrefs.DeleteAll();
                 Debug.Log("All progress reset!");
             }
         }

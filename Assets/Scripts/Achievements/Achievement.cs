@@ -56,19 +56,19 @@ namespace Achievements {
         public List<Objective> requirements;
 
         /// <summary>
-        /// Returns true if this achievement is shown as unlcoked from the PlayerPrefs
+        /// Returns true if this achievement is shown as unlcoked from the PlayerPrefs.
         /// </summary>
         public bool unlocked 
         { 
             get 
             { 
-                return FBPP.GetInt("ACH_" + id, 0) == 1;
+                return PlayerPrefs.GetInt("ACH_" + id, 0) == 1;
             }
         }
 
         public void UnlockPlayerPref()
         {
-            FBPP.SetInt("ACH_" + id, 1);
+            PlayerPrefs.SetInt("ACH_" + id, 1);
         }
     }
 }
