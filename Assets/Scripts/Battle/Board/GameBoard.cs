@@ -450,12 +450,12 @@ namespace Battle.Board {
             if (Storage.gamemode == Storage.GameMode.Versus) {
                 // AI vs. AI
                 if (!Storage.isPlayerControlled1 && !Storage.isPlayerControlled2) {
-                    SetAIDifficulty(PlayerPrefs.GetInt(playerSide == 0 ? "CpuVsCpuP1Level" : "CpuVsCpuP2Level", 5)/10f);
+                    SetAIDifficulty(FBPP.GetInt(playerSide == 0 ? "CpuVsCpuP1Level" : "CpuVsCpuP2Level", 5)/10f);
                 }
 
                 // player vs AI - set on player 2 only
                 else if (Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && playerSide == 1) {
-                    SetAIDifficulty(PlayerPrefs.GetInt("CpuLevel", 5)/10f);
+                    SetAIDifficulty(FBPP.GetInt("CpuLevel", 5)/10f);
                 }
             }
             
@@ -469,10 +469,10 @@ namespace Battle.Board {
                 objectiveList.InitializeObjectiveListItems(this);
             }
 
-            drawGhostPiece = playerControlled && PlayerPrefs.GetInt(playerSide == 0 ? "drawGhostPiece" : "drawGhostPieceP2", 1) == 1;
+            drawGhostPiece = playerControlled && FBPP.GetInt(playerSide == 0 ? "drawGhostPiece" : "drawGhostPieceP2", 1) == 1;
             ghostTiles = new List<Tile>();
 
-            abilityManager.enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
+            abilityManager.enabled = FBPP.GetInt("enableAbilities", 1) == 1;
             abilityManager.InitManaBar();
 
             recoveryText.enabled = false;
@@ -1811,11 +1811,11 @@ namespace Battle.Board {
             // Geo's revenge system
             float GeoBoost = 1f;
             if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.LastStand){
-                if((float)hp <= (float)maxHp/4){
+                if(hp <= (float)maxHp/4){
                     GeoBoost = 1.4f;
                     Debug.Log("Geoboost 25% ver!!!");
                 }
-                else if((float)hp <= (float)maxHp/2){
+                else if(hp <= (float)maxHp/2){
                     GeoBoost = 1.15f;
                     Debug.Log("Geoboost 50% ver!!!");
                 }
@@ -2223,7 +2223,14 @@ namespace Battle.Board {
         public void Defeat() 
         {
             recoveryMode = false;
-            if (defeated || won) return;
+            if (defeated) {
+                Debug.LogWarning("Trying to defeat while already defeated");
+                return;
+            }
+            if (won) {
+                Debug.LogWarning("Trying to defeat while already won");
+                return;
+            }
 
             piece.DestroyTiles();
             Destroy(piece.gameObject);

@@ -31,7 +31,7 @@ public class SoloCharSelectController : MonoBehaviour {
 
         // Only use this object if there is no second player and no need for multiple device handling. (PlayerConnectionHandler will destroy itself if not)
         // also use if in online mode, where other player will be controlled by the other net client
-        if (Storage.isPlayerControlled2 && !Storage.online) Destroy(gameObject);
+        if (Storage.gamemode != Storage.GameMode.Solo && Storage.isPlayerControlled2 && !Storage.online) Destroy(gameObject);
 
         charSelector = charSelectMenu.GetActiveSelector();
     }

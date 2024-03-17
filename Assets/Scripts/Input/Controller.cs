@@ -189,7 +189,7 @@ namespace Battle {
 
         // charselector only
         public void OnMove(InputAction.CallbackContext ctx) {
-            if (controlMode != ControlMode.CharSelector) return;
+            if (controlMode != ControlMode.CharSelector || !charSelector) return;
             if (!gameFocused) return;
 
             movementInput = ctx.ReadValue<Vector2>();
