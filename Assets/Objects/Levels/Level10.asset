@@ -12,36 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level10
   m_EditorClassIdentifier: 
-  levelId: Level10
   levelName: Level 10
   description: With increased drop speed, score 6000 points and cast 20 spells.
   conversation: {fileID: 11400000, guid: f2761c04e10a60a43bed8cf81092fe9f, type: 2}
   midLevelConversations: []
   time: 180
   scoreGoal: 6000
-  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
-  lockPieceColors: 1
   fallTime: 0.3
-  slideTimeMult: 1
-  battler: {fileID: 0}
   availableBattlers:
   - {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
   objectives:
   - condition: 3
     value: 20
-    stringValue: Item1, Item2
-    boolValue: 1
-    statusOverride: 
-    inverted: 0
   levelRequirement: {fileID: 11400000, guid: 284a69c8c41f66240a507f8c4965e85a, type: 2}
-  nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
-  generateNextLevel: 0
-  aiDifficulty: 1
-  levelDifficulty: 0
-  trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: 3ae6f862584dbd44dbd058debdebe7ef, type: 3}

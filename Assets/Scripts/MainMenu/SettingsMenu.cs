@@ -47,11 +47,11 @@ namespace MainMenu {
 
         void Start() {
             if (ghostPieceToggle) {
-                if (!FBPP.HasKey("drawGhostPiece")) FBPP.SetInt("drawGhostPiece", 1);
-                ghostPieceToggle.isOn = FBPP.GetInt("drawGhostPiece") == 1;
+                if (!PlayerPrefs.HasKey("drawGhostPiece")) PlayerPrefs.SetInt("drawGhostPiece", 1);
+                ghostPieceToggle.isOn = PlayerPrefs.GetInt("drawGhostPiece") == 1;
             }
 
-            windowModeDropdown.value = FBPP.GetInt("windowModeSelection");
+            windowModeDropdown.value = PlayerPrefs.GetInt("windowModeSelection");
         }
 
         void Update()
@@ -63,7 +63,7 @@ namespace MainMenu {
 
         public void OnGhostPieceToggleChange() {
             bool tickOn = ghostPieceToggle.isOn;
-            FBPP.SetInt("drawGhostPiece", tickOn ? 1 : 0);
+            PlayerPrefs.SetInt("drawGhostPiece", tickOn ? 1 : 0);
         }
 
         public void OnWindowModeChange()
@@ -82,9 +82,7 @@ namespace MainMenu {
                     break;
             }
 
-            // This does not use the file-based player prefs, just normal playerpref so it doesn't get sent over steam cloud or anything 
-            // and be used on different devices which may have different screen setup.
-            FBPP.SetInt("windowModeSelection", selection);
+            PlayerPrefs.SetInt("windowModeSelection", selection);
             EventSystem.current.SetSelectedGameObject(windowModeDropdown.gameObject);
         }
 
