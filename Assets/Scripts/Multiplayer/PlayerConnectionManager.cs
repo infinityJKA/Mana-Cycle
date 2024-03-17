@@ -32,7 +32,7 @@ namespace Multiplayer {
 
         private void Awake() {
             // destroy self if not a multiplayer mode or in online mode where only player 1 will control
-            if (!Storage.isPlayerControlled2 || Storage.online) Destroy(gameObject);
+            if (Storage.gamemode == Storage.GameMode.Solo || !Storage.isPlayerControlled2 || Storage.online) Destroy(gameObject);
 
             if (instance == null) {
                 if (connectMode == ConnectMode.DestroyMultiplayer) {

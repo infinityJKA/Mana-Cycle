@@ -53,7 +53,7 @@ namespace SoloMode
             
             // if first match, init player stats and keep hp (determined by previous level) within bounds
             // second null check is for debug
-            if ((Storage.level != null && Storage.level.GetBehindCount() == 0) || Storage.level == null)
+            if ((Storage.level != null && Storage.level.behindCount == 0) || Storage.level == null)
             {
                 ArcadeStats.maxHp = 2000;
                 Storage.hp = Mathf.Clamp(Storage.hp, 100, ArcadeStats.maxHp);
@@ -93,7 +93,7 @@ namespace SoloMode
             // currencyText.text = "" + Storage.arcadeMoneyAmount;
 
             // update title text
-            if (Storage.level != null) matchText.text = "-= Match " + (Storage.level.GetBehindCount() + 1) + " =-";
+            if (Storage.level != null) matchText.text = "-= Match " + (Storage.level.behindCount + 1) + " =-";
         }
 
         void OnEnable()

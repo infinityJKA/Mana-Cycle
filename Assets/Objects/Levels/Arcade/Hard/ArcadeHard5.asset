@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: ArcadeHard5
   m_EditorClassIdentifier: 
+  levelId: ArcadeHard5
   levelName: Vs. Psychic
   description: Go against several challengers in a row!
   conversation: {fileID: 11400000, guid: 2b9231dd0e1a56a4a80539e2ca3c1d37, type: 2}
   midLevelConversations: []
   time: 300
   scoreGoal: 0
+  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
   lockPieceColors: 1
-  fallTime: 0.6
+  fallTime: 0.8
   slideTimeMult: 1
   availableBattlers:
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
@@ -33,10 +35,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
   objectives: []
   levelRequirement: {fileID: 0}
-  nextSeriesLevel: {fileID: 11400000, guid: 833a9b9a34f324a3c83d251e657b957e, type: 2}
+  nextSeriesLevel: {fileID: 11400000, guid: 886808ff192524f45b5f9ce166546034, type: 2}
   survivalWin: 0
   aiBattle: 1
   opponent: {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
-  aiDifficulty: 0.85
+  generateNextLevel: 0
+  aiDifficulty: 0.6
+  levelDifficulty: 0
   trashSendRate: -1
-  battleMusic: {fileID: 8300000, guid: 3e70433f9b965084d94f63f9c5244ecb, type: 3}
+  battleMusic: {fileID: 8300000, guid: fa7aa6f54222729439721ede2c7f430e, type: 3}
