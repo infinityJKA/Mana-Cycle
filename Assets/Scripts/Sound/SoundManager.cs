@@ -68,48 +68,48 @@ namespace Sound {
 
         public void ChangeMusicVolume(float value)
         {
-            PlayerPrefs.SetFloat("musVolumeKey", value);
+            FBPP.SetFloat("musVolumeKey", value);
             musicSource.volume = value;
         }
 
         public void ChangeSFXVolume(float value)
         {
-
-            PlayerPrefs.SetFloat("sfxVolumeKey", value);
+            FBPP.SetFloat("sfxVolumeKey", value);
         }
 
         public void Load()
         {
             // music
-            if (!PlayerPrefs.HasKey("musVolumeKey"))
+            if (!FBPP.HasKey("musVolumeKey"))
             {
-                PlayerPrefs.SetFloat("musVolumeKey", 0.5f);
+                FBPP.SetFloat("musVolumeKey", 0.5f);
             }
             else
             {
-                Instance.musicSource.volume = PlayerPrefs.GetFloat("musVolumeKey");
+                Instance.musicSource.volume = FBPP.GetFloat("musVolumeKey");
             }
 
             // sfx
-            if (!PlayerPrefs.HasKey("sfxVolumeKey"))
+            if (!FBPP.HasKey("sfxVolumeKey"))
             {
-                PlayerPrefs.SetFloat("sfxVolumeKey", 0.5f);
+                FBPP.SetFloat("sfxVolumeKey", 0.5f);
             }
             else
             {
-                Instance.effectSource.volume = PlayerPrefs.GetFloat("sfxVolumeKey");
+                Instance.effectSource.volume = FBPP.GetFloat("sfxVolumeKey");
             }
 
             // master
-            if (!PlayerPrefs.HasKey("masterVolumeKey"))
+            if (!FBPP.HasKey("masterVolumeKey"))
             {
-                PlayerPrefs.SetFloat("masterVolumeKey", 1.0f);
+                FBPP.SetFloat("masterVolumeKey", 1.0f);
             }
             else
             {
-                Instance.effectSource.volume = PlayerPrefs.GetFloat("masterVolumeKey");
+                Instance.effectSource.volume = FBPP.GetFloat("masterVolumeKey");
             }
             
+            FBPP.Save();
         }
 
     }

@@ -35,11 +35,12 @@ namespace Networking {
             }
             instance = this;
             DontDestroyOnLoad(this);
-            InitializeSteam();
         }
 
         public void CreateLobby() {
             #if !DISABLESTEAMWORKS
+                if (!steamInitialized) InitializeSteam();
+
                 Debug.Log("Starting steam lobby");
                 SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, NetworkManager.singleton.maxConnections);
             #else
@@ -49,6 +50,8 @@ namespace Networking {
 
         public void JoinLobbyWithID(string idStr) {
             #if !DISABLESTEAMWORKS
+                if (!steamInitialized) InitializeSteam();
+
                 ulong id;
                 if (!ulong.TryParse(idStr, out id)) {
                     throw new System.Exception("Enter a valid join code");

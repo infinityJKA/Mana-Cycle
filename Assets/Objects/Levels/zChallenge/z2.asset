@@ -12,17 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: z2
   m_EditorClassIdentifier: 
+  levelId: Z2
   levelName: z-2
   description: Survive for 90 seconds while being barraged by Trash Mana!
   conversation: {fileID: 11400000, guid: bcc7eb7d6da2ff64480e10b9e00a3b46, type: 2}
   midLevelConversations: []
   time: 90
   scoreGoal: 0
+  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
   lockPieceColors: 1
   fallTime: 0.8
   slideTimeMult: 1
+  battler: {fileID: 0}
   availableBattlers:
   - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
   objectives: []
@@ -31,6 +34,8 @@ MonoBehaviour:
   survivalWin: 1
   aiBattle: 0
   opponent: {fileID: 0}
+  generateNextLevel: 0
   aiDifficulty: 1
+  levelDifficulty: 0
   trashSendRate: 1
   battleMusic: {fileID: 8300000, guid: ae4319d602fb7c545a36366596510a7c, type: 3}
