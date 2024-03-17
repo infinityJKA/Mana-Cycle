@@ -367,8 +367,10 @@ namespace Battle.Board {
             slowFall = true;
             center.DontDoGravity();
             center.SetManaColor(ManaColor.Colorless, setVisualColor: false, setSprite: false);
+            center.SetVisualColor(Color.white);
 
             center.image.sprite = board.cosmetics.ironSwordSprite;
+            center.image.color = Color.white;
             center.image.rectTransform.sizeDelta = new Vector2(1, 2);
             center.image.transform.position = new Vector2(0, 0.5f); // aligns the bottom of the 2 tile large image to the bottom of the single tile
 

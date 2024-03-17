@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: ArcadeHard3
   m_EditorClassIdentifier: 
+  levelId: ArcadeHard3
   levelName: Vs. Aqua
   description: Go against several challengers in a row!
   conversation: {fileID: 11400000, guid: 2b9231dd0e1a56a4a80539e2ca3c1d37, type: 2}
@@ -22,7 +23,7 @@ MonoBehaviour:
   cycleLength: 7
   cycleUniqueColors: 5
   lockPieceColors: 1
-  fallTime: 0.6
+  fallTime: 0.8
   slideTimeMult: 1
   availableBattlers:
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
@@ -34,12 +35,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
   objectives: []
   levelRequirement: {fileID: 0}
-  nextSeriesLevel: {fileID: 11400000, guid: 67f3010b5e4b546a19d56efa828738c1, type: 2}
+  nextSeriesLevel: {fileID: 11400000, guid: e54ad72b986eb4702ac61547ae0a4829, type: 2}
   survivalWin: 0
   aiBattle: 1
   opponent: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
   generateNextLevel: 0
-  aiDifficulty: 0.7
+  aiDifficulty: 0.5
   levelDifficulty: 0
   trashSendRate: -1
-  battleMusic: {fileID: 8300000, guid: c8f74d5c241736a45b248fd0b3ee27af, type: 3}
+  battleMusic: {fileID: 8300000, guid: f7a2ea033c326074eb2643692c538244, type: 3}
