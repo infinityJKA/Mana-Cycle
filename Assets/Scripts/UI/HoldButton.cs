@@ -12,26 +12,13 @@ public class HoldButton : Selectable, ISubmitHandler /**, IPointerDownHandler, I
     [SerializeField] private UnityEvent onHeld;
     [SerializeField] private InputActionReference submitAction;
 
-    private bool disabled = false;
-
     private bool pressed;
     private float pressTimer;
 
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-        if (!submitAction) return;
+    protected override void Start() {
+        base.Start();
         submitAction.action.started += ctx => Press();
         submitAction.action.canceled += ctx => Unpress();
-        disabled = false;
-    }
-
-    protected override void OnDisable() {
-        base.OnDisable();
-        submitAction.action.started -= ctx => Press();
-        submitAction.action.canceled -= ctx => Unpress();
-        disabled = true;
-        Debug.Log(gameObject+" disabled");
     }
 
     private void Update() {
@@ -52,14 +39,12 @@ public class HoldButton : Selectable, ISubmitHandler /**, IPointerDownHandler, I
     }
 
     private void Press() {
-        if (disabled || !enabled || !gameObject) return;
         if (EventSystem.current.currentSelectedGameObject != gameObject) return;
         Debug.Log(gameObject+" pressed");
         pressed = true;
     }
 
     private void Unpress() {
-        if (disabled || !enabled || !gameObject) return;
         Debug.Log(gameObject+" unpressed");
         pressed = false;
         pressTimer = 0f;

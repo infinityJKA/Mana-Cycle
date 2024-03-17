@@ -216,14 +216,7 @@ namespace VersusMode {
 
             usernameLabel.gameObject.SetActive(Storage.online);
 
-            abilityInfoDisplayed = false;
-            settingsDisplayed = false;
-
             if (Storage.online) Disconnect();
-        }
-
-        private void OnDisable() {
-            active = false;
         }
 
         void Update() {
@@ -363,13 +356,13 @@ namespace VersusMode {
 
         public void OnMoveUp() {
             if (!enabled || !selectedIcon || connectedThisUpdate) return;
-            if (settingsDisplayed && settingsSelection) SetSettingsSelection(settingsSelection.FindSelectableOnUp());
+            if (settingsDisplayed) SetSettingsSelection(settingsSelection.FindSelectableOnUp());
             else if (!lockedIn) SetSelection(selectedIcon.selectable.FindSelectableOnUp());
         }
 
         public void OnMoveDown() {
             if (!enabled || !selectedIcon || connectedThisUpdate) return;
-            if (settingsDisplayed && settingsSelection) SetSettingsSelection(settingsSelection.FindSelectableOnDown());
+            if (settingsDisplayed) SetSettingsSelection(settingsSelection.FindSelectableOnDown());
             else if (!lockedIn) SetSelection(selectedIcon.selectable.FindSelectableOnDown());
         }
 
@@ -392,7 +385,7 @@ namespace VersusMode {
 
                 // if any battle preferences were just toggled, update its state in Storage and the other player's settings toggle
                 if (settingsSelection == abilityToggle) {
-                    FBPP.SetInt("enableAbilities", abilityToggle.isOn ? 1 : 0);
+                    PlayerPrefs.SetInt("enableAbilities", abilityToggle.isOn ? 1 : 0);
                     opponentSelector.abilityToggle.isOn = abilityToggle.isOn;
                 }
             }
@@ -488,8 +481,8 @@ namespace VersusMode {
             }
 
             SetSettingsSelection(ghostPieceToggle);
-            ghostPieceToggle.isOn = FBPP.GetInt("drawGhostPiece", 1) == 1;
-            abilityToggle.isOn = FBPP.GetInt("enableAbilities", 1) == 1;
+            ghostPieceToggle.isOn = PlayerPrefs.GetInt("drawGhostPiece", 1) == 1;
+            abilityToggle.isOn = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
         }
 
         public void ToggleLock()
@@ -504,7 +497,7 @@ namespace VersusMode {
             }
 
             // when locking in, disable and enable cpu selector
-            if (lockedIn && opponentSelector.isCpuCursor && opponentSelector.gameObject.activeInHierarchy) {
+            if (lockedIn && opponentSelector.isCpuCursor) {
                 // is this is also a cpu cursor (AI vs AI)
                 if (isPlayer1) {
                     if (isCpuCursor && !selectingCpuLevel && !menu.Mobile) {
@@ -670,7 +663,6 @@ namespace VersusMode {
         }
 
         void SettingsCursorLeft() {
-            if (!settingsSelection) return;
             if (settingsSelection == livesSelectable) {
                 AdjustLives(-1);
             } else {
@@ -679,7 +671,6 @@ namespace VersusMode {
         }
 
         void SettingsCursorRight() {
-            if (!settingsSelection) return;
             if (settingsSelection == livesSelectable) {
                 AdjustLives(1);
             } else {

@@ -7,15 +7,10 @@ using TMPro;
 namespace Battle.Board {
     public class HpNum : MonoBehaviour
     {
-        TMP_Text label;
-
-        private void Start() {
-            label = GetComponent<TMP_Text>();
-        }
-
         public void SetHealth(int health)
         {
-            label.text = Math.Max(health, 0).ToString().PadLeft(4, '0');
+            var textbox = GetComponent<TMPro.TextMeshProUGUI>();
+            textbox.text = (Math.Max(health, 0)).ToString().PadLeft(4, '0');
         }
     }
 }

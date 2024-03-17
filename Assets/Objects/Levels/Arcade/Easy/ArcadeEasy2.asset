@@ -12,35 +12,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: ArcadeEasy2
   m_EditorClassIdentifier: 
-  levelId: ArcadeEasy2
-  levelName: Vs. Aqua
+  levelName: Arcade
   description: Go against several challengers in a row!
-  conversation: {fileID: 11400000, guid: 2b9231dd0e1a56a4a80539e2ca3c1d37, type: 2}
+  conversation: {fileID: 11400000, guid: 021d54915f16345fe960892ed4591d63, type: 2}
   midLevelConversations: []
   time: 300
   scoreGoal: 0
-  lives: 1
+  lives: 3
   cycleLength: 7
   cycleUniqueColors: 5
   lockPieceColors: 1
   fallTime: 0.8
   slideTimeMult: 1
   availableBattlers:
+  - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
   - {fileID: 11400000, guid: 91c504e9689114ce0bf46b0f721e8f16, type: 2}
-  - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   - {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
   - {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
   - {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
   - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
+  - {fileID: 11400000, guid: 2e37b36be2db849e9a8b3a10ee09f403, type: 2}
   objectives: []
   levelRequirement: {fileID: 0}
-  nextSeriesLevel: {fileID: 11400000, guid: 2f1daeaee9451434d902967892533f92, type: 2}
+  nextSeriesLevel: {fileID: 11400000, guid: ef7efdd15fc774a36b413c4601e243b7, type: 2}
   survivalWin: 0
   aiBattle: 1
-  opponent: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+  opponent: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   generateNextLevel: 0
-  aiDifficulty: 0.15
+  aiDifficulty: 0.1
   levelDifficulty: 0
   trashSendRate: -1
-  battleMusic: {fileID: 8300000, guid: c8f74d5c241736a45b248fd0b3ee27af, type: 3}
+  battleMusic: {fileID: 8300000, guid: bb2df057ec31041e08a2010acaf4872e, type: 3}
