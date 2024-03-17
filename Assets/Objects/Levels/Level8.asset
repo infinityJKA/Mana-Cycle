@@ -12,42 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level8
   m_EditorClassIdentifier: 
-  levelId: Level8
   levelName: Level 8
   description: Spellcast 15 times and clear 100 mana!
   conversation: {fileID: 11400000, guid: f1cd900e053ca3543be6dc4670581eaa, type: 2}
   midLevelConversations: []
   time: 180
   scoreGoal: 0
-  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
-  lockPieceColors: 1
   fallTime: 0.6
-  slideTimeMult: 1
-  battler: {fileID: 0}
   availableBattlers:
   - {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
   objectives:
   - condition: 3
     value: 15
-    stringValue: Item1, Item2
-    boolValue: 1
-    statusOverride: 
-    inverted: 0
   - condition: 2
     value: 100
-    stringValue: Item1, Item2
-    boolValue: 1
-    statusOverride: 
-    inverted: 0
   levelRequirement: {fileID: 11400000, guid: 38ddd560ba35cd9498f07726988cecef, type: 2}
-  nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
-  generateNextLevel: 0
-  aiDifficulty: 1
-  levelDifficulty: 0
-  trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: ca5ef368f30309149bba5ce89bfdbfbf, type: 3}

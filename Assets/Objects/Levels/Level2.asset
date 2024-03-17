@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level2
   m_EditorClassIdentifier: 
-  levelId: Level2
   levelName: Level 2
   description: Clear a total of five times to finish this stage.
   conversation: {fileID: 11400000, guid: b18c48acfa6864947868fe145b2c8682, type: 2}
@@ -20,29 +19,17 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c610bf817881b48239dfced29710ffd7, type: 2}
   time: 120
   scoreGoal: 0
-  lives: 1
   cycleLength: 4
   cycleUniqueColors: 4
-  lockPieceColors: 1
   fallTime: 0.8
-  slideTimeMult: 1
-  battler: {fileID: 0}
   availableBattlers:
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
   objectives:
   - condition: 3
     value: 5
-    stringValue: Item1, Item2
-    boolValue: 1
-    statusOverride: 
-    inverted: 0
   levelRequirement: {fileID: 11400000, guid: bbedf4065086e4008927c4ea8aa60c0f, type: 2}
   nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
-  generateNextLevel: 0
-  aiDifficulty: 1
-  levelDifficulty: 0
-  trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: ce8f975b2cbeb56499509374274b087e, type: 3}
