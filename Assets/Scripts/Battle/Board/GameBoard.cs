@@ -1299,7 +1299,7 @@ namespace Battle.Board {
 
             if (doParticleEffects) {
                 int manaColor = tiles[row,col].GetManaColor();
-                Color color = manaColor < 0 ? Color.white : cosmetics.manaColors[manaColor];
+                Color color = manaColor < 0 ? Color.white : cosmetics.manaColors[manaColor].mainColor;
                 SpawnParticles(row, col, color);
             }
 

@@ -5,12 +5,14 @@ using UnityEngine;
 namespace Cosmetics
 {
     [System.Serializable]
-    public class Icon
+    public class ManaIcon
     {
-        public Sprite sprite;
+        public Sprite bgSprite;
+        public Sprite iconSprite;
         public float xOffset;
         public float yOffset;
-        public float scale;
+        public float xScale = 1f;
+        public float yScale = 1f;
         public float rotation;
     }
 
@@ -20,6 +22,6 @@ namespace Cosmetics
     {
         public IconPack() : base("IconPack"){}
 
-        public Icon[] icons;
+        public ManaIcon[] icons;
     }
 }

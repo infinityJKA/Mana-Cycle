@@ -78,6 +78,8 @@ namespace Battle.Board {
 
         // Animation curve that controls what the tile glow looks like
         [SerializeField] private AnimationCurve glowAnimCurve;
+
+        [SerializeField] private TileVisual visual;
         
 
         public void SetManaColor(int manaColor, GameBoard board, bool setVisualColor = true, bool setSprite = true, bool ghost = false)
@@ -99,7 +101,8 @@ namespace Battle.Board {
                     image.GetComponent<UnityEngine.UI.Outline>().effectColor = baseColor;
                 } else {
                     // if below 0, use multicolor sprite
-                    image.sprite = manaColor < 0 ? board.cosmetics.multicolorManaSprite : board.cosmetics.manaSprites[ manaColor ];
+                    image.sprite = manaColor < 0 ? board.cosmetics.multicolorManaSprite : board.cosmetics.manaVisuals[ manaColor ].bgSprite;
+                    visual.SetVisual(board.cosmetics.manaVisuals[ manaColor ], board.cosmetics.manaColors[ manaColor ]);
                 }
             }
 
