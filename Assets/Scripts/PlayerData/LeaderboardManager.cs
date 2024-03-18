@@ -22,4 +22,8 @@ public class LeaderboardManager {
             uploadingScore = false;
         });
     }
+
+    public static void GetScores() {
+        
+    }
 }
