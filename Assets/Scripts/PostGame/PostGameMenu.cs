@@ -122,7 +122,7 @@ namespace PostGame {
 
                     // Upload high score to LootLocker
                     if (PlayerManager.loggedIn) {
-                        LeaderboardManager.UploadScore(Storage.level, score);
+                        LeaderboardManager.UploadLeaderboardScore(Storage.level, score);
                     }
 
                     // If solo mode win: retry -> replay
