@@ -101,8 +101,15 @@ namespace Battle.Board {
                     image.GetComponent<UnityEngine.UI.Outline>().effectColor = baseColor;
                 } else {
                     // if below 0, use multicolor sprite
-                    image.sprite = manaColor < 0 ? board.cosmetics.multicolorManaSprite : board.cosmetics.manaVisuals[ manaColor ].bgSprite;
-                    visual.SetVisual(board.cosmetics.manaVisuals[ manaColor ], board.cosmetics.manaColors[ manaColor ]);
+                    if (manaColor < 0) 
+                    {
+                        image.sprite = board.cosmetics.multicolorManaSprite;
+                    }
+                    else
+                    {
+                        image.sprite = board.cosmetics.manaVisuals[ manaColor ].bgSprite;
+                        visual.SetVisual(board.cosmetics.manaVisuals[ manaColor ], board.cosmetics.manaColors[ manaColor ]);
+                    }
                 }
             }
 
