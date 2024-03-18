@@ -59,9 +59,9 @@ public class Utils : MonoBehaviour
         int seconds = (int)(s % 60);
         int milliseconds = (int)((s * 1000) % 1000);
         if (showMilliseconds) {
-            return minutes + ":" + (seconds+"").PadLeft(2, '0')+"<size=40%>."+(milliseconds+"").PadLeft(2, '0');
+            return minutes + ":" + (seconds+"").PadLeft(2, '0')+"<size=40%>."+(milliseconds+"").PadLeft(3, '0');
         } else {
-            return minutes + ":" + (seconds+"").PadLeft(3, '0');
+            return minutes + ":" + (seconds+"").PadLeft(2, '0');
         }
     }
 

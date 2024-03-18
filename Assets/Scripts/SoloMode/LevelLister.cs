@@ -104,9 +104,6 @@ namespace SoloMode {
         // eventually, should open the description box for that level with a play and exit button, but ill work on that later
         [SerializeField] private bool levelsClickable = false;
 
-        // If this should lead to mobile scenes or not.
-        [SerializeField] private bool mobile;
-
         // currently unused references
         [SerializeField] private GameObject upArrow;
         [SerializeField] private GameObject downArrow;
@@ -116,6 +113,11 @@ namespace SoloMode {
 
         [SerializeField] int tabWhitespacing = 4;
         [SerializeField] int flavorLineCount = 15;
+
+        [SerializeField] private Animator animator;
+
+        // if the details + leaderboard info is being shown.
+        bool showingInfo = false;
 
         // Start is called before the first frame update
         void Start()
@@ -212,12 +214,9 @@ namespace SoloMode {
             }
         }
 
-        public void Back() {
-            StoreSelections();
-            GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("MainMenu", reverse : true);
-        }
-
         public void ConfirmLevel(Level pressedLevel) {
+            if (showingInfo) return;
+
             if (!pressedLevel.requirementsMet) 
             {
                 Instantiate(errorSFX);
@@ -243,11 +242,15 @@ namespace SoloMode {
         }
 
         public void LeftTabArrow() {
+            if (showingInfo) return;
+
             MoveTabCursor(-1);
             Instantiate(swapTabSFX);
         }
 
         public void RightTabArrow() {
+            if (showingInfo) return;
+
             MoveTabCursor(1);
             Instantiate(swapTabSFX);
         }
@@ -379,6 +382,8 @@ namespace SoloMode {
 
         public void MoveCursor(int delta)
         {
+            if (showingInfo) return;
+            
             if (!showLevelCursor) return;
 
             // don't move cursor if movement will send cursor outside the list
@@ -410,6 +415,12 @@ namespace SoloMode {
             // don't move cursor if movement will send cursor outside the list
             if (selectedTabIndex+delta < 0 || selectedTabIndex+delta >= tabs.Length) return;
 
+            SetTabCursor(selectedTabIndex + delta);
+        }
+
+        void SetTabCursor(int index) {
+            if (showingInfo) return;
+
             levelTabTransform.GetChild(selectedTabIndex).gameObject.SetActive(false);
             if (animateTabColors) {
                 tabColors[selectedTabIndex] = tabTexts[selectedTabIndex].color;
@@ -419,7 +430,7 @@ namespace SoloMode {
                 tabTexts[selectedTabIndex].color = tabColor;
             }
 
-            selectedTabIndex += delta;
+            selectedTabIndex = index;
 
             levelTabTransform.GetChild(selectedTabIndex).gameObject.SetActive(true);
             if (animateTabColors) {
@@ -502,9 +513,23 @@ namespace SoloMode {
             // if all levels are cleared, start at 0
             return 0;
         }
+
+        public void Back() {
+            if (showingInfo) {
+                ToggleInfo();
+            } else {
+                StoreSelections();
+                GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("MainMenu", reverse : true);
+            }
+        }
+
+        public void ToggleInfo() {
+            showingInfo = !showingInfo;
+            animator.SetBool("ShowInfo", showingInfo);
+        }
     }
 
-    #if (UNITY_EDITOR)
+    #if UNITY_EDITOR
     [CustomEditor(typeof(LevelLister))]
     public class LevelListEditor : Editor {
         public override void OnInspectorGUI() {
