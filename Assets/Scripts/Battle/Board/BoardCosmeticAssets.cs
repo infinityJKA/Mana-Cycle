@@ -19,6 +19,8 @@ namespace Battle.Board {
         //     instance = this;
         // }
 
+        [SerializeField] private Cosmetics.CosmeticDatabase cosmeticDatabase;
+
         // some of these probably won't change with cosmetics but im just using this to hold some ability assets together
         // mana palettes
         [Tooltip("Colors to tint the cycle images")]
@@ -62,6 +64,13 @@ namespace Battle.Board {
 
         private static Color lightenColor = new Color(1f, 1f, 0.9f);
         private void Awake() {
+            // get mana colors from player prefs
+            // TODO: Use dynamic images/icons for mana sprites to use main and dark colors
+            for (int i = 0; i < 5; i++)
+            {
+                manaColors[i] = cosmeticDatabase.palettes[PlayerPrefs.GetInt("Palette", 0)].palettes[i].mainColor;
+            }
+            
             while (litManaColors.Count < manaColors.Count) {
                 Color originalColor = manaColors[litManaColors.Count];
                 Color lighterColor = Color.Lerp(originalColor, lightenColor, 0.75f);

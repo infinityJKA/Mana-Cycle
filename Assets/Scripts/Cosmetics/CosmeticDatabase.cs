@@ -4,8 +4,9 @@ using UnityEngine;
 namespace Cosmetics
 {
     [CreateAssetMenu(fileName = "Cosmetic Database", menuName = "ManaCycle/Cosmetic Database")]
-    public class AchievementDatabase : ScriptableObject
+    public class CosmeticDatabase : ScriptableObject
     {
-        public List<CosmeticItem> cosmetics;
+        public List<IconPack> icons;
+        public List<Palette> palettes;
     }
 }
