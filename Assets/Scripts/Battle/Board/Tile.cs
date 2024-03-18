@@ -19,6 +19,7 @@ namespace Battle.Board {
 
         // Seperate image object attached to this
         public Image image;
+        public Image glowImage;
 
         // Target position of this element, used for fall animations
         private Vector3 targetPosition;
@@ -88,14 +89,14 @@ namespace Battle.Board {
 
             // Get image and set color from the list in this scene's cycle
             if (setVisualColor) {
-                baseColor = board.cosmetics.GetVisualManaColor( manaColor );
-                litColor = board.cosmetics.GetLitManaColor( manaColor );
+                baseColor = glowImage.color;
+                litColor = new Color(glowImage.color.r, glowImage.color.g, glowImage.color.b, 0.4f);
             }
             if (setSprite && ManaCycle.instance.usingSprites) {
                 if (ghost) {
                     // if below 0, use multicolor ghost sprite
                     image.sprite = manaColor < 0 ? board.cosmetics.multicolorGhostManaSprite : board.cosmetics.ghostManaSprites[ manaColor ];
-                    baseColor = new Color(baseColor.r, baseColor.g, baseColor.b, 0.4f);
+                    // baseColor = new Color(baseColor.r, baseColor.g, baseColor.b, baseColor.a);
                     image.GetComponent<UnityEngine.UI.Outline>().enabled = true;
                     // image.GetComponent<UnityEngine.UI.Outline>().effectColor = Color.Lerp(image.color, Color.white, 0.4f);
                     image.GetComponent<UnityEngine.UI.Outline>().effectColor = baseColor;
@@ -113,7 +114,7 @@ namespace Battle.Board {
                 }
             }
 
-            image.color = baseColor;
+            glowImage.color = baseColor;
         }
 
         public int GetManaColor()
@@ -160,7 +161,7 @@ namespace Battle.Board {
             else {
                 glow = glowTarget; // will be 0 unless animated before this
             }
-            image.color = Color.Lerp(baseColor, litColor, glow);
+            glowImage.color = Color.Lerp(baseColor, litColor, glow);
         }
 
         /// <summary>
