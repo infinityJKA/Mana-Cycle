@@ -137,8 +137,8 @@ namespace Battle.Cycle {
             for (int i=0; i<cycleLength; i++)
             {
                 Image cycleObject = Instantiate(manaImage, Vector3.zero, Quaternion.identity);
-                cycleObject.color = cosmetics.manaColors[cycle[i]];
-                if (usingSprites) cycleObject.sprite = cosmetics.manaSprites[cycle[i]];
+                cycleObject.color = cosmetics.manaColors[cycle[i]].mainColor;
+                if (usingSprites) cycleObject.sprite = cosmetics.manaVisuals[cycle[i]].bgSprite;
                 cycleObjects.Add(cycleObject);
                 cycleObject.transform.SetParent(transform, false);
             }

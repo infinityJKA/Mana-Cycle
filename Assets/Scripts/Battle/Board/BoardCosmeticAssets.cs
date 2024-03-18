@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using Battle.Cycle;
 using Sound;
+using Cosmetics;
 
 namespace Battle.Board {
     /// <summary>
@@ -24,7 +25,7 @@ namespace Battle.Board {
         // some of these probably won't change with cosmetics but im just using this to hold some ability assets together
         // mana palettes
         [Tooltip("Colors to tint the cycle images")]
-        [SerializeField] public List<Color> manaColors;
+        [SerializeField] public List<ManaPalette> manaColors;
 
         [Tooltip("Lit colors to tint cycle images for ghost blobs and clearing. Auto-generated if omitted. Should be a lighter & yellower version of the original color")]
         [SerializeField] public List<Color> litManaColors;
@@ -34,7 +35,7 @@ namespace Battle.Board {
 
         // mana palettes
         [Tooltip("Square sprites to use for mana in pieces and the cycle")]
-        [SerializeField] public List<Sprite> manaSprites;
+        [SerializeField] public List<ManaIcon> manaVisuals;
 
 
         [Tooltip("Ghost tile verisons of manaSprites containing just the sahep outlines.")]
@@ -68,11 +69,12 @@ namespace Battle.Board {
             // TODO: Use dynamic images/icons for mana sprites to use main and dark colors
             for (int i = 0; i < 5; i++)
             {
-                manaColors[i] = cosmeticDatabase.palettes[PlayerPrefs.GetInt("Palette", 0)].palettes[i].mainColor;
+                manaColors[i] = cosmeticDatabase.palettes[PlayerPrefs.GetInt("Palette", 0)].palettes[i];
+                manaVisuals[i] = cosmeticDatabase.icons[PlayerPrefs.GetInt("IconPack", 0)].icons[i];
             }
             
             while (litManaColors.Count < manaColors.Count) {
-                Color originalColor = manaColors[litManaColors.Count];
+                Color originalColor = manaColors[litManaColors.Count].mainColor;
                 Color lighterColor = Color.Lerp(originalColor, lightenColor, 0.75f);
                 litManaColors.Add(lighterColor);
             }
@@ -86,7 +88,7 @@ namespace Battle.Board {
             // for special flag colors such as Multicolor/Any/None with negative manacolor ID, just return color white.
             if (index < 0) return Color.white;
 
-            return manaColors[index];
+            return manaColors[index].mainColor;
         }
 
         public Color GetLitManaColor(int index) {
