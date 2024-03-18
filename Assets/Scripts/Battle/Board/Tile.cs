@@ -198,8 +198,9 @@ namespace Battle.Board {
             if (!obscured) {
                 obscured = true;
                 image.sprite = obscuredSprite;
-                baseColor = obscureColor;
+                // baseColor = obscureColor;
                 image.color = obscureColor;
+                visual.SetObscuredVisual();
             }
         }
 
