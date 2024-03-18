@@ -188,6 +188,18 @@ namespace SoloMode {
         }
         public int finalHighScore => finalLevel.highScore;
 
+        /// <summary>
+        /// fastest time in milliseconds
+        /// </summary>
+        public int fastestTime {
+            get {
+                return FBPP.GetInt(levelId+"_FastestTime", 0);
+            }
+            set {
+                FBPP.SetInt(levelId+"_FastestTime", value);
+            }
+        }
+
         public bool isEndless => time == -1 && scoreGoal == 0;
 
         public void CalculateRewardAmount()
@@ -196,6 +208,9 @@ namespace SoloMode {
             // decrease amount if level has item reward set in generator
             rewardAmount = (int) (5 * Mathf.Floor((float) (aiDifficulty * 250 * (itemReward == null ? 1 : 0.6) + 50) / 5));
         }
+
+        public string scoreLeaderboardKey => levelId+"_Score";
+        public string timeLeaderboardKey => levelId+"_Time";
     }
 
     #if (UNITY_EDITOR)

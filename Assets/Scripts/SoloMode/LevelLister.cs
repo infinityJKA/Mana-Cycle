@@ -116,6 +116,8 @@ namespace SoloMode {
 
         [SerializeField] private Animator animator;
 
+        [SerializeField] private LeaderboardUI leaderboardUI;
+
         // if the details + leaderboard info is being shown.
         bool showingInfo = false;
 
@@ -360,7 +362,7 @@ namespace SoloMode {
         }
 
         protected SoloMenuTab selectedTab { get { return tabs[selectedTabIndex]; } }
-        protected Level selectedLevel { get { return selectedTab.levelsList[selectedLevelIndexes[selectedTabIndex]];} }
+        public Level selectedLevel { get { return selectedTab.levelsList[selectedLevelIndexes[selectedTabIndex]];} }
 
         private void StoreSelections()
         {
@@ -526,6 +528,7 @@ namespace SoloMode {
         public void ToggleInfo() {
             showingInfo = !showingInfo;
             animator.SetBool("ShowInfo", showingInfo);
+            if (showingInfo) leaderboardUI.LoadCurrentPage();
         }
     }
 
