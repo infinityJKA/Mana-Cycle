@@ -4,6 +4,9 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System;
+using Mono.CSharp;
+using Steamworks;
+
 // using UnityEditor.Localization.Plugins.XLIFF.V12;
 // using UnityEngine.Localization.PropertyVariants.TrackedProperties;
 
@@ -18,7 +21,9 @@ public class FishingBattleManager : MonoBehaviour
     public FishingBattleState battleState;
     public Image enemySprite;
     public FishingBattleButton[] buttons;
-    public bool firstHeal,firstEnemyHeal,firstAttack,firstEnemyAttack,enemyHalfTriggered,playerHalfTriggered;
+    public bool firstHeal,firstEnemyHeal,firstAttack,firstEnemyAttack,enemyHalf,playerHalf;
+    public int textDelay = 2;
+    public GameObject FishingBattleUI;
 
     void OnEnable()
     {
@@ -44,7 +49,7 @@ public class FishingBattleManager : MonoBehaviour
         playerLastAttackUsed = 99;
 
         // Reset wacky dialogue variables
-        firstHeal = firstEnemyHeal = firstAttack = firstEnemyAttack = enemyHalfTriggered = playerHalfTriggered = false;
+        firstHeal = firstEnemyHeal = firstAttack = firstEnemyAttack = enemyHalf = playerHalf = true;
 
         // Set visuals
         nameText.text = "vs. " + enemy.enemyName;
@@ -68,7 +73,7 @@ public class FishingBattleManager : MonoBehaviour
         if(battleState == FishingBattleState.PlayerTurn){
             if(attackNum != playerLastAttackUsed){
                 battleState = FishingBattleState.EnemyTurn;
-                PlayerAction(attackNum);
+                StartCoroutine(PlayerAction(attackNum));
             }
             else{
                 // idk play a sound or something
@@ -76,12 +81,14 @@ public class FishingBattleManager : MonoBehaviour
         }
         else if(battleState == FishingBattleState.EnemyWin || battleState == FishingBattleState.PlayerWin){
             // send you out the battle menu
+            FishingBattleUI.gameObject.SetActive(false);
         }
     }
 
-    private void PlayerAction(int i){
+    private IEnumerator PlayerAction(int i){
         // If it is an attack
         if(IsAttack(playerAttacks[i])){
+
             SuperEffective e;
             int d;
             if(playerAttacks[i] is FishingArmor){
@@ -101,6 +108,20 @@ public class FishingBattleManager : MonoBehaviour
             } else if(e == SuperEffective.Effective){
                 UpdateCombatLog("SUPER EFFECTIVE! You used " + playerAttacks[i].itemName + " and dealt " + c + " damage!" );
             } else{UpdateCombatLog("You used " + playerAttacks[i].itemName + ", but it wasn't very effective... dealt " + c + " damage.");};
+            yield return new WaitForSeconds(textDelay);
+
+            if(firstAttack){
+                UpdateCombatLog(enemy.firstAttackWitnessedText);
+                firstAttack = false;
+                yield return new WaitForSeconds(textDelay);
+            }
+
+            if(enemyHalf && enemyHP <= Mathf.RoundToInt(enemyMaxHP/2)){
+                UpdateCombatLog(enemy.halfHPText);
+                enemyHalf = false;
+                yield return new WaitForSeconds(textDelay);
+            }
+
         }
         
         // If it is a healing move
@@ -121,6 +142,14 @@ public class FishingBattleManager : MonoBehaviour
                 h = playerMaxHP - old;
             }
             UpdateCombatLog("You used "+ playerAttacks[i].itemName +" and recovered "+h+" HP! ("+old+" >> "+playerHP+")");
+            yield return new WaitForSeconds(textDelay);
+
+            if(firstHeal){
+                UpdateCombatLog(enemy.firstHealWitnessedText);
+                firstHeal = false;
+                yield return new WaitForSeconds(textDelay);
+            }
+
         }
 
         UpdateHPText();
@@ -133,21 +162,145 @@ public class FishingBattleManager : MonoBehaviour
 
         // Check if you won, or if its now the enemy turn
         if(enemyHP <= 0){
-            PlayerWins();
+            StartCoroutine(PlayerWins());
         }
         else{
             battleState = FishingBattleState.EnemyTurn;
             int c = ChooseEnemyAction();
-            EnemyAction(c);
+            StartCoroutine(EnemyAction(c));
         }
     }
 
-    private void EnemyAction(int i){
+    private IEnumerator EnemyAction(int i){
 
+        System.Random r = new System.Random();
+        int talkRNG = r.Next(0, 101);
+        if(talkRNG <= enemy.randomTextPercent){
+            talkRNG = r.Next(0, enemy.randomTexts.Length);
+            UpdateCombatLog(enemy.randomTexts[talkRNG]);
+            yield return new WaitForSeconds(textDelay);
+        }
+
+        // If it is an attack
+        if(IsAttack(enemyAttacks[i])){
+
+            if(firstEnemyAttack){
+                UpdateCombatLog(enemy.firstAttackPerformedText);
+                firstEnemyAttack = false;
+                yield return new WaitForSeconds(textDelay);
+            }
+
+
+            SuperEffective e;
+            int d;
+            if(enemyAttacks[i] is FishingArmor){
+                FishingArmor a = enemyAttacks[i] as FishingArmor; 
+                e = CheckEffectiveness(a.element,(playerAttacks[1] as FishingArmor).element);
+                d = a.ATK;
+            }
+            else{
+                FishingWeapon a = enemyAttacks[i] as FishingWeapon; 
+                e = CheckEffectiveness(a.element,(playerAttacks[1] as FishingArmor).element);
+                d = a.ATK;
+            }
+            int c = CalculateDamage(d, e);
+            playerHP -= c;
+            if(e == SuperEffective.Neutral){
+                UpdateCombatLog(enemy.name + " used " + enemyAttacks[i].itemName + " and dealt " + c + " damage!" );
+            } else if(e == SuperEffective.Effective){
+                UpdateCombatLog("SUPER EFFECTIVE! "+ enemy.name + " used " + enemyAttacks[i].itemName + " and dealt " + c + " damage!" );
+            } else{UpdateCombatLog(enemy.name+" used " + enemyAttacks[i].itemName + ", but it wasn't very effective... dealt " + c + " damage.");};
+            yield return new WaitForSeconds(textDelay);
+
+            if(playerHalf && playerHP <= Mathf.RoundToInt(playerMaxHP/2)){
+                UpdateCombatLog(enemy.playerHalfHPText);
+                playerHalf = false;
+                yield return new WaitForSeconds(textDelay);
+            }
+        
+        }
+
+        // If it is healing
+        else{
+
+            if(firstEnemyHeal){
+                UpdateCombatLog(enemy.firstHealPerformedText);
+                firstEnemyHeal = false;
+                yield return new WaitForSeconds(textDelay);
+            }
+
+            int h;
+            if(enemyAttacks[i] is FishingArmor){
+                FishingArmor a = enemyAttacks[i] as FishingArmor; 
+                h = a.ATK;
+            }
+            else{
+                FishingWeapon a = enemyAttacks[i] as FishingWeapon; 
+                h = a.ATK;
+            }
+            int old = enemyHP;
+            enemyHP += h;
+            if(enemyHP > enemyMaxHP){
+                enemyHP = enemyMaxHP;
+                h = enemyMaxHP - old;
+            }
+            UpdateCombatLog(enemy.name+" used "+ enemyAttacks[i].itemName +" and recovered "+h+" HP! ("+old+" >> "+enemyHP+")");
+            yield return new WaitForSeconds(textDelay);
+        }
+
+        UpdateHPText();
+
+        // Update the used move as unusable next turn
+        enemyLastAttackUsed = i;
+
+        // Check if you lost, or if its now the player turn
+        if(playerHP <= 0){
+            StartCoroutine(PlayerLoses());
+        }
+        else{
+            UpdateCombatLog("[player turn]");
+            battleState = FishingBattleState.PlayerTurn;
+        }
     }
 
-    private void PlayerWins(){
+    private IEnumerator PlayerWins(){
+        UpdateCombatLog(enemy.deathText);
+        yield return new WaitForSeconds(textDelay);
+        
+        // Roll for item drops
+        string t = "";
+        bool gotAnItem = false;
+        System.Random r = new System.Random();
+        foreach(FishingItemDrop i in enemy.drops){
+            int n = 0;
+            // Check if you get this item
+            for(int c = 0; c < i.dropRolls; c++){
+                int rng = r.Next(0, 101);
+                if(rng >= i.dropRate){
+                    n++;
+                }
+            }
+            // Reward item if you get it
+            if(n>0){
+                gotAnItem = true;
+                for(int c = 0; c < n; c++){
+                    player.Add(i.itemToDrop);
+                }
+                t = t + "\n -"+i.itemToDrop.name+" (x"+n+")";
+            }
+        }
+        if(gotAnItem){
+            UpdateCombatLog("You win!\nItem Drops:"+t+"\n\n[press any button to exit]");
+        }
+        else{UpdateCombatLog("You win!\n(no items dropped)"+"\n\n[press any button to exit]");}
+        battleState = FishingBattleState.PlayerWin;
+    }
 
+    private IEnumerator PlayerLoses(){
+        UpdateCombatLog(enemy.playerDefeatText);
+        yield return new WaitForSeconds(textDelay);
+        UpdateCombatLog("You were defeated..."+"\n[press any button to exit]");
+        battleState = FishingBattleState.EnemyWin;
     }
 
     private int ChooseEnemyAction(){
@@ -162,11 +315,13 @@ public class FishingBattleManager : MonoBehaviour
     private bool IsAttack(FishingItem i){
         if(i is FishingWeapon){
             if((i as FishingWeapon).healing == false){
+                Debug.Log("Weapon attack!");
                 return true;
             }
         }
         else if(i is FishingArmor){
             if((i as FishingArmor).healing == false){
+                Debug.Log("Armor attack!");
                 return true;
             }
         }
@@ -226,7 +381,8 @@ public class FishingBattleManager : MonoBehaviour
     }
 
     private void UpdateCombatLog(string t){
-        combatLog.text = t + "\n\n > " + combatLog.text; 
+        combatLog.text = "  > " + t + "\n\n" + combatLog.text; 
+ 
     }
 
 }
