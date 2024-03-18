@@ -11,7 +11,6 @@ public class FishingEnemy : ScriptableObject
     public Sprite battleSprite;
     public Element element;
     public FishingItem[] attacks;
-    public FishingItemDrop[] drops;
     public string description;
     public string entryText;
     public string firstHealWitnessedText;
@@ -24,10 +23,5 @@ public class FishingEnemy : ScriptableObject
     public string deathText;
     public string[] randomTexts;
     public float randomTextPercent;
-}
-
-public class FishingItemDrop{
-    public FishingItem itemToDrop;
-    public float dropRate;
-    public int dropRolls;
+    public List<FishingItemDrop> drops = new List<FishingItemDrop>();
 }

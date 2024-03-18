@@ -10117,7 +10117,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 45.927002, y: -0.00012207031}
-  m_SizeDelta: {x: -91.8544, y: 0}
+  m_SizeDelta: {x: -108.0975, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1521603729
 MonoBehaviour:
@@ -11511,8 +11511,10 @@ MonoBehaviour:
   firstEnemyHeal: 0
   firstAttack: 0
   firstEnemyAttack: 0
-  enemyHalfTriggered: 0
-  playerHalfTriggered: 0
+  enemyHalf: 0
+  playerHalf: 0
+  textDelay: 2
+  FishingBattleUI: {fileID: 614219862}
 --- !u!1 &1638714865
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: testEnemy
   m_EditorClassIdentifier: 
   enemyName: Test Enemy
-  MaxHP: 10
+  MaxHP: 8
   battleSprite: {fileID: 21300000, guid: 117f8639336f40e408f1125e59fa9794, type: 3}
-  element: 4
+  element: 3
   attacks:
   - {fileID: 11400000, guid: 7ee20dcdf9b35084fa6224919f05625f, type: 2}
   - {fileID: 11400000, guid: 8e576919adc8cd34fa9a0a38545d8c98, type: 2}
@@ -25,13 +25,23 @@ MonoBehaviour:
   firstHealWitnessedText: Test Enemy blinks at you thrice.
   firstAttackWitnessedText: He does not relish the pain, but still smiles to the
     hope he will endure.
-  firstAttackPerformedText: You feel the urge to tumble down a flight of stairs.
-  firstHealPerformedText: zzzz!!!
-  halfHPText: Test Enemy wants to game end you
-  playerHalfHPText: 
+  firstAttackPerformedText: You feel the feeling of falling down a flight of stairs.
+  firstHealPerformedText: '"I''ve gotta heal!"'
+  halfHPText: '"It''s not joever yet!"'
+  playerHalfHPText: Test Enemy taunts you.
   playerDefeatText: Test Enemy wonders how you died to a test enemy
-  deathText: Splouch!
+  deathText: '"Splouch! I''m no more!"'
   randomTexts:
   - Test Enemy could really use a cigarette right now.
   - You imagine a jar of dill pickles.
   randomTextPercent: 30
+  drops:
+  - itemToDrop: {fileID: 11400000, guid: 0a88715fbd657b04ca083faf43d11323, type: 2}
+    dropRate: 50
+    dropRolls: 3
+  - itemToDrop: {fileID: 11400000, guid: 7ee20dcdf9b35084fa6224919f05625f, type: 2}
+    dropRate: 50
+    dropRolls: 3
+  - itemToDrop: {fileID: 11400000, guid: 596b498b7ce419a47a24eb64124c6052, type: 2}
+    dropRate: 50
+    dropRolls: 4
