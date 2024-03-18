@@ -16,7 +16,7 @@ namespace Battle.Cycle {
         public static bool initializeFinished = false;
 
         // Prefab for cycle colors to display
-        [SerializeField] private Image manaImage;
+        [SerializeField] private GameObject manaImageObject;
         [SerializeField] private Image bgImage;
 
         // All GameBoards in the scene that use this cycle
@@ -30,7 +30,7 @@ namespace Battle.Cycle {
         public static int[] cycle;
 
         // List of all cycleColor objects that represent the colors - generated on scene start
-        private List<Image> cycleObjects;
+        private List<TileVisual> cycleObjects;
 
         // Length of the cycle
         public static int cycleLength = 7;
@@ -131,14 +131,14 @@ namespace Battle.Cycle {
                 Destroy(child.gameObject);
             }
 
-            cycleObjects = new List<Image>();
+            cycleObjects = new List<TileVisual>();
 
             // Create cycle color objects for each cycle color
             for (int i=0; i<cycleLength; i++)
             {
-                Image cycleObject = Instantiate(manaImage, Vector3.zero, Quaternion.identity);
-                cycleObject.color = cosmetics.manaColors[cycle[i]].mainColor;
-                if (usingSprites) cycleObject.sprite = cosmetics.manaVisuals[cycle[i]].bgSprite;
+                TileVisual cycleObject = Instantiate(manaImageObject, Vector3.zero, Quaternion.identity).GetComponent<TileVisual>();
+                // cycleObject.color = cosmetics.manaColors[cycle[i]].mainColor;
+                cycleObject.SetVisual(cosmetics.manaVisuals[cycle[i]], cosmetics.manaColors[cycle[i]]);
                 cycleObjects.Add(cycleObject);
                 cycleObject.transform.SetParent(transform, false);
             }
