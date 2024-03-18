@@ -124,7 +124,7 @@ namespace Battle.Board {
 
         public void SetVisualColor(Color color)
         {
-            baseColor = color;
+            // baseColor = color;
             image.color = color;
         }
 
