@@ -115,7 +115,7 @@ namespace SoloMode {
         [SerializeField] int flavorLineCount = 15;
 
         [SerializeField] private Animator animator;
-
+        [SerializeField] private TMP_Text selectedLevelLabel;
         [SerializeField] private LeaderboardUI leaderboardUI;
 
         // if the details + leaderboard info is being shown.
@@ -518,7 +518,7 @@ namespace SoloMode {
 
         public void Back() {
             if (showingInfo) {
-                ToggleInfo();
+                HideInfo();
             } else {
                 StoreSelections();
                 GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("MainMenu", reverse : true);
@@ -526,9 +526,23 @@ namespace SoloMode {
         }
 
         public void ToggleInfo() {
-            showingInfo = !showingInfo;
-            animator.SetBool("ShowInfo", showingInfo);
-            if (showingInfo) leaderboardUI.LoadCurrentPage();
+            if (!showingInfo) {
+                ShowInfo();
+            } else {
+                HideInfo();
+            }
+        }
+
+        public void ShowInfo() {
+            showingInfo = true;
+            animator.SetBool("ShowInfo", true);
+            selectedLevelLabel.text = selectedLevel.levelName;
+            leaderboardUI.LoadCurrentPage();
+        }
+
+        public void HideInfo() {
+            showingInfo = false;
+            animator.SetBool("ShowInfo", false);
         }
     }
 

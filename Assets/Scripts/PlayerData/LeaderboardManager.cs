@@ -71,10 +71,11 @@ public class LeaderboardManager {
             case LeaderboardType.ScoreGlobal:
             case LeaderboardType.TimeGlobal:
                 string key = type == LeaderboardType.ScoreGlobal ? level.scoreLeaderboardKey : level.timeLeaderboardKey;
+                var entryList = GetEntryList(level, type);
+                entryList.loadingPage = page;
                 GetScores(key, page*10, (response) => {
                     if (response.success) {
-                        EnsureContainersExist(level, type);
-                        data[level][type].AddPage(page, response.items);
+                        entryList.AddPage(page, response.items);
                     } 
                     
                     onLoaded.Invoke(new LeaderboardDataCallback(){
@@ -93,19 +94,30 @@ public class LeaderboardManager {
     }
 
     public static bool IsDataLoaded(Level level, LeaderboardType type, int page) {
+        return GetEntryList(level, type).pages.ContainsKey(page);
+    }
+
+    public static LeaderboardEntryList GetEntryList(Level level, LeaderboardType type) {
         EnsureContainersExist(level, type);
-        return data[level][type].pages.ContainsKey(page);
+        return data[level][type];
     }
 }
 
 public class LeaderboardEntryList {
     public Dictionary<int, LootLockerLeaderboardMember[]> pages = new Dictionary<int, LootLockerLeaderboardMember[]>();
 
+    // page currently being loaded - cannot load more than one at once.
+    public int loadingPage = -1;
+
     /// <summary>
     /// Adds or overwrites the given page.
     /// </summary>
     public void AddPage(int page, LootLockerLeaderboardMember[] items) {
         pages[page] = items;
+    }
+
+    public bool HasPage(int page) {
+        return pages.ContainsKey(page);
     }
 }
 

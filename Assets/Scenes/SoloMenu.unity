@@ -1121,7 +1121,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00012207031, y: 0}
+  m_AnchoredPosition: {x: -0.00024414062, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &284247239
@@ -1930,6 +1930,7 @@ GameObject:
   m_Component:
   - component: {fileID: 450683260}
   - component: {fileID: 450683261}
+  - component: {fileID: 450683262}
   m_Layer: 5
   m_Name: PromptLayout
   m_TagString: Untagged
@@ -1984,6 +1985,18 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!225 &450683262
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 450683259}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &453708065
 GameObject:
   m_ObjectHideFlags: 0
@@ -4463,6 +4476,7 @@ MonoBehaviour:
   tabWhitespacing: 4
   flavorLineCount: 15
   animator: {fileID: 885156312}
+  selectedLevelLabel: {fileID: 193053156}
   leaderboardUI: {fileID: 2007254317}
   useInputScripts: 0
 --- !u!95 &885156312
@@ -6439,10 +6453,10 @@ MonoBehaviour:
     m_ActionName: Gameplay/PieceQuickfallHold[/Keyboard/downArrow,/XInputControllerWindows/dpad/down]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 885156311}
-        m_TargetAssemblyTypeName: SoloMode.LevelLister, Assembly-CSharp
-        m_MethodName: ToggleInfo
-        m_Mode: 1
+      - m_Target: {fileID: 1485629830}
+        m_TargetAssemblyTypeName: LevelSelectController, Assembly-CSharp
+        m_MethodName: OnInfo
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -8371,7 +8385,7 @@ MonoBehaviour:
   levelLister: {fileID: 885156311}
   loadingLabel: {fileID: 712502704}
   greyGradient: {fileID: 11400000, guid: 570075c90a77e3d4b80d642d72ec68e8, type: 2}
-  redGradient: {fileID: 11400000, guid: b8360d654901f4bf8b6273c59d2041fc, type: 2}
+  redGradient: {fileID: 11400000, guid: 570075c90a77e3d4b80d642d72ec68e8, type: 2}
   leaderboardType: 4
   entryUiListTransform: {fileID: 435590004}
 --- !u!1 &2041436786 stripped

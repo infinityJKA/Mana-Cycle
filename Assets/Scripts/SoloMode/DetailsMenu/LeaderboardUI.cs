@@ -33,11 +33,14 @@ public class LeaderboardUI : MonoBehaviour {
     }
 
     public void LoadCurrentPage() {
-        // display if already loaded
-        if (LeaderboardManager.IsDataLoaded(levelLister.selectedLevel, leaderboardType, currentPage)) {
+        var entryList = LeaderboardManager.GetEntryList(levelLister.selectedLevel, leaderboardType);
+        // if page is already loaded, display and don't fetch it again
+        if (entryList.HasPage(currentPage)) {
             DisplayCurrentPage();
             return;
         }
+        // don't fetch if currently loading
+        if (entryList.loadingPage == currentPage) return;
 
         HideEntries();
         loadingLabel.gameObject.SetActive(true);
@@ -45,6 +48,7 @@ public class LeaderboardUI : MonoBehaviour {
         loadingLabel.text = "Loading...";
 
         int pageWhenRequestSent = currentPage;
+        Debug.Log("Loading data for level "+levelLister.selectedLevel+" mode:"+leaderboardType+" page:"+currentPage);
         LeaderboardManager.LoadLeaderboardData(levelLister.selectedLevel, leaderboardType, currentPage, (callback) => {
             if (!callback.success) {
                 loadingLabel.colorGradientPreset = redGradient;
