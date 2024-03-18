@@ -67,6 +67,14 @@ public class LevelSelectController : MonoBehaviour {
         }
     }
 
+    public void OnInfo(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) return;
+        if (!hasControl) return;
+        if (convoHandler.enabled) return;
+
+        levelLister.ToggleInfo();
+    }
+
     public void OnBack(InputAction.CallbackContext ctx) {
         if (!ctx.performed) return;
         if (!hasControl) return;
