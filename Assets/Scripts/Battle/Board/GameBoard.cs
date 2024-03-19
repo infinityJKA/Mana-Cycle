@@ -1335,7 +1335,7 @@ namespace Battle.Board {
         /// Make a clone of the passed particle effect object and spawn it at the given row and col.
         /// </summary>
         public void SpawnParticles(int row, int col, GameObject particleObject, Vector3 offset) {
-            ParticleSystem particleSystem = Instantiate(particleObject, particleParent, true).GetComponent<ParticleSystem>();
+            ParticleSystem particleSystem = Instantiate(particleObject, particleParent, false).GetComponent<ParticleSystem>();
             particleSystem.transform.localPosition = BoardToLocalSpace(row, col) + offset;
             particleSystem.Play();
         }

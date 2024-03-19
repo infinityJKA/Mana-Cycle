@@ -135,7 +135,7 @@ MonoBehaviour:
   chainPopup: {fileID: 7308761679877404820}
   cascadePopup: {fileID: 243502163315262055}
   attackPopup: {fileID: 8221106855628571997}
-  boardDefeatFall: {fileID: 8094125696873794837}
+  boardDefeatFall: {fileID: 3093175252968264802}
   instaDropThisFrame: 0
   drawGhostPiece: 1
   lightConnectedMana: 1
@@ -726,7 +726,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7828971040557076086}
+  - {fileID: 4280784765599370640}
   - {fileID: 210209703398581370}
   - {fileID: 7365826514104966755}
   - {fileID: 8363407567511348994}
@@ -813,7 +813,6 @@ GameObject:
   - component: {fileID: 7828971040557076086}
   - component: {fileID: 5272661984202647009}
   - component: {fileID: 7375610561186021462}
-  - component: {fileID: 8094125696873794837}
   m_Layer: 5
   m_Name: BoardBackground
   m_TagString: Untagged
@@ -828,12 +827,11 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1786399293094411280}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4280784765599370640}
   - {fileID: 8026496023998112998}
   - {fileID: 6761418252514739809}
   - {fileID: 1610189136958843712}
@@ -842,7 +840,7 @@ RectTransform:
   - {fileID: 5695537894751129197}
   - {fileID: 3101349306596099375}
   - {fileID: 1874513233062967785}
-  m_Father: {fileID: 6497960546296106959}
+  m_Father: {fileID: 4280784765599370640}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -887,21 +885,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8094125696873794837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1786399293094411280}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62f5c0f67a66d4c5e84c4c6c484aa915, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fallAcceleration: 1250
-  angularAcceleration: -14
-  initialFallSpeed: -225
 --- !u!1 &1824310357468331332
 GameObject:
   m_ObjectHideFlags: 0
@@ -3855,6 +3838,7 @@ GameObject:
   - component: {fileID: 4990509056362815434}
   - component: {fileID: 4091713918507119205}
   - component: {fileID: 9205910468339133678}
+  - component: {fileID: 3093175252968264802}
   m_Layer: 5
   m_Name: BoardBorderImage
   m_TagString: Untagged
@@ -3873,12 +3857,13 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7828971040557076086}
+  m_Children:
+  - {fileID: 7828971040557076086}
+  m_Father: {fileID: 6497960546296106959}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.00004119873, y: 0}
   m_SizeDelta: {x: 410, y: 810}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4990509056362815434
@@ -3933,6 +3918,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fadeTime: 0.75
   alphaOverwrite: 1
+--- !u!114 &3093175252968264802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8889524616066036227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62f5c0f67a66d4c5e84c4c6c484aa915, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fallAcceleration: 1250
+  angularAcceleration: -14
+  initialFallSpeed: -225
 --- !u!1 &9031594446078554666
 GameObject:
   m_ObjectHideFlags: 0
@@ -4163,11 +4163,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cosmeticDatabase: {fileID: 11400000, guid: 9688178327978604c8236b1e4f200465, type: 2}
   manaColors:
-  - {r: 0.05882353, g: 0.42745098, b: 0.94509804, a: 1}
-  - {r: 0.972549, g: 0.23137255, b: 0.14117648, a: 1}
-  - {r: 0.09019608, g: 0.85882354, b: 0.07058824, a: 1}
-  - {r: 1, g: 0.9137255, b: 0.18431373, a: 1}
-  - {r: 0.6313726, g: 0.15294118, b: 0.93333334, a: 1}
+  - mainColor: {r: 1, g: 1, b: 1, a: 1}
+    darkColor: {r: 0, g: 0, b: 0, a: 1}
+  - mainColor: {r: 1, g: 1, b: 1, a: 1}
+    darkColor: {r: 0, g: 0, b: 0, a: 1}
+  - mainColor: {r: 1, g: 1, b: 1, a: 1}
+    darkColor: {r: 0, g: 0, b: 0, a: 1}
+  - mainColor: {r: 1, g: 1, b: 1, a: 1}
+    darkColor: {r: 0, g: 0, b: 0, a: 1}
+  - mainColor: {r: 1, g: 1, b: 1, a: 1}
+    darkColor: {r: 0, g: 0, b: 0, a: 1}
   litManaColors: []
   manaColorStrings:
   - blue
@@ -4180,31 +4185,36 @@ MonoBehaviour:
     iconSprite: {fileID: 0}
     xOffset: 0
     yOffset: 0
-    scale: 0
+    xScale: 1
+    yScale: 1
     rotation: 0
   - bgSprite: {fileID: 0}
     iconSprite: {fileID: 0}
     xOffset: 0
     yOffset: 0
-    scale: 0
+    xScale: 1
+    yScale: 1
     rotation: 0
   - bgSprite: {fileID: 0}
     iconSprite: {fileID: 0}
     xOffset: 0
     yOffset: 0
-    scale: 0
+    xScale: 1
+    yScale: 1
     rotation: 0
   - bgSprite: {fileID: 0}
     iconSprite: {fileID: 0}
     xOffset: 0
     yOffset: 0
-    scale: 0
+    xScale: 1
+    yScale: 1
     rotation: 0
   - bgSprite: {fileID: 0}
     iconSprite: {fileID: 0}
     xOffset: 0
     yOffset: 0
-    scale: 0
+    xScale: 1
+    yScale: 1
     rotation: 0
   ghostManaSprites:
   - {fileID: 21300000, guid: 87a982ee6901b47fab29026be6e891ae, type: 3}
