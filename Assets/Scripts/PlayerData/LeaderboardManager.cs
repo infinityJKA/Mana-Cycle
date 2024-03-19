@@ -101,6 +101,14 @@ public class LeaderboardManager {
         EnsureContainersExist(level, type);
         return data[level][type];
     }
+
+    public static void RemoveAllLoadedEntries() {
+        foreach (var kvp in data) {
+            foreach (var entryListKvp in kvp.Value) {
+                entryListKvp.Value.pages.Clear();
+            }
+        }
+    }
 }
 
 public class LeaderboardEntryList {

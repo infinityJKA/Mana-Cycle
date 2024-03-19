@@ -26,6 +26,12 @@ public class LeaderboardUI : MonoBehaviour {
         HideEntries();
     }
 
+    // remove data when changing scenes
+    private void OnDestroy() {
+        Debug.Log("loaded leaderboard data cleared");
+        LeaderboardManager.RemoveAllLoadedEntries();
+    }
+
     public void HideEntries() {
         for (int i = 0; i < entryUIList.Length; i++) {
             entryUIList[i].Hide();
@@ -67,15 +73,25 @@ public class LeaderboardUI : MonoBehaviour {
     }
 
     // Display current page.
-    // If not, request to load the data and then this will be called again.
     public void DisplayCurrentPage() {
+        if (!LeaderboardManager.IsDataLoaded(levelLister.selectedLevel, leaderboardType, currentPage)) return;
+
         LootLockerLeaderboardMember[] entries = LeaderboardManager.RetrieveLoadedData(levelLister.selectedLevel, leaderboardType, currentPage);
-        
-        loadingLabel.gameObject.SetActive(false);
-        for (int i = 0; i < entries.Length; i++) {
-            entryUIList[i].ShowMember(entries[i]);
+
+        if (entries == null) {
+            HideEntries();
+            loadingLabel.gameObject.SetActive(true);
+            loadingLabel.text = "No scores yet...";
+        } else {
+            loadingLabel.gameObject.SetActive(false);
+            int i;
+            for (i = 0; i < entries.Length; i++) {
+                entryUIList[i].ShowMember(entries[i]);
+            }
+            for (; i < 10; i++) {
+                entryUIList[i].Hide();
+            }
         }
-        
     }
 }
 
