@@ -96,9 +96,8 @@ namespace PostGame {
             // will be set active if in arcade mode & won
             arcadeInfoPannel.SetActive(false);
             
-            // solo mode in series: retry -> continue
-
-            if (Storage.gamemode == Storage.GameMode.Versus || (Storage.level != null && Storage.level.availableBattlers != null && Storage.level.availableBattlers.Count > 1))
+            // charselect instead of level in versus mode
+            if (Storage.gamemode == Storage.GameMode.Versus)
             {
                 levelSelectButton.gameObject.SetActive(false);
                 charSelectButton.gameObject.SetActive(true);
@@ -119,10 +118,11 @@ namespace PostGame {
 
                     int score = Storage.level.isEndless ? board.hp : board.hp + (board.lives-1)*2000; // add 2000 to score for each extra life
                     Storage.level.highScore = Math.Max(score, Storage.level.highScore);
+                    FBPP.Save();
 
                     // Upload high score to LootLocker
                     if (PlayerManager.loggedIn) {
-                        LeaderboardManager.UploadLeaderboardScore(Storage.level, score);
+                        LeaderboardManager.UploadLeaderboardScore(Storage.level, Storage.level.highScore);
                     }
 
                     // If solo mode win: retry -> replay
