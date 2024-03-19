@@ -24,6 +24,11 @@ namespace Battle.Board {
             iconImage.transform.eulerAngles = new Vector3(0f, 0f, v.rotation);
             iconImage.transform.localScale = new Vector3(v.xScale, v.yScale, 1f);
         }
+
+        public void SetObscuredVisual()
+        {
+            iconImage.color = new Color(0f, 0f, 0f, 0f);
+        }
     }
 
 }
