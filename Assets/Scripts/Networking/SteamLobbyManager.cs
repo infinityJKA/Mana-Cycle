@@ -35,6 +35,7 @@ namespace Networking {
             }
             instance = this;
             DontDestroyOnLoad(this);
+            InitializeSteam();
         }
 
         public void CreateLobby() {
