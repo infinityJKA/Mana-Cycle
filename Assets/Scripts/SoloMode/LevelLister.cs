@@ -544,6 +544,11 @@ namespace SoloMode {
             showingInfo = false;
             animator.SetBool("ShowInfo", false);
         }
+
+        public void Refresh() {
+            if (!showingInfo) return;
+            
+        }
     }
 
     #if UNITY_EDITOR

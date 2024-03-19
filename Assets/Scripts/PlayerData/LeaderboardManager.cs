@@ -94,7 +94,7 @@ public class LeaderboardManager {
     }
 
     public static bool IsDataLoaded(Level level, LeaderboardType type, int page) {
-        return GetEntryList(level, type).pages.ContainsKey(page);
+        return GetEntryList(level, type).HasPage(page);
     }
 
     public static LeaderboardEntryList GetEntryList(Level level, LeaderboardType type) {
