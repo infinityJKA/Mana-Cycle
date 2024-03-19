@@ -38,20 +38,25 @@ public class LeaderboardUI : MonoBehaviour {
         }
     }
 
-    public void LoadCurrentPage() {
+    public void LoadCurrentPage(bool refreshing = false) {
         var entryList = LeaderboardManager.GetEntryList(levelLister.selectedLevel, leaderboardType);
         // if page is already loaded, display and don't fetch it again
         if (entryList.HasPage(currentPage)) {
             DisplayCurrentPage();
             return;
         }
-        // don't fetch if currently loading
+        // don't fetch if already currently loading
         if (entryList.loadingPage == currentPage) return;
 
+        // TODO: use loading spinner instead of hiding entries when refreshing as opposed to loading for first time.
         HideEntries();
         loadingLabel.gameObject.SetActive(true);
         loadingLabel.colorGradientPreset = greyGradient;
-        loadingLabel.text = "Loading...";
+        if (refreshing) {
+            loadingLabel.text = "Refreshing...";
+        } else {
+            loadingLabel.text = "Loading...";
+        }
 
         int pageWhenRequestSent = currentPage;
         Debug.Log("Loading data for level "+levelLister.selectedLevel+" mode:"+leaderboardType+" page:"+currentPage);
@@ -74,7 +79,10 @@ public class LeaderboardUI : MonoBehaviour {
 
     // Display current page.
     public void DisplayCurrentPage() {
-        if (!LeaderboardManager.IsDataLoaded(levelLister.selectedLevel, leaderboardType, currentPage)) return;
+        if (!LeaderboardManager.IsDataLoaded(levelLister.selectedLevel, leaderboardType, currentPage)) {
+            HideEntries();
+            return;
+        };
 
         LootLockerLeaderboardMember[] entries = LeaderboardManager.RetrieveLoadedData(levelLister.selectedLevel, leaderboardType, currentPage);
 
@@ -92,6 +100,11 @@ public class LeaderboardUI : MonoBehaviour {
                 entryUIList[i].Hide();
             }
         }
+    }
+
+    public void RefreshCurrentPage() {
+        var entryList = LeaderboardManager.GetEntryList(levelLister.selectedLevel, leaderboardType);
+        entryList.pages.Remove(currentPage);
     }
 }
 

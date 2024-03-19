@@ -3,14 +3,12 @@ using Unity.Services.Lobbies.Models;
 using Battle.Board;
 using VersusMode;
 
-
-
-
 #if !DISABLESTEAMWORKS
-using Mirror;
-using UnityEngine.SceneManagement;
 using Steamworks;
 #endif
+
+using Mirror;
+using UnityEngine.SceneManagement;
 
 namespace Networking {
     public class SteamLobbyManager : MonoBehaviour {
@@ -24,24 +22,26 @@ namespace Networking {
         protected Callback<LobbyEnter_t> lobbyEntered;
         protected Callback<PersonaStateChange_t> personaChanged;
         private const string HostAddressKey = "HostAddress";
-        public bool steamInitialized {get; private set;} = false;
         public CSteamID lobbyId {get; private set;}
         #endif
 
-        private void Start() {
+        private void Awake() {
             if (instance != null) {
                 Destroy(gameObject);
                 return;
             }
             instance = this;
             DontDestroyOnLoad(this);
-            InitializeSteam();
+
+            lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
+            lobbyListReceived = Callback<LobbyMatchList_t>.Create(OnLobbyMatchListReceived);
+            gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
+            personaChanged = Callback<PersonaStateChange_t>.Create(OnPersonaStateChanged);
+            lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
         }
 
         public void CreateLobby() {
             #if !DISABLESTEAMWORKS
-                if (!steamInitialized) InitializeSteam();
-
                 Debug.Log("Starting steam lobby");
                 SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, NetworkManager.singleton.maxConnections);
             #else
@@ -51,8 +51,6 @@ namespace Networking {
 
         public void JoinLobbyWithID(string idStr) {
             #if !DISABLESTEAMWORKS
-                if (!steamInitialized) InitializeSteam();
-
                 ulong id;
                 if (!ulong.TryParse(idStr, out id)) {
                     throw new System.Exception("Enter a valid join code");
@@ -68,31 +66,10 @@ namespace Networking {
             #endif
         }
 
+        #if !DISABLESTEAMWORKS
         public void OnDisconnected() {
             SteamMatchmaking.LeaveLobby(lobbyId);
         }
-
-        #if !DISABLESTEAMWORKS
-        public void InitializeSteam() {
-            if (steamInitialized) {
-                Debug.LogWarning("SteamManager already initialized");
-                return;
-            }
-            
-            if (!SteamManager.Initialized) {
-                Debug.LogError("SteamManager is not initialized!");
-                return;
-            }
-
-            lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
-            lobbyListReceived = Callback<LobbyMatchList_t>.Create(OnLobbyMatchListReceived);
-            gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
-            personaChanged = Callback<PersonaStateChange_t>.Create(OnPersonaStateChanged);
-            lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
-
-            steamInitialized = true;
-        }
-
         private void OnDestroy() {
             SteamAPI.Shutdown();
         }
