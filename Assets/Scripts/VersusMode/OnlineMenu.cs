@@ -45,7 +45,7 @@ public class OnlineMenu : MonoBehaviour {
         try {
             // STEAM
             if (NetManager.IsUseSteam() && SteamManager.Initialized) {
-                SteamLobbyManager.instance.CreateLobby();
+                SteamLobbyManager.CreateLobby();
             } 
             // RELAY
             else if (RelayManager.relayNetworkManager != null) {
@@ -74,7 +74,7 @@ public class OnlineMenu : MonoBehaviour {
             // ======== STEAM
             if (NetManager.IsUseSteam() && SteamManager.Initialized) {
                 // TODO: implement join via friends list or soemthing similar
-                SteamLobbyManager.instance.JoinLobbyWithID(joinCode);
+                SteamLobbyManager.JoinLobbyWithID(joinCode);
                 // NetworkManager.singleton.StartClient();
             } 
             // ======== RELAY
