@@ -11,28 +11,19 @@ using Mirror;
 using UnityEngine.SceneManagement;
 
 namespace Networking {
-    public class SteamLobbyManager : MonoBehaviour {
-
-        public static SteamLobbyManager instance {get; private set;}
+    public class SteamLobbyManager {
 
         #if !DISABLESTEAMWORKS
-        protected Callback<LobbyCreated_t> lobbyCreated;
-        protected Callback<LobbyMatchList_t> lobbyListReceived;
-        protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
-        protected Callback<LobbyEnter_t> lobbyEntered;
-        protected Callback<PersonaStateChange_t> personaChanged;
+        protected static Callback<LobbyCreated_t> lobbyCreated;
+        protected static Callback<LobbyMatchList_t> lobbyListReceived;
+        protected static Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
+        protected static Callback<LobbyEnter_t> lobbyEntered;
+        protected static Callback<PersonaStateChange_t> personaChanged;
         private const string HostAddressKey = "HostAddress";
-        public CSteamID lobbyId {get; private set;}
+        public static CSteamID lobbyId {get; private set;}
         #endif
 
-        private void Awake() {
-            if (instance != null) {
-                Destroy(gameObject);
-                return;
-            }
-            instance = this;
-            DontDestroyOnLoad(this);
-
+        static SteamLobbyManager() {
             lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
             lobbyListReceived = Callback<LobbyMatchList_t>.Create(OnLobbyMatchListReceived);
             gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
@@ -40,7 +31,7 @@ namespace Networking {
             lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
         }
 
-        public void CreateLobby() {
+        public static void CreateLobby() {
             #if !DISABLESTEAMWORKS
                 Debug.Log("Starting steam lobby");
                 SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, NetworkManager.singleton.maxConnections);
@@ -49,7 +40,7 @@ namespace Networking {
             #endif
         }
 
-        public void JoinLobbyWithID(string idStr) {
+        public static void JoinLobbyWithID(string idStr) {
             #if !DISABLESTEAMWORKS
                 ulong id;
                 if (!ulong.TryParse(idStr, out id)) {
@@ -67,24 +58,24 @@ namespace Networking {
         }
 
         #if !DISABLESTEAMWORKS
-        public void OnDisconnected() {
+        public static void OnDisconnected() {
             SteamMatchmaking.LeaveLobby(lobbyId);
         }
         private void OnDestroy() {
             SteamAPI.Shutdown();
         }
 
-        private void RequestUserData(CSteamID id) {
+        private static void RequestUserData(CSteamID id) {
             bool needsFetch = SteamFriends.RequestUserInformation(id, bRequireNameOnly: true); // eventually need both username and avatar
             if (!needsFetch) HandleUserData(id);
         }
 
-        private void OnPersonaStateChanged(PersonaStateChange_t callback) {
+        private static void OnPersonaStateChanged(PersonaStateChange_t callback) {
             CSteamID id = new CSteamID(callback.m_ulSteamID);
             HandleUserData(id);
         }
 
-        private void HandleUserData(CSteamID id) {
+        private static void HandleUserData(CSteamID id) {
             if (SceneManager.GetActiveScene().name != "CharSelect") return;
 
             // set data accordingly 
@@ -97,7 +88,7 @@ namespace Networking {
             }
         }
 
-        private void OnLobbyCreated(LobbyCreated_t callback) {
+        private static void OnLobbyCreated(LobbyCreated_t callback) {
             if (callback.m_eResult != EResult.k_EResultOK) {
                 Debug.LogError("Error creating steam lobby: "+callback.m_eResult);
                 OnlineMenu.singleton.ShowOnlineMenu();
@@ -110,14 +101,14 @@ namespace Networking {
             SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), "name", SteamFriends.GetPersonaName().ToString()+"'s lobby");
         }
 
-        private void OnLobbyMatchListReceived(LobbyMatchList_t callback) {
+        private static void OnLobbyMatchListReceived(LobbyMatchList_t callback) {
             for (int i = 0; i < callback.m_nLobbiesMatching; i++) {
                 var lobbyId = SteamMatchmaking.GetLobbyByIndex(i);
                 if (!lobbyId.IsValid() || !lobbyId.IsLobby()) continue;
             }
         }
 
-        private void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback) {
+        private static void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback) {
             Debug.Log("Steam lobby join requested!");
 
             // if joining from steam, make sure the charselect scene is loaded first before joining lobby
@@ -135,7 +126,7 @@ namespace Networking {
         }
 
 
-        private void OnLobbyEntered(LobbyEnter_t callback) {
+        private static void OnLobbyEntered(LobbyEnter_t callback) {
             lobbyId = new CSteamID(callback.m_ulSteamIDLobby);
 
             if (NetworkClient.activeHost) {
