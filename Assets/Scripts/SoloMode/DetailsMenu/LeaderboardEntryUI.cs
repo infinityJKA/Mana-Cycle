@@ -1,7 +1,7 @@
 using LootLocker.Requests;
-using Microsoft.Unity.VisualStudio.Editor;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LeaderboardEntryUI : MonoBehaviour {
     public TMP_Text placeLabel, usernameLabel, scoreLabel;
