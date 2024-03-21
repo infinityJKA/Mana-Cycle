@@ -106,6 +106,7 @@ public class LeaderboardManager {
         foreach (var kvp in data) {
             foreach (var entryListKvp in kvp.Value) {
                 entryListKvp.Value.pages.Clear();
+                entryListKvp.Value.loadingPage = -1;
             }
         }
     }
