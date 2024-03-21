@@ -105,7 +105,7 @@ namespace Battle.Cycle {
             foreach (GameBoard board in boards)
             {
                 if (board.enabled) board.StartBattle();
-                if (!board.enabled) board.pointer.SetActive(false);
+                if (!board.gameObject.activeInHierarchy) board.pointer.SetActive(false);
             }
         }
 
