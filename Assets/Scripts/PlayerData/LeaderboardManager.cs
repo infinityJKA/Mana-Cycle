@@ -21,7 +21,7 @@ public class LeaderboardManager {
         uploadingScore = true;
 
         uploadingScore = true;
-        LootLockerSDKManager.SubmitScore(PlayerManager.playerId, score, key, (response) => {
+        LootLockerSDKManager.SubmitScore(PlayerManager.playerID, score, key, (response) => {
             if (response.success) {
                 Debug.Log("Successfully uploaded score to "+key);
             } else {
