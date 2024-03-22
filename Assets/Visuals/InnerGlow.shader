@@ -5,7 +5,15 @@ Shader "Unlit/InnerGlow"
         _MainTex ("Texture", 2D) = "white" {}
         _Color ("Color", Color) = (1,1,1,0.75)
         _Size ("Size", Range(1.0, 10.0)) = 5.0
+
+        [HideInInspector] _StencilComp ("Stencil Comparison", Float) = 8
+        [HideInInspector] _Stencil ("Stencil ID", Float) = 0
+        [HideInInspector] _StencilOp ("Stencil Operation", Float) = 0
+        [HideInInspector] _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        [HideInInspector] _StencilReadMask ("Stencil Read Mask", Float) = 255
+        [HideInInspector] _ColorMask ("Color Mask", Float) = 15
     }
+
     SubShader
     {
         Tags { "RenderType"="Transparent" }
@@ -38,6 +46,7 @@ Shader "Unlit/InnerGlow"
             float4 _Color;
             float _Size;
 
+        
             v2f vert (appdata v)
             {
                 v2f o;

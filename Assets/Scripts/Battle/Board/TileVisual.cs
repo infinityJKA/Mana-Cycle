@@ -17,7 +17,7 @@ namespace Battle.Board {
         [SerializeField] private Material ghostMaterial;
         public void SetVisual(Cosmetics.ManaIcon v, Cosmetics.ManaPalette p)
         {
-            Debug.Log("Setting up visual");
+            // Debug.Log("Setting up visual");
             iconImage.sprite = v.iconSprite;
             bgImage.sprite = v.bgSprite;
             iconImage.color = p.darkColor;
@@ -45,9 +45,6 @@ namespace Battle.Board {
 
             bgImage.material = new Material(ghostMaterial);
             bgImage.material.SetColor("_Color", p.mainColor);
-            // iconImage.GetComponent<UnityEngine.UI.Outline>().enabled = true;
-            // image.GetComponent<UnityEngine.UI.Outline>().effectColor = Color.Lerp(image.color, Color.white, 0.4f);
-            // iconImage.GetComponent<UnityEngine.UI.Outline>().effectColor = p.mainColor;
         }
     }
 
