@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class WalletManager {
     public static string walletID {get; private set;}
+    public static string coins {get; private set;} = "0";
+    public static string iridium {get; private set;} = "0";
 
     public static void GetWallet() {
         LootLockerSDKManager.GetWalletByHolderId(
@@ -32,18 +34,18 @@ public class WalletManager {
                 return;
             }
             
-            if (!SidebarUI.instance) return;
 
-            SidebarUI.instance.SetCoins("0");
-            SidebarUI.instance.SetIridium("0");
             foreach (var balance in response.balances) {
                 Debug.Log(balance.currency.code+": "+balance.amount);
                 if (balance.currency.code == "IBN") {
-                    SidebarUI.instance.SetCoins(balance.amount);
+                    coins = balance.amount;
                 } else if (balance.currency.code == "IDM") {
-                    SidebarUI.instance.SetIridium(balance.amount);
+                    iridium = balance.amount;
                 }
             }
+
+            if (SidebarUI.instance) SidebarUI.instance.UpdateWalletDisplay();;
+            
         });
     }
 }

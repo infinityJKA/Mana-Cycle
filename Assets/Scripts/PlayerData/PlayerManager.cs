@@ -86,9 +86,7 @@ public class PlayerManager {
     public static void OnLoginSetup() {
         if (SidebarUI.instance) SidebarUI.instance.ShowPlayerInfo();
 
-        // TODO: hide currency (or whole panel altogether) while data is still being fetched
-        SidebarUI.instance.SetCoins("0");
-        SidebarUI.instance.SetIridium("0");
         WalletManager.GetWallet();
+        XPManager.GetPlayerInfo();
     }  
 }
