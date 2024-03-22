@@ -12,7 +12,8 @@ public class SidebarUI : MonoBehaviour {
     [SerializeField] private GameObject playerInfoWindow, loginOptionsWindow;
 
     // Shown while logged in
-    [SerializeField] private TMP_Text usernameLabel, coinCountLabel, iridiumCountLabel;
+    [SerializeField] private TMP_Text usernameLabel, coinCountLabel, iridiumCountLabel,
+    levelLabel, xpLabel;
 
     [SerializeField] private InputActionReference toggleAction;
 
@@ -57,6 +58,8 @@ public class SidebarUI : MonoBehaviour {
         playerInfoWindow.SetActive(true);
 
         usernameLabel.text = PlayerManager.playerUsername;
+        UpdateWalletDisplay();
+        UpdateXPDisplay();
     }
 
     public void LoginGuestPressed() {
@@ -74,5 +77,15 @@ public class SidebarUI : MonoBehaviour {
 
     public void SetIridium(string amount) {
         iridiumCountLabel.text = amount;
+    }
+
+    public void UpdateWalletDisplay() {
+        coinCountLabel.text = WalletManager.coins;
+        iridiumCountLabel.text = WalletManager.iridium;
+    }
+
+    public void UpdateXPDisplay() {
+        levelLabel.text = "Lv "+XPManager.level;
+        xpLabel.text = XPManager.xp+"/"+XPManager.xpToNext;
     }
 }
