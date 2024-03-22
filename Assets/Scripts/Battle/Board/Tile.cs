@@ -95,11 +95,9 @@ namespace Battle.Board {
             if (setSprite && ManaCycle.instance.usingSprites) {
                 if (ghost) {
                     // if below 0, use multicolor ghost sprite
-                    image.sprite = manaColor < 0 ? board.cosmetics.multicolorGhostManaSprite : board.cosmetics.ghostManaSprites[ manaColor ];
-                    // baseColor = new Color(baseColor.r, baseColor.g, baseColor.b, baseColor.a);
-                    image.GetComponent<UnityEngine.UI.Outline>().enabled = true;
-                    // image.GetComponent<UnityEngine.UI.Outline>().effectColor = Color.Lerp(image.color, Color.white, 0.4f);
-                    image.GetComponent<UnityEngine.UI.Outline>().effectColor = baseColor;
+                    if (manaColor < 0) board.cosmetics.multicolorGhostManaSprite = board.cosmetics.multicolorGhostManaSprite;
+                    else visual.SetGhostVisual(board.cosmetics.manaVisuals[manaColor], board.cosmetics.manaColors[manaColor]);
+
                 } else {
                     // if below 0, use multicolor sprite
                     if (manaColor < 0) 

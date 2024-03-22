@@ -20,8 +20,6 @@ public class SaveDataManager : MonoBehaviour {
 
         Debug.Log("Using save data file at "+config.SaveFilePath+"/"+config.SaveFileName);
         FBPP.Start(config);
-
-        PlayerManager.LoginGuest();
     }
 
     private void OnApplicationQuit() {

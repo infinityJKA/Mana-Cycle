@@ -13,6 +13,8 @@ namespace Battle.Board {
     {
         [SerializeField] private Image iconImage;
         [SerializeField] private Image bgImage;
+
+        [SerializeField] private Material ghostMaterial;
         public void SetVisual(Cosmetics.ManaIcon v, Cosmetics.ManaPalette p)
         {
             Debug.Log("Setting up visual");
@@ -28,6 +30,24 @@ namespace Battle.Board {
         public void SetObscuredVisual()
         {
             iconImage.color = new Color(0f, 0f, 0f, 0f);
+        }
+
+        public void SetGhostVisual(Cosmetics.ManaIcon v, Cosmetics.ManaPalette p)
+        {
+            iconImage.sprite = v.iconSprite;
+            bgImage.sprite = v.bgSprite;
+            iconImage.color = p.darkColor;
+            bgImage.color = p.mainColor;
+
+            iconImage.material = new Material(ghostMaterial);
+            iconImage.material.SetColor("_Color", p.mainColor);
+            iconImage.material.SetFloat("_Size", 1.2f);
+
+            bgImage.material = new Material(ghostMaterial);
+            bgImage.material.SetColor("_Color", p.mainColor);
+            // iconImage.GetComponent<UnityEngine.UI.Outline>().enabled = true;
+            // image.GetComponent<UnityEngine.UI.Outline>().effectColor = Color.Lerp(image.color, Color.white, 0.4f);
+            // iconImage.GetComponent<UnityEngine.UI.Outline>().effectColor = p.mainColor;
         }
     }
 
