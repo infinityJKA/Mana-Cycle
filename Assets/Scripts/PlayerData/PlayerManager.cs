@@ -4,6 +4,8 @@ using Steamworks;
 
 public class PlayerManager {
     public static string playerID {get; private set;}
+    public static string playerUsername {get; private set;}
+
     public static bool loginInProgress {get; private set;} = false;
     public static bool loginAttempted {get; private set;} = true;
     public static bool loggedIn {get; private set;} = false;
@@ -27,6 +29,7 @@ public class PlayerManager {
             {
                 Debug.Log("Guest player logged in");
                 playerID = response.player_ulid;
+                playerUsername = "Guest "+response.player_ulid;
                 loggedIn = true;
                 OnLoginSetup();
             } else {
@@ -72,6 +75,7 @@ public class PlayerManager {
 
                 loggedIn = true;
                 playerID = response.player_ulid;
+                playerUsername = SteamFriends.GetPersonaName();
                 Debug.Log("steam session started!");
                 OnLoginSetup();
             });
@@ -80,6 +84,11 @@ public class PlayerManager {
 
     // Retreive stuff like the wallet and such when first logging in.
     public static void OnLoginSetup() {
+        if (SidebarUI.instance) SidebarUI.instance.ShowPlayerInfo();
+
+        // TODO: hide currency (or whole panel altogether) while data is still being fetched
+        SidebarUI.instance.SetCoins("0");
+        SidebarUI.instance.SetIridium("0");
         WalletManager.GetWallet();
     }  
 }

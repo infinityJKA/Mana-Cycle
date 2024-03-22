@@ -32,7 +32,12 @@ public class WalletManager {
                 return;
             }
             
+            if (!SidebarUI.instance) return;
+
+            SidebarUI.instance.SetCoins("0");
+            SidebarUI.instance.SetIridium("0");
             foreach (var balance in response.balances) {
+                Debug.Log(balance.currency.code+": "+balance.amount);
                 if (balance.currency.code == "IBN") {
                     SidebarUI.instance.SetCoins(balance.amount);
                 } else if (balance.currency.code == "IDM") {

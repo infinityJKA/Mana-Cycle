@@ -32,12 +32,10 @@ public class SidebarUI : MonoBehaviour {
     private void OnEnable() {
         toggleAction.action.performed += OnTogglePressed;
         toggleAction.action.Enable(); // i dont know how but pause got disabled, probably something to do with rebinds
-        Debug.Log("listening for "+toggleAction);
     }
 
     private void OnDisable() {
         toggleAction.action.performed -= OnTogglePressed;
-        Debug.Log("stopped listening for "+toggleAction);
     }
 
     private void OnTogglePressed(InputAction.CallbackContext ctx) {
@@ -46,7 +44,6 @@ public class SidebarUI : MonoBehaviour {
 
     public void ToggleExpanded() {
         expanded = !expanded;
-        Debug.Log("expanded: "+expanded);
         animator.SetBool("expanded", expanded);
     }
 
@@ -58,6 +55,8 @@ public class SidebarUI : MonoBehaviour {
     public void ShowPlayerInfo() {
         loginOptionsWindow.SetActive(false);
         playerInfoWindow.SetActive(true);
+
+        usernameLabel.text = PlayerManager.playerUsername;
     }
 
     public void LoginGuestPressed() {
