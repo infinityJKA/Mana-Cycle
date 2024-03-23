@@ -7,6 +7,8 @@ public class XPManager {
     public static int xpToNext {get; private set;} = 100;
 
     public static void GetPlayerInfo() {
+        if (!PlayerManager.loggedIn) return;
+
         LootLockerSDKManager.GetPlayerInfo((response) =>
         {
             if (!response.success)

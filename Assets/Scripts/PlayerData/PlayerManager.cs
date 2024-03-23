@@ -1,6 +1,7 @@
 using UnityEngine;
 using LootLocker.Requests;
 using Steamworks;
+using System;
 
 public class PlayerManager {
     public static string playerID {get; private set;}
@@ -8,15 +9,45 @@ public class PlayerManager {
 
     public static bool loginInProgress {get; private set;} = false;
     public static bool loginAttempted {get; private set;} = true;
+
+    /// <summary>
+    /// If player is logged in ONLINE. does not include local (offline) mode login.
+    /// </summary>
     public static bool loggedIn {get; private set;} = false;
+    public static bool isOffline => loginMode == LoginMode.Local;
 
     public static LoginMode loginMode {get; private set;}
     public enum LoginMode {
-        None,
+        Local, // data saved locally, basically an offline mode. username may come from last login session (not implemented yet)
         Guest,
         Steam
     }
 
+    static PlayerManager() {
+        // Platform specific auto login on start
+        // stop if already logged in online or logging in
+        if (loggedIn || loginInProgress) return;
+
+        // login locally first - will show cached data that may be saved (will be instant, no networking required)
+        LoginLocal();
+
+        // after local login, attempt to login online which may take a bit.
+        // if this fails the player will remain logged in locally.
+        if (SteamManager.Initialized) {
+            LoginSteam();
+        } else {
+            LoginGuest();
+        }
+    }
+
+    // Not much of a login, but info from file about previous session and displays that.
+    // While in local mode, a notifier wills how up on the sidebar showing that the player is currently offline.
+    public static void LoginLocal() {
+        playerUsername = FBPP.GetString("playerUsername", "");
+        OnLoginFinished();
+    }
+
+    /// <param name="next">Action to run after login process is complete, whether successful or not</param>
     public static void LoginGuest() {
         if (loggedIn || loginInProgress) return;
 
@@ -24,20 +55,20 @@ public class PlayerManager {
         loginInProgress = true;
         loginAttempted = true;
         LootLockerSDKManager.StartGuestSession((response) => {
-            loginInProgress = false;
             if (response.success)
             {
                 Debug.Log("Guest player logged in");
                 playerID = response.player_ulid;
-                playerUsername = "Guest "+response.player_ulid;
+                playerUsername = "Guest "+response.player_id;
                 loggedIn = true;
-                OnLoginSetup();
             } else {
                 Debug.Log("Could not log in as guest: "+response.errorData);
             }
+            OnLoginFinished();
         });
     }
 
+    /// <param name="next">Action to run after login process is complete, whether successful or not</param>
     public static void LoginSteam() {
         // To make sure Steamworks.NET is initialized
         if (!SteamManager.Initialized) {
@@ -59,14 +90,13 @@ public class PlayerManager {
             if (!response.success)
             {
                 Debug.Log("Error verifying Steam ID: " + response.errorData.message);
-                loginInProgress = false;
+                OnLoginFinished();
                 return;
             }
 
             CSteamID SteamID = SteamUser.GetSteamID();
             LootLockerSDKManager.StartSteamSession(SteamID.ToString(), (response) =>
             {
-                loginInProgress = false;
                 if (!response.success)
                 {
                     Debug.Log("error starting sessions");     
@@ -77,16 +107,19 @@ public class PlayerManager {
                 playerID = response.player_ulid;
                 playerUsername = SteamFriends.GetPersonaName();
                 Debug.Log("steam session started!");
-                OnLoginSetup();
+                OnLoginFinished();
             });
         });
     }
 
-    // Retreive stuff like the wallet and such when first logging in.
-    public static void OnLoginSetup() {
-        if (SidebarUI.instance) SidebarUI.instance.ShowPlayerInfo();
-
-        WalletManager.GetWallet();
-        XPManager.GetPlayerInfo();
+    // function to be run after login process is fiinished (successful or not).
+    // If logged in, Retreive stuff like the wallet and such when first logging in.
+    private static void OnLoginFinished() {
+        loginInProgress = false;
+        if (SidebarUI.instance) SidebarUI.instance.UpdatePlayerInfo();
+        if (loggedIn) {
+            WalletManager.GetWallet();
+            XPManager.GetPlayerInfo();
+        }
     }  
 }

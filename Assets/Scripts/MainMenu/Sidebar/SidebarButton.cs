@@ -9,7 +9,9 @@ public class SidebarButton : MonoBehaviour, ISelectHandler, IMoveHandler
     public void OnSelect(BaseEventData eventData)
     {
         if (!SidebarUI.instance) return;
-        if (!SidebarUI.instance.expanded) SidebarUI.instance.ToggleExpanded();
+        if (!SidebarUI.instance.expanded) {
+            SidebarUI.instance.ToggleExpanded();
+        }
         Storage.lastSidebarItem = gameObject;
     }
 

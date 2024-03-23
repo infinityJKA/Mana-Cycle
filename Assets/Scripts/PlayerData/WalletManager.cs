@@ -3,10 +3,12 @@ using UnityEngine;
 
 public class WalletManager {
     public static string walletID {get; private set;}
-    public static string coins {get; private set;} = "0";
-    public static string iridium {get; private set;} = "0";
+    public static int coins {get; private set;} = 0;
+    public static int iridium {get; private set;} = 0;
 
     public static void GetWallet() {
+        if (!PlayerManager.loggedIn) return;
+
         LootLockerSDKManager.GetWalletByHolderId(
         PlayerManager.playerID, 
         LootLocker.LootLockerEnums.LootLockerWalletHolderTypes.player,
@@ -37,10 +39,13 @@ public class WalletManager {
 
             foreach (var balance in response.balances) {
                 Debug.Log(balance.currency.code+": "+balance.amount);
-                if (balance.currency.code == "IBN") {
-                    coins = balance.amount;
-                } else if (balance.currency.code == "IDM") {
-                    iridium = balance.amount;
+
+                if (int.TryParse(balance.amount, out int amount)) {
+                    if (balance.currency.code == "IBN") {
+                        coins = amount;
+                    } else if (balance.currency.code == "IDM") {
+                        iridium = amount;
+                    }
                 }
             }
 

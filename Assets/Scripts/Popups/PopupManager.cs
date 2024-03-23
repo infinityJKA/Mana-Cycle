@@ -49,8 +49,8 @@ public class PopupManager : MonoBehaviour {
     // }
 
     public void ShowNextPopup() {
-        popupUI.gameObject.SetActive(true);
         if (popupQueue.TryDequeue(out Popup nextPopup)) {
+            popupUI.gameObject.SetActive(true);
             popupUI.Show(nextPopup);
         } else {
             EventSystem.current.SetSelectedGameObject(null);
@@ -85,7 +85,10 @@ public class PopupManager : MonoBehaviour {
     }
 }
 
-public struct Popup {
+public class Popup {
     public string title, description, confirmButtonText, cancelButtonText;
     public Action onConfirm, onCancel;
+    
+    // optionally use a custom window for things like the login popup. if null, default window is used
+    public CustomPopup customWindowPrefab;
 }
