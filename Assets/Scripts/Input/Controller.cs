@@ -327,13 +327,6 @@ namespace Battle {
             if (!gameFocused) return;
             if (!ctx.performed) return;
             if (SidebarUI.instance && SidebarUI.instance.expanded) return;
-            else if (controlMode == ControlMode.CharSelector) charSelector.OnBack();
-        }
-
-        public void OnPause(InputAction.CallbackContext ctx) {
-            if (!gameFocused) return;
-            if (controlMode == ControlMode.Board && ctx.performed) board.Pause();
-            if (SidebarUI.instance && SidebarUI.instance.expanded) return;
             else if (controlMode == ControlMode.CharSelector) {
                 if (ctx.performed) {
                     charSelector.OnBack();
@@ -342,6 +335,11 @@ namespace Battle {
                     charSelector.ReturnMenuUnpress();
                 }
             }
+        }
+
+        public void OnPause(InputAction.CallbackContext ctx) {
+            if (!gameFocused) return;
+            if (controlMode == ControlMode.Board && ctx.performed) board.Pause();
         }
 
         public void EnableInputScripts() {

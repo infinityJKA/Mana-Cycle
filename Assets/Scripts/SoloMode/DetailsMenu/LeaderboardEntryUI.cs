@@ -14,7 +14,9 @@ public class LeaderboardEntryUI : MonoBehaviour {
     public void ShowMember(LootLockerLeaderboardMember member) {
         gameObject.SetActive(true);
         placeLabel.text = ""+member.rank;
-        usernameLabel.text = member.member_id;
+        string name = member.player.name;
+        if (name == null || name == "") name = "Guest "+member.member_id;
+        usernameLabel.text = name;
         scoreLabel.text = ""+member.score;
     }
 }
