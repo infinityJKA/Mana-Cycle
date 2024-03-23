@@ -24,6 +24,9 @@ public class Storage
     // if the current battle should use abilities.
     public static bool enableAbilities = true;
 
+    // When opening sidebar, last selecition is saved here to return to when sidebar is closed.
+    public static GameObject lastSelection;
+
     /// <summary>Index of last item the player hovered in the main menu, start there when re-entering menu</summary>
     public static int lastMainMenuItem = 0; // start on solo mode
     public static GameObject lastSidebarItem;

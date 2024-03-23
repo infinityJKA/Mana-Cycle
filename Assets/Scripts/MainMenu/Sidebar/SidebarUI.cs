@@ -1,5 +1,6 @@
 using MainMenu;
 using TMPro;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -10,12 +11,23 @@ public class SidebarUI : MonoBehaviour {
     [SerializeField] private Animator animator;
     public bool expanded {get; private set;} = false;
 
-    // panels that may be shown/hidden based on login or some other state
+    // Top window based on logged in state
+    [SerializeField] private GameObject playerInfoWindow, loggedOutWindow;
+    [SerializeField] private Button loginOptionsFirstSelected;
+
+    // Bottom buttons window that may be swapped based on login process / other things
+    [SerializeField] private GameObject mainButtonsWindow, loginOptionsWindow;
+    private bool showingLoginOptions = false;
+
+    // sub-panels that may be shown/hidden based on login or some other state
     [SerializeField] private GameObject usernamePanel, walletPanel, levelPanel;
 
     // Shown while logged in
     [SerializeField] private TMP_Text usernameLabel, coinCountLabel, iridiumCountLabel,
     levelLabel, xpLabel;
+
+    // text to change based on login / other state
+    [SerializeField] private TMP_Text accountButtonLabel;
 
     // notifiers that popup based on login/other states
     [SerializeField] private GameObject offlineNotifier, loggingInNotifier;
@@ -44,26 +56,36 @@ public class SidebarUI : MonoBehaviour {
 
     private void OnTogglePressed(InputAction.CallbackContext ctx) {
         ToggleExpanded();
-        Menu3d.instance.SelectLastSelected();
+        // todo: use a global lastSelected, possibly in storage, for compatabilitiy with all scenes
+        if (Menu3d.instance) Menu3d.instance.SelectLastSelected();
     }
 
     public void ToggleExpanded() {
         expanded = !expanded;
+
+        if (showingLoginOptions) {
+            showingLoginOptions = false;
+            UpdateButtonsWindow();
+        }
+
         animator.SetBool("expanded", expanded);
     }
 
     public void UpdatePlayerInfo() {
+        // only show logged out window if logged out and not currently a login in progress.
+        bool loggedOut = !PlayerManager.loggedIn && !PlayerManager.loginInProgress;
+        loggedOutWindow.SetActive(loggedOut);
+        playerInfoWindow.SetActive(!loggedOut);
+
+        if (loggedOut) {
+            accountButtonLabel.text = "Login";
+        } else if (PlayerManager.loggedIn) {
+            accountButtonLabel.text = "Account";
+        }
+
         UpdateUserInfo();
         UpdateWalletDisplay();
         UpdateXPDisplay();
-    }
-
-    public void LoginGuestPressed() {
-        PlayerManager.LoginGuest();
-    }
-
-    public void LoginSteamPressed() {
-        PlayerManager.LoginSteam();
     }
 
     public void SetCoins(string amount) {
@@ -74,12 +96,31 @@ public class SidebarUI : MonoBehaviour {
         iridiumCountLabel.text = amount;
     }
 
+    public void UpdateButtonsWindow() {
+        // hide showing interactables menu if logged in
+        if (showingLoginOptions) {
+            if (PlayerManager.loggedIn) {
+                showingLoginOptions = false;
+            } else {
+                SetLoginButtonsInteractable(!PlayerManager.loginInProgress);
+            }
+        }
+
+        loginOptionsWindow.SetActive(showingLoginOptions);
+        mainButtonsWindow.SetActive(!showingLoginOptions);
+    }
+
     public void UpdateUserInfo() {
         loggingInNotifier.SetActive(PlayerManager.loginInProgress);
-        // only show offline notifier if not in the process of logging in
-        if (!PlayerManager.loginInProgress) offlineNotifier.SetActive(PlayerManager.loginMode == PlayerManager.LoginMode.Local);
-        
-        usernameLabel.text = PlayerManager.playerUsername;
+
+        // only show offline notifier if not in the process of logging in and also logged out (not online)
+        if (!PlayerManager.loginInProgress) offlineNotifier.SetActive(!PlayerManager.loggedIn);
+
+        if (PlayerManager.loggedIn) {
+            usernameLabel.text = PlayerManager.playerUsername;
+        } else {
+            usernameLabel.text = "Logging in...";
+        }
     }
 
     public void UpdateWalletDisplay() {
@@ -98,10 +139,18 @@ public class SidebarUI : MonoBehaviour {
         xpLabel.text = XPManager.xp+"/"+XPManager.xpToNext;
     }
 
-
+    // ==== main buttons
     public void OnAccountPressed()
     {
-        Debug.Log("Todo: show account info details");
+        if (PlayerManager.loginInProgress) return;
+        if (PlayerManager.loggedIn) {
+            Debug.Log("Show account info here");
+        } else {
+            showingLoginOptions = true;
+            SetLoginButtonsInteractable(true);
+            UpdateButtonsWindow();
+            loginOptionsFirstSelected.Select();
+        }
     }
     // htp: Menu3d.SelectHTP
 
@@ -121,4 +170,35 @@ public class SidebarUI : MonoBehaviour {
 
     // options: Menu3d.SelectSettings
     // exit: Menu3d.SelectExit
+    
+
+    // ==== login options buttons
+    public void LoginBackPressed() {
+        showingLoginOptions = false;
+        UpdateButtonsWindow();
+        Menu3d.instance.SelectLastSelected();
+    }
+
+    public void LoginGuestPressed() {
+        LoginPressed();
+        PlayerManager.LoginGuest();
+    }
+
+    public void LoginSteamPressed() {
+        LoginPressed();
+        PlayerManager.LoginSteam();
+    }
+
+    public void LoginPressed() {
+        SetLoginButtonsInteractable(false);
+        // todo: show a spinner or somethin to show that login is in progress
+        // Once login process finishes, PlayerManager will call UpdateButtonsList() and UpdatePlayerInfo() on this instance
+        // whish will show the appropriate data
+    }
+
+    public void SetLoginButtonsInteractable(bool interactable) {
+        foreach (Button button in loginOptionsWindow.transform.GetComponentsInChildren<Button>()) {
+            button.interactable = interactable;
+        }
+    }
 }
