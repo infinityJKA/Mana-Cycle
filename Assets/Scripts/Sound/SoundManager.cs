@@ -22,6 +22,7 @@ namespace Sound {
                 Destroy(gameObject);
             }
 
+            if (!SaveDataManager.initialized) return;
             Load();
         }
 
