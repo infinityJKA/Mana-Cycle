@@ -191,6 +191,7 @@ namespace Battle {
         public void OnMove(InputAction.CallbackContext ctx) {
             if (controlMode != ControlMode.CharSelector || !charSelector) return;
             if (!gameFocused) return;
+            if (SidebarUI.instance && SidebarUI.instance.expanded) return;
 
             movementInput = ctx.ReadValue<Vector2>();
 
@@ -285,6 +286,7 @@ namespace Battle {
         public void OnRotateLeft(InputAction.CallbackContext ctx) {
             if (!gameFocused) return;
             if (!ctx.performed) return;
+            if (SidebarUI.instance && SidebarUI.instance.expanded) return;
             if (controlMode == ControlMode.Board && canControlBoard) board.RotateCCW();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnAbilityInfo();
         }
@@ -292,18 +294,21 @@ namespace Battle {
         public void OnRotateRight(InputAction.CallbackContext ctx) {
             if (!gameFocused) return;
             if (!ctx.performed) return;
+            if (SidebarUI.instance && SidebarUI.instance.expanded) return;
             if (controlMode == ControlMode.Board && canControlBoard) board.RotateCW();
         }
 
         public void OnSettings(InputAction.CallbackContext ctx) {
             if (!gameFocused) return;
             if (!ctx.performed) return;
+            if (SidebarUI.instance && SidebarUI.instance.expanded) return;
             if (controlMode == ControlMode.CharSelector) charSelector.OnSettings();
         }
 
         public void OnSpellcast(InputAction.CallbackContext ctx) {
             if (!gameFocused) return;
             if (!ctx.performed) return;
+            if (SidebarUI.instance && SidebarUI.instance.expanded) return;
             if (controlMode == ControlMode.Board && canControlBoard) board.TrySpellcast();
             else if (controlMode == ControlMode.CharSelector) charSelector.OnCast(true);
         }
@@ -311,6 +316,7 @@ namespace Battle {
         public void OnAbiltyUse(InputAction.CallbackContext ctx) {
             if (!gameFocused) return;
             if (!ctx.performed) return;
+            if (SidebarUI.instance && SidebarUI.instance.expanded) return;
             if (controlMode == ControlMode.Board && canControlBoard) {
                 board.UseAbility();
                 board.instaDropThisFrame = true; // for trainbot
@@ -320,12 +326,14 @@ namespace Battle {
         public void OnCancel(InputAction.CallbackContext ctx) {
             if (!gameFocused) return;
             if (!ctx.performed) return;
+            if (SidebarUI.instance && SidebarUI.instance.expanded) return;
             else if (controlMode == ControlMode.CharSelector) charSelector.OnBack();
         }
 
         public void OnPause(InputAction.CallbackContext ctx) {
             if (!gameFocused) return;
             if (controlMode == ControlMode.Board && ctx.performed) board.Pause();
+            if (SidebarUI.instance && SidebarUI.instance.expanded) return;
             else if (controlMode == ControlMode.CharSelector) {
                 if (ctx.performed) {
                     charSelector.OnBack();
