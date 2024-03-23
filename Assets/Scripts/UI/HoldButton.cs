@@ -31,7 +31,6 @@ public class HoldButton : Selectable, ISubmitHandler /**, IPointerDownHandler, I
         submitAction.action.started -= ctx => Press();
         submitAction.action.canceled -= ctx => Unpress();
         disabled = true;
-        Debug.Log(gameObject+" disabled");
     }
 
     private void Update() {
@@ -54,13 +53,11 @@ public class HoldButton : Selectable, ISubmitHandler /**, IPointerDownHandler, I
     private void Press() {
         if (disabled || !enabled || !gameObject) return;
         if (EventSystem.current.currentSelectedGameObject != gameObject) return;
-        Debug.Log(gameObject+" pressed");
         pressed = true;
     }
 
     private void Unpress() {
         if (disabled || !enabled || !gameObject) return;
-        Debug.Log(gameObject+" unpressed");
         pressed = false;
         pressTimer = 0f;
         UpdateFill();
