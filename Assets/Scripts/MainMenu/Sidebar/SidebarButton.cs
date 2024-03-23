@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 public class SidebarButton : MonoBehaviour, ISelectHandler, IMoveHandler
 {
     [SerializeField] private int index;
+    [SerializeField] private bool mainButton;
 
     public void OnSelect(BaseEventData eventData)
     {
@@ -12,8 +13,8 @@ public class SidebarButton : MonoBehaviour, ISelectHandler, IMoveHandler
         if (!SidebarUI.instance.expanded) {
             SidebarUI.instance.ToggleExpanded();
         }
-        // index will be -1 for buttons in sub-windows other than the main side buttons
-        if (index >= 0) Storage.lastSidebarItem = gameObject;
+
+        if (mainButton && index >= 0) Storage.lastSidebarItem = gameObject;
     }
 
     public void OnMove(AxisEventData eventData)

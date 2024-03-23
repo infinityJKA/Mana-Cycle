@@ -2,6 +2,7 @@ using MainMenu;
 using TMPro;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -18,6 +19,10 @@ public class SidebarUI : MonoBehaviour {
     // Bottom buttons window that may be swapped based on login process / other things
     [SerializeField] private GameObject mainButtonsWindow, loginOptionsWindow;
     private bool showingLoginOptions = false;
+    private GameObject loginOptionsLastSelected = null;
+
+    // error shown on login options window if login failed
+    [SerializeField] private TMP_Text loginErrorLabel;
 
     // sub-panels that may be shown/hidden based on login or some other state
     [SerializeField] private GameObject usernamePanel, walletPanel, levelPanel;
@@ -103,6 +108,10 @@ public class SidebarUI : MonoBehaviour {
                 showingLoginOptions = false;
             } else {
                 SetLoginButtonsInteractable(!PlayerManager.loginInProgress);
+                if (loginOptionsLastSelected) {
+                    EventSystem.current.SetSelectedGameObject(loginOptionsLastSelected);
+                    loginOptionsLastSelected = null;
+                }
             }
         }
 
@@ -116,11 +125,14 @@ public class SidebarUI : MonoBehaviour {
         // only show offline notifier if not in the process of logging in and also logged out (not online)
         if (!PlayerManager.loginInProgress) offlineNotifier.SetActive(!PlayerManager.loggedIn);
 
+        loginErrorLabel.text = PlayerManager.loginError;
+
         if (PlayerManager.loggedIn) {
             usernameLabel.text = PlayerManager.playerUsername;
-        } else {
+        } else if (PlayerManager.loginInProgress) {
             usernameLabel.text = "Logging in...";
         }
+
     }
 
     public void UpdateWalletDisplay() {
@@ -144,9 +156,11 @@ public class SidebarUI : MonoBehaviour {
     {
         if (PlayerManager.loginInProgress) return;
         if (PlayerManager.loggedIn) {
-            Debug.Log("Show account info here");
+            // Log out when account button pressed (THIS IS TEMPORARY, account window will be added later where logout can be found)
+            PlayerManager.Logout();
         } else {
             showingLoginOptions = true;
+            PlayerManager.loginError = "";
             SetLoginButtonsInteractable(true);
             UpdateButtonsWindow();
             loginOptionsFirstSelected.Select();
@@ -190,7 +204,10 @@ public class SidebarUI : MonoBehaviour {
     }
 
     public void LoginPressed() {
+        loginOptionsLastSelected = EventSystem.current.currentSelectedGameObject;
         SetLoginButtonsInteractable(false);
+        PlayerManager.loginError = "";
+        UpdateButtonsWindow();
         // todo: show a spinner or somethin to show that login is in progress
         // Once login process finishes, PlayerManager will call UpdateButtonsList() and UpdatePlayerInfo() on this instance
         // whish will show the appropriate data
@@ -200,5 +217,9 @@ public class SidebarUI : MonoBehaviour {
         foreach (Button button in loginOptionsWindow.transform.GetComponentsInChildren<Button>()) {
             button.interactable = interactable;
         }
+    }
+
+    public void SelectLastSelected() {
+        EventSystem.current.SetSelectedGameObject(Storage.lastSidebarItem);
     }
 }
