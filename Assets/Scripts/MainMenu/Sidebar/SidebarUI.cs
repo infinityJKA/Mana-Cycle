@@ -2,6 +2,7 @@ using MainMenu;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class SidebarUI : MonoBehaviour {
     public static SidebarUI instance {get; private set;}
@@ -9,26 +10,26 @@ public class SidebarUI : MonoBehaviour {
     [SerializeField] private Animator animator;
     public bool expanded {get; private set;} = false;
 
-    // windows
-    [SerializeField] private GameObject playerInfoWindow, loginOptionsWindow;
+    // panels that may be shown/hidden based on login or some other state
+    [SerializeField] private GameObject usernamePanel, walletPanel, levelPanel;
 
     // Shown while logged in
     [SerializeField] private TMP_Text usernameLabel, coinCountLabel, iridiumCountLabel,
     levelLabel, xpLabel;
 
+    // notifiers that popup based on login/other states
+    [SerializeField] private GameObject offlineNotifier, loggingInNotifier;
+
     [SerializeField] private InputActionReference toggleAction;
 
     
     // Note: this class will not be DontDestroyOnLoad()ed but current one in scene will be saved for ref by other scenes.
-    // set instance on start & show appropriate data.
     private void Awake() {
         instance = this;
+    }
 
-        if (PlayerManager.loggedIn) {
-            ShowPlayerInfo();
-        } else {
-            ShowLoginOptions();
-        }
+    private void Start() {
+        UpdatePlayerInfo();
     }
 
     private void OnEnable() {
@@ -51,16 +52,8 @@ public class SidebarUI : MonoBehaviour {
         animator.SetBool("expanded", expanded);
     }
 
-    public void ShowLoginOptions() {
-        playerInfoWindow.SetActive(false);
-        loginOptionsWindow.SetActive(true);
-    }
-
-    public void ShowPlayerInfo() {
-        loginOptionsWindow.SetActive(false);
-        playerInfoWindow.SetActive(true);
-
-        usernameLabel.text = PlayerManager.playerUsername;
+    public void UpdatePlayerInfo() {
+        UpdateUserInfo();
         UpdateWalletDisplay();
         UpdateXPDisplay();
     }
@@ -73,7 +66,6 @@ public class SidebarUI : MonoBehaviour {
         PlayerManager.LoginSteam();
     }
 
-
     public void SetCoins(string amount) {
         coinCountLabel.text = amount;
     }
@@ -82,12 +74,26 @@ public class SidebarUI : MonoBehaviour {
         iridiumCountLabel.text = amount;
     }
 
+    public void UpdateUserInfo() {
+        loggingInNotifier.SetActive(PlayerManager.loginInProgress);
+        // only show offline notifier if not in the process of logging in
+        if (!PlayerManager.loginInProgress) offlineNotifier.SetActive(PlayerManager.loginMode == PlayerManager.LoginMode.Local);
+        
+        usernameLabel.text = PlayerManager.playerUsername;
+    }
+
     public void UpdateWalletDisplay() {
-        coinCountLabel.text = WalletManager.coins;
-        iridiumCountLabel.text = WalletManager.iridium;
+        walletPanel.SetActive(usernamePanel);
+        if (!PlayerManager.loggedIn) return;
+
+        coinCountLabel.text = ""+WalletManager.coins;
+        iridiumCountLabel.text = ""+WalletManager.iridium;
     }
 
     public void UpdateXPDisplay() {
+        levelPanel.SetActive(usernamePanel);
+        if (!PlayerManager.loggedIn) return;
+
         levelLabel.text = "Lv "+XPManager.level;
         xpLabel.text = XPManager.xp+"/"+XPManager.xpToNext;
     }

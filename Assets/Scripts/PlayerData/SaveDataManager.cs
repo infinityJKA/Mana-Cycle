@@ -23,6 +23,9 @@ public class SaveDataManager : MonoBehaviour {
     }
 
     private void OnApplicationQuit() {
+        // cache some player information, so that next time they are offline/connecting on next game start, can see their username/other info
+        FBPP.SetString("playerUsername", PlayerManager.playerUsername);
+
         FBPP.Save();
     }
 
