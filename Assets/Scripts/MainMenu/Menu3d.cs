@@ -11,11 +11,13 @@ namespace MainMenu {
     /// </summary>
     public class Menu3d : MonoBehaviour
     {
+        public static Menu3d instance {get; private set;}
+
         [SerializeField] private GameObject HTPWindow;
         [SerializeField] private HowToPlay HTPScript;
         [SerializeField] public GameObject MainWindow;
 
-        [SerializeField] private GameObject MainFirstSelected;
+        // [SerializeField] private GameObject MainFirstSelected;
         [SerializeField] private GameObject HTPFirstSelected;
 
         [SerializeField] private GameObject SettingsWindow;
@@ -47,7 +49,9 @@ namespace MainMenu {
         // things to hide in web builds, such as the quit button
         [SerializeField] GameObject[] hideInWebGL;
 
-
+        private void Awake() {
+            instance = this;
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -62,13 +66,18 @@ namespace MainMenu {
                 }
             }
 
+            versionText.text = "v" + Application.version + " (" + Application.platform + ")";
         }
 
         public void SelectLastSelected()
         {
-            if(!mobile) EventSystem.current.SetSelectedGameObject(buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject);
+            if(mobile) return;
 
-            versionText.text = "v" + Application.version + " (" + Application.platform + ")";
+            if (SidebarUI.instance && SidebarUI.instance.expanded) {
+                EventSystem.current.SetSelectedGameObject(Storage.lastSidebarItem);
+            } else {
+                EventSystem.current.SetSelectedGameObject(buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject);
+            }
         }
 
         public void SelectVersus()
@@ -83,7 +92,7 @@ namespace MainMenu {
         {
             VersusWindow.SetActive(false);
             MainWindow.SetActive(true);
-            if (!mobile) EventSystem.current.SetSelectedGameObject(VersusButton);
+            SelectLastSelected();
         }
 
         public void setVersusDescription(string newText)
@@ -118,7 +127,7 @@ namespace MainMenu {
         {
             HTPWindow.SetActive(false);
             MainWindow.SetActive(true);
-            if (!mobile) EventSystem.current.SetSelectedGameObject(HTPButton);
+            SelectLastSelected();
         }
 
         public void SelectSettings()
@@ -130,13 +139,19 @@ namespace MainMenu {
             SettingsScript.Init();
         }
 
+        public void SelectExtras()
+        {
+            if (BlackjackMenu.blackjackOpened) return;
+            TransitionHandler.WipeToScene("ExtrasHub");
+        }
+
         public void CloseSettings()
         {
             SettingsWindow.SetActive(false);
             MainWindow.SetActive(true);
-            if (!mobile) EventSystem.current.SetSelectedGameObject(SettingsButton);
+            SelectLastSelected();
 
-            // will save any possibly-edited player prefs to the file for steam cloud sync.
+            // will save any possibly-edited settings
             FBPP.Save();
         }
 

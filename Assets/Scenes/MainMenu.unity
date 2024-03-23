@@ -445,12 +445,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 816777159}
+    m_SelectOnDown: {fileID: 2112243610}
     m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnRight: {fileID: 954237555}
   m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 0.83921576, g: 1, b: 0.9686275, a: 0}
@@ -555,6 +555,7 @@ MonoBehaviour:
   enableWhenSelected: []
   selectSFX: {fileID: 7978053776321691471, guid: 5097454699299d344af329404a1ffb22, type: 3}
   clickSFX: {fileID: 7978053776321691471, guid: 9d926372c82ba884ca940bf83bde5fd9, type: 3}
+  buttonIndex: 1
 --- !u!95 &53047978
 Animator:
   serializedVersion: 5
@@ -613,7 +614,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 435, y: -428}
+  m_AnchoredPosition: {x: 435, y: -503.81323}
   m_SizeDelta: {x: 870, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &63455408
@@ -878,7 +879,6 @@ MonoBehaviour:
   HTPWindow: {fileID: 1740322481}
   HTPScript: {fileID: 1740322483}
   MainWindow: {fileID: 539888908}
-  MainFirstSelected: {fileID: 816777157}
   HTPFirstSelected: {fileID: 396418402}
   SettingsWindow: {fileID: 65805893}
   SettingsScript: {fileID: 1740322483}
@@ -1756,7 +1756,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &174489819
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2645,7 +2645,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Settings
+  m_text: Online Play
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 79459efec17a4d00a321bdcc27bbc385, type: 2}
@@ -2729,7 +2729,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 196012068}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
   m_Name: 
@@ -4005,6 +4005,14 @@ PrefabInstance:
       value: CosmeticsButton
       objectReference: {fileID: 0}
     - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_SelectOnLeft
+      value: 
+      objectReference: {fileID: 816777159}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -4142,6 +4150,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopButton
       objectReference: {fileID: 0}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_SelectOnLeft
+      value: 
+      objectReference: {fileID: 816777159}
     - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -4518,6 +4534,14 @@ PrefabInstance:
       value: NewsButton
       objectReference: {fileID: 0}
     - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_SelectOnLeft
+      value: 
+      objectReference: {fileID: 816777159}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -4741,10 +4765,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2439481026867943570}
   - {fileID: 816777158}
   - {fileID: 53047973}
   - {fileID: 2112243609}
+  - {fileID: 2439481026867943570}
   m_Father: {fileID: 539888909}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -5013,7 +5037,7 @@ GameObject:
   - component: {fileID: 472243071}
   - component: {fileID: 472243072}
   m_Layer: 5
-  m_Name: SettingsColumn
+  m_Name: Buttons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5039,8 +5063,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -425, y: -8.5}
-  m_SizeDelta: {x: -1050, y: -483}
+  m_AnchoredPosition: {x: -425, y: -10.860107}
+  m_SizeDelta: {x: -1050, y: -478.28015}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &472243072
 MonoBehaviour:
@@ -5062,7 +5086,7 @@ MonoBehaviour:
   m_ChildAlignment: 1
   m_Spacing: 64
   m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 0
+  m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
@@ -5758,7 +5782,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 435, y: -244}
+  m_AnchoredPosition: {x: 435, y: -281.90662}
   m_SizeDelta: {x: 870, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &502794409
@@ -6187,6 +6211,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: HTPButton
       objectReference: {fileID: 0}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_SelectOnLeft
+      value: 
+      objectReference: {fileID: 816777159}
     - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -6655,12 +6687,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 8635449582096055617}
+    m_SelectOnDown: {fileID: 53047974}
     m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnRight: {fileID: 954237555}
   m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 0.83921576, g: 1, b: 0.9686275, a: 0}
@@ -6765,6 +6797,7 @@ MonoBehaviour:
   enableWhenSelected: []
   selectSFX: {fileID: 7978053776321691471, guid: 5097454699299d344af329404a1ffb22, type: 3}
   clickSFX: {fileID: 7978053776321691471, guid: 9d926372c82ba884ca940bf83bde5fd9, type: 3}
+  buttonIndex: 0
 --- !u!95 &816777163
 Animator:
   serializedVersion: 5
@@ -7250,6 +7283,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6284687496966597711, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
   m_PrefabInstance: {fileID: 1669898448891968104}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &954237555 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+  m_PrefabInstance: {fileID: 1669898448891968104}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &970485400
 GameObject:
   m_ObjectHideFlags: 0
@@ -7521,6 +7565,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: OptionsButton
       objectReference: {fileID: 0}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_SelectOnLeft
+      value: 
+      objectReference: {fileID: 816777159}
     - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -12849,6 +12901,7 @@ MonoBehaviour:
   enableWhenSelected: []
   selectSFX: {fileID: 7978053776321691471, guid: 5097454699299d344af329404a1ffb22, type: 3}
   clickSFX: {fileID: 7978053776321691471, guid: 9d926372c82ba884ca940bf83bde5fd9, type: 3}
+  buttonIndex: 0
 --- !u!114 &1656079441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19718,11 +19771,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 6
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnLeft: {fileID: 816777159}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
@@ -20760,7 +20813,7 @@ GameObject:
   - component: {fileID: 2112243613}
   - component: {fileID: 2112243614}
   m_Layer: 5
-  m_Name: Settings
+  m_Name: Online
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20804,7 +20857,7 @@ MonoBehaviour:
     m_SelectOnUp: {fileID: 53047974}
     m_SelectOnDown: {fileID: 8635449582096055617}
     m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 1656079441}
+    m_SelectOnRight: {fileID: 954237555}
   m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 0.83921576, g: 1, b: 0.9686275, a: 0}
@@ -20831,13 +20884,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 102548625}
-        m_TargetAssemblyTypeName: Menu3d, Assembly-CSharp
-        m_MethodName: SelectSettings
-        m_Mode: 1
+        m_TargetAssemblyTypeName: MainMenu.Menu3d, Assembly-CSharp
+        m_MethodName: GoToCharSelect
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -20911,6 +20964,7 @@ MonoBehaviour:
   - {fileID: 725939799}
   selectSFX: {fileID: 7978053776321691471, guid: 5097454699299d344af329404a1ffb22, type: 3}
   clickSFX: {fileID: 7978053776321691471, guid: 9d926372c82ba884ca940bf83bde5fd9, type: 3}
+  buttonIndex: 2
 --- !u!95 &2112243614
 Animator:
   serializedVersion: 5
@@ -21292,7 +21346,7 @@ GameObject:
   - component: {fileID: 8612541057013195119}
   - component: {fileID: 2522170130225343922}
   m_Layer: 5
-  m_Name: How to Play
+  m_Name: Extras
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21731,6 +21785,14 @@ PrefabInstance:
       value: AccountButton
       objectReference: {fileID: 0}
     - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_SelectOnLeft
+      value: 
+      objectReference: {fileID: 816777159}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -21911,7 +21973,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2975301052125381932}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
   m_Name: 
@@ -21984,7 +22046,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: How to Play
+  m_text: Extras
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 79459efec17a4d00a321bdcc27bbc385, type: 2}
@@ -23061,6 +23123,7 @@ MonoBehaviour:
   - {fileID: 1213793305}
   selectSFX: {fileID: 7978053776321691471, guid: 5097454699299d344af329404a1ffb22, type: 3}
   clickSFX: {fileID: 7978053776321691471, guid: 9d926372c82ba884ca940bf83bde5fd9, type: 3}
+  buttonIndex: 3
 --- !u!114 &8635449582096055617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23079,7 +23142,7 @@ MonoBehaviour:
     m_SelectOnUp: {fileID: 2112243610}
     m_SelectOnDown: {fileID: 816777159}
     m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 1656079441}
+    m_SelectOnRight: {fileID: 954237555}
   m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 0.83921576, g: 1, b: 0.9686275, a: 0}
@@ -23106,8 +23169,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 102548625}
-        m_TargetAssemblyTypeName: Menu3d, Assembly-CSharp
-        m_MethodName: SelectHTP
+        m_TargetAssemblyTypeName: MainMenu.Menu3d, Assembly-CSharp
+        m_MethodName: SelectExtras
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

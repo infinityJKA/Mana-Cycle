@@ -1,3 +1,4 @@
+using MainMenu;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -32,7 +33,8 @@ public class SidebarUI : MonoBehaviour {
 
     private void OnEnable() {
         toggleAction.action.performed += OnTogglePressed;
-        toggleAction.action.Enable(); // i dont know how but pause got disabled, probably something to do with rebinds
+        toggleAction.action.Enable(); // i dont know how but pause action got disabled, probably something to do with rebinds
+        animator.SetBool("expanded", expanded);
     }
 
     private void OnDisable() {
@@ -41,6 +43,7 @@ public class SidebarUI : MonoBehaviour {
 
     private void OnTogglePressed(InputAction.CallbackContext ctx) {
         ToggleExpanded();
+        Menu3d.instance.SelectLastSelected();
     }
 
     public void ToggleExpanded() {
