@@ -74,7 +74,7 @@ namespace MainMenu {
             if(mobile) return;
 
             if (SidebarUI.instance && SidebarUI.instance.expanded) {
-                EventSystem.current.SetSelectedGameObject(Storage.lastSidebarItem);
+                SidebarUI.instance.SelectLastSelected();
             } else {
                 EventSystem.current.SetSelectedGameObject(buttonTransorm.GetChild(Storage.lastMainMenuItem).gameObject);
             }

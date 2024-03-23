@@ -9,6 +9,7 @@ public class PlayerManager {
 
     public static bool loginInProgress {get; private set;} = false;
     public static bool loginAttempted {get; private set;} = true;
+    public static string loginError {get; set;} = "";
 
     /// <summary>
     /// If player is logged in ONLINE. does not include local (offline) mode login.
@@ -40,6 +41,13 @@ public class PlayerManager {
     public static void LoginGuest() {
         if (loggedIn || loginInProgress) return;
 
+        if(Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            loginError = "You are offline";
+            OnLoginFinished();
+            return;
+        }
+
         loginMode = LoginMode.Guest;
         loginInProgress = true;
         loginAttempted = true;
@@ -51,6 +59,7 @@ public class PlayerManager {
                 playerUsername = "Guest "+response.player_id;
                 loggedIn = true;
             } else {
+                loginError = "Login failed";
                 Debug.Log("Could not log in as guest: "+response.errorData);
             }
             OnLoginFinished();
@@ -59,9 +68,17 @@ public class PlayerManager {
 
     /// <param name="next">Action to run after login process is complete, whether successful or not</param>
     public static void LoginSteam() {
+        if(Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            loginError = "You are offline";
+            OnLoginFinished();
+            return;
+        }
+
         // To make sure Steamworks.NET is initialized
         if (!SteamManager.Initialized) {
-            // TODO: show error popup
+            loginError = "Steam not initialized";
+            OnLoginFinished();
             return;
         }
 
@@ -78,6 +95,7 @@ public class PlayerManager {
         {
             if (!response.success)
             {
+                loginError = "Steam verification error";
                 Debug.Log("Error verifying Steam ID: " + response.errorData.message);
                 OnLoginFinished();
                 return;
@@ -88,6 +106,7 @@ public class PlayerManager {
             {
                 if (!response.success)
                 {
+                    loginError = "Login failed";
                     Debug.Log("error starting sessions");     
                     return;
                 }
@@ -101,7 +120,7 @@ public class PlayerManager {
         });
     }
 
-    // function to be run after login process is fiinished (successful or not).
+    // function to be run after login (OR LOGOUT) process is fiinished (successful or not).
     // If logged in, Retreive stuff like the wallet and such when first logging in.
     private static void OnLoginFinished() {
         loginInProgress = false;
@@ -114,4 +133,18 @@ public class PlayerManager {
             XPManager.GetPlayerInfo();
         }
     }  
+
+    public static void Logout() {
+        LootLockerSDKManager.EndSession((response) => {
+            if (!response.success) {
+                Debug.LogError("error ending session:"+response.errorData.message);
+                OnLoginFinished();
+                return;
+            }
+
+            loggedIn = false;
+            OnLoginFinished();
+            if (SidebarUI.instance) SidebarUI.instance.SelectLastSelected();
+        });
+    }
 }
