@@ -21,6 +21,7 @@ public class LevelSelectController : MonoBehaviour {
     public void OnNavigate(InputAction.CallbackContext ctx) {
         if (convoHandler && convoHandler.enabled) return;
         if (!hasControl) return;
+        if (SidebarUI.instance && SidebarUI.instance.expanded) return;
 
         navigateInput = ctx.ReadValue<Vector2>();
 
@@ -60,6 +61,7 @@ public class LevelSelectController : MonoBehaviour {
     public void OnSelect(InputAction.CallbackContext ctx) {
         if (!ctx.performed) return;
         if (!hasControl) return;
+        if (SidebarUI.instance && SidebarUI.instance.expanded) return;
         if (convoHandler.enabled) {
             if (!Storage.levelSelectedThisInput) convoHandler.Advance();
         } else {
@@ -71,6 +73,7 @@ public class LevelSelectController : MonoBehaviour {
         if (!ctx.performed) return;
         if (!hasControl) return;
         if (convoHandler.enabled) return;
+        if (SidebarUI.instance && SidebarUI.instance.expanded) return;
 
         levelLister.ToggleInfo();
     }
@@ -78,6 +81,7 @@ public class LevelSelectController : MonoBehaviour {
     public void OnBack(InputAction.CallbackContext ctx) {
         if (!ctx.performed) return;
         if (!hasControl) return;
+        if (SidebarUI.instance && SidebarUI.instance.expanded) return;
         if (convoHandler.enabled) {
             convoHandler.EndConvo();
         } else {
