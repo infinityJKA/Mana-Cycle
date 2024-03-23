@@ -14,7 +14,7 @@ public class SidebarUI : MonoBehaviour {
 
     // Top window based on logged in state
     [SerializeField] private GameObject playerInfoWindow, loggedOutWindow;
-    [SerializeField] private Button loginOptionsFirstSelected;
+    [SerializeField] private Button mainButtonFirstSelected, loginOptionsFirstSelected;
 
     // Bottom buttons window that may be swapped based on login process / other things
     [SerializeField] private GameObject mainButtonsWindow, loginOptionsWindow;
@@ -43,6 +43,7 @@ public class SidebarUI : MonoBehaviour {
     // Note: this class will not be DontDestroyOnLoad()ed but current one in scene will be saved for ref by other scenes.
     private void Awake() {
         instance = this;
+        Storage.lastSidebarItem = mainButtonFirstSelected.gameObject;
     }
 
     private void Start() {
@@ -61,8 +62,23 @@ public class SidebarUI : MonoBehaviour {
 
     private void OnTogglePressed(InputAction.CallbackContext ctx) {
         ToggleExpanded();
-        // todo: use a global lastSelected, possibly in storage, for compatabilitiy with all scenes
-        if (Menu3d.instance) Menu3d.instance.SelectLastSelected();
+        if (expanded) {
+            // todo: use a global lastSelected, possibly in storage, for compatabilitiy with all scenes
+            Storage.storedSelection = EventSystem.current.currentSelectedGameObject;
+            SelectLastSelected();
+        } else {
+            ReselectAfterClose();
+        }
+    }
+
+    public static void ReselectAfterClose() {
+        if (Menu3d.instance) {
+            Menu3d.instance.SelectLastSelected();
+        } else if (Storage.storedSelection) {
+            EventSystem.current.SetSelectedGameObject(Storage.storedSelection);
+        } else {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 
     public void ToggleExpanded() {
@@ -190,7 +206,7 @@ public class SidebarUI : MonoBehaviour {
     public void LoginBackPressed() {
         showingLoginOptions = false;
         UpdateButtonsWindow();
-        Menu3d.instance.SelectLastSelected();
+        SelectLastSelected();
     }
 
     public void LoginGuestPressed() {

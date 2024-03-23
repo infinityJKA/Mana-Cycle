@@ -23,7 +23,7 @@ public class SidebarButton : MonoBehaviour, ISelectHandler, IMoveHandler
         // when cursoring left while in sidebar, go back to last selected button
         if (eventData.moveDir == MoveDirection.Left && SidebarUI.instance.expanded) {
             SidebarUI.instance.ToggleExpanded();
-            Menu3d.instance.SelectLastSelected();
+            SidebarUI.ReselectAfterClose();
         }
     }
 }

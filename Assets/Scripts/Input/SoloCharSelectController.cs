@@ -40,6 +40,8 @@ public class SoloCharSelectController : MonoBehaviour {
     public void OnNavigate(InputAction.CallbackContext ctx) {
         if (!canControl) return;
 
+        if (SidebarUI.instance && SidebarUI.instance.expanded) return;
+
         navigateInput = ctx.action.ReadValue<Vector2>();
 
         // navigation handling for new input system
@@ -87,6 +89,8 @@ public class SoloCharSelectController : MonoBehaviour {
     public void OnSelect(InputAction.CallbackContext ctx) {
         if (!canControl) return;
 
+        if (SidebarUI.instance && SidebarUI.instance.expanded) return;
+
         if (!ctx.performed) return;
         charSelector.OnCast(true);
 
@@ -102,31 +106,35 @@ public class SoloCharSelectController : MonoBehaviour {
     }
 
     public void OnBack(InputAction.CallbackContext ctx) {
+        
+
         // dont handle back or pause while shift pressed (messes up steam menu)
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) return;
 
         if (ctx.canceled) {
             charSelector.ReturnMenuUnpress();
             charSelector = charSelectMenu.GetActiveSelector();
+            if (SidebarUI.instance && SidebarUI.instance.expanded) return;
         }
 
         if (!ctx.performed) return;
         OnPauseOrBack();
     }
 
-    public void OnPause(InputAction.CallbackContext ctx) {
-        // dont handle back or pause while shift pressed (messes up steam menu)
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) return;
+    // public void OnPause(InputAction.CallbackContext ctx) {
+    //     // dont handle back or pause while shift pressed (messes up steam menu)
+    //     if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) return;
 
-        if (ctx.canceled) {
-            charSelector.ReturnMenuUnpress();
-            charSelector = charSelectMenu.GetActiveSelector();
-        }
+    //     if (ctx.canceled) {
+    //         charSelector.ReturnMenuUnpress();
+    //         charSelector = charSelectMenu.GetActiveSelector();
+    //     }
 
-        if (!ctx.performed) return;
-        OnPauseOrBack();
-        // charSelector.ReturnMenuPress();
-    }
+    //     if (!ctx.performed) return;
+    //     if (SidebarUI.instance && SidebarUI.instance.expanded) return;
+    //     OnPauseOrBack();
+    //     // charSelector.ReturnMenuPress();
+    // }
 
     private void OnPauseOrBack() {
         if (charSelectMenu.gameObject.activeInHierarchy) {
@@ -140,12 +148,16 @@ public class SoloCharSelectController : MonoBehaviour {
     }
 
     public void OnAbilityInfo(InputAction.CallbackContext ctx) {
+        if (SidebarUI.instance && SidebarUI.instance.expanded) return;
+
         if (!ctx.performed) return;
         if (!canControl) return; 
         charSelector.OnAbilityInfo();
     }
 
     public void OnSettings(InputAction.CallbackContext ctx) {
+        if (SidebarUI.instance && SidebarUI.instance.expanded) return;
+
         if (!canControl) return;
         if (!ctx.performed) return;
         charSelector.OnSettings();
