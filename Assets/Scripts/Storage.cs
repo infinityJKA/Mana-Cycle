@@ -25,7 +25,8 @@ public class Storage
     public static bool enableAbilities = true;
 
     /// <summary>Index of last item the player hovered in the main menu, start there when re-entering menu</summary>
-    public static int lastMainMenuItem = 1; // start on solo mode
+    public static int lastMainMenuItem = 0; // start on solo mode
+    public static GameObject lastSidebarItem;
 
     /** last index selected in level select list. -1 will select next level that is not cleared, starts off as this */
     public static int lastLevelSelectedIndex = -1;

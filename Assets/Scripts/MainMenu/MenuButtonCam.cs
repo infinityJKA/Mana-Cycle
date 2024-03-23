@@ -22,8 +22,11 @@ namespace MainMenu {
         public MonoBehaviour[] enableWhenSelected;
 
         public GameObject selectSFX, clickSFX;
+        public int buttonIndex;
 
         public void OnSelect(BaseEventData eventData){
+            Storage.lastMainMenuItem = buttonIndex;
+
             // if(eventData.selectedObject == this.gameObject){
                 Instantiate(selectSFX);
                 if (brain && brain.ActiveVirtualCamera != null) brain.ActiveVirtualCamera.Priority = 1;
