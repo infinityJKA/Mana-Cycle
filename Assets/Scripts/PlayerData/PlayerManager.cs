@@ -14,11 +14,10 @@ public class PlayerManager {
     /// If player is logged in ONLINE. does not include local (offline) mode login.
     /// </summary>
     public static bool loggedIn {get; private set;} = false;
-    public static bool isOffline => loginMode == LoginMode.Local;
 
     public static LoginMode loginMode {get; private set;}
     public enum LoginMode {
-        Local, // data saved locally, basically an offline mode. username may come from last login session (not implemented yet)
+        None, // not logged in
         Guest,
         Steam
     }
@@ -28,9 +27,6 @@ public class PlayerManager {
         // stop if already logged in online or logging in
         if (loggedIn || loginInProgress) return;
 
-        // login locally first - will show cached data that may be saved (will be instant, no networking required)
-        LoginLocal();
-
         // after local login, attempt to login online which may take a bit.
         // if this fails the player will remain logged in locally.
         if (SteamManager.Initialized) {
@@ -38,13 +34,6 @@ public class PlayerManager {
         } else {
             LoginGuest();
         }
-    }
-
-    // Not much of a login, but info from file about previous session and displays that.
-    // While in local mode, a notifier wills how up on the sidebar showing that the player is currently offline.
-    public static void LoginLocal() {
-        playerUsername = FBPP.GetString("playerUsername", "");
-        OnLoginFinished();
     }
 
     /// <param name="next">Action to run after login process is complete, whether successful or not</param>
@@ -116,7 +105,10 @@ public class PlayerManager {
     // If logged in, Retreive stuff like the wallet and such when first logging in.
     private static void OnLoginFinished() {
         loginInProgress = false;
-        if (SidebarUI.instance) SidebarUI.instance.UpdatePlayerInfo();
+        if (SidebarUI.instance) {
+            SidebarUI.instance.UpdatePlayerInfo();
+            SidebarUI.instance.UpdateButtonsWindow();
+        }
         if (loggedIn) {
             WalletManager.GetWallet();
             XPManager.GetPlayerInfo();

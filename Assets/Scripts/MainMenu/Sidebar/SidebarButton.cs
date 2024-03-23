@@ -12,7 +12,8 @@ public class SidebarButton : MonoBehaviour, ISelectHandler, IMoveHandler
         if (!SidebarUI.instance.expanded) {
             SidebarUI.instance.ToggleExpanded();
         }
-        Storage.lastSidebarItem = gameObject;
+        // index will be -1 for buttons in sub-windows other than the main side buttons
+        if (index >= 0) Storage.lastSidebarItem = gameObject;
     }
 
     public void OnMove(AxisEventData eventData)
