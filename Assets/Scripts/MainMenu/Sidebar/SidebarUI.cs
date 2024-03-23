@@ -6,7 +6,7 @@ public class SidebarUI : MonoBehaviour {
     public static SidebarUI instance {get; private set;}
 
     [SerializeField] private Animator animator;
-    private bool expanded = false;
+    public bool expanded {get; private set;} = false;
 
     // windows
     [SerializeField] private GameObject playerInfoWindow, loginOptionsWindow;
@@ -88,4 +88,28 @@ public class SidebarUI : MonoBehaviour {
         levelLabel.text = "Lv "+XPManager.level;
         xpLabel.text = XPManager.xp+"/"+XPManager.xpToNext;
     }
+
+
+    public void OnAccountPressed()
+    {
+        Debug.Log("Todo: show account info details");
+    }
+    // htp: Menu3d.SelectHTP
+
+    public void OnCosmeticsPressed() {
+        Debug.Log("Todo: Transition to cosmetic menu scene");
+    }
+
+    public void OnShopPressed()
+    {
+        TransitionScript.instance.WipeToScene("CosmeticShop");
+    }
+
+    public void OnNewsPressed()
+    {
+        Debug.Log("Todo: show announcements/changelon window");
+    }
+
+    // options: Menu3d.SelectSettings
+    // exit: Menu3d.SelectExit
 }

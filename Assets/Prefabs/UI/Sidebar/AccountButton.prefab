@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2396914400872857850}
   - component: {fileID: 6330168582527591017}
   - component: {fileID: 4358370341380247966}
+  - component: {fileID: 8586092087625319003}
   m_Layer: 5
   m_Name: AccountButton
   m_TagString: Untagged
@@ -122,6 +123,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8586092087625319003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889202548239969388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b9e8c633be77b44a2e90ff62562fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2233652864544445756
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,7 +243,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
