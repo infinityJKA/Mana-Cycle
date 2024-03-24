@@ -168,7 +168,8 @@ namespace Battle.Board {
 
             // if not, send in random columns and save the columns sent to
             else {
-                abilityData = new int[3];
+                if (!board.singlePlayer) abilityData = new int[3];
+                
                 for (int i=0; i<3; i++) {
                     // in singleplayer, send to own board as score-earning tiles. 
                     // also don't worry abt saving to abilitydata its unused in singleplayer currently

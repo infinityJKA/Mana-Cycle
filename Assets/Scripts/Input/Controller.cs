@@ -46,7 +46,7 @@ namespace Battle {
         // set to false whhen this is an AI vs AI match and htis controller can only interact with the pause menu.
         public bool canControlBoard = true;
 
-        private bool gameFocused => !PopupUI.showingPopup;
+        private bool gameFocused => !PopupManager.showingPopup;
 
         private void Awake() {
             playerInput = GetComponent<PlayerInput>();

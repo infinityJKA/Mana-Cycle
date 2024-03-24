@@ -24,7 +24,7 @@ public class SoloCharSelectController : MonoBehaviour {
 
     private bool joystickPressed;
 
-    bool canControl => charSelectMenu && charSelectMenu.gameObject.activeInHierarchy && !PopupUI.showingPopup;
+    bool canControl => charSelectMenu && charSelectMenu.gameObject.activeInHierarchy && !PopupManager.showingPopup;
 
     private void Awake() {
         instance = this;

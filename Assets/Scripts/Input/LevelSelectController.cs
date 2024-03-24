@@ -16,7 +16,7 @@ public class LevelSelectController : MonoBehaviour {
 
     private bool joystickPressed;
 
-    private bool hasControl => !PopupUI.showingPopup;
+    private bool hasControl => !PopupManager.showingPopup;
     
     public void OnNavigate(InputAction.CallbackContext ctx) {
         if (convoHandler && convoHandler.enabled) return;

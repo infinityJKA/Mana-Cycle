@@ -63,7 +63,7 @@ namespace Battle.Board {
         [SerializeField] public GameObject pyroBombParticleEffect;
         
 
-        private static Color lightenColor = new Color(1f, 1f, 0.9f);
+        private static readonly Color lightenColor = new Color(1f, 1f, 0.9f);
         private void Awake() {
             // get mana colors from player prefs
             // TODO: Use dynamic images/icons for mana sprites to use main and dark colors
