@@ -103,7 +103,12 @@ namespace PostGame {
                 charSelectButton.gameObject.SetActive(true);
             }
 
-            // Update level clear status
+            // BOTH GAMEMODES
+            AchievementHandler achievementHandler = FindAnyObjectByType<AchievementHandler>();
+            if (board.IsPlayerControlled()) achievementHandler.CheckAchievements(board);
+            if (!Storage.online && board.enemyBoard.IsPlayerControlled()) achievementHandler.CheckAchievements(board.enemyBoard);
+
+            // ======== SOLO ONLY
             if (Storage.gamemode == Storage.GameMode.Solo)
             {
                 string levelID = Storage.level.levelId;
@@ -118,11 +123,10 @@ namespace PostGame {
 
                     int score = Storage.level.isEndless ? board.hp : board.hp + (board.lives-1)*2000; // add 2000 to score for each extra life
                     Storage.level.highScore = Math.Max(score, Storage.level.highScore);
-                    FBPP.Save();
 
-                    // Upload high score to LootLocker
+                    // Upload score to LootLocker
                     if (PlayerManager.loggedIn) {
-                        LeaderboardManager.UploadLeaderboardScore(Storage.level, Storage.level.highScore);
+                        LeaderboardManager.UploadLeaderboardScore(Storage.level, score);
                     }
 
                     // If solo mode win: retry -> replay
@@ -214,6 +218,7 @@ namespace PostGame {
                 // Debug.Log(Storage.level.lastSeriesLevel);
             }
 
+            // ======== VERSUS ONLY
             else if (Storage.gamemode == Storage.GameMode.Versus)
             {
                 // In versus mode: retry -> rematch
@@ -222,26 +227,11 @@ namespace PostGame {
 
                 MenuUI.SetActive(true);
                 Time.timeScale = 0f;
-                // when in multi, disable solo button and continue button
-                // MenuItems[2].SetActive(false);
-                // MenuItems.RemoveAt(2);
-                // MenuItems[2].SetActive(false);
-                // MenuItems.RemoveAt(2);
 
                 SoundManager.Instance.SetBGM(winMusic);
-
-                // rematchTextGUI.text = "Rematch";
             }
 
-            AchievementHandler achievementHandler = FindAnyObjectByType<AchievementHandler>();
-            if (board.IsPlayerControlled()) achievementHandler.CheckAchievements(board);
-            if (!Storage.online && board.enemyBoard.IsPlayerControlled()) achievementHandler.CheckAchievements(board.enemyBoard);
-
-            // if (!board.Mobile) {
-            //     EventSystem.current.SetSelectedGameObject(null);
-            //     EventSystem.current.SetSelectedGameObject(buttonsTransform.GetChild(0).gameObject);
-            // }
-
+            // ======= Both solo & versus, after allat other logic
             if (retryButton.gameObject.activeInHierarchy) {
                 retryButton.Select();
             } else {
@@ -255,6 +245,9 @@ namespace PostGame {
                 SetIntention(NetPlayer.PostGameIntention.Undecided, true);
                 SetIntention(NetPlayer.PostGameIntention.Undecided, false);
             }
+
+            // Save any achievement or level score data that may have changed
+            SaveData.Save();
         }
 
         public void AppearAfterDelay()

@@ -22,7 +22,6 @@ namespace Sound {
                 Destroy(gameObject);
             }
 
-            if (!SaveDataManager.initialized) return;
             Load();
         }
 
@@ -69,48 +68,48 @@ namespace Sound {
 
         public void ChangeMusicVolume(float value)
         {
-            FBPP.SetFloat("musVolumeKey", value);
+            PlayerPrefs.SetFloat("musVolumeKey", value);
             musicSource.volume = value;
         }
 
         public void ChangeSFXVolume(float value)
         {
-            FBPP.SetFloat("sfxVolumeKey", value);
+            PlayerPrefs.SetFloat("sfxVolumeKey", value);
         }
 
         public void Load()
         {
             // music
-            if (!FBPP.HasKey("musVolumeKey"))
+            if (!PlayerPrefs.HasKey("musVolumeKey"))
             {
-                FBPP.SetFloat("musVolumeKey", 0.5f);
+                PlayerPrefs.SetFloat("musVolumeKey", 0.5f);
             }
             else
             {
-                Instance.musicSource.volume = FBPP.GetFloat("musVolumeKey");
+                Instance.musicSource.volume = PlayerPrefs.GetFloat("musVolumeKey");
             }
 
             // sfx
-            if (!FBPP.HasKey("sfxVolumeKey"))
+            if (!PlayerPrefs.HasKey("sfxVolumeKey"))
             {
-                FBPP.SetFloat("sfxVolumeKey", 0.5f);
+                PlayerPrefs.SetFloat("sfxVolumeKey", 0.5f);
             }
             else
             {
-                Instance.effectSource.volume = FBPP.GetFloat("sfxVolumeKey");
+                Instance.effectSource.volume = PlayerPrefs.GetFloat("sfxVolumeKey");
             }
 
             // master
-            if (!FBPP.HasKey("masterVolumeKey"))
+            if (!PlayerPrefs.HasKey("masterVolumeKey"))
             {
-                FBPP.SetFloat("masterVolumeKey", 1.0f);
+                PlayerPrefs.SetFloat("masterVolumeKey", 1.0f);
             }
             else
             {
-                Instance.effectSource.volume = FBPP.GetFloat("masterVolumeKey");
+                Instance.effectSource.volume = PlayerPrefs.GetFloat("masterVolumeKey");
             }
             
-            FBPP.Save();
+            PlayerPrefs.Save();
         }
 
     }

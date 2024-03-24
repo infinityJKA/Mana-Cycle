@@ -59,7 +59,7 @@ namespace Achievements
         public void UnlockAchievement(Achievement achievement)
         {
             if (!achievement.unlocked) achievementNotifyQueue.Enqueue(achievement);
-            achievement.UnlockPlayerPref();
+            achievement.UnlockInSaveData();
         }
 
         /// <summary>
@@ -109,9 +109,6 @@ namespace Achievements
                 // if passed all objectives, earn the achievement
                 if (objectivesComplete) UnlockAchievement(achievement);
             }
-
-            // update player prefs file
-            FBPP.Save();
 
             // don't run if steamworks disabled - game is either not run through steam or is webgl/standalone pc build
             #if !DISABLESTEAMWORKS

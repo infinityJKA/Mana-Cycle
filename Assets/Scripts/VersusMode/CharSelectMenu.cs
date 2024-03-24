@@ -68,24 +68,22 @@ namespace VersusMode {
             p2Selector.MenuInit();
             p1Selector.MenuInit();
 
-            p1Selector.doGhostPiece = FBPP.GetInt("drawGhostPiece", 1) == 1;
-            p2Selector.doGhostPiece = FBPP.GetInt("drawGhostPieceP2", 1) == 1;
+            p1Selector.doGhostPiece = Settings.current.drawGhostPiece;
+            p2Selector.doGhostPiece = Settings.current.drawGhostPieceP2;
 
             if (Storage.gamemode == Storage.GameMode.Solo && Storage.level.lives != -1) {
                 p1Selector.SetLives(Storage.level.lives);
                 p1Selector.livesSelectable.gameObject.SetActive(false);
             } else {
-                p1Selector.SetLives(FBPP.GetInt("versusLives", 1));
+                p1Selector.SetLives(Settings.current.versusLives);
             }
 
             if (!Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) {
-                p1Selector.CpuLevel = FBPP.GetInt("CpuVsCpuP1Level", 5);
-                p2Selector.CpuLevel = FBPP.GetInt("CpuVsCpuP2Level", 5);
+                p1Selector.CpuLevel = Settings.current.cvcP1Level;
+                p2Selector.CpuLevel = Settings.current.cvcP2Level;
             } else if (Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) {
-                p2Selector.CpuLevel = FBPP.GetInt("CpuLevel", 5);
+                p2Selector.CpuLevel = Settings.current.cpuLevel;
             }
-
-            transitionHandler = GameObject.FindObjectOfType<TransitionScript>();
 
             RefreshStartButton();
 
@@ -128,39 +126,41 @@ namespace VersusMode {
             // if (Storage.isPlayer1 == null) Storage.isPlayer1 = true;
             // if (Storage.isPlayer2 == null) Storage.isPlayer2 = true;
 
-            FBPP.SetInt("drawGhostPiece", p1Selector.doGhostPiece ? 1 : 0);
-            FBPP.SetInt("enableAbilities", p1Selector.enableAbilities ? 1 : 0);
+            // Store selected settings
+            Settings.current.drawGhostPiece = p1Selector.doGhostPiece;
 
-            if (!Storage.level) FBPP.SetInt("versusLives", p1Selector.lives);
+            if (Storage.gamemode == Storage.GameMode.Versus && !Storage.level) {
+                Settings.current.enableAbilities = p1Selector.enableAbilities;
+                Settings.current.versusLives = p1Selector.lives;
+
+                Settings.current.drawGhostPieceP2 = p2Selector.doGhostPiece;
+
+                if (p1Selector.isCpuCursor && p2Selector.isCpuCursor) {
+                    Settings.current.cvcP1Level = p1Selector.CpuLevel;
+                    Settings.current.cvcP2Level = p2Selector.CpuLevel;
+                } else if (!p1Selector.isCpuCursor && p2Selector.isCpuCursor) {
+                    Settings.current.cpuLevel = p2Selector.CpuLevel;
+                }
+            }
+
+            Settings.Save();
+            
+            // Setup global storage variables
             Storage.lives = p1Selector.lives;
-
             if (Storage.gamemode != Storage.GameMode.Solo)
             {
                 Storage.battler1 = p1Selector.selectedBattler;
                 Storage.battler2 = p2Selector.selectedBattler;
                 Storage.level = null;
                 Storage.gamemode = Storage.GameMode.Versus;
-                FBPP.SetInt("drawGhostPieceP2", p2Selector.doGhostPiece ? 1 : 0);
             }
             else 
             {
                 Storage.level.battler = p1Selector.selectedBattler;
             }
-
-            if (p1Selector.isCpuCursor && p2Selector.isCpuCursor) {
-                FBPP.SetInt("CpuVsCpuP1Level", p1Selector.CpuLevel);
-                FBPP.SetInt("CpuVsCpuP2Level", p2Selector.CpuLevel);
-            } else if (!p1Selector.isCpuCursor && p2Selector.isCpuCursor) {
-                FBPP.SetInt("CpuLevel", p2Selector.CpuLevel);
-            }
             
             bool dualKeyboardAvailable = Storage.gamemode == Storage.GameMode.Versus && !Storage.online;
             dualKeyboardButton.gameObject.SetActive(dualKeyboardAvailable);
-
-            if (!transitionHandler) {
-                Debug.LogError("Transition handler not found in scene!");
-                return;
-            }
 
             Instantiate(startSFX);
             started = true;
@@ -168,7 +168,7 @@ namespace VersusMode {
             bool autoFadeOut = !Storage.online;
 
             ManaCycle.initializeFinished = false;
-            transitionHandler.WipeToScene("ManaCycle", autoFadeOut: autoFadeOut);
+            TransitionScript.instance.WipeToScene("ManaCycle", autoFadeOut: autoFadeOut);
         }
 
         // ---- Mobile ----
