@@ -135,13 +135,13 @@ public class PlayerManager {
 
     public static void Logout() {
         LootLockerSDKManager.EndSession((response) => {
-            if (!response.success) {
-                Debug.LogError("error ending session:"+response.errorData.message);
-                OnLoginFinished();
-                return;
-            }
-
+            // always log out regardless if the server says error or not. (but still show the error)
             loggedIn = false;
+
+            if (!response.success) {
+                Debug.LogError("error ending session: "+response.errorData.message);
+            }
+            
             OnLoginFinished();
             if (SidebarUI.instance) SidebarUI.instance.SelectLastSelected();
         });

@@ -112,6 +112,7 @@ public class RemoteFileManager {
                 if (currentLevel.highScore < incomingLevel.highScore) {
                     currentLevel.highScore = incomingLevel.highScore;
                     Debug.Log(levelId+" score: "+currentLevel.highScore+" -> "+incomingLevel.highScore);
+                    LeaderboardManager.UploadScore(levelId+"_Score", incomingLevel.highScore);
                 }
                 if (currentLevel.fastestTime > incomingLevel.fastestTime) {
                     currentLevel.fastestTime = incomingLevel.fastestTime;
@@ -123,6 +124,7 @@ public class RemoteFileManager {
             else {
                 current.levels[levelId] = incomingLevel;
                 Debug.Log(levelId+" is now cleared");
+                LeaderboardManager.UploadScore(levelId+"_Score", incomingLevel.highScore);
             }
         }
 
