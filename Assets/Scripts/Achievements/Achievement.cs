@@ -62,14 +62,14 @@ namespace Achievements {
         { 
             get 
             { 
-                return SaveData.current.achievements.Contains(id);
+                return ProgressData.current.achievements.Contains(id);
             }
         }
 
         public void UnlockInSaveData()
         {
-            if (!SaveData.current.achievements.Contains(id)) {
-                SaveData.current.achievements.Add(id);
+            if (!ProgressData.current.achievements.Contains(id)) {
+                ProgressData.current.achievements.Add(id);
             }
         }
     }

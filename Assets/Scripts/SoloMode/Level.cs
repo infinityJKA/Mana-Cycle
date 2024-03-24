@@ -108,15 +108,15 @@ namespace SoloMode {
 
         public bool isCleared {
             get {
-                return SaveData.current.levels.ContainsKey(levelId);
+                return ProgressData.current.levels.ContainsKey(levelId);
             }
             set {
-                SaveData.current.levels.Add(levelId, new LevelData());
+                ProgressData.current.levels.Add(levelId, new LevelData());
             }
         }
 
         public static bool IsLevelCleared(string id) {
-            return SaveData.current.levels.ContainsKey(id);
+            return ProgressData.current.levels.ContainsKey(id);
         }
 
         public bool isSeriesCleared => finalLevel.isCleared;
@@ -180,11 +180,11 @@ namespace SoloMode {
 
         public int highScore {
             get {
-                if(!SaveData.current.levels.ContainsKey(levelId)) return 0;
-                return SaveData.current.levels[levelId].highScore;
+                if(!ProgressData.current.levels.ContainsKey(levelId)) return 0;
+                return ProgressData.current.levels[levelId].highScore;
             }
             set {
-                SaveData.current.levels[levelId].highScore = value;
+                ProgressData.current.levels[levelId].highScore = value;
             }
         }
         public int finalHighScore => finalLevel.highScore;
@@ -194,11 +194,11 @@ namespace SoloMode {
         /// </summary>
         public int fastestTime {
             get {
-                if(!SaveData.current.levels.ContainsKey(levelId)) return -1;
-                return SaveData.current.levels[levelId].fastestTime;
+                if(!ProgressData.current.levels.ContainsKey(levelId)) return -1;
+                return ProgressData.current.levels[levelId].fastestTime;
             }
             set {
-                SaveData.current.levels[levelId].fastestTime = value;
+                ProgressData.current.levels[levelId].fastestTime = value;
             }
         }
 
@@ -236,16 +236,16 @@ namespace SoloMode {
             GUILayout.Label("Reset the progress of this level");
 
             if (GUILayout.Button("Reset Level Progress")) {
-                SaveData.current.levels.Remove(level.levelId);
-                SaveData.Save();
+                ProgressData.current.levels.Remove(level.levelId);
+                ProgressData.Save();
                 Debug.Log("cleared progress of "+level.levelId);
             }
 
             GUILayout.Label("Clear ALL save data (levels, achievements)");
 
             if (GUILayout.Button("Reset ALL Progress")) {
-                SaveData.RemoveAllSaveData();
-                SaveData.Save();
+                ProgressData.ClearALLProgress();
+                ProgressData.Save();
                 Debug.Log("All progress reset!");
             }
         }

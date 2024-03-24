@@ -89,6 +89,9 @@ public class SidebarUI : MonoBehaviour {
             UpdateButtonsWindow();
         }
 
+        PlayerManager.loginError = "";
+        UpdateUserInfo();
+
         animator.SetBool("expanded", expanded);
     }
 
@@ -139,7 +142,7 @@ public class SidebarUI : MonoBehaviour {
         loggingInNotifier.SetActive(PlayerManager.loginInProgress);
 
         // only show offline notifier if not in the process of logging in and also logged out (not online)
-        if (!PlayerManager.loginInProgress) offlineNotifier.SetActive(!PlayerManager.loggedIn);
+        offlineNotifier.SetActive(!PlayerManager.loginInProgress && Application.internetReachability == NetworkReachability.NotReachable);
 
         loginErrorLabel.text = PlayerManager.loginError;
 
@@ -210,19 +213,27 @@ public class SidebarUI : MonoBehaviour {
     }
 
     public void LoginGuestPressed() {
-        LoginPressed();
+        PlayerManager.loginError = "";
         PlayerManager.LoginGuest();
+        LoginPressed();
     }
 
     public void LoginSteamPressed() {
-        LoginPressed();
+        PlayerManager.loginError = "";
         PlayerManager.LoginSteam();
+        LoginPressed();
     }
 
     public void LoginPressed() {
+        if(Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            PlayerManager.loginError = "You are offline";
+        }
+
         loginOptionsLastSelected = EventSystem.current.currentSelectedGameObject;
         SetLoginButtonsInteractable(false);
-        PlayerManager.loginError = "";
+        
+        UpdateUserInfo();
         UpdateButtonsWindow();
         // todo: show a spinner or somethin to show that login is in progress
         // Once login process finishes, PlayerManager will call UpdateButtonsList() and UpdatePlayerInfo() on this instance

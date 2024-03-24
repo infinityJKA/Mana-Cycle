@@ -247,7 +247,7 @@ namespace PostGame {
             }
 
             // Save any achievement or level score data that may have changed
-            SaveData.Save();
+            ProgressData.Save();
         }
 
         public void AppearAfterDelay()
