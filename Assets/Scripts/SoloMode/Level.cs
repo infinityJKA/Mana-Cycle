@@ -108,15 +108,15 @@ namespace SoloMode {
 
         public bool isCleared {
             get {
-                return FBPP.GetInt(levelId+"_Cleared", 0) == 1;
+                return SaveData.current.levels.ContainsKey(levelId);
             }
             set {
-                FBPP.SetInt(levelId+"_Cleared", value ? 1 : 0);
+                SaveData.current.levels.Add(levelId, new LevelData());
             }
         }
 
         public static bool IsLevelCleared(string id) {
-            return FBPP.GetInt(id+"_Cleared", 0) == 1;
+            return SaveData.current.levels.ContainsKey(id);
         }
 
         public bool isSeriesCleared => finalLevel.isCleared;
@@ -180,10 +180,11 @@ namespace SoloMode {
 
         public int highScore {
             get {
-                return FBPP.GetInt(levelId+"_HighScore", 0);
+                if(!SaveData.current.levels.ContainsKey(levelId)) return 0;
+                return SaveData.current.levels[levelId].highScore;
             }
             set {
-                FBPP.SetInt(levelId+"_HighScore", value);
+                SaveData.current.levels[levelId].highScore = value;
             }
         }
         public int finalHighScore => finalLevel.highScore;
@@ -193,10 +194,11 @@ namespace SoloMode {
         /// </summary>
         public int fastestTime {
             get {
-                return FBPP.GetInt(levelId+"_FastestTime", 0);
+                if(!SaveData.current.levels.ContainsKey(levelId)) return -1;
+                return SaveData.current.levels[levelId].fastestTime;
             }
             set {
-                FBPP.SetInt(levelId+"_FastestTime", value);
+                SaveData.current.levels[levelId].fastestTime = value;
             }
         }
 
@@ -234,15 +236,16 @@ namespace SoloMode {
             GUILayout.Label("Reset the progress of this level");
 
             if (GUILayout.Button("Reset Level Progress")) {
-                FBPP.DeleteKey(level.levelId+"_Cleared");
-                FBPP.DeleteKey(level.levelId+"_HighScore");
-                Debug.Log("cleared progress of "+level.levelName);
+                SaveData.current.levels.Remove(level.levelId);
+                SaveData.Save();
+                Debug.Log("cleared progress of "+level.levelId);
             }
 
-            GUILayout.Label("Reset ALL player preferences, including levels, settings, etc");
+            GUILayout.Label("Clear ALL save data (levels, achievements)");
 
             if (GUILayout.Button("Reset ALL Progress")) {
-                FBPP.DeleteAll();
+                SaveData.RemoveAllSaveData();
+                SaveData.Save();
                 Debug.Log("All progress reset!");
             }
         }

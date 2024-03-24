@@ -150,9 +150,6 @@ namespace MainMenu {
             SettingsWindow.SetActive(false);
             MainWindow.SetActive(true);
             SelectLastSelected();
-
-            // will save any possibly-edited settings
-            FBPP.Save();
         }
 
         public void SelectSolo()

@@ -392,7 +392,7 @@ namespace VersusMode {
 
                 // if any battle preferences were just toggled, update its state in Storage and the other player's settings toggle
                 if (settingsSelection == abilityToggle) {
-                    FBPP.SetInt("enableAbilities", abilityToggle.isOn ? 1 : 0);
+                    Settings.current.enableAbilities = abilityToggle.isOn;
                     opponentSelector.abilityToggle.isOn = abilityToggle.isOn;
                 }
             }
@@ -488,8 +488,8 @@ namespace VersusMode {
             }
 
             SetSettingsSelection(ghostPieceToggle);
-            ghostPieceToggle.isOn = FBPP.GetInt("drawGhostPiece", 1) == 1;
-            abilityToggle.isOn = FBPP.GetInt("enableAbilities", 1) == 1;
+            ghostPieceToggle.isOn = Settings.current.drawGhostPiece;
+            abilityToggle.isOn = Settings.current.enableAbilities;
         }
 
         public void ToggleLock()
@@ -601,6 +601,9 @@ namespace VersusMode {
                     NetworkManager.singleton.StopClient();
                 }
             } else {
+                // Store any settings that may have been changed, even though match isnt starting with those settings
+                Settings.Save();
+
                 if (Storage.gamemode != Storage.GameMode.Solo) {
                     TransitionScript.instance.WipeToScene("MainMenu", reverse: true);
                 } else {

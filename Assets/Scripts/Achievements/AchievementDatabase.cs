@@ -14,7 +14,7 @@ namespace Achievements
         public List<Achievement> achievements;
     }
 
-    #if (UNITY_EDITOR)
+    #if UNITY_EDITOR
     [CustomEditor(typeof(AchievementDatabase))]
     public class AchievementDatabaseEditor : Editor
     {
@@ -24,14 +24,8 @@ namespace Achievements
 
             if (GUILayout.Button("Reset Achievement Progress"))
             {
-                AchievementDatabase database = (AchievementDatabase)target;
-                
-                foreach (var ach in database.achievements)
-                {
-                    FBPP.DeleteKey("ACH_" + ach.id);  
-                }
-
-                FBPP.Save();
+                SaveData.current.achievements.Clear();
+                SaveData.Save();
                 Debug.Log("Achievement progress reset");
             }
         }

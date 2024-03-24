@@ -62,13 +62,15 @@ namespace Achievements {
         { 
             get 
             { 
-                return FBPP.GetInt("ACH_" + id, 0) == 1;
+                return SaveData.current.achievements.Contains(id);
             }
         }
 
-        public void UnlockPlayerPref()
+        public void UnlockInSaveData()
         {
-            FBPP.SetInt("ACH_" + id, 1);
+            if (!SaveData.current.achievements.Contains(id)) {
+                SaveData.current.achievements.Add(id);
+            }
         }
     }
 }
