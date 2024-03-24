@@ -24,8 +24,8 @@ namespace Achievements
 
             if (GUILayout.Button("Reset Achievement Progress"))
             {
-                SaveData.current.achievements.Clear();
-                SaveData.Save();
+                ProgressData.current.achievements.Clear();
+                ProgressData.Save();
                 Debug.Log("Achievement progress reset");
             }
         }

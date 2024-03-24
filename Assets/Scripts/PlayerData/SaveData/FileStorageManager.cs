@@ -7,8 +7,6 @@ using UnityEngine;
 
 // the SaveDataManager object can be on the PlayerManager prefab along with the PlayerManager singleton there
 public class FileStorageManager {
-    public static bool initialized {get; private set;} = false;
-
     // right now the encrypt bool desont do anything but may work on this later.
     // binary formatting should be enough to prevent most tampering for now.
     public static void Save<T>(T data, string path, bool encrypt) {

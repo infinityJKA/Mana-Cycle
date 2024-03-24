@@ -8,12 +8,13 @@ using UnityEngine;
 /// </summary>
 [System.Serializable]
 public class Settings {
-    public static Settings current {get; private set;}
+    public static Settings current {get; set;}
 
     // Saving & loading
-    private static readonly string filePath;
+    public const string name = "settings.sav";
+    public static readonly string filePath;
     static Settings() {
-        filePath = Path.Join(Application.persistentDataPath, "settings.sav");
+        filePath = Path.Join(Application.persistentDataPath, name);
         Load();
     }
     public static void Save() {
@@ -22,6 +23,7 @@ public class Settings {
     public static void Load() {
         current = FileStorageManager.Load<Settings>(filePath, decrypt: false);
     }
+
     public static void ClearSettings() {
         current = new Settings();
     }

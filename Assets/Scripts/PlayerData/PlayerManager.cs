@@ -43,7 +43,6 @@ public class PlayerManager {
 
         if(Application.internetReachability == NetworkReachability.NotReachable)
         {
-            loginError = "You are offline";
             OnLoginFinished();
             return;
         }
@@ -68,16 +67,15 @@ public class PlayerManager {
 
     /// <param name="next">Action to run after login process is complete, whether successful or not</param>
     public static void LoginSteam() {
-        if(Application.internetReachability == NetworkReachability.NotReachable)
-        {
-            loginError = "You are offline";
+        // To make sure Steamworks.NET is initialized
+        if (!SteamManager.Initialized) {
+            loginError = "Steam not initialized";
             OnLoginFinished();
             return;
         }
 
-        // To make sure Steamworks.NET is initialized
-        if (!SteamManager.Initialized) {
-            loginError = "Steam not initialized";
+        if(Application.internetReachability == NetworkReachability.NotReachable)
+        {
             OnLoginFinished();
             return;
         }
@@ -131,6 +129,7 @@ public class PlayerManager {
         if (loggedIn) {
             WalletManager.GetWallet();
             XPManager.GetPlayerInfo();
+            RemoteFileManager.GetPlayerFiles(download: true);
         }
     }  
 
