@@ -14,14 +14,18 @@ public class PopupManager : MonoBehaviour {
     /// List of popups. The last item is the one currently being shown on top and acted on.
     /// When a popup is lcosed control is given to the next highest in the stack.
     /// </summary>
-    private Stack<Popup> popupStack;
+    private static Stack<Popup> popupStack;
 
     public Popup currentPopup {get; private set;}
-    public static bool showingPopup => instance.popupStack.Count > 0;
+    public static bool showingPopup => popupStack.Count > 0;
 
 
     [SerializeField] private Canvas canvas;
     [SerializeField] private BasicPopup basicPopupPrefab;
+
+    static PopupManager() {
+        popupStack = new Stack<Popup>();
+    }
 
 
     GameObject previouslySelected = null;
@@ -33,7 +37,7 @@ public class PopupManager : MonoBehaviour {
         }
         instance = this;
 
-        popupStack = new Stack<Popup>();
+        
 
         DontDestroyOnLoad(gameObject);
     }

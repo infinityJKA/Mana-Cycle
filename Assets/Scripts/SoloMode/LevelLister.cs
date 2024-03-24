@@ -521,8 +521,12 @@ namespace SoloMode {
                 HideInfo();
             } else {
                 StoreSelections();
-                GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("MainMenu", reverse : true);
+                BackToMenu();
             }
+        }
+
+        public void BackToMenu() {
+            GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("MainMenu", reverse : true);
         }
 
         public void ToggleInfo() {

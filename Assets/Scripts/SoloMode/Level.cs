@@ -111,7 +111,11 @@ namespace SoloMode {
                 return ProgressData.current.levels.ContainsKey(levelId);
             }
             set {
-                ProgressData.current.levels.Add(levelId, new LevelData());
+                if (value == true && !ProgressData.current.levels.ContainsKey(levelId)) {
+                    ProgressData.current.levels[levelId] = new LevelData();
+                } else if (value == false) {
+                    ProgressData.current.levels.Remove(levelId);
+                }
             }
         }
 

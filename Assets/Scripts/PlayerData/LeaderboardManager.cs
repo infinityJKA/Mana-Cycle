@@ -16,7 +16,7 @@ public class LeaderboardManager {
         data = new Dictionary<Level, Dictionary<LeaderboardType, LeaderboardEntryList>>();
     }
 
-    private static void UploadScore(string key, int score) {
+    public static void UploadScore(string key, int score) {
         if (uploadingScore) return;
         uploadingScore = true;
 
