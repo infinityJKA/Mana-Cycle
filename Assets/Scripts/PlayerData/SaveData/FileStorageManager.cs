@@ -9,22 +9,8 @@ using UnityEngine;
 public class FileStorageManager {
     public static bool initialized {get; private set;} = false;
 
-    // Key for reading and writing encrypted data.
-    // Hardcoded for now
-    // should be enough security to block most tampering of files.
-    // but may want to move this somewhere more secure later... instead of plainly on github
-    const string PASSWORD = "f997b35f46beaccb5a47017a67e449e6";
-
-    private class LockedData<T> {
-        public T data;
-        public string hash;
-
-        public LockedData(T data, string hash) {
-            this.data = data;
-            this.hash = hash;
-        }
-    }
-
+    // right now the encrypt bool desont do anything but may work on this later.
+    // binary formatting should be enough to prevent most tampering for now.
     public static void Save<T>(T data, string path, bool encrypt) {
         FileStream dataStream = new FileStream(path, FileMode.Create);
 

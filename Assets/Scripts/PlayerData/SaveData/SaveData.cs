@@ -32,9 +32,9 @@ public class SaveData {
     public Dictionary<string, LevelData> levels = new Dictionary<string, LevelData>();
 
     /// <summary>
-    /// Hashset of all achievements the player has unlocked
+    /// List of all achievement IDs the player has unlocked
     /// </summary>
-    public HashSet<string> achievements = new HashSet<string>();
+    public List<string> achievements = new List<string>();
 }
 
 [System.Serializable]
