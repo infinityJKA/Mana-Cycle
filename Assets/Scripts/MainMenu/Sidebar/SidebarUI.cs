@@ -194,7 +194,8 @@ public class SidebarUI : MonoBehaviour {
 
     public void OnShopPressed()
     {
-        TransitionScript.instance.WipeToScene("CosmeticShop");
+        Debug.Log("Todo: go to cosmetic shop once in a usable state");
+        // TransitionScript.instance.WipeToScene("CosmeticShop");
     }
 
     public void OnNewsPressed()
