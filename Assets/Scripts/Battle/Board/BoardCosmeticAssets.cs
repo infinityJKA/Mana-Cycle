@@ -69,8 +69,8 @@ namespace Battle.Board {
             // TODO: Use dynamic images/icons for mana sprites to use main and dark colors
             for (int i = 0; i < 5; i++)
             {
-                manaColors[i] = cosmeticDatabase.palettes[PlayerPrefs.GetInt("Palette", 0)].palettes[i];
-                manaVisuals[i] = cosmeticDatabase.icons[PlayerPrefs.GetInt("IconPack", 0)].icons[i];
+                manaColors[i] = cosmeticDatabase.colors[PlayerPrefs.GetInt("ManaColor" + i, i)];
+                manaVisuals[i] = cosmeticDatabase.icons[PlayerPrefs.GetInt("ManaIcon" + i, i)];
             }
             
             while (litManaColors.Count < manaColors.Count) {
