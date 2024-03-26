@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Cosmetics
 {
@@ -9,6 +10,17 @@ namespace Cosmetics
     {
         public Color mainColor = Color.white;
         public Color darkColor = Color.black;
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as ManaPalette);
+        }
+
+        public bool Equals(ManaPalette other)
+        {
+            if (other == null) return false;
+            return (mainColor == other.mainColor && darkColor == other.darkColor);
+        }
     }
 
     [CreateAssetMenu(fileName = "Palette", menuName = "Cosmetics/Palette")]
