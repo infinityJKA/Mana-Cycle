@@ -20,7 +20,7 @@ namespace Cosmetics
     [System.Serializable]
     public class IconPack : CosmeticItem
     {
-        public IconPack() : base("IconPack"){}
+        public IconPack() : base(CosmeticItem.CosmeticType.IconPack){}
 
         public ManaIcon[] icons;
     }
