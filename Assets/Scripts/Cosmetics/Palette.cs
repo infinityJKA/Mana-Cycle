@@ -5,9 +5,11 @@ using System;
 
 namespace Cosmetics
 {
+    [CreateAssetMenu(fileName = "Palette", menuName = "Cosmetics/Palette")]
     [System.Serializable]
-    public class ManaPalette
+    public class ManaPalette : CosmeticItem
     {
+        public ManaPalette() : base(CosmeticType.Palette){}
         public Color mainColor = Color.white;
         public Color darkColor = Color.black;
 
@@ -23,12 +25,12 @@ namespace Cosmetics
         }
     }
 
-    [CreateAssetMenu(fileName = "Palette", menuName = "Cosmetics/Palette")]
-    [System.Serializable]
-    public class Palette : CosmeticItem
-    {
-        public Palette() : base("Palette"){}
+    // [CreateAssetMenu(fileName = "Palette", menuName = "Cosmetics/Palette")]
+    // [System.Serializable]
+    // public class Palette : CosmeticItem
+    // {
+    //     public Palette() : base("Palette"){}
 
-        public ManaPalette[] palettes;
-    }
+    //     public ManaPalette[] palettes;
+    // }
 }
