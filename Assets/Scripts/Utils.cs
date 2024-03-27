@@ -96,4 +96,12 @@ public class Utils : MonoBehaviour
             return KeySymbol(up)+KeySymbol(left)+KeySymbol(down)+KeySymbol(right);
         }
     }
+
+    public static Vector2 SnapScrollToChildPos(UnityEngine.UI.ScrollRect scrollRect, RectTransform child)
+        {
+            Vector2 viewportLocalPosition = scrollRect.viewport.localPosition;
+            Vector2 childLocalPosition = child.localPosition;
+            Vector2 result = new Vector2(0 - (viewportLocalPosition.x + childLocalPosition.x), 0 - (viewportLocalPosition.y + childLocalPosition.y));
+            return result;
+        }
 }
