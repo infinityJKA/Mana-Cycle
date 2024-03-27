@@ -32,8 +32,10 @@ namespace SaveData {
         }
 
         // ===== DATA
-        public List<PaletteColor> paletteColors;
+        // key: id
+        public static readonly Dictionary<string, PaletteColor> paletteColors = new Dictionary<string, PaletteColor>();
 
-        public List<ManaIcon> manaIcons;
+        // key: id
+        public static readonly Dictionary<string, IconPack> iconPacks = new Dictionary<string, IconPack>();
     }
 }
