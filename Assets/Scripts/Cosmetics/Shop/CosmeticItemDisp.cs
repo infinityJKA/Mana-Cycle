@@ -16,6 +16,10 @@ namespace Cosmetics
         [SerializeField] private TextMeshProUGUI costText;
         [SerializeField] private Image itemIcon;
 
+        // set from shop tab script
+        [System.NonSerialized] public SwapPanelManager panelManager;
+        [System.NonSerialized] public PurchaseConfirmationPanel confirmationPanel;
+
         void Start()
         {
             nameText.text = item.displayName;
@@ -27,6 +31,13 @@ namespace Cosmetics
         public void Selected()
         {
             descText.text = item.description;
+        }
+
+        public void Submitted()
+        {
+            confirmationPanel.item = item;
+            confirmationPanel.Refresh();
+            panelManager.OpenPanel(3);
         }
     }
 }

@@ -935,7 +935,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8888706329970848380, guid: a2c9e3a2ced038c45998030647c94aac, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1301681394}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8328405367130565026, guid: a2c9e3a2ced038c45998030647c94aac, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 495674215}
   m_SourcePrefab: {fileID: 100100000, guid: a2c9e3a2ced038c45998030647c94aac, type: 3}
 --- !u!224 &196042703 stripped
 RectTransform:
@@ -947,7 +950,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8189926674380690672, guid: a2c9e3a2ced038c45998030647c94aac, type: 3}
   m_PrefabInstance: {fileID: 196042702}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 495674212}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de8a6acbb2841924e9755deb0345c8b6, type: 3}
@@ -1369,6 +1372,7 @@ GameObject:
   - component: {fileID: 247777325}
   - component: {fileID: 247777327}
   - component: {fileID: 247777328}
+  - component: {fileID: 247777329}
   m_Layer: 5
   m_Name: YesButton
   m_TagString: Untagged
@@ -1449,6 +1453,35 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 283926485}
+--- !u!114 &247777329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247777324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 15
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 495674215}
+          m_TargetAssemblyTypeName: Cosmetics.PurchaseConfirmationPanel, Assembly-CSharp
+          m_MethodName: PurchaseItem
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &276795108
 GameObject:
   m_ObjectHideFlags: 0
@@ -1738,6 +1771,27 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4961623837059105028, guid: f9d2177d57e39fd4d95f917f02f68c13, type: 3}
   m_PrefabInstance: {fileID: 3678074742255754621}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &495674212 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8328405367130565026, guid: a2c9e3a2ced038c45998030647c94aac, type: 3}
+  m_PrefabInstance: {fileID: 196042702}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &495674215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 495674212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e776b78ff4000bf46bd814ccfb75ff31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 0}
+  nameText: {fileID: 2018868104}
+  costText: {fileID: 102564325}
+  itemIcon: {fileID: 1786700471}
 --- !u!1 &523620144
 GameObject:
   m_ObjectHideFlags: 0
@@ -3895,6 +3949,8 @@ MonoBehaviour:
   itemDisplayPrefab: {fileID: 2718296165840879904, guid: a208eb4c30b7c4d4da588a1b67da1c88, type: 3}
   descriptionText: {fileID: 276795110}
   shopType: 1
+  panelManager: {fileID: 841177925}
+  confirmationPanel: {fileID: 495674215}
 --- !u!1 &1187549798
 GameObject:
   m_ObjectHideFlags: 0
