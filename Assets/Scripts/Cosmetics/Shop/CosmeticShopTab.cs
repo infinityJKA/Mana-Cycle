@@ -15,8 +15,10 @@ namespace Cosmetics
 
         [SerializeField] private CosmeticItem.CosmeticType shopType;
 
+        // passed to each item disp
         [SerializeField] private SwapPanelManager panelManager;
         [SerializeField] private PurchaseConfirmationPanel confirmationPanel;
+        [SerializeField] private SmoothScrollHandler scroller;
         // Start is called before the first frame update
         void Start()
         {
@@ -45,13 +47,14 @@ namespace Cosmetics
                 default: Debug.Log("Shop type not set!"); break;
             }
 
-            foreach(CosmeticItem item in items)
+            foreach (CosmeticItem item in items)
             {
                 CosmeticItemDisp disp = Instantiate(itemDisplayPrefab, shopItemsContainer.transform).GetComponent<CosmeticItemDisp>();
                 disp.item = item;
                 disp.descText = descriptionText;
                 disp.panelManager = panelManager;
                 disp.confirmationPanel = confirmationPanel;
+                disp.scroller = scroller;
             }
         }
     }
