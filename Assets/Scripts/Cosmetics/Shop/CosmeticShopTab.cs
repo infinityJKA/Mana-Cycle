@@ -14,6 +14,9 @@ namespace Cosmetics
         [SerializeField] TMPro.TextMeshProUGUI descriptionText;
 
         [SerializeField] private CosmeticItem.CosmeticType shopType;
+
+        [SerializeField] private SwapPanelManager panelManager;
+        [SerializeField] private PurchaseConfirmationPanel confirmationPanel;
         // Start is called before the first frame update
         void Start()
         {
@@ -47,6 +50,8 @@ namespace Cosmetics
                 CosmeticItemDisp disp = Instantiate(itemDisplayPrefab, shopItemsContainer.transform).GetComponent<CosmeticItemDisp>();
                 disp.item = item;
                 disp.descText = descriptionText;
+                disp.panelManager = panelManager;
+                disp.confirmationPanel = confirmationPanel;
             }
         }
     }
