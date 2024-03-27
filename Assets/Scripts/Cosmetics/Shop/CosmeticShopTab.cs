@@ -10,6 +10,9 @@ namespace Cosmetics
         [SerializeField] GameObject shopItemsContainer;
         [SerializeField] GameObject itemDisplayPrefab;
 
+        // passed to each item display to update
+        [SerializeField] TMPro.TextMeshProUGUI descriptionText;
+
         [SerializeField] private CosmeticItem.CosmeticType shopType;
         // Start is called before the first frame update
         void Start()
@@ -41,7 +44,9 @@ namespace Cosmetics
 
             foreach(CosmeticItem item in items)
             {
-                Instantiate(itemDisplayPrefab, shopItemsContainer.transform);
+                CosmeticItemDisp disp = Instantiate(itemDisplayPrefab, shopItemsContainer.transform).GetComponent<CosmeticItemDisp>();
+                disp.item = item;
+                disp.descText = descriptionText;
             }
         }
     }
