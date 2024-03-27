@@ -5,7 +5,6 @@ using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
 
-// the SaveDataManager object can be on the PlayerManager prefab along with the PlayerManager singleton there
 public class FileStorageManager {
     // right now the encrypt bool desont do anything but may work on this later.
     // binary formatting should be enough to prevent most tampering for now.

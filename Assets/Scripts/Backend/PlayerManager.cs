@@ -3,6 +3,7 @@ using LootLocker.Requests;
 using Steamworks;
 using System;
 
+// Handles logging in and logging out to player accounts.
 public class PlayerManager {
     public static string playerID {get; private set;}
     public static string playerUsername {get; private set;}
@@ -27,9 +28,6 @@ public class PlayerManager {
         // Platform specific auto login on start
         // stop if already logged in online or logging in
         if (loggedIn || loginInProgress) return;
-
-        // after local login, attempt to login online which may take a bit.
-        // if this fails the player will remain logged in locally.
         if (SteamManager.Initialized) {
             LoginSteam();
         } else {
@@ -37,7 +35,6 @@ public class PlayerManager {
         }
     }
 
-    /// <param name="next">Action to run after login process is complete, whether successful or not</param>
     public static void LoginGuest() {
         if (loggedIn || loginInProgress) return;
 
@@ -65,7 +62,6 @@ public class PlayerManager {
         });
     }
 
-    /// <param name="next">Action to run after login process is complete, whether successful or not</param>
     public static void LoginSteam() {
         // To make sure Steamworks.NET is initialized
         if (!SteamManager.Initialized) {
@@ -93,7 +89,7 @@ public class PlayerManager {
         {
             if (!response.success)
             {
-                loginError = "Steam verification error";
+                loginError = "Steam ID verification error";
                 Debug.Log("Error verifying Steam ID: " + response.errorData.message);
                 OnLoginFinished();
                 return;
@@ -104,7 +100,7 @@ public class PlayerManager {
             {
                 if (!response.success)
                 {
-                    loginError = "Login failed";
+                    loginError = "Failed to start session";
                     Debug.Log("error starting sessions");     
                     return;
                 }
@@ -135,9 +131,9 @@ public class PlayerManager {
 
     public static void Logout() {
         LootLockerSDKManager.EndSession((response) => {
-            // always log out regardless if the server says error or not. (but still show the error)
             loggedIn = false;
 
+            // always log out regardless if the server says error or not. (but still show the error)
             if (!response.success) {
                 Debug.LogError("error ending session: "+response.errorData.message);
             }
