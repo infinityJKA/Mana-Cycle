@@ -25,7 +25,7 @@ namespace Battle.Board {
         // some of these probably won't change with cosmetics but im just using this to hold some ability assets together
         // mana palettes
         [Tooltip("Colors to tint the cycle images")]
-        [SerializeField] public List<ManaPalette> manaColors;
+        [SerializeField] public List<PaletteColor> manaColors;
 
         [Tooltip("Lit colors to tint cycle images for ghost blobs and clearing. Auto-generated if omitted. Should be a lighter & yellower version of the original color")]
         [SerializeField] public List<Color> litManaColors;

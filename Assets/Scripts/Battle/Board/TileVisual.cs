@@ -15,7 +15,7 @@ namespace Battle.Board {
         [SerializeField] private Image bgImage;
 
         [SerializeField] private Material ghostMaterial;
-        public void SetVisual(Cosmetics.ManaIcon v, Cosmetics.ManaPalette p)
+        public void SetVisual(Cosmetics.ManaIcon v, Cosmetics.PaletteColor p)
         {
             // Debug.Log("Setting up visual");
             iconImage.sprite = v.iconSprite;
@@ -32,7 +32,7 @@ namespace Battle.Board {
             iconImage.color = new Color(0f, 0f, 0f, 0f);
         }
 
-        public void SetGhostVisual(Cosmetics.ManaIcon v, Cosmetics.ManaPalette p)
+        public void SetGhostVisual(Cosmetics.ManaIcon v, Cosmetics.PaletteColor p)
         {
             iconImage.sprite = v.iconSprite;
             bgImage.sprite = v.bgSprite;
