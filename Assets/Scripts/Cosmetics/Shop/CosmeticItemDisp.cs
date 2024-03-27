@@ -19,6 +19,7 @@ namespace Cosmetics
         // set from shop tab script
         [System.NonSerialized] public SwapPanelManager panelManager;
         [System.NonSerialized] public PurchaseConfirmationPanel confirmationPanel;
+        [System.NonSerialized] public SmoothScrollHandler scroller;
 
         void Start()
         {
@@ -31,6 +32,9 @@ namespace Cosmetics
         public void Selected()
         {
             descText.text = item.description;
+            // float scrollTarg = Utils.SnapScrollToChildPos(scroller.gameObject.GetComponent<ScrollRect>(), GetComponent<RectTransform>()).y - Utils.SnapScrollToChildPos(scroller.gameObject.GetComponent<ScrollRect>(), scroller.scrollTransform.GetChild(0).GetComponent<RectTransform>()).y;
+            float scrollTarg = Utils.SnapScrollToChildPos(scroller.gameObject.GetComponent<ScrollRect>(), GetComponent<RectTransform>()).y - 40f;
+            scroller.setTargetPos(scrollTarg);
         }
 
         public void Submitted()
