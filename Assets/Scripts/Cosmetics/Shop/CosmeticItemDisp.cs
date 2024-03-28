@@ -31,9 +31,7 @@ namespace Cosmetics
         {
             if (!tab) return; // if tab not set probably wasnt initialized and might just be a preview disp
             tab.descriptionText.text = item.description;
-            // float scrollTarg = Utils.SnapScrollToChildPos(scroller.gameObject.GetComponent<ScrollRect>(), GetComponent<RectTransform>()).y - Utils.SnapScrollToChildPos(scroller.gameObject.GetComponent<ScrollRect>(), scroller.scrollTransform.GetChild(0).GetComponent<RectTransform>()).y;
-            float scrollTarg = Utils.SnapScrollToChildPos(tab.scroller.gameObject.GetComponent<ScrollRect>(), GetComponent<RectTransform>()).y - 40f;
-            tab.scroller.setTargetPos(scrollTarg);
+            tab.scroller.SnapTo(GetComponent<RectTransform>());
         }
 
         public void Submitted()

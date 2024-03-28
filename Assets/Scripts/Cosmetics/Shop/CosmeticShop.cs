@@ -42,6 +42,8 @@ namespace Cosmetics {
 
         // run on loot locker session response received
         public void OnConnected() {
+            if (!useBackendCatalogs) return;
+
             // FOR TESTING: liist catalogs
             LootLockerSDKManager.ListCatalogs((response) => {
                 Debug.Log("CATALOGS RECEIVED!!!");
