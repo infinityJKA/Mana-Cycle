@@ -5,6 +5,7 @@ using Mono.CSharp.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Linq;
 
 namespace Cosmetics
 {
@@ -96,6 +97,7 @@ namespace Cosmetics
         /// </summary>
         public void MakeItems()
         {
+            assetList.assets = (from e in assetList.assets orderby e.owned select e).ToList();
             while (assetListIndex < assetList.assets.Count) {
                 // TEMPORARY
                 // CreateCosmeticDisplay should eventuall take in a ShopItem instead of a CosmeticItem
@@ -125,7 +127,7 @@ namespace Cosmetics
                 default: Debug.Log("Shop type not set!"); break;
             }
 
-            foreach (CosmeticItem item in items)
+            foreach (CosmeticItem item in from e in items orderby e.owned select e)
             {
                 CreateCosmeticDisplay(item);
             }
