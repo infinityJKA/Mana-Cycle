@@ -77,14 +77,15 @@ namespace Cosmetics
         /// (called via CosmeticShop.cs)
         /// </summary>
         public void RunWhenConnected() {
+            if (!CosmeticShop.instance.useBackendCatalogs) return;
+
             if (!LootLockerSDKManager.CheckInitialized()) {
-                Debug.LogWarning("loot locker not connected; using local database for now. (don't include this in release, show error instead)");
-                MakeItemsLocalDatabase();
+                Debug.LogError("using backend catalog, but loot locker not connected!");
                 return;
             }
 
             // pre-emptively load the first page of this shop tab if there is nothing loaded in this tab.
-            if (CatalogManager.paletteColors.lastAfterLoad == -1) {
+            if (assetList.lastAfterLoad == null && !assetList.loading) {
                 CatalogManager.paletteColors.LoadNextPage();
             }
         }
@@ -147,6 +148,8 @@ namespace Cosmetics
         // Select the first shop item upon open if there is one. (called from onOpened in SwapPanel)
         public void SelectFirstItem() {
             if (!initialized) Initialize();
+
+            if (shopItemsContainer.transform.childCount == 0) return;
 
             var firstChild = shopItemsContainer.transform.GetChild(0);
             if (!firstChild) return;

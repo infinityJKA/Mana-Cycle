@@ -41,9 +41,9 @@ public class WalletManager {
                 Debug.Log(balance.currency.code+": "+balance.amount);
 
                 if (int.TryParse(balance.amount, out int amount)) {
-                    if (balance.currency.code == "IBN") {
+                    if (balance.currency.code.ToLower() == "ibn") {
                         coins = amount;
-                    } else if (balance.currency.code == "IDM") {
+                    } else if (balance.currency.code.ToLower() == "idm") {
                         iridium = amount;
                     }
                 }

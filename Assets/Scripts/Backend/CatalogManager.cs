@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Cosmetics;
+using LootLocker;
 using LootLocker.Requests;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ public class CatalogManager {
 
         public override CosmeticItem ConvertAsset(LootLockerCatalogEntry entry, LootLockerAssetDetails details)
         {
-            PaletteColor paletteColor = new PaletteColor();
+            PaletteColor paletteColor = ScriptableObject.CreateInstance<PaletteColor>();
 
             // TODO: get color data from backend asset info
 
@@ -38,7 +39,7 @@ public class CatalogManager {
 
         public override CosmeticItem ConvertAsset(LootLockerCatalogEntry entry, LootLockerAssetDetails details)
         {
-            CosmeticItem iconPack = new IconPack();
+            IconPack iconPack = ScriptableObject.CreateInstance<IconPack>();
 
             // TODO: get icon pack data from backend asset info
 
@@ -62,11 +63,17 @@ public class CatalogManager {
         public List<ShopItem<T>> assets = new List<ShopItem<T>>();
 
         // If there are no more items to load beyond the final index
-        public bool reachedEnd = false;
+        public bool reachedEnd {get; private set;} = false;
 
-        // the starting index of the last page load start.
+        // the last page that was loaded.
+        // null - no page loaded at all
+        // "" - first page was loaded, no pagination info used yet though
         // just used as an additional check to not load the same page twice in a row; not that important
-        public int lastAfterLoad = -1;
+        public string lastAfterLoad {get; private set;} = null;
+
+        public bool loading {get; private set;} = false;
+
+        public LootLockerPaginationResponse<string> pagination;
 
         /// <summary>
         /// Function that should convert the catalog asset listing and details into a native Mana Cycle object representing it.
@@ -83,20 +90,31 @@ public class CatalogManager {
 
         // load the next {pageSize} assets from this catalog.
         public void LoadNextPage() {
-            int after = assets.Count;
+
+            string after;
+
+            if (pagination != null) {
+                after = pagination.next_cursor;
+            } else {
+                after = null;
+            }
+
             lastAfterLoad = after;
 
-            LootLockerSDKManager.ListCatalogItems(catalogKey, pageSize, after.ToString(), (response) =>
+            loading = true;
+            LootLockerSDKManager.ListCatalogItems(catalogKey, pageSize, after, (response) =>
             {
+                loading = false;
+                pagination = response.pagination;
                 if(!response.success)
                 {
                     Debug.LogError("error loading items from catalog: " + response.errorData.message);
-                    lastAfterLoad = -1;
+                    lastAfterLoad = null;
                     return;
                 }
 
                 if (response.entries.Length == 0) {
-                    if (lastAfterLoad == 0) {
+                    if (lastAfterLoad == "") {
                         Debug.LogWarning("Catalog "+response.catalog.name+" is empty...");
                     } else {
                         Debug.Log("No more items to load in "+response.catalog.name);
@@ -117,12 +135,12 @@ public class CatalogManager {
 
                     // if items ever get more than one price this code will need to be updated
                     var price = entry.prices[0];
-                    if (price.currency_code == "IBN") {
+                    if (price.currency_code == "ibn") {
                         shopItem.currencyType = CurrencyType.Coins;
-                    } else if (price.currency_code == "IDM") {
+                    } else if (price.currency_code == "idm") {
                         shopItem.currencyType = CurrencyType.Iridium;
                     } else {
-                        Debug.LogWarning(entry + " has unrecognized currency type");
+                        Debug.LogWarning(entry + " has unrecognized currency type: "+price.currency_code);
                     }
 
                     shopItem.cost = price.amount;
@@ -137,7 +155,7 @@ public class CatalogManager {
         // to be called when shop scene is closed; should free up the memory that the shop items list is taking up.
         public void ClearAllEntries() {
             assets.Clear();
-            lastAfterLoad = -1;
+            lastAfterLoad = null;
         }
     }
 
