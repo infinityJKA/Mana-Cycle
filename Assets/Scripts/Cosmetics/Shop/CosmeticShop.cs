@@ -11,6 +11,10 @@ namespace Cosmetics {
         // so that the correct scene is returned to
         public static string sceneOnBack = "MainMenu";
 
+        // icon sprite to use for palette colors
+        // system might change in the future
+        [SerializeField] private Sprite _paletteColorIconSprite;
+        public Sprite paletteColorIconSprite => _paletteColorIconSprite;
 
         [SerializeField] InputActionReference backAction;
 

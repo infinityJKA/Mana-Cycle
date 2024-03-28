@@ -22,15 +22,38 @@ public class CatalogManager {
         {
             PaletteColor paletteColor = ScriptableObject.CreateInstance<PaletteColor>();
 
-            // TODO: get color data from backend asset info
+            if (CosmeticShop.instance) {
+                paletteColor.icon = CosmeticShop.instance.paletteColorIconSprite;
+            }
 
             return paletteColor;
+        }
+
+        public override void UpdateItemDetails(CosmeticItem item, LootLockerCommonAsset asset)
+        {
+            PaletteColor paletteColor = (PaletteColor)item;
+            foreach (var kvp in asset.storage) {
+                switch(kvp.key) {
+                    case "mainColor":
+                        if (ColorUtility.TryParseHtmlString(kvp.value, out Color mainColor)) {
+                            paletteColor.mainColor = mainColor;
+                            paletteColor.iconColor = mainColor;
+                        }
+                        break;
+                    case "darkColor":
+                        if (ColorUtility.TryParseHtmlString(kvp.value, out Color darkColor)) {
+                            paletteColor.darkColor = darkColor;
+                        }
+                        break;
+                }
+            }
         }
 
         public override bool IsOwned(string id)
         {
             return SaveData.Assets.paletteColors.ContainsKey(id);
         }
+
     }
 
     public class IconPackList : AssetList<CosmeticItem>
@@ -40,10 +63,12 @@ public class CatalogManager {
         public override CosmeticItem ConvertAsset(LootLockerCatalogEntry entry, LootLockerAssetDetails details)
         {
             IconPack iconPack = ScriptableObject.CreateInstance<IconPack>();
-
-            // TODO: get icon pack data from backend asset info
-
             return iconPack;
+        }
+
+        public override void UpdateItemDetails(CosmeticItem item, LootLockerCommonAsset asset)
+        {
+            throw new NotImplementedException();
         }
 
         public override bool IsOwned(string id)
@@ -60,7 +85,12 @@ public class CatalogManager {
     public abstract class AssetList<T> where T : CosmeticItem {
         public abstract string catalogKey {get;}
 
+        // The final assets list that is displayed in the shop.
         public List<ShopItem<T>> assets = new List<ShopItem<T>>();
+        // shop items are stored here when their catalog data (id, name, price) shows up.
+        // shopitmes here may be waiting on data from full asset data API call until 
+        // all required data has arrived and item is added to assets list.
+        public Dictionary<string, ShopItem<T>> itemsById = new Dictionary<string, ShopItem<T>>();
 
         // If there are no more items to load beyond the final index
         public bool reachedEnd {get; private set;} = false;
@@ -78,10 +108,15 @@ public class CatalogManager {
         /// <summary>
         /// Function that should convert the catalog asset listing and details into a native Mana Cycle object representing it.
         /// </summary>
-        /// <param name="entry"></param>
-        /// <param name="details"></param>
         /// <returns>the converted item</returns>
         public abstract T ConvertAsset(LootLockerCatalogEntry entry,LootLockerAssetDetails details);
+
+        /// <summary>
+        /// Call when details arrive about an item.
+        /// The asset full details API call is seperate from the catalog assets call, but catalog asset is processed right when received, 
+        /// so this just adds additional info, such as the actual palette color for example.
+        /// </summary>
+        public abstract void UpdateItemDetails(T item, LootLockerCommonAsset asset);
 
         /// <summary>
         /// Check whether the player already owns this shop item.
@@ -122,6 +157,10 @@ public class CatalogManager {
                     return;
                 }
 
+                // store ids to use in the details request later
+                // stored in the order that they will added to the shop once asset data arrives
+                string[] ids = new string[response.entries.Length];
+
                 for (int i = 0; i < response.entries.Length; i++) {
                     var entry = response.entries[i];
                     var details = response.asset_details[entry.catalog_listing_id];
@@ -135,6 +174,7 @@ public class CatalogManager {
 
                     convertedItem.id = details.id;
                     convertedItem.displayName = details.name;
+                    convertedItem.owned = IsOwned(details.id);
 
                     // if items ever get more than one price this code will need to be updated
                     var price = entry.prices[0];
@@ -148,10 +188,28 @@ public class CatalogManager {
 
                     shopItem.cost = price.amount;
 
-                    assets.Add(shopItem);
+                    string assetId = details.legacy_id.ToString();
+                    itemsById[assetId] = shopItem;
+                    ids[i] = assetId;
                 }
 
-                if (CosmeticShop.instance) CosmeticShop.instance.UpdateTabs();
+                // now fetch all details
+                LootLockerSDKManager.GetAssetsById(ids, response => {
+                    if (!response.success) {
+                        Debug.LogError("Error retreiving assets: "+response.errorData.message);
+                        return;
+                    }
+
+                    // set retrieved info, and add it to the assets list now that full info is in
+                    foreach (var assetInfo in response.assets) {
+                        var shopItem = itemsById[assetInfo.id.ToString()];
+                        UpdateItemDetails(shopItem.asset, assetInfo);
+                        assets.Add(shopItem);
+                    }
+
+                    // let the cosmetic shop know there is more assets to display that just arrived
+                    if (CosmeticShop.instance) CosmeticShop.instance.UpdateTabs();
+                });
             });
         }
 
