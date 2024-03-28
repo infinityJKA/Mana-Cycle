@@ -1,6 +1,6 @@
+using Cosmetics;
 using MainMenu;
 using TMPro;
-using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -40,7 +40,6 @@ public class SidebarUI : MonoBehaviour {
 
     [SerializeField] private InputActionReference toggleAction;
 
-    
     // Note: this class will not be DontDestroyOnLoad()ed but current one in scene will be saved for ref by other scenes.
     private void Awake() {
         instance = this;
@@ -194,8 +193,8 @@ public class SidebarUI : MonoBehaviour {
 
     public void OnShopPressed()
     {
-        Debug.Log("Todo: go to cosmetic shop once in a usable state");
-        // TransitionScript.instance.WipeToScene("CosmeticShop");
+        CosmeticShop.sceneOnBack = SceneManager.GetActiveScene().name;
+        TransitionScript.instance.WipeToScene("CosmeticShop");
     }
 
     public void OnNewsPressed()

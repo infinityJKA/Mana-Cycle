@@ -2,6 +2,7 @@ using UnityEngine;
 using LootLocker.Requests;
 using Steamworks;
 using System;
+using Cosmetics;
 
 // Handles logging in and logging out to player accounts.
 public class PlayerManager {
@@ -124,13 +125,13 @@ public class PlayerManager {
             SidebarUI.instance.UpdateButtonsWindow();
         }
 
-        if (CosmeticShop.instance) CosmeticShop.instance.OnConnected();
-
         if (loggedIn) {
             WalletManager.GetWallet();
             XPManager.GetPlayerInfo();
             RemoteFileManager.GetPlayerFiles(download: true);
-        }
+        }  
+
+        if (CosmeticShop.instance) CosmeticShop.instance.OnConnected();
     }  
 
     public static void Logout() {

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+
 // using UnityEditor.Animations;
 using UnityEngine.EventSystems;
 
@@ -13,20 +15,32 @@ public class SwapPanel : MonoBehaviour
     // set by swap panel manager
     [System.NonSerialized] public GameObject selectOnOpen;
 
+    [SerializeField] private UnityEvent onOpened;
+    [SerializeField] private UnityEvent onClosed;
+
+
+    public bool showing {get; private set;} = false;
+
     public void Show()
     {
+        showing = true;
         gameObject.SetActive(true);
         anim.ResetTrigger("Out");
         anim.SetTrigger("In");
 
-        if (!animationBlocksNavigation) EventSystem.current.SetSelectedGameObject(selectOnOpen);
+        if (!animationBlocksNavigation && selectOnOpen) EventSystem.current.SetSelectedGameObject(selectOnOpen);
+
+        onOpened.Invoke();
     }
 
     public void Hide()
     {
+        showing = false;
         anim.ResetTrigger("In");
         anim.SetTrigger("Out");
         EventSystem.current.SetSelectedGameObject(null);
+
+        onClosed.Invoke();
     }
 
     // called on the last frame of hide animation with animation event
@@ -37,7 +51,7 @@ public class SwapPanel : MonoBehaviour
 
     public void AfterShow()
     {
-        if (animationBlocksNavigation) EventSystem.current.SetSelectedGameObject(selectOnOpen);
+        if (animationBlocksNavigation && selectOnOpen) EventSystem.current.SetSelectedGameObject(selectOnOpen);
     }
 
     public void SetAnimationBlocksNavigation(bool b)
