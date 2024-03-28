@@ -15,7 +15,7 @@ public class SwapPanelManager : MonoBehaviour
     // used to re-select the last element you selected when returning to a menu
     // index matches indes in panels, the gameObject is what was selected last in that menu
     private GameObject[] lastSelected;
-    private int currentPanel;
+    public int currentPanel {get; private set;}
 
     void Start()
     {
