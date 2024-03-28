@@ -13,6 +13,7 @@ namespace Cosmetics
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI costText;
         [SerializeField] private Image itemIcon;
+        [SerializeField] private GameObject ownedOverlay;
 
         // set via shop tab script
         private CosmeticItem item;
@@ -25,6 +26,7 @@ namespace Cosmetics
             costText.text = "" + item.value;
             itemIcon.sprite = item.icon;
             itemIcon.color = item.iconColor;
+            ownedOverlay.SetActive(item.owned);
         }
 
         public void Selected()
