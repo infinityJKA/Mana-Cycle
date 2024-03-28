@@ -32,6 +32,7 @@ namespace Cosmetics
         public void Selected()
         {
             if (!tab) return; // if tab not set probably wasnt initialized and might just be a preview disp
+            tab.lastSelected = GetComponent<Selectable>();
             tab.descriptionText.text = item.description;
             tab.scroller.SnapTo(GetComponent<RectTransform>());
         }

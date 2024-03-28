@@ -20,6 +20,8 @@ namespace Cosmetics {
 
         [SerializeField] CosmeticShopTab[] tabs;
 
+        [SerializeField] private SwapPanelManager swapPanelManager;
+
         // whether or not to use the online database. SHOULD BE TRUE FOR BUILD
         [SerializeField] private bool _useBackendCatalogs = true;
         public bool useBackendCatalogs => _useBackendCatalogs;
@@ -68,6 +70,8 @@ namespace Cosmetics {
         public void OnBack(InputAction.CallbackContext ctx) {
             if (SidebarUI.instance && SidebarUI.instance.expanded) {
                 SidebarUI.instance.ToggleExpanded();
+            } else if (swapPanelManager.currentPanel != 0) {
+                swapPanelManager.OpenPanel(0);
             } else {
                 Back();
             }

@@ -148,8 +148,14 @@ namespace Cosmetics
         }
 
         // Select the first shop item upon open if there is one. (called from onOpened in SwapPanel)
+        // If lastSelected is not null that is selected instead.
         public void SelectFirstItem() {
             if (!initialized) Initialize();
+
+            if (lastSelected != null) {
+                lastSelected.Select();
+                return;
+            }
 
             if (shopItemsContainer.transform.childCount == 0) return;
 
