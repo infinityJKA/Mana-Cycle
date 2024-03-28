@@ -9,15 +9,15 @@ using UnityEngine;
 public class CatalogManager {
     public const int pageSize = 10;
 
-    public static readonly AssetList<PaletteColor> paletteColors = new PaletteColorList();
+    public static readonly AssetList<CosmeticItem> paletteColors = new PaletteColorList();
 
-    public static readonly AssetList<IconPack> iconPacks = new IconPackList();
+    public static readonly AssetList<CosmeticItem> iconPacks = new IconPackList();
 
-    public class PaletteColorList : AssetList<PaletteColor>
+    public class PaletteColorList : AssetList<CosmeticItem>
     {
         public override string catalogKey => "palette_colors";
 
-        public override PaletteColor ConvertAsset(LootLockerCatalogEntry entry, LootLockerAssetDetails details)
+        public override CosmeticItem ConvertAsset(LootLockerCatalogEntry entry, LootLockerAssetDetails details)
         {
             PaletteColor paletteColor = new PaletteColor();
 
@@ -32,13 +32,13 @@ public class CatalogManager {
         }
     }
 
-    public class IconPackList : AssetList<IconPack>
+    public class IconPackList : AssetList<CosmeticItem>
     {
-        public override string catalogKey => "palette_colors";
+        public override string catalogKey => "icon_packs";
 
-        public override IconPack ConvertAsset(LootLockerCatalogEntry entry, LootLockerAssetDetails details)
+        public override CosmeticItem ConvertAsset(LootLockerCatalogEntry entry, LootLockerAssetDetails details)
         {
-            IconPack iconPack = new IconPack();
+            CosmeticItem iconPack = new IconPack();
 
             // TODO: get icon pack data from backend asset info
 
@@ -64,6 +64,10 @@ public class CatalogManager {
         // If there are no more items to load beyond the final index
         public bool reachedEnd = false;
 
+        // the starting index of the last page load start.
+        // just used as an additional check to not load the same page twice in a row; not that important
+        public int lastAfterLoad = -1;
+
         /// <summary>
         /// Function that should convert the catalog asset listing and details into a native Mana Cycle object representing it.
         /// </summary>
@@ -79,14 +83,21 @@ public class CatalogManager {
 
         // load the next {pageSize} assets from this catalog.
         public void LoadNextPage() {
-            string after = assets.Count.ToString();
+            int after = assets.Count;
+            lastAfterLoad = after;
 
-            LootLockerSDKManager.ListCatalogItems(catalogKey, pageSize, after, (response) =>
+            LootLockerSDKManager.ListCatalogItems(catalogKey, pageSize, after.ToString(), (response) =>
             {
                 if(!response.success)
                 {
                     Debug.Log("error: " + response.errorData.message);
                     Debug.Log("request ID: " + response.errorData.request_id);
+                    lastAfterLoad = -1;
+                    return;
+                }
+
+                if (response.entries.Length == 0) {
+                    Debug.LogWarning("Catalog "+response.catalog.name+" is empty...");
                     return;
                 }
 
@@ -115,7 +126,15 @@ public class CatalogManager {
 
                     assets.Add(shopItem);
                 }
+
+                if (CosmeticShop.instance) CosmeticShop.instance.UpdateTabs();
             });
+        }
+
+        // to be called when shop scene is closed; should free up the memory that the shop items list is taking up.
+        public void ClearAllEntries() {
+            assets.Clear();
+            lastAfterLoad = -1;
         }
     }
 
