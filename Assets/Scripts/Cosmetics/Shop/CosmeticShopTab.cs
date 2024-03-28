@@ -87,7 +87,7 @@ namespace Cosmetics
 
             // pre-emptively load the first page of this shop tab if there is nothing loaded in this tab.
             if (assetList.lastAfterLoad == null && !assetList.loading) {
-                CatalogManager.paletteColors.LoadNextPage();
+                assetList.LoadNextPage();
             }
         }
 
