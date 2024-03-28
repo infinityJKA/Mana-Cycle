@@ -57,7 +57,7 @@ public class CatalogManager {
     /// Contains both an asset list and a prices list.
     /// </summary>
     /// <typeparam name="T">the type of asset</typeparam>
-    public abstract class AssetList<T> {
+    public abstract class AssetList<T> where T : CosmeticItem {
         public abstract string catalogKey {get;}
 
         public List<ShopItem<T>> assets = new List<ShopItem<T>>();
@@ -133,6 +133,9 @@ public class CatalogManager {
                         asset = convertedItem
                     };
 
+                    convertedItem.id = details.id;
+                    convertedItem.displayName = details.name;
+
                     // if items ever get more than one price this code will need to be updated
                     var price = entry.prices[0];
                     if (price.currency_code == "ibn") {
@@ -159,7 +162,7 @@ public class CatalogManager {
         }
     }
 
-    public class ShopItem<T> {
+    public class ShopItem<T> where T : CosmeticItem {
         public T asset;
         public CurrencyType currencyType;
         public int cost;
