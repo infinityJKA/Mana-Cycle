@@ -38,6 +38,7 @@ namespace Cosmetics
 
         public void Submitted()
         {
+            if (item.owned) return;
             tab.confirmationPanel.item = item;
             tab.confirmationPanel.Refresh();
             tab.panelManager.OpenPanel(3);
