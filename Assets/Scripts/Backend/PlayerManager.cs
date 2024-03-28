@@ -118,10 +118,14 @@ public class PlayerManager {
     // If logged in, Retreive stuff like the wallet and such when first logging in.
     private static void OnLoginFinished() {
         loginInProgress = false;
+        
         if (SidebarUI.instance) {
             SidebarUI.instance.UpdatePlayerInfo();
             SidebarUI.instance.UpdateButtonsWindow();
         }
+
+        if (CosmeticShop.instance) CosmeticShop.instance.OnConnected();
+
         if (loggedIn) {
             WalletManager.GetWallet();
             XPManager.GetPlayerInfo();

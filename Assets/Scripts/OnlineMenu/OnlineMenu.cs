@@ -16,7 +16,6 @@ using System;
 
 public class OnlineMenu : MonoBehaviour {
     public static OnlineMenu singleton;
-
     public TMPro.TMP_InputField joinCodeField, networkAddressField;
     public Button hostButton, joinButton;
 
