@@ -90,14 +90,17 @@ public class CatalogManager {
             {
                 if(!response.success)
                 {
-                    Debug.Log("error: " + response.errorData.message);
-                    Debug.Log("request ID: " + response.errorData.request_id);
+                    Debug.LogError("error loading items from catalog: " + response.errorData.message);
                     lastAfterLoad = -1;
                     return;
                 }
 
                 if (response.entries.Length == 0) {
-                    Debug.LogWarning("Catalog "+response.catalog.name+" is empty...");
+                    if (lastAfterLoad == 0) {
+                        Debug.LogWarning("Catalog "+response.catalog.name+" is empty...");
+                    } else {
+                        Debug.Log("No more items to load in "+response.catalog.name);
+                    }
                     return;
                 }
 

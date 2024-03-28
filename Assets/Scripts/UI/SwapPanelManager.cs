@@ -36,7 +36,8 @@ public class SwapPanelManager : MonoBehaviour
     {
         lastSelected[currentPanel] = EventSystem.current.currentSelectedGameObject;
 
-        panels[index].selectOnOpen = ( (lastSelected[index] == null) ? panels[index].defaultSelectOnOpen : lastSelected[index]);
+        var selectOnOpen = (lastSelected[index] == null) ? panels[index].defaultSelectOnOpen : lastSelected[index];
+        if (selectOnOpen != null) panels[index].selectOnOpen = selectOnOpen;
 
         panels[currentPanel].Hide();
         panels[index].Show();
