@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class HoldButton : Selectable, ISubmitHandler /**, IPointerDownHandler, IPointerUpHandler */
+public class HoldButton : Selectable /**, ISubmitHandler  IPointerDownHandler, IPointerUpHandler */
 {
     [SerializeField] private Image fillImage;
     [SerializeField] private float totalPressTime;
@@ -77,8 +77,8 @@ public class HoldButton : Selectable, ISubmitHandler /**, IPointerDownHandler, I
     //     Debug.Log(gameObject+" unpressed");
     // }
 
-    public void OnSubmit(BaseEventData eventData)
-    {
-        Debug.Log(eventData.used);
-    }
+    // public void OnSubmit(BaseEventData eventData)
+    // {
+    //     Debug.Log(eventData.used);
+    // }
 }
