@@ -23,6 +23,8 @@ public class OnlineMenu : MonoBehaviour {
 
     public InputActionReference backAction;
 
+    public SwapPanelManager swapPanelManager;
+
 
     private void Awake() {
         singleton = this;
@@ -34,6 +36,27 @@ public class OnlineMenu : MonoBehaviour {
             ShowCharSelect();
         }
     }
+
+    private void OnEnable() {
+            backAction.action.performed += OnBack;
+        }
+        private void OnDisable() {
+            backAction.action.performed -= OnBack;
+        }
+
+        public void OnBack(InputAction.CallbackContext ctx) {
+            if (SidebarUI.instance && SidebarUI.instance.expanded) {
+                SidebarUI.instance.ToggleExpanded();
+            } else if (swapPanelManager.currentPanel != 0) {
+                swapPanelManager.OpenPanel(0);
+            } else {
+                Back();
+            }
+        }
+
+        public void Back() {
+            TransitionScript.instance.WipeToScene("MainMenu", reverse: true);
+        }
 
     public async void HostButtonPressed() {
         if (!CheckOnline()) return;

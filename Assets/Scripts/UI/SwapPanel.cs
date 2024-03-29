@@ -25,8 +25,13 @@ public class SwapPanel : MonoBehaviour
     {
         showing = true;
         gameObject.SetActive(true);
-        anim.ResetTrigger("Out");
-        anim.SetTrigger("In");
+
+        if (anim) {
+            anim.ResetTrigger("Out");
+            anim.SetTrigger("In");
+        } else {
+            gameObject.SetActive(true);
+        }
 
         if (!animationBlocksNavigation && selectOnOpen) EventSystem.current.SetSelectedGameObject(selectOnOpen);
 
@@ -36,8 +41,14 @@ public class SwapPanel : MonoBehaviour
     public void Hide()
     {
         showing = false;
-        anim.ResetTrigger("In");
-        anim.SetTrigger("Out");
+        
+        if (anim) {
+            anim.ResetTrigger("In");
+            anim.SetTrigger("Out");
+        } else {
+            gameObject.SetActive(false);
+        }
+
         EventSystem.current.SetSelectedGameObject(null);
 
         onClosed.Invoke();
