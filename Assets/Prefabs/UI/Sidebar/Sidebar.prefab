@@ -264,7 +264,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 604646986000259067}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -906,7 +906,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2041580882780218426}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -1380,6 +1380,7 @@ GameObject:
   - component: {fileID: 4369965088354456568}
   - component: {fileID: 4374814269977267595}
   - component: {fileID: 5557089438371283758}
+  - component: {fileID: 547329853244552483}
   m_Layer: 5
   m_Name: SidebarUI
   m_TagString: Untagged
@@ -1411,7 +1412,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 576, y: 0}
+  m_SizeDelta: {x: 144, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &4369965088354456568
 CanvasRenderer:
@@ -1474,6 +1475,18 @@ MonoBehaviour:
   offlineNotifier: {fileID: 5227218588021942688}
   loggingInNotifier: {fileID: 1706567868797435457}
   toggleAction: {fileID: 5254050053853602190, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
+--- !u!225 &547329853244552483
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3298486901136673912}
+  m_Enabled: 1
+  m_Alpha: 0.75
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &3367802534509347441
 GameObject:
   m_ObjectHideFlags: 0

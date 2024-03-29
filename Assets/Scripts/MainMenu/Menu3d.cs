@@ -113,6 +113,15 @@ namespace MainMenu {
             TransitionHandler.WipeToScene("CharSelect");
         }
 
+        public void GoToOnline() {
+            Storage.online = true; 
+            Storage.level = null;
+            Storage.isPlayerControlled1 = true; 
+            Storage.isPlayerControlled2 = true;
+            Storage.gamemode = Storage.GameMode.Versus;
+            TransitionHandler.WipeToScene("OnlineMenu");
+        }
+
         public void SelectHTP()
         {
             if (BlackjackMenu.blackjackOpened) return;
