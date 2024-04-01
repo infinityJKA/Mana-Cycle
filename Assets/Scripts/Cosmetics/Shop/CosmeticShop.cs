@@ -1,5 +1,6 @@
 using Cosmetics;
 using LootLocker.Requests;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,6 +23,8 @@ namespace Cosmetics {
 
         [SerializeField] private SwapPanelManager swapPanelManager;
 
+        [SerializeField] private TMP_Text coinsLabel;
+
         // whether or not to use the online database. SHOULD BE TRUE FOR BUILD
         [SerializeField] private bool _useBackendCatalogs = true;
         public bool useBackendCatalogs => _useBackendCatalogs;
@@ -34,6 +37,7 @@ namespace Cosmetics {
             foreach (var tab in tabs) {
                 tab.Initialize();
             }
+            UpdateBalance();
         }
 
         /// <summary>
@@ -43,14 +47,25 @@ namespace Cosmetics {
         public void UpdateTabs() {
             foreach (var tab in tabs) {
                 tab.MakeItems();
+                tab.UpdateDisplays();
             }
+        }
+
+        public void UpdateTabDisplays() {
+            foreach (var tab in tabs) {
+                tab.UpdateDisplays();
+            }
+        }
+
+        public void UpdateBalance() {
+            coinsLabel.text = ""+WalletManager.coins;
         }
 
         // run on loot locker session response received
         public void OnConnected() {
             if (!useBackendCatalogs) return;
 
-            // FOR TESTING: liist catalogs
+            // FOR TESTING: list catalogs
             LootLockerSDKManager.ListCatalogs((response) => {
                 Debug.Log("CATALOGS RECEIVED!!!");
 
@@ -69,15 +84,22 @@ namespace Cosmetics {
 
         public void OnBack(InputAction.CallbackContext ctx) {
             if (SidebarUI.instance && SidebarUI.instance.expanded) {
+                ClosePurchaseConfirm();
                 SidebarUI.instance.ToggleExpanded();
+            } else if (swapPanelManager.currentPanel == 3) { // purchase confirmation
+                ClosePurchaseConfirm();
             } else if (swapPanelManager.currentPanel != 0) {
                 swapPanelManager.OpenPanel(0);
             } else {
-                Back();
+                BackToPrevMenu();
             }
         }
 
-        public void Back() {
+        public void ClosePurchaseConfirm() {
+            if (swapPanelManager.currentPanel == 3) PurchaseConfirmationPanel.instance.Cancel();
+        }   
+
+        public void BackToPrevMenu() {
             CatalogManager.paletteColors.ClearAllEntries();
             CatalogManager.iconPacks.ClearAllEntries();
 

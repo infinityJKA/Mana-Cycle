@@ -1954,10 +1954,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e776b78ff4000bf46bd814ccfb75ff31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
   nameText: {fileID: 2018868104}
   costText: {fileID: 102564325}
   itemIcon: {fileID: 1786700471}
+  swapPanelManager: {fileID: 841177925}
 --- !u!1 &523620144
 GameObject:
   m_ObjectHideFlags: 0
@@ -2299,11 +2299,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnLeft: {fileID: 247777328}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
@@ -2352,10 +2352,10 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 841177925}
-          m_TargetAssemblyTypeName: SwapPanelManager, Assembly-CSharp
-          m_MethodName: OpenPanel
-          m_Mode: 3
+        - m_Target: {fileID: 495674215}
+          m_TargetAssemblyTypeName: Cosmetics.PurchaseConfirmationPanel, Assembly-CSharp
+          m_MethodName: Cancel
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -7291,6 +7291,7 @@ MonoBehaviour:
   tabs:
   - {fileID: 1184610031}
   swapPanelManager: {fileID: 841177925}
+  coinsLabel: {fileID: 1621965258}
   _useBackendCatalogs: 1
 --- !u!1001 &1940397861
 PrefabInstance:

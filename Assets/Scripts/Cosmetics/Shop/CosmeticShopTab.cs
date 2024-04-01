@@ -50,6 +50,9 @@ namespace Cosmetics
             }
 
             swapPanel = GetComponent<SwapPanel>();
+            swapPanel.onOpened.AddListener(() => {
+                if (PurchaseConfirmationPanel.instance) PurchaseConfirmationPanel.instance.backToPanel = swapPanel.index;
+            });
         }
 
         private void Start() {
@@ -69,6 +72,12 @@ namespace Cosmetics
             // if not, RunWhenConnected() will be invoked by PlayerManager upon login complete.
             if (PlayerManager.loggedIn) {
                 RunWhenConnected();
+            }
+        }
+
+        public void UpdateDisplays() {
+            foreach (CosmeticItemDisp disp in GetComponentsInChildren<CosmeticItemDisp>()) {
+                disp.UpdateOwnedOverlay();
             }
         }
 
@@ -97,6 +106,8 @@ namespace Cosmetics
         /// </summary>
         public void MakeItems()
         {
+            if (!CosmeticShop.instance.useBackendCatalogs) return;
+
             assetList.assets = (from e in assetList.assets orderby e.owned select e).ToList();
             while (assetListIndex < assetList.assets.Count) {
                 // TEMPORARY

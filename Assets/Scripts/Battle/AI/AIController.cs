@@ -249,24 +249,24 @@ namespace Battle.AI {
             // Incoming damage will kill: 100% chance, guaranteed unless cast chance multiplier < 1.0
             if (incomingDamage >= board.hp && Random.value < 1.0f*castChanceMultiplier) return true;
 
-            // Incoming damage greater than 600: 40% chance
-            if (incomingDamage >= 600 && Random.value < 0.4f*castChanceMultiplier) return true;
+            // Incoming damage greater than 600: 30% chance
+            if (incomingDamage >= 600 && Random.value < 0.3f*castChanceMultiplier) return true;
 
-            // Incoming damage greater than 0: 8% chance
-            if (incomingDamage > 0 && Random.value < 0.08f*castChanceMultiplier) return true;
+            // Incoming damage greater than 0: 5% chance
+            if (incomingDamage > 0 && Random.value < 0.05f*castChanceMultiplier) return true;
 
             // Chance is based on height from top of physical board
             // recovery mode (<4 from top): pretty much always guaranteed, 150% chance, always unless cast chance multiplier < 0.667
             if (rowsFromTop < 4 && Random.value < 1.50f*castChanceMultiplier) return true;
 
-            // <7 from top: 40% chance
-            if (rowsFromTop < 7 && Random.value < 0.40f*castChanceMultiplier) return true;
+            // <7 from top: 35% chance
+            if (rowsFromTop < 7 && Random.value < 0.35f*castChanceMultiplier) return true;
 
-            // <10 from top: 15% chance
-            if (rowsFromTop < 10 && Random.value < 0.15f*castChanceMultiplier) return true;
+            // <10 from top: 10% chance
+            if (rowsFromTop < 10 && Random.value < 0.10f*castChanceMultiplier) return true;
 
-            // Persistent 4% chance
-            if (Random.value < 0.04f*castChanceMultiplier) return true;
+            // Persistent 1.5% chance
+            if (Random.value < 0.015f*castChanceMultiplier) return true;
 
 
             // if no random checks landed, don't cast
@@ -330,9 +330,13 @@ namespace Battle.AI {
                 case Battler.ActiveAbilityEffect.GoldMine:
                     return Random.value < 0.35*abilityChanceMultiplier;
 
-                // z?blind: random chance while ready
+                // z?blind: random chance while ready, much higher chance if likely to spellcast soon
                 case Battler.ActiveAbilityEffect.ZBlind:
-                    return Random.value < 0.35*abilityChanceMultiplier;
+                    float chance = 0.05f;
+                    for (int i = 0; i < 5; i++) {
+                        if (ShouldCast()) chance *= 2;
+                    }
+                    return Random.value < 0.05*abilityChanceMultiplier;
 
                 // default: random chance
                 default:

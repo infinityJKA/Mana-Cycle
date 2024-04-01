@@ -26,9 +26,12 @@ public class PlayerManager {
     }
 
     static PlayerManager() {
+        // in case of domain reload disabled
+        playerID = "";
+        loggedIn = false;
+        loginInProgress = false;
+        loginAttempted = false;
         // Platform specific auto login on start
-        // stop if already logged in online or logging in
-        if (loggedIn || loginInProgress) return;
         if (SteamManager.Initialized) {
             LoginSteam();
         } else {

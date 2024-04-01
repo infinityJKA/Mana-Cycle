@@ -117,6 +117,7 @@ public class RemoteFileManager {
                 if (currentLevel.fastestTime > incomingLevel.fastestTime) {
                     currentLevel.fastestTime = incomingLevel.fastestTime;
                     Debug.Log(levelId+" time: "+currentLevel.fastestTime+" -> "+incomingLevel.fastestTime);
+                    // TODO: upload best time once time leaderboards exist
                 }
                 current.levels[levelId] = currentLevel;
             } 

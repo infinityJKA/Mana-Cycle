@@ -26,6 +26,10 @@ namespace Cosmetics
             costText.text = "" + item.value;
             itemIcon.sprite = item.icon;
             itemIcon.color = item.iconColor;
+            UpdateOwnedOverlay();
+        }
+
+        public void UpdateOwnedOverlay() {
             ownedOverlay.SetActive(item.owned);
         }
 
@@ -40,8 +44,7 @@ namespace Cosmetics
         public void Submitted()
         {
             if (item.owned) return;
-            tab.confirmationPanel.item = item;
-            tab.confirmationPanel.Refresh();
+            tab.confirmationPanel.ShowItem(item);
             tab.panelManager.OpenPanel(3);
         }
 
