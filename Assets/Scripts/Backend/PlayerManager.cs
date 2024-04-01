@@ -26,11 +26,20 @@ public class PlayerManager {
     }
 
     static PlayerManager() {
+        LoginIfNotLoggedIn();
+    }
+
+    public static void LoginIfNotLoggedIn() {
+        if (LootLockerSDKManager.CheckInitialized()) return;
+
         // in case of domain reload disabled
         playerID = "";
         loggedIn = false;
         loginInProgress = false;
         loginAttempted = false;
+        CatalogManager.paletteColors.Reset();
+        CatalogManager.iconPacks.Reset();
+
         // Platform specific auto login on start
         if (SteamManager.Initialized) {
             LoginSteam();

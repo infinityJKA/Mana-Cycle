@@ -17,7 +17,12 @@ namespace Cosmetics
 
         // public fields accessible by cosmeticItemDIsplays via their tab field (set when instantiated by this class)
         [SerializeField] public TMPro.TextMeshProUGUI descriptionText;
-        [SerializeField] public CosmeticItem.CosmeticType shopType;
+        [SerializeField] public ShopType shopType;
+        public enum ShopType {
+            PaletteColors,
+            IconPacks
+        }
+
         [SerializeField] public SwapPanelManager panelManager;
         [SerializeField] public PurchaseConfirmationPanel confirmationPanel;
         [SerializeField] public SmoothScrollHandler scroller;
@@ -43,7 +48,7 @@ namespace Cosmetics
 
         void Awake()
         {
-            if (shopType == CosmeticItem.CosmeticType.Palette) {
+            if (shopType == ShopType.PaletteColors) {
                 assetList = CatalogManager.paletteColors;
             } else {
                 assetList = CatalogManager.iconPacks;
@@ -110,13 +115,7 @@ namespace Cosmetics
 
             assetList.assets = (from e in assetList.assets orderby e.owned select e).ToList();
             while (assetListIndex < assetList.assets.Count) {
-                // TEMPORARY
-                // CreateCosmeticDisplay should eventuall take in a ShopItem instead of a CosmeticItem
-                // that way Value & other shop-only info does not need to stored along with cosmetic assets after already purchased
-                // but for now cosmeticitemdisplays use cosmeticitems and not shopitems
-                assetList.assets[assetListIndex].asset.value = assetList.assets[assetListIndex].cost;
-
-                CreateCosmeticDisplay(assetList.assets[assetListIndex].asset);
+                CreateCosmeticDisplay(assetList.assets[assetListIndex]);
 
                 // if first item is loaded while panel active, select it
                 if (assetListIndex == 0 && swapPanel.showing) SelectFirstItem();
@@ -130,25 +129,39 @@ namespace Cosmetics
         {
             DestroyDisplays();
 
-            List<CosmeticItem> items = new List<CosmeticItem>();
-            switch (shopType)
-            {
-                case CosmeticItem.CosmeticType.IconPack: items = new List<CosmeticItem>(database.iconPacks); break;
-                case CosmeticItem.CosmeticType.Palette: items = new List<CosmeticItem>(database.colors); break;
-                default: Debug.Log("Shop type not set!"); break;
+            List<ShopItem<CosmeticItem>> items = new List<ShopItem<CosmeticItem>>();
+            if (shopType == ShopType.IconPacks) {
+                foreach (var entry in database.iconPacks) {
+                    items.Add(new ShopItem<CosmeticItem>()
+                    {
+                        asset = entry.iconPack,
+                        cost = entry.cost
+                    });
+                }
+            } else if (shopType == ShopType.PaletteColors) {
+                foreach (var entry in database.colors) {
+                    items.Add(new ShopItem<CosmeticItem>()
+                    {
+                        asset = entry.paletteColor,
+                        cost = entry.cost
+                    });
+                }
+            } else {
+                Debug.LogError("Shop type for "+gameObject+" not set!");
+                return;
             }
 
-            foreach (CosmeticItem item in from e in items orderby e.owned select e)
+            foreach (ShopItem<CosmeticItem> shopItem in from e in items orderby e.owned select e)
             {
-                CreateCosmeticDisplay(item);
+                CreateCosmeticDisplay(shopItem);
             }
 
             if (swapPanel.showing) SelectFirstItem();
         }
 
-        void CreateCosmeticDisplay(CosmeticItem item) {
+        void CreateCosmeticDisplay(ShopItem<CosmeticItem> shopItem) {
             CosmeticItemDisp disp = Instantiate(itemDisplayPrefab, shopItemsContainer.transform).GetComponent<CosmeticItemDisp>();
-            disp.Init(item, this);
+            disp.Init(shopItem, this);
 
             // if this is the first button loaded and panel is active, select it
             if (swapPanel.showing && shopItemsContainer.transform.childCount == 1) {

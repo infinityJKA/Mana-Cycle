@@ -16,35 +16,38 @@ namespace Cosmetics
         [SerializeField] private GameObject ownedOverlay;
 
         // set via shop tab script
-        private CosmeticItem item;
+        public ShopItem<CosmeticItem> shopItem {get; private set;}
         private CosmeticShopTab tab;
 
-        public void Init(CosmeticItem item, CosmeticShopTab tab) {
-            this.item = item;
+        public void Init(ShopItem<CosmeticItem> shopItem, CosmeticShopTab tab) {
+            this.shopItem = shopItem;
             this.tab = tab;
-            nameText.text = item.displayName;
-            costText.text = "" + item.value;
-            itemIcon.sprite = item.icon;
-            itemIcon.color = item.iconColor;
+            nameText.text = shopItem.asset.displayName;
+            itemIcon.sprite = shopItem.asset.icon;
+            itemIcon.color = shopItem.asset.iconColor;
+            costText.text = "" + shopItem.cost;
             UpdateOwnedOverlay();
         }
 
         public void UpdateOwnedOverlay() {
-            ownedOverlay.SetActive(item.owned);
+            ownedOverlay.SetActive(shopItem.owned);
         }
 
         public void Selected()
         {
             if (!tab) return; // if tab not set probably wasnt initialized and might just be a preview disp
             tab.lastSelected = GetComponent<Selectable>();
-            tab.descriptionText.text = item.description;
+            tab.descriptionText.text = shopItem.asset.description;
             tab.scroller.SnapTo(GetComponent<RectTransform>());
         }
 
         public void Submitted()
         {
-            if (item.owned) return;
-            tab.confirmationPanel.ShowItem(item);
+            if (shopItem.owned) {
+                // TODO: buzzer shound/disp shake to indicate cant buy cause already owned
+                return;
+            }
+            tab.confirmationPanel.ShowItem(this);
             tab.panelManager.OpenPanel(3);
         }
 

@@ -15,13 +15,50 @@ public class CatalogManager {
 
     public static readonly AssetList<CosmeticItem> iconPacks = new IconPackList();
 
+    public static void PurchaseItem(ShopItem<CosmeticItem> shopItem) {
+        var item = shopItem.asset;
+
+        var itemAndQuantity = new LootLockerCatalogItemAndQuantityPair
+        {
+            catalog_listing_id = shopItem.catalog_listing_id,
+            quantity = 1
+        };
+        LootLockerCatalogItemAndQuantityPair[] items = { itemAndQuantity };
+
+        LootLockerSDKManager.LootLockerPurchaseCatalogItems(WalletManager.walletID, items, (response) =>
+        {
+            if(!response.success)
+            {
+                Debug.LogError("Error purchasing shop item: " + response.errorData.message);
+                if (!PurchaseConfirmationPanel.instance) {
+                    PurchaseConfirmationPanel.instance.PurchaseResponseReceived(success: false);
+                }
+                return;
+            }
+
+            WalletManager.coins -= shopItem.cost;
+            CosmeticAssets.current.AddItem(item);
+            CosmeticAssets.Save();
+            shopItem.owned = true;
+            if (CosmeticShop.instance) CosmeticShop.instance.UpdateBalance();
+            if (SidebarUI.instance) SidebarUI.instance.UpdateWalletDisplay();
+
+            if (PurchaseConfirmationPanel.instance) {
+                PurchaseConfirmationPanel.instance.PurchaseResponseReceived(success: true);
+            } else {
+                Debug.LogWarning("Purchase success, but item purchased outside of shop scene???");
+                return;
+            }
+        });
+    }
+
     public class PaletteColorList : AssetList<CosmeticItem>
     {
         public override string catalogKey => "palette_colors";
 
         public override CosmeticItem ConvertAsset(LootLockerCatalogEntry entry, LootLockerAssetDetails details)
         {
-            PaletteColor paletteColor = ScriptableObject.CreateInstance<PaletteColor>();
+            PaletteColor paletteColor = new PaletteColor();
 
             if (CosmeticShop.instance) {
                 paletteColor.icon = CosmeticShop.instance.paletteColorIconSprite;
@@ -38,7 +75,6 @@ public class CatalogManager {
                     case "mainColor":
                         if (ColorUtility.TryParseHtmlString(kvp.value, out Color mainColor)) {
                             paletteColor.mainColor = mainColor;
-                            paletteColor.iconColor = mainColor;
                         }
                         break;
                     case "darkColor":
@@ -63,7 +99,8 @@ public class CatalogManager {
 
         public override CosmeticItem ConvertAsset(LootLockerCatalogEntry entry, LootLockerAssetDetails details)
         {
-            IconPack iconPack = ScriptableObject.CreateInstance<IconPack>();
+            IconPack iconPack = new IconPack();
+            // todo: add icons according to data received from backend
             return iconPack;
         }
 
@@ -165,17 +202,32 @@ public class CatalogManager {
                 for (int i = 0; i < response.entries.Length; i++) {
                     var entry = response.entries[i];
                     var details = response.asset_details[entry.catalog_listing_id];
+                    
+                    string assetId = details.legacy_id.ToString();
+
+                    if (itemsById.ContainsKey(assetId)) {
+                        Debug.LogWarning("Duplicate item loaded: "+details.name);
+                        continue;
+                    }
+
+                    ids[i] = assetId;
+
+                    if (!entry.purchasable) {
+                        Debug.LogWarning("Unpurchasable item in catalog: "+details.name);
+                    }
 
                     T convertedItem = ConvertAsset(entry, details);
 
                     ShopItem<T> shopItem = new ShopItem<T>
                     {
-                        asset = convertedItem
+                        asset = convertedItem,
+                        owned = IsOwned(details.id)
                     };
-
+                    
+                    itemsById[assetId] = shopItem;
+                    
                     convertedItem.id = details.id;
                     convertedItem.displayName = details.name;
-                    convertedItem.owned = IsOwned(details.id);
 
                     // if items ever get more than one price this code will need to be updated
                     var price = entry.prices[0];
@@ -189,9 +241,7 @@ public class CatalogManager {
 
                     shopItem.cost = price.amount;
 
-                    string assetId = details.legacy_id.ToString();
-                    itemsById[assetId] = shopItem;
-                    ids[i] = assetId;
+                    shopItem.catalog_listing_id = entry.catalog_listing_id;
                 }
 
                 // now fetch all details
@@ -214,23 +264,21 @@ public class CatalogManager {
             });
         }
 
+        // called on login in case of no domain reload
+        public void Reset() {
+            Debug.Log("reset asset list "+catalogKey);
+            assets.Clear();
+            itemsById.Clear();
+            loading = false;
+            lastAfterLoad = null;
+            reachedEnd = false;
+            pagination = null;
+        }
+
         // to be called when shop scene is closed; should free up the memory that the shop items list is taking up.
         public void ClearAllEntries() {
             assets.Clear();
             lastAfterLoad = null;
         }
-    }
-
-    public class ShopItem<T> where T : CosmeticItem {
-        public T asset;
-        public CurrencyType currencyType;
-        public int cost;
-        public bool owned;
-
-    }
-
-    public enum CurrencyType {
-        Coins, // aka ibncoin
-        Iridium
     }
 }

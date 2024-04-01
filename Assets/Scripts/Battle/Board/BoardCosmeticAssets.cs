@@ -20,6 +20,7 @@ namespace Battle.Board {
         //     instance = this;
         // }
 
+        // TODO: read from CosmeticsAssets.cs! not database
         [SerializeField] private Cosmetics.CosmeticDatabase cosmeticDatabase;
 
         // some of these probably won't change with cosmetics but im just using this to hold some ability assets together
@@ -69,7 +70,7 @@ namespace Battle.Board {
             // TODO: Use dynamic images/icons for mana sprites to use main and dark colors
             for (int i = 0; i < 5; i++)
             {
-                manaColors[i] = cosmeticDatabase.colors[PlayerPrefs.GetInt("ManaColor" + i, i)];
+                manaColors[i] = cosmeticDatabase.colors[PlayerPrefs.GetInt("ManaColor" + i, i)].paletteColor;
                 manaVisuals[i] = cosmeticDatabase.icons[PlayerPrefs.GetInt("ManaIcon" + i, i)];
             }
             
