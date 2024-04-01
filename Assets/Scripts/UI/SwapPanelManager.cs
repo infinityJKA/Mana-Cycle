@@ -23,8 +23,10 @@ public class SwapPanelManager : MonoBehaviour
         currentPanel = initialPanel;
 
         // show only initial panel
-        foreach (SwapPanel panel in panels)
+        for (int i = 0; i < panels.Length; i++)
         {
+            SwapPanel panel = panels[i];
+            panel.index = i;
             panel.gameObject.SetActive(false);
             panel.SetAnimationBlocksNavigation(animationBlocksNavigation);
         }

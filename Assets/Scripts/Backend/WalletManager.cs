@@ -1,10 +1,14 @@
+using Cosmetics;
 using LootLocker.Requests;
 using UnityEngine;
 
 public class WalletManager {
     public static string walletID {get; private set;}
-    public static int coins {get; private set;} = 0;
+    public static int coins {get; set;} = 0;
     public static int iridium {get; private set;} = 0;
+
+
+    public static bool balancesLoaded {get; private set;} = false;
 
     public static void GetWallet() {
         if (!PlayerManager.loggedIn) return;
@@ -49,8 +53,9 @@ public class WalletManager {
                 }
             }
 
-            if (SidebarUI.instance) SidebarUI.instance.UpdateWalletDisplay();;
-            
+            balancesLoaded = true;
+            if (SidebarUI.instance) SidebarUI.instance.UpdateWalletDisplay();
+            if (CosmeticShop.instance) CosmeticShop.instance.UpdateBalance();
         });
     }
 }

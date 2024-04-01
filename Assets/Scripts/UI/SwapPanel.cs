@@ -12,11 +12,14 @@ public class SwapPanel : MonoBehaviour
     [SerializeField] private Animator anim;
     private bool animationBlocksNavigation = false;
 
+    // set by SwapPanelManager in start
+    public int index {get; set;} = -1;
+
     // set by swap panel manager
     [System.NonSerialized] public GameObject selectOnOpen;
 
-    [SerializeField] private UnityEvent onOpened;
-    [SerializeField] private UnityEvent onClosed;
+    [SerializeField] public UnityEvent onOpened;
+    [SerializeField] public UnityEvent onClosed;
 
 
     public bool showing {get; private set;} = false;

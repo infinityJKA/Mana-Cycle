@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Cosmetics;
 using LootLocker;
 using LootLocker.Requests;
+using SaveData;
 using UnityEngine;
 
 public class CatalogManager {
@@ -51,7 +52,7 @@ public class CatalogManager {
 
         public override bool IsOwned(string id)
         {
-            return SaveData.Assets.paletteColors.ContainsKey(id);
+            return CosmeticAssets.current.paletteColors.ContainsKey(id);
         }
 
     }
@@ -73,7 +74,7 @@ public class CatalogManager {
 
         public override bool IsOwned(string id)
         {
-            return SaveData.Assets.iconPacks.ContainsKey(id);
+            return CosmeticAssets.current.iconPacks.ContainsKey(id);
         }
     }
 
