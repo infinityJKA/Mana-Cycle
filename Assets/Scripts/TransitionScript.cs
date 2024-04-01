@@ -44,6 +44,10 @@ public class TransitionScript : MonoBehaviour
         }
 
         instance = this;
+
+        // This should probably be moved to its own singleton but laziness & transitionscript is everywhere
+        // should only be needed in editor when reload domain is disabled
+        PlayerManager.LoginIfNotLoggedIn();
     }
 
     // Update is called once per frame

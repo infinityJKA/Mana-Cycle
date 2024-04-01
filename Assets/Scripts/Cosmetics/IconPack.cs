@@ -20,8 +20,8 @@ namespace Cosmetics
     [System.Serializable]
     public class IconPack : CosmeticItem
     {
-        public IconPack() : base(CosmeticItem.CosmeticType.IconPack){}
-
         public ManaIcon[] icons;
+
+        public override Color32 iconColor => Color.white;
     }
 }

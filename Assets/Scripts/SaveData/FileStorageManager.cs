@@ -9,12 +9,14 @@ public class FileStorageManager {
     // right now the encrypt bool desont do anything but may work on this later.
     // binary formatting should be enough to prevent most tampering for now.
     public static void Save<T>(T data, string path, bool encrypt) {
-        FileStream dataStream = new FileStream(path, FileMode.Create);
-
-        BinaryFormatter converter = new BinaryFormatter();
-        converter.Serialize(dataStream, data);
-
-        dataStream.Close();
+        try {
+            using (FileStream dataStream = new FileStream(path, FileMode.Create)) {
+                BinaryFormatter converter = new BinaryFormatter();
+                converter.Serialize(dataStream, data);
+            }
+        } catch (Exception e) {
+            Debug.LogError("Error saving file: "+e);
+        }
         
         Debug.Log("saved file "+path);
     }
@@ -27,14 +29,20 @@ public class FileStorageManager {
             return new T();
         }
 
-        FileStream dataStream = new FileStream(path, FileMode.Open);
-
         BinaryFormatter converter = new BinaryFormatter();
-        T data = converter.Deserialize(dataStream) as T;
+        try {
+            using (FileStream dataStream = new FileStream(path, FileMode.Open)) {
+            T data = converter.Deserialize(dataStream) as T;
 
-        dataStream.Close();
+            Debug.Log("loaded file "+path);
+            return data;
+        }
+        } catch (Exception e) {
+            Debug.LogError("Error loading file: "+e);
+            Debug.Log("created new empty fallback instance");
+            return new T();
+        }
         
-        Debug.Log("loaded file "+path);
-        return data;
+        
     }
 }

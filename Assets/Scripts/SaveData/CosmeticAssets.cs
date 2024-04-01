@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Cosmetics;
+using QFSW.QC;
 using UnityEngine;
 
 namespace SaveData {
@@ -26,6 +27,12 @@ namespace SaveData {
         }
         public static void Load() {
             current = FileStorageManager.Load<CosmeticAssets>(filePath, decrypt: false);
+        }
+
+        [Command]
+        public static void ClearCosmeticAssets() {
+            current.paletteColors.Clear();
+            current.iconPacks.Clear();
         }
 
         // ===== DATA

@@ -20,24 +20,26 @@ namespace Cosmetics
         [SerializeField] private SwapPanelManager swapPanelManager;
         public int backToPanel {get; set;} = 1;
 
-        private bool showing = false;
-
         // todo: change to ShopItem
-        private CosmeticItem item;
+        private CosmeticItemDisp disp;
+        private ShopItem<CosmeticItem> shopItem => disp.shopItem;
+        private CosmeticItem item => disp.shopItem.asset;
 
         private void Awake() {
             instance = this;
         }
 
-        public void ShowItem(CosmeticItem item)
+        public void ShowItem(CosmeticItemDisp disp)
         {
-            this.item = item;
+            this.disp = disp;
+            // item property => disp.shopIte.asset
             nameText.text = item.displayName;
-            costText.text = "" + item.value;
             itemIcon.sprite = item.icon;
             itemIcon.color = item.iconColor;
+            costText.text = "" + shopItem.cost;
         }
 
+        // when green Y button pressed
         public void PurchaseItem()
         {
             if (!WalletManager.balancesLoaded) {
@@ -45,19 +47,15 @@ namespace Cosmetics
             }
 
             // todo: use both coins/iridium based on shopItem values
-            int cost = item.value;
+            int cost = disp.shopItem.cost;
             int balance = WalletManager.coins;
 
             if (balance >= cost) {
-                // todo: integrate purchase with LootLocker
-                WalletManager.coins -= cost;
-                CosmeticAssets.current.AddItem(item);
-                item.owned = true;
-                Debug.Log("Purchased "+item.displayName+"!");
-                CosmeticShop.instance.UpdateBalance();
-                CosmeticShop.instance.UpdateTabDisplays();
-                if (SidebarUI.instance) SidebarUI.instance.UpdateWalletDisplay();
-                Close();
+                if (CosmeticShop.instance.useBackendCatalogs) {
+                    CatalogManager.PurchaseItem(disp.shopItem);
+                } else {
+                    PurchaseResponseReceived(success: true);
+                }
             } else {
                 Debug.Log("Cannot afford item! EXTREMELY LOUD INCORRECT BUZZER.mp3");
                 // instead of stopping player here, may want to show cost with red / transparent
@@ -66,6 +64,22 @@ namespace Cosmetics
             }
         }
 
+        /// <summary>
+        /// in online, call after purchase item request is finished.
+        /// in offline testing, called immediately when button pressed
+        /// </summary>
+        /// <param name="success">if the item was purchased successfully</param>
+        public void PurchaseResponseReceived(bool success) {
+            if (!success) {
+                // TODO: purchase error popup or somethin
+                return;
+            }
+
+            // if success, update owned overlay to show that item is now bought
+            disp.UpdateOwnedOverlay();
+        }
+
+        // when red N button pressed
         public void Cancel() {
             Close();
         }

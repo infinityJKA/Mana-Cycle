@@ -2809,6 +2809,22 @@ PrefabInstance:
       propertyPath: m_Navigation.m_Mode
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7374739286911159420, guid: f7e85b779a04ab6458bcd9ceaf75c812, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7374739286911159420, guid: f7e85b779a04ab6458bcd9ceaf75c812, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1916439154}
+    - target: {fileID: 7374739286911159420, guid: f7e85b779a04ab6458bcd9ceaf75c812, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BackToPrevMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7374739286911159420, guid: f7e85b779a04ab6458bcd9ceaf75c812, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Cosmetics.CosmeticShop, Assembly-CSharp
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4239,7 +4255,7 @@ MonoBehaviour:
   shopItemsContainer: {fileID: 905083520}
   itemDisplayPrefab: {fileID: 2718296165840879904, guid: a208eb4c30b7c4d4da588a1b67da1c88, type: 3}
   descriptionText: {fileID: 276795110}
-  shopType: 2
+  shopType: 0
   panelManager: {fileID: 841177925}
   confirmationPanel: {fileID: 495674215}
   scroller: {fileID: 398984771}
@@ -4818,6 +4834,18 @@ PrefabInstance:
     - target: {fileID: 4231475477120696344, guid: 8946ebf5fd0f82744ae2ad47030068e8, type: 3}
       propertyPath: m_Navigation.m_WrapAround
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4231475477120696344, guid: 8946ebf5fd0f82744ae2ad47030068e8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1916439154}
+    - target: {fileID: 4231475477120696344, guid: 8946ebf5fd0f82744ae2ad47030068e8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BackToPrevMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 4231475477120696344, guid: 8946ebf5fd0f82744ae2ad47030068e8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Cosmetics.CosmeticShop, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4865933220433118438, guid: 8946ebf5fd0f82744ae2ad47030068e8, type: 3}
       propertyPath: m_AnchorMax.y
