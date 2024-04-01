@@ -7,8 +7,10 @@ using UnityEditor;
 
 namespace Cosmetics
 {
+    #if (UNITY_EDITOR)
     [InitializeOnLoad]
     [CreateAssetMenu(fileName = "Cosmetic Database", menuName = "ManaCycle/Cosmetic Database")]
+    #endif
     public class CosmeticDatabase : ScriptableObject
     {
         public List<IconPack> iconPacks;

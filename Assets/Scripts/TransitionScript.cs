@@ -7,11 +7,19 @@ using UnityEngine.UI;
 
 public class TransitionScript : MonoBehaviour
 {
-    public static TransitionScript instance;
+    public static TransitionScript instance {get; set;}
 
     [SerializeField] private GameObject wipeObj;
     [SerializeField] private Image wipeImg;
-    public static string transitionState { get; private set; } = "none";
+    public TransitionState transitionState {get; private set;} = TransitionState.None;
+
+    public enum TransitionState {
+        None,
+        In,
+        Waiting,
+        Out
+    }
+
     private static float inTime;
     private static float outTime;
     private static float timePassed;
@@ -20,6 +28,9 @@ public class TransitionScript : MonoBehaviour
     private static bool inverted;
     // if false, will need to manually call ReadyToFadeOut()
     private static bool readyToFadeOut;
+    // if current transition is loading scene additively
+    private bool loadingAsync;
+    private AsyncOperation sceneLoadOp;
 
     /// <summary>
     /// Action that will be invoked when transitioning out, and set to null after it is invoked.
@@ -27,37 +38,36 @@ public class TransitionScript : MonoBehaviour
     public Action onTransitionOut;
 
     private void Awake() {
-        instance = this;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        // DontDestroyOnLoad(this.gameObject);
-        // wipeImg = wipeObj.GetComponent<Image>();
-        if (wipingOut){
-            wipingOut = false;
-            WipeOut();
+        if (instance != null) {
+            Destroy(gameObject);
+            return;
         }
 
+        instance = this;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (transitionState == "in")
+        if (transitionState == TransitionState.In)
         {
             timePassed += Time.deltaTime;
             wipeImg.fillAmount = Mathf.Pow((timePassed + 0.1f) / inTime, 2);
             if (timePassed >= inTime){
-                wipingOut = true;
-                SceneManager.LoadScene(gotoScene);
+                if (loadingAsync) {
+                    transitionState = TransitionState.Waiting;
+                    sceneLoadOp.allowSceneActivation = true;
+                    StartCoroutine(TransitionOutWhenSceneLoaded());
+                } else {
+                    SceneManager.LoadScene(gotoScene);
+                    WipeOut();
+                }
                 // when WipeOut is called here, it runs before the Start method and causes silly activity
                 // WipeOut();
             }
         }
 
-        else if (transitionState == "out" && readyToFadeOut)
+        else if (transitionState == TransitionState.Out && readyToFadeOut)
         {
             if (onTransitionOut != null) {
                 onTransitionOut.Invoke();
@@ -68,15 +78,25 @@ public class TransitionScript : MonoBehaviour
             wipeImg.fillAmount = Mathf.Pow(timePassed  / outTime, 2) * -1 + 1;
             if (wipeImg.fillAmount <= 0)
             {
-                transitionState = "none";
+                transitionState = TransitionState.None;
+                wipingOut = false;
             }
         }
     }
 
-    public void WipeToScene(string scene, float inTime=0.5f, float outTime=0.5f, bool reverse=false, bool autoFadeOut=true)
+    IEnumerator TransitionOutWhenSceneLoaded()
+    {
+        while (!sceneLoadOp.isDone)
+        {
+            yield return null;
+        }
+        WipeOut();
+    }
+
+    public void WipeToScene(string scene, float inTime=0.5f, float outTime=0.5f, bool reverse=false, bool autoFadeOut=true, bool asyncLoad = true)
     {
         // dont start a transition if one is already in progress
-        if (transitionState == "in") return;
+        if (transitionState == TransitionState.In) return;
 
         inverted = reverse;
         if (!inverted)
@@ -91,9 +111,16 @@ public class TransitionScript : MonoBehaviour
         TransitionScript.inTime = inTime;
         TransitionScript.outTime = outTime;
         timePassed = 0;
-        transitionState = "in";
+        transitionState = TransitionState.In;
+        wipingOut = false;
         gotoScene = scene;
         readyToFadeOut = autoFadeOut;
+        loadingAsync = asyncLoad;
+
+        if (asyncLoad) {
+            sceneLoadOp = SceneManager.LoadSceneAsync(gotoScene);
+            sceneLoadOp.allowSceneActivation = false;
+        }
     }
 
     public void ReadyToFadeOut() {
@@ -102,6 +129,9 @@ public class TransitionScript : MonoBehaviour
 
     public void WipeOut()
     {
+        if (wipingOut) return;
+        wipingOut = true;
+
         if (!inverted)
         {
             wipeImg.fillOrigin = (int) Image.OriginHorizontal.Left;
@@ -112,6 +142,6 @@ public class TransitionScript : MonoBehaviour
         }
         timePassed = 0;
         wipeImg.fillAmount = 1;
-        transitionState = "out";
+        transitionState = TransitionState.Out;
     }
 }
