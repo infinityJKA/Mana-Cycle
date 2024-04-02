@@ -77,6 +77,7 @@ namespace Cosmetics
 
             // if success, update owned overlay to show that item is now bought
             disp.UpdateOwnedOverlay();
+            Close();
         }
 
         // when red N button pressed

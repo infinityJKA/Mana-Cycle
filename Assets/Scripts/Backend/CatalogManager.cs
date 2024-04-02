@@ -36,6 +36,8 @@ public class CatalogManager {
                 return;
             }
 
+            Debug.Log("Successfully purchased "+shopItem.asset.displayName);
+
             WalletManager.coins -= shopItem.cost;
             CosmeticAssets.current.AddItem(item);
             CosmeticAssets.Save();
