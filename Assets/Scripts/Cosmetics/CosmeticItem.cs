@@ -13,8 +13,7 @@ namespace Cosmetics
         public string displayName;
         public string description;
 
-
-        public Sprite icon;
+        public Sprite icon => CosmeticShop.instance.
         public abstract Color32 iconColor {get;}
     }
 }

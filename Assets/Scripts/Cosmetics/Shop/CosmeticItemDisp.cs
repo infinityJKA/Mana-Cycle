@@ -23,7 +23,9 @@ namespace Cosmetics
             this.shopItem = shopItem;
             this.tab = tab;
             nameText.text = shopItem.asset.displayName;
-            itemIcon.sprite = shopItem.asset.icon;
+            // For now, just use the palette color icon sprite from cosmetic shop instance
+            // idk what to do for icon packs yet.
+            itemIcon.sprite = CosmeticShop.instance.paletteColorIconSprite;
             itemIcon.color = shopItem.asset.iconColor;
             costText.text = "" + shopItem.cost;
             UpdateOwnedOverlay();

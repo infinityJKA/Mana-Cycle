@@ -1,8 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Security.Cryptography;
-using System.Text;
 using UnityEngine;
 
 public class FileStorageManager {
@@ -10,10 +7,8 @@ public class FileStorageManager {
     // binary formatting should be enough to prevent most tampering for now.
     public static void Save<T>(T data, string path, bool encrypt) {
         try {
-            using (FileStream dataStream = new FileStream(path, FileMode.Create)) {
-                BinaryFormatter converter = new BinaryFormatter();
-                converter.Serialize(dataStream, data);
-            }
+            string json = JsonUtility.ToJson(data);
+            File.WriteAllText(path, json);
         } catch (Exception e) {
             Debug.LogError("Error saving file: "+e);
         }
@@ -29,20 +24,14 @@ public class FileStorageManager {
             return new T();
         }
 
-        BinaryFormatter converter = new BinaryFormatter();
         try {
-            using (FileStream dataStream = new FileStream(path, FileMode.Open)) {
-            T data = converter.Deserialize(dataStream) as T;
-
-            Debug.Log("loaded file "+path);
+            string json = File.ReadAllText(path);
+            T data = JsonUtility.FromJson<T>(json);
             return data;
-        }
         } catch (Exception e) {
             Debug.LogError("Error loading file: "+e);
-            Debug.Log("created new empty fallback instance");
+            Debug.Log("returning new empty fallback instance");
             return new T();
         }
-        
-        
     }
 }

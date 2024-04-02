@@ -11,7 +11,7 @@ public class Settings {
     public static Settings current {get; set;}
 
     // Saving & loading
-    public const string name = "settings.sav";
+    public const string name = "settings.json";
     public static readonly string filePath;
     static Settings() {
         filePath = Path.Join(Application.persistentDataPath, name);
