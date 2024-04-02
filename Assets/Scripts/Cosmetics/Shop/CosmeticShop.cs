@@ -12,6 +12,10 @@ namespace Cosmetics {
         // so that the correct scene is returned to
         public static string sceneOnBack = "MainMenu";
 
+        // for local testing without backend
+        [SerializeField] private CosmeticDatabase _database;
+        public CosmeticDatabase database => _database;
+
         // icon sprite to use for palette colors
         // system might change in the future
         [SerializeField] private Sprite _paletteColorIconSprite;
