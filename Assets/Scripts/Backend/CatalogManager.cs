@@ -60,10 +60,6 @@ public class CatalogManager {
         {
             PaletteColor paletteColor = new PaletteColor();
 
-            if (CosmeticShop.instance) {
-                paletteColor.icon = CosmeticShop.instance.paletteColorIconSprite;
-            }
-
             return paletteColor;
         }
 

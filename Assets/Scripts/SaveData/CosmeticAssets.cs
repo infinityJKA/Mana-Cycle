@@ -16,7 +16,7 @@ namespace SaveData {
         public static CosmeticAssets current {get; set;}
 
         // Saving & loading
-        public const string name = "cosmetics.sav";
+        public const string name = "cosmetics.json";
         public static readonly string filePath;
         static CosmeticAssets() {
             filePath = Path.Join(Application.persistentDataPath, name);

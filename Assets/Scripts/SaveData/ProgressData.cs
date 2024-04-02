@@ -8,7 +8,7 @@ public class ProgressData {
     public static ProgressData current {get; private set;}
 
     // ===== Saving & loading
-    public const string fileName = "progressdata.sav";
+    public const string fileName = "progressdata.json";
     public static readonly string filePath;
     static ProgressData() {
         filePath = Path.Join(Application.persistentDataPath, fileName);

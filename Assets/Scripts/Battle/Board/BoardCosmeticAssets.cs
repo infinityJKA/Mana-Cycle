@@ -21,7 +21,7 @@ namespace Battle.Board {
         // }
 
         // TODO: read from CosmeticsAssets.cs! not database
-        [SerializeField] private Cosmetics.CosmeticDatabase cosmeticDatabase;
+        [SerializeField] private CosmeticDatabase cosmeticDatabase;
 
         // some of these probably won't change with cosmetics but im just using this to hold some ability assets together
         // mana palettes

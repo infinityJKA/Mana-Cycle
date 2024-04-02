@@ -34,7 +34,7 @@ namespace Cosmetics
             this.disp = disp;
             // item property => disp.shopIte.asset
             nameText.text = item.displayName;
-            itemIcon.sprite = item.icon;
+            itemIcon.sprite = ;
             itemIcon.color = item.iconColor;
             costText.text = "" + shopItem.cost;
         }

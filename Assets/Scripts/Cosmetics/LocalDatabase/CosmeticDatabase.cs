@@ -36,23 +36,5 @@ namespace Cosmetics
             // Debug.Log("Cosmetic database awake");
             RefreshData();
         }
-        
-        [CreateAssetMenu(fileName = "Palette", menuName = "Cosmetics/Palette")]
-        [System.Serializable]
-        public class PaletteColorScriptable : ScriptableObject
-        {
-            public PaletteColor paletteColor;
-            public int cost = 500;
-        }
-
-
-
-        [CreateAssetMenu(fileName = "IconPack", menuName = "Cosmetics/IconPack")]
-        [System.Serializable]
-        public class IconPackScriptable : ScriptableObject
-        {
-            public IconPack iconPack;
-            public int cost = 500;
-        }
     }
 }
