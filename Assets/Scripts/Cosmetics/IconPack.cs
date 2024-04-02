@@ -10,13 +10,9 @@ namespace Cosmetics
         public Sprite bgSprite;
         public Sprite iconSprite;
 
-        public Vector2 offset;
-        public float xOffset => offset.x;
-        public float yOffset => offset.y;
+        public Vector2 offset = Vector2.zero;
 
-        public Vector2 scale;
-        public float xScale => scale.x;
-        public float yScale => scale.y;
+        public Vector2 scale = Vector2.one;
         
         public float rotation;
     }
