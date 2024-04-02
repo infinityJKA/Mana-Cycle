@@ -42,6 +42,17 @@ namespace SaveData {
         // key: id
         public readonly Dictionary<string, IconPack> iconPacks = new Dictionary<string, IconPack>();
 
+
+        public CosmeticAssets() {
+            var defaultAssets = DataManager.instance.defaultAssets;
+            foreach (var entry in defaultAssets.colors) {
+                AddPaletteColor(entry.paletteColor);
+            }
+            foreach (var entry in defaultAssets.iconPacks) {
+                AddIconPack(entry.iconPack);
+            }
+        }
+
         
         public void AddPaletteColor(PaletteColor paletteColor) {
             paletteColors.Add(paletteColor.id, paletteColor);
