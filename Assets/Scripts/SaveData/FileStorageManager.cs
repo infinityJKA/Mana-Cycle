@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class FileStorageManager {
@@ -7,7 +8,7 @@ public class FileStorageManager {
     // binary formatting should be enough to prevent most tampering for now.
     public static void Save<T>(T data, string path, bool encrypt) {
         try {
-            string json = JsonUtility.ToJson(data);
+            string json = JsonConvert.SerializeObject(data);
             File.WriteAllText(path, json);
         } catch (Exception e) {
             Debug.LogError("Error saving file: "+e);
@@ -26,7 +27,8 @@ public class FileStorageManager {
 
         try {
             string json = File.ReadAllText(path);
-            T data = JsonUtility.FromJson<T>(json);
+            Debug.Log("Loading "+path+"\n"+json);
+            T data = JsonConvert.DeserializeObject<T>(json);
             return data;
         } catch (Exception e) {
             Debug.LogError("Error loading file: "+e);
