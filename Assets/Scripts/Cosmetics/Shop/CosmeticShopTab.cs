@@ -11,7 +11,7 @@ namespace Cosmetics
 {
     public class CosmeticShopTab : MonoBehaviour
     {
-        [SerializeField] private CosmeticDatabase database;
+        
         [SerializeField] private GameObject shopItemsContainer;
         [SerializeField] private GameObject itemDisplayPrefab;
 
@@ -131,7 +131,7 @@ namespace Cosmetics
 
             List<ShopItem<CosmeticItem>> items = new List<ShopItem<CosmeticItem>>();
             if (shopType == ShopType.IconPacks) {
-                foreach (var entry in database.iconPacks) {
+                foreach (var entry in CosmeticShop.instance.database.iconPacks) {
                     items.Add(new ShopItem<CosmeticItem>()
                     {
                         asset = entry.iconPack,
@@ -139,7 +139,7 @@ namespace Cosmetics
                     });
                 }
             } else if (shopType == ShopType.PaletteColors) {
-                foreach (var entry in database.colors) {
+                foreach (var entry in CosmeticShop.instance.database.colors) {
                     items.Add(new ShopItem<CosmeticItem>()
                     {
                         asset = entry.paletteColor,
