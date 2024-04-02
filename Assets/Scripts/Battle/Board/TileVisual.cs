@@ -15,16 +15,16 @@ namespace Battle.Board {
         [SerializeField] private Image bgImage;
 
         [SerializeField] private Material ghostMaterial;
-        public void SetVisual(Cosmetics.ManaIcon v, Cosmetics.PaletteColor p)
+        public void SetVisual(Cosmetics.ManaIcon icon, Cosmetics.PaletteColor paletteColor)
         {
             // Debug.Log("Setting up visual");
-            iconImage.sprite = v.iconSprite;
-            bgImage.sprite = v.bgSprite;
-            iconImage.color = p.darkColor;
-            bgImage.color = p.mainColor;
-            iconImage.rectTransform.anchoredPosition = new Vector2(v.xOffset, v.yOffset);
-            iconImage.transform.eulerAngles = new Vector3(0f, 0f, v.rotation);
-            iconImage.transform.localScale = new Vector3(v.xScale, v.yScale, 1f);
+            iconImage.sprite = icon.iconSprite;
+            bgImage.sprite = icon.bgSprite;
+            iconImage.color = paletteColor.darkColor;
+            bgImage.color = paletteColor.mainColor;
+            iconImage.rectTransform.anchoredPosition = icon.offset;
+            iconImage.transform.eulerAngles = new Vector3(0f, 0f, icon.rotation);
+            iconImage.transform.localScale = icon.scale;
         }
 
         public void SetObscuredVisual()
