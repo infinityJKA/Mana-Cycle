@@ -50,6 +50,10 @@ namespace Battle.Board {
         // this probably belongs in Tile.cs and not TileVisual.cs... but nah
         public Action onFallAnimComplete {get; set;}
 
+        // to be called if this is a ghost or cycle visual. animation/glow should not be used
+        public void DisableVisualUpdates() {
+            enabled = false;
+        }
 
         private void Update() {
             if (moving) {
@@ -83,7 +87,7 @@ namespace Battle.Board {
         }
 
         
-        public void SetVisual(GameBoard board, int manaColor, bool isTrash)
+        public void SetVisual(GameBoard board, int manaColor, bool isTrash = false)
         {
             // Debug.Log("Setting up visual");
             PaletteColor paletteColor;
@@ -98,7 +102,7 @@ namespace Battle.Board {
 
             // if visual has an icon sprte, set up the image
             if (icon.iconSprite != null) {
-                SetupIcon(icon, paletteColor);
+                SetupIcon(icon, paletteColor, isTrash);
             } 
             // if not, simply use the material set up by BoardCosmeticAssets.
             else {
@@ -106,11 +110,18 @@ namespace Battle.Board {
                 bgImage.gameObject.SetActive(false);
                 mainDarkColorImage.texture = icon.bgSprite.texture;
                 if (isTrash) {
+                    // multicolor trash doesnt exist (yet)
                     mainDarkColorImage.material = board.cosmetics.trashMaterials[manaColor];
                 } else {
-                    mainDarkColorImage.material = board.cosmetics.materials[manaColor];
+                    if (manaColor >= 0) {
+                        mainDarkColorImage.material = board.cosmetics.materials[manaColor];
+                    } else {
+                        mainDarkColorImage.material = board.cosmetics.multicolorMaterial;
+                    }
                 }
             }
+
+            if (glowImage) glowImage.sprite = icon.bgSprite;
         }
 
         public void SetupIcon(ManaIcon icon, PaletteColor paletteColor, bool isTrash = false) {
@@ -138,15 +149,26 @@ namespace Battle.Board {
 
         public void SetGhostVisual(GameBoard board, int manaColor)
         {
-            var icon = board.cosmetics.manaIcons[manaColor];
-            var paletteColor = board.cosmetics.paletteColors[manaColor];
+            DisableVisualUpdates(); // will not do glows for ghost tile
+
+            PaletteColor paletteColor;
+            ManaIcon icon;
+            if (manaColor >= 0) {
+                icon = board.cosmetics.manaIcons[manaColor];
+                paletteColor = board.cosmetics.paletteColors[manaColor];
+            } else {
+                icon = board.cosmetics.multicolorIcon;
+                paletteColor = board.cosmetics.multicolorPaletteColor;
+            }
 
             mainDarkColorImage.gameObject.SetActive(false);
             bgImage.gameObject.SetActive(true);
 
             // if the icon contains a ghost sprite, use that. if not use inner glow & icon sprite&bg in the mana icon
             if (icon.ghostSprite) {
+                bgImage.gameObject.SetActive(true);
                 iconImage.gameObject.SetActive(false);
+                mainDarkColorImage.gameObject.SetActive(false);
                 bgImage.sprite = icon.ghostSprite;
                 bgImage.color = paletteColor.mainColor;
                 bgImage.material = null; // default image shader??
@@ -194,6 +216,7 @@ namespace Battle.Board {
 
         public void SetColor(Color color) {
             bgImage.color = color;
+            mainDarkColorImage.color = color;
         }
     }
 }
