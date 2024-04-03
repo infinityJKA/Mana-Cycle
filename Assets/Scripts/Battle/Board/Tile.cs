@@ -96,7 +96,7 @@ namespace Battle.Board {
                 if (ghost) {
                     // if below 0, use multicolor ghost sprite
                     if (manaColor < 0) board.cosmetics.multicolorGhostManaSprite = board.cosmetics.multicolorGhostManaSprite;
-                    else visual.SetGhostVisual(board.cosmetics.manaVisuals[manaColor], board.cosmetics.manaColors[manaColor]);
+                    else visual.SetGhostVisual(board.cosmetics.manaIcons[manaColor], board.cosmetics.paletteColors[manaColor]);
 
                 } else {
                     // if below 0, use multicolor sprite
@@ -106,8 +106,8 @@ namespace Battle.Board {
                     }
                     else
                     {
-                        image.sprite = board.cosmetics.manaVisuals[ manaColor ].bgSprite;
-                        visual.SetVisual(board.cosmetics.manaVisuals[ manaColor ], board.cosmetics.manaColors[ manaColor ]);
+                        image.sprite = board.cosmetics.manaIcons[ manaColor ].bgSprite;
+                        visual.SetVisual(board.cosmetics.manaIcons[ manaColor ], board.cosmetics.paletteColors[ manaColor ]);
                     }
                 }
             }

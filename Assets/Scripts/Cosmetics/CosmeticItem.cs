@@ -9,7 +9,8 @@ namespace Cosmetics
     public abstract class CosmeticItem
     {
         // all these fields should eventually come from lootlocker asset as key/values
-        public string id;
+        [JsonIgnore]
+        public string id; // ID comes from json dictionary key
 
         public string displayName;
         public string description;
