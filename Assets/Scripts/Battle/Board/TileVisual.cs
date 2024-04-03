@@ -19,6 +19,8 @@ namespace Battle.Board {
 
         [SerializeField] private RawImage mainDarkColorImage;
 
+        [SerializeField] private Vector2 refIconSize = Vector2.one * 0.5f; // (0.5, 0.5)
+
         // ---- Constants
         /// <summary>Base reference color to use against when this tile is glowed</summary>
         private readonly Color baseGlowColor = new Color(0,0,0,0);
@@ -29,10 +31,10 @@ namespace Battle.Board {
         // Target position of this element, used for fall animations
         private Vector3 targetPosition;
         // Initial movement speed of this object when movemnet animated - distance in tiles per sec
-        private const float initialSpeed = 0;
-        private float speed;
+        private const float initialSpeed = 40;
         // Acceleration of this piece when falling
-        private float acceleration = 10; 
+        private const float acceleration = 55; 
+        private float speed;
         // If this piece is currently moving
         private bool moving = false;
 
@@ -135,7 +137,7 @@ namespace Battle.Board {
             iconImage.color = darkColor;
             iconImage.rectTransform.anchoredPosition = icon.offset;
             iconImage.transform.eulerAngles = new Vector3(0f, 0f, icon.rotation);
-            iconImage.transform.localScale = icon.scale;
+            iconImage.rectTransform.sizeDelta = icon.scale * refIconSize;
             bgImage.sprite = icon.bgSprite;
             bgImage.color = mainColor;
             bgImage.material = null; // this should make it use default image UI shader??
