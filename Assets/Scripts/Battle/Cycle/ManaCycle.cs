@@ -115,7 +115,7 @@ namespace Battle.Cycle {
         /// </summary>
         public void CreateCycleObjects() {
             // Display the icons and colors for player 1's board.
-            BoardCosmeticAssets cosmetics = boards[0].cosmetics;
+            // BoardCosmeticAssets cosmetics = boards[0].cosmetics;
 
             // Check if player 1 is in single player. if so, use its cycle length variables
             if (Storage.level) {
@@ -138,7 +138,7 @@ namespace Battle.Cycle {
             {
                 TileVisual cycleObject = Instantiate(manaImageObject, Vector3.zero, Quaternion.identity).GetComponent<TileVisual>();
                 // cycleObject.color = cosmetics.manaColors[cycle[i]].mainColor;
-                cycleObject.SetVisual(cosmetics.manaIcons[cycle[i]], cosmetics.paletteColors[cycle[i]]);
+                cycleObject.SetVisual(boards[0], cycle[i], isTrash: false);
                 cycleObjects.Add(cycleObject);
                 cycleObject.transform.SetParent(transform, false);
             }

@@ -11,8 +11,10 @@ namespace Cosmetics
     {
         [JsonIgnore] // dictionary key holds the ID now
         public string id;
+
         [JsonConverter(typeof(ManaIconSpriteConverter))]
         public Sprite bgSprite;
+
         [JsonConverter(typeof(ManaIconSpriteConverter))]
         public Sprite iconSprite;
 
@@ -23,6 +25,9 @@ namespace Cosmetics
         public Vector2 scale = Vector2.one;
         
         public float rotation;
+
+        [JsonConverter(typeof(ManaIconSpriteConverter))]
+        public Sprite ghostSprite;
     }
 
     [System.Serializable]

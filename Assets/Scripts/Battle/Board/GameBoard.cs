@@ -901,7 +901,6 @@ namespace Battle.Board {
             trashPiece.id = piecePreview.NextPieceId();
 
             trashPiece.GetTile(0).SetManaColor(Piece.RandomColor(rng), this);
-            trashPiece.GetTile(0).MakeTrashTile();
 
             // if col is -1, send to random tile, will return the column sent in
             if (col == -1) {
@@ -1229,7 +1228,8 @@ namespace Battle.Board {
 
             // unlight all lit tiles connected by the previous ghost piece
             ForEachTile(tile => {
-                tile.connectedToGhostPiece = false; tile.pulseGlow = false;
+                tile.connectedToGhostPiece = false; 
+                tile.visual.pulseGlow = false;
                 });
             // copy state of real tiles board
             Array.Copy(tiles, 0, simulatedTiles, 0, simulatedTiles.Length);
@@ -1631,7 +1631,7 @@ namespace Battle.Board {
         // Temporary, Only used for finding blobs within a single search, not used outside of search
         private static bool[,] tilesInBlobs;
 
-        private static int minBlobSize = 3;
+        public const int minBlobSize = 3;
         /** Updated list of recognized blobs */
         public List<Blob> blobs;
         /** Total amount of mana in current blob list */
@@ -1665,7 +1665,7 @@ namespace Battle.Board {
             if (glowDelay > 0) {
                 foreach (var blob in blobs) {
                     foreach (var tile in blob.tiles) {
-                        tiles[tile.y, tile.x].AnimateGlow(1f, glowDelay);
+                        tiles[tile.y, tile.x].visual.AnimateGlow(1f, glowDelay, cosmetics.glowAnimCurve);
                     }
                 }
             }
@@ -1677,7 +1677,7 @@ namespace Battle.Board {
             for (int r=0; r<height; r++) {
                 for (int c=0; c<width; c++) {
                     if (!tilesInBlobs[r, c] && tiles[r, c] != null) {
-                        tiles[r, c].AnimateGlow(0f, 0.5f);
+                        tiles[r, c].visual.AnimateGlow(0f, 0.5f, cosmetics.glowAnimCurve);
                     }
                 }
             }
@@ -2090,7 +2090,9 @@ namespace Battle.Board {
 
             // if blob is big enough, light up all connected mana
             if (blob.tiles.Count >= minBlobSize) {
-                blob.tiles.ForEach(tile => simulatedTiles[tile.x, tile.y].pulseGlow = true);
+                blob.tiles.ForEach(tile => {
+                    simulatedTiles[tile.x, tile.y].visual.pulseGlow = true;
+                });
             } 
 
             // otherwise, disconnect it; a later tile might be able to use this in a big enough blob
@@ -2439,13 +2441,12 @@ namespace Battle.Board {
             sfx.pitch = pitch;
         }
 
-        static int obscureRadius = 3;
-        static int obscureDistance = 4;
+        const int obscureRadius = 3;
+        const int obscureDistance = 4;
 
         // Recalculates which tiles are obscured by z?men
         public void RefreshObscuredTiles() {
             ForEachTile(tile => tile.Unobscure(this));
-
             
             ForEachTileWithIndex((tile, r, c) => {
                 if (tile.obscuresColor) {
@@ -2458,7 +2459,7 @@ namespace Battle.Board {
                             }
 
                             if (tiles[row, col]) {
-                                tiles[row, col].Obscure();
+                                tiles[row, col].Obscure(this);
                                 obscureCount++;
                             }
                         }

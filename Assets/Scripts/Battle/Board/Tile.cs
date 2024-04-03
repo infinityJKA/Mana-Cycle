@@ -17,29 +17,11 @@ namespace Battle.Board {
         // Mana color int representation value for this tile (changed from ManaColor enum -> int)
         public int manaColor { get; private set; }
 
-        // Seperate image object attached to this
-        public Image image;
-        public Image glowImage;
-
-        // Target position of this element, used for fall animations
-        private Vector3 targetPosition;
-
-        // Initial movement speed of this object when movemnet animated - distance in tiles per sec
-        public float initialSpeed = 0;
-        private float speed;
-        // Acceleration of this piece when falling
-        public float acceleration = 10; 
-        // If this piece is currently moving
-        private bool moving = false;
-
         // Point multiplier when this tile is cleared. May be modified by abilities.
-        public float pointMultiplier = 1f;
-
-        // Runs when this tile's fall animation is completed.
-        public Action onFallAnimComplete;
+        public float pointMultiplier {get; set;} = 1f;
 
         // Runs right before this tile is cleared. If part of a blob, that blob is passed.
-        public Action<GameBoard.Blob> beforeClear;
+        public Action<GameBoard.Blob> beforeClear {get; set;}
 
         // If this is a trash tile - which damages in set intervals
         public bool trashTile { get; private set; }
@@ -50,12 +32,6 @@ namespace Battle.Board {
         // Whether or not this tile's color is currently obscured.
         public bool obscured { get; private set; }
 
-        // Sprite to use when this tile is obscured.
-        [SerializeField] private Sprite obscuredSprite;
-
-        // Sprite color to use while obscured.
-        [SerializeField] private Color obscureColor;
-
         // Fragile tiles are only cleared when an adjacent blob is cleared.
         public bool fragile { get; private set; }
 
@@ -65,54 +41,25 @@ namespace Battle.Board {
         // If gravity should pull this tile down.
         public bool doGravity { get; private set; } = true;
 
-        /// <summary>Base reference color to use against when this tile is glowed</summary>
-        private Color baseColor;
-        /// <summary>Color to light this up when connected to ghost piece</summary>
-        private Color litColor;
-        /// <summary>While true, mana brightness will pulse in and out repeatedly</summary>
-        public bool pulseGlow;
         /// <summary>internal bool used by GameBoard when lighting connected tiles</summary>
-        public bool connectedToGhostPiece;
+        public bool connectedToGhostPiece {get; set;}
 
-        /// Variables for glow animation
-        private float glow, glowStartTime, glowDuration, glowStart, glowTarget;
-
-        // Animation curve that controls what the tile glow looks like
-        [SerializeField] private AnimationCurve glowAnimCurve;
-
-        [SerializeField] private TileVisual visual;
+        // -- Serialized
+        [SerializeField] private TileVisual _visual;
+        public TileVisual visual => _visual;
         
 
-        public void SetManaColor(int manaColor, GameBoard board, bool setVisualColor = true, bool setSprite = true, bool ghost = false)
+        public void SetManaColor(int manaColor, GameBoard board, bool setVisual = true, bool ghost = false)
         {
             this.manaColor = manaColor;
 
-            // Get image and set color from the list in this scene's cycle
-            if (setVisualColor) {
-                baseColor = glowImage.color;
-                litColor = new Color(glowImage.color.r, glowImage.color.g, glowImage.color.b, 0.4f);
-            }
-            if (setSprite && ManaCycle.instance.usingSprites) {
+            if (setVisual && ManaCycle.instance.usingSprites) {
                 if (ghost) {
-                    // if below 0, use multicolor ghost sprite
-                    if (manaColor < 0) board.cosmetics.multicolorGhostManaSprite = board.cosmetics.multicolorGhostManaSprite;
-                    else visual.SetGhostVisual(board.cosmetics.manaIcons[manaColor], board.cosmetics.paletteColors[manaColor]);
-
+                    _visual.SetGhostVisual(board, manaColor);
                 } else {
-                    // if below 0, use multicolor sprite
-                    if (manaColor < 0) 
-                    {
-                        image.sprite = board.cosmetics.multicolorManaSprite;
-                    }
-                    else
-                    {
-                        image.sprite = board.cosmetics.manaIcons[ manaColor ].bgSprite;
-                        visual.SetVisual(board.cosmetics.manaIcons[ manaColor ], board.cosmetics.paletteColors[ manaColor ]);
-                    }
+                    _visual.SetVisual(board, manaColor, isTrash: trashTile);
                 }
             }
-
-            glowImage.color = baseColor;
         }
 
         public int GetManaColor()
@@ -120,46 +67,8 @@ namespace Battle.Board {
             return manaColor;
         }
 
-        public void SetVisualColor(Color color)
-        {
-            // baseColor = color;
-            image.color = color;
-        }
-
         public void AnimateMovement(Vector2 from, Vector2 to) {
-            image.transform.localPosition = from;
-            targetPosition = to;
-            speed = initialSpeed;
-            moving = true;
-        }
-
-        private void Update() {
-            if (moving) {
-                if (image.transform.localPosition == targetPosition) {
-                    moving = false;
-                    if (onFallAnimComplete != null) onFallAnimComplete();
-                } else {
-                    image.transform.localPosition = Vector2.MoveTowards(image.transform.localPosition, targetPosition, speed*Time.smoothDeltaTime);
-                    speed += acceleration*Time.smoothDeltaTime;
-                }
-            }
-
-            // Animate glow
-            if (Time.time-glowStartTime < glowDuration) {
-                // glow = Mathf.Lerp(glowStart, glowTarget, (Time.time-glowStartTime)/glowDuration);
-                glow = Mathf.Lerp(glowStart, glowTarget, glowAnimCurve.Evaluate((Time.time-glowStartTime)/glowDuration));
-
-                // Debug.Log("glow = "+glow);
-            }
-            // else, pulse glow if glowTarget is 0 (not animateing to a non-zero glow value), & not animating which previous condition stops
-            else if (pulseGlow && glowTarget == 0) {
-                glow = 0.45f + Mathf.PingPong(Time.time*1f, 0.2f);
-            } 
-            // otherwise, no glow if not animating or pulsing
-            else {
-                glow = glowTarget; // will be 0 unless animated before this
-            }
-            glowImage.color = Color.Lerp(baseColor, litColor, glow);
+            _visual.AnimateMovement(from, to);
         }
 
         /// <summary>
@@ -174,7 +83,6 @@ namespace Battle.Board {
         public void MakeTrashTile() {
             trashTile = true;
             pointMultiplier -= 1.00f;
-            SetVisualColor(Color.Lerp(Color.black, image.color, 0.7f));
         }
 
         public void MakeObscuresColor() {
@@ -189,16 +97,13 @@ namespace Battle.Board {
             fragile = true;
         }
 
-        public void Obscure() {
+        public void Obscure(GameBoard board) {
             // If this itself is an obscuring tile, do not obscure it
             if (obscuresColor) return;
 
             if (!obscured) {
                 obscured = true;
-                image.sprite = obscuredSprite;
-                // baseColor = obscureColor;
-                image.color = obscureColor;
-                visual.SetObscuredVisual();
+                _visual.SetObscuredVisual(board);
             }
         }
 
@@ -207,13 +112,6 @@ namespace Battle.Board {
                 obscured = false;
                 SetManaColor(manaColor, board);
             }
-        }
-
-        public void AnimateGlow(float target, float duration) {
-            glowStart = glow;
-            glowTarget = target;
-            glowStartTime = Time.time;
-            glowDuration = duration;
         }
     }
 }

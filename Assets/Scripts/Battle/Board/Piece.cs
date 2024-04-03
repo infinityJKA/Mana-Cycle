@@ -273,9 +273,10 @@ namespace Battle.Board {
             }
 
             if (effect == Battler.ActiveAbilityEffect.IronSword) {
+                // undo scale and offset changes
                 center.SetManaColor(ManaColor.None, board, ghost: true);
-                center.image.rectTransform.sizeDelta = Vector2.one;
-                center.image.transform.position = Vector2.zero;
+                center.visual.SetSizeDelta(Vector2.one);
+                center.visual.SetAnchoredPosition(Vector2.zero);
             }
 
             else if (effect == Battler.ActiveAbilityEffect.GoldMine) {
@@ -366,16 +367,14 @@ namespace Battle.Board {
             effect = Battler.ActiveAbilityEffect.IronSword;
             slowFall = true;
             center.DontDoGravity();
-            center.SetManaColor(ManaColor.Colorless, board, setVisualColor: false, setSprite: false);
-            center.SetVisualColor(Color.white);
-
-            center.image.sprite = board.cosmetics.ironSwordSprite;
-            center.image.color = Color.white;
-            center.image.rectTransform.sizeDelta = new Vector2(1, 2);
-            center.image.transform.position = new Vector2(0, 0.5f); // aligns the bottom of the 2 tile large image to the bottom of the single tile
+            center.SetManaColor(ManaColor.Colorless, board, setVisual: false);
+            center.visual.SetSprite(board.cosmetics.ironSwordSprite);
+            center.visual.SetColor(Color.white);
+            center.visual.SetSizeDelta(new Vector2(1, 2));
+            center.visual.SetAnchoredPosition(new Vector2(0, 0.5f)); // aligns the bottom of the 2 tile large image to the bottom of the single tile
 
             accumulatedDamage = 0;
-            center.onFallAnimComplete = () => IronSwordDestroyTileBelow(board);
+            center.visual.onFallAnimComplete = () => IronSwordDestroyTileBelow(board);
         }
 
         // Destroy the tile below this tile and deal damage
@@ -414,10 +413,9 @@ namespace Battle.Board {
         public void MakePyroBomb(GameBoard board)
         {
             effect = Battler.ActiveAbilityEffect.PyroBomb;
-            center.SetManaColor(ManaColor.Colorless, board);
-            center.image.sprite = board.cosmetics.pyroBombSprite;
-            center.SetVisualColor(Color.white);
-            center.image.gameObject.SetActive(true);
+            center.SetManaColor(ManaColor.Colorless, board, setVisual: false);
+            center.visual.SetSprite(board.cosmetics.pyroBombSprite);
+            center.visual.SetColor(Color.white);
         }
 
         private void PyroBombExplode(GameBoard board) {
@@ -462,7 +460,7 @@ namespace Battle.Board {
             // (New) tile is always multicolor
             center.SetManaColor(ManaColor.Multicolor, board);
             // make tile semi transparent white color
-            center.SetVisualColor(new Color(1f, 1f, 1f, 0.5f));
+            center.visual.SetColor(new Color(1f, 1f, 1f, 0.5f));
 
             // This tile's point mult should be 0, unless another mana somehow buffs it
             center.pointMultiplier -= 1.00f;
@@ -479,9 +477,9 @@ namespace Battle.Board {
             // instantiate the crystal object and move it away from the camera, but not beyond the board
             GameObject crystal = Instantiate(
                 board.cosmetics.goldMineObject, 
-                center.image.transform.position + Vector3.forward*2, 
+                center.transform.position + Vector3.forward*2, 
                 Quaternion.identity, 
-                center.image.transform
+                center.transform
             ); 
 
             // set material to cycle's corresponding crystal material
@@ -490,8 +488,8 @@ namespace Battle.Board {
         }
 
         public void MakeZman(GameBoard board) {
-            center.SetManaColor(ManaColor.Colorless, board);
-            center.image.sprite = board.cosmetics.miniZmanSprite;
+            center.SetManaColor(ManaColor.Colorless, board, setVisual: false);
+            center.visual.SetSprite(board.cosmetics.miniZmanSprite);
             center.MakeObscuresColor();
             center.MakeFragile();
             center.pointMultiplier -= 1.0f;
