@@ -79,11 +79,14 @@ namespace Battle.Board {
          // Used for mana icons that DON'T have a defined seperate icon sprite - this means they are using the main+dark color shader.
         // Each color gets its own material for better performance.
         public Material[] materials {get; private set;}
+        public Material multicolorMaterial;
         public Material[] trashMaterials {get; private set;}
 
         // used for ghost mana icons that DO have an icon sprite. each color gets its own material.
         public Material[] ghostBgMaterials {get; private set;}
+        public Material multicolorGhostBgMaterial;
         public Material[] ghostIconMaterials {get; private set;}
+        public Material multicolorGhostIconMaterial;
 
         // awake
         // may want to move this into some kind of Init()
@@ -129,12 +132,20 @@ namespace Battle.Board {
                     materials[i] = new Material(mainDarkColorMaterial);
                     materials[i].SetColor("_MainColor", paletteColors[i].mainColor);
                     materials[i].SetColor("_DarkColor", paletteColors[i].darkColor);
-                    // materials[i].SetTexture("_Sprite", manaIcons[i].bgSprite.texture);
 
                     trashMaterials[i] = new Material(materials[i]);
                     trashMaterials[i].SetColor("_MainColor", Color.Lerp(paletteColors[i].mainColor, darkenColor, 0.375f));
                     trashMaterials[i].SetColor("_DarkColor", Color.Lerp(paletteColors[i].darkColor, darkenColor, 0.3f));
                 }
+            }
+
+            if (multicolorIcon.iconSprite) {
+                multicolorGhostBgMaterial = new Material(ghostMaterial);
+                multicolorGhostBgMaterial.SetColor("_Color", multicolorPaletteColor.mainColor);
+
+                multicolorGhostIconMaterial = new Material(ghostMaterial);
+                multicolorGhostIconMaterial.SetColor("_Color", multicolorPaletteColor.mainColor);
+                multicolorGhostIconMaterial.SetFloat("_Size", 1.2f);
             }
         }
 

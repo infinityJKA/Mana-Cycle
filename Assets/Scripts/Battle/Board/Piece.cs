@@ -458,8 +458,8 @@ namespace Battle.Board {
             // center.SetColor(board.GetPiece().GetCenter().color, board);
 
             // (New) tile is always multicolor
-            center.SetManaColor(ManaColor.Multicolor, board);
-            // make tile semi transparent white color
+            center.SetManaColor(ManaColor.Multicolor, board, setVisual: true);
+            // make tile semi transparent white color & multicolor mana icon
             center.visual.SetColor(new Color(1f, 1f, 1f, 0.5f));
 
             // This tile's point mult should be 0, unless another mana somehow buffs it
