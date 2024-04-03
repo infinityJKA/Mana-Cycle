@@ -27,8 +27,8 @@ public class FileStorageManager {
 
         try {
             string json = File.ReadAllText(path);
-            Debug.Log("Loading "+path+"\n"+json);
             T data = JsonConvert.DeserializeObject<T>(json);
+            Debug.Log("Loaded "+path+"\n"+json);
             return data;
         } catch (Exception e) {
             Debug.LogError("Error loading file: "+e);

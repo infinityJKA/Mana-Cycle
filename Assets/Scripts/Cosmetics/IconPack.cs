@@ -12,11 +12,42 @@ namespace Cosmetics
         [JsonIgnore] // dictionary key holds the ID now
         public string id;
 
-        [JsonConverter(typeof(ManaIconSpriteConverter))]
-        public Sprite bgSprite;
+        // BG sprite
+        [JsonIgnore] [System.NonSerialized]
+        public Sprite _bgSprite;
+        [JsonIgnore]
+        public Sprite bgSprite {
+            get {
+                if (!_bgSprite) _bgSprite = Resources.Load<Sprite>("ManaIcons/"+bgSpritePath);
+                return _bgSprite;
+            }
+        }
+        public string bgSpritePath;
 
-        [JsonConverter(typeof(ManaIconSpriteConverter))]
-        public Sprite iconSprite;
+        // Icon sprite
+        [JsonIgnore] [System.NonSerialized]
+        public Sprite _iconSprite;
+        [JsonIgnore]
+        public Sprite iconSprite {
+            get {
+                if (!_iconSprite) _iconSprite = Resources.Load<Sprite>("ManaIcons/"+iconSpritePath);
+                return _iconSprite;
+            }
+        }
+        public string iconSpritePath;
+
+        // Ghost sprite
+        [JsonIgnore] [System.NonSerialized]
+        public Sprite _ghostSprite;
+        [JsonIgnore]
+        public Sprite ghostSprite {
+            get {
+                if (!_ghostSprite) _ghostSprite = Resources.Load<Sprite>("ManaIcons/"+ghostSpritePath);
+                return _ghostSprite;
+            }
+        }
+        public string ghostSpritePath;
+
 
         [JsonConverter(typeof(Vector2Converter))]
         public Vector2 offset = Vector2.zero;
@@ -25,9 +56,6 @@ namespace Cosmetics
         public Vector2 scale = Vector2.one;
         
         public float rotation;
-
-        [JsonConverter(typeof(ManaIconSpriteConverter))]
-        public Sprite ghostSprite;
     }
 
     [System.Serializable]

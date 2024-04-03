@@ -13,13 +13,14 @@ namespace SaveData {
     /// </summary>
     [System.Serializable]
     public class CosmeticAssets {
-        public static CosmeticAssets current {get; set;}
+        public static CosmeticAssets current {get; set;} = null;
 
         // Saving & loading
         public const string name = "cosmetics.json";
         public static readonly string filePath;
         static CosmeticAssets() {
             filePath = Path.Join(Application.persistentDataPath, name);
+            current = null;
             Load();
         }
         public static void Save() {
@@ -37,20 +38,20 @@ namespace SaveData {
 
         // ===== DATA
         // key: id
-        public readonly Dictionary<string, PaletteColor> paletteColors = new Dictionary<string, PaletteColor>();
+        public Dictionary<string, PaletteColor> paletteColors = new Dictionary<string, PaletteColor>();
 
         // key: id
-        public readonly Dictionary<string, ManaIcon> icons = new Dictionary<string, ManaIcon>();
+        public Dictionary<string, ManaIcon> icons = new Dictionary<string, ManaIcon>();
 
         // List of icon packs
         // Each string[] contains the mana icon IDs within that pack
-        public readonly Dictionary<string, string[]> iconPacks = new Dictionary<string, string[]>();
+        public Dictionary<string, string[]> iconPacks = new Dictionary<string, string[]>();
 
         // ---- Equipped
         // IDs of equipped colors from paletteColors
-        public readonly string[] equippedPaletteColors = new string[5];
+        public string[] equippedPaletteColors = new string[5];
         // IDs of equipped icons from manaIcons
-        public readonly string[] equippedIcons = new string[5];
+        public string[] equippedIcons = new string[5];
 
 
         public CosmeticAssets() {
@@ -66,27 +67,43 @@ namespace SaveData {
             foreach (var key in paletteColors.Keys) {
                 equippedPaletteColors[i] = key;
                 i++;
+                if (i >= 5) break;
             }
 
             i = 0;
             foreach (var key in icons.Keys) {
                 equippedIcons[i] = key;
                 i++;
+                if (i >= 5) break;
             }
         }
 
         
         public void AddPaletteColor(PaletteColor paletteColor) {
+            if (paletteColor.id == "") {
+                Debug.LogWarning("Skipping paletteColor with no ID");
+                return;
+            }
             paletteColors.Add(paletteColor.id, paletteColor);
         }
 
         public void AddIconPack(IconPack iconPack) {
+            if (iconPack.id == "") {
+                Debug.LogWarning("Skipping iconPack with no ID");
+                return;
+            }
+
             string[] manaIconIds = new string[iconPack.icons.Length];
 
             for (int i = 0; i < iconPack.icons.Length; i++) {
                 ManaIcon manaIcon = iconPack.icons[i];
-                icons.Add(manaIcon.id, manaIcon);
                 manaIconIds[i] = manaIcon.id;
+
+                if (icons.ContainsKey(manaIcon.id)) {
+                    Debug.LogWarning("Icon \""+manaIcon.id+"\" already added; skipping.");
+                    continue;
+                }
+                icons.Add(manaIcon.id, manaIcon);
             }
 
             iconPacks.Add(iconPack.id, manaIconIds);
