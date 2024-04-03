@@ -17,8 +17,6 @@ public class DataManager : MonoBehaviour {
             return;
         }
         instance = this;
-
-        CosmeticAssets.Load();
     }
 
     private void OnDestroy() {
