@@ -1299,7 +1299,7 @@ namespace Battle.Board {
 
             if (doParticleEffects) {
                 int manaColor = tiles[row,col].GetManaColor();
-                Color color = manaColor < 0 ? Color.white : cosmetics.manaColors[manaColor].mainColor;
+                Color color = manaColor < 0 ? Color.white : cosmetics.paletteColors[manaColor].mainColor;
                 SpawnParticles(row, col, color);
             }
 
@@ -1899,7 +1899,7 @@ namespace Battle.Board {
         {
             foreach (ColorFader cycleColoredObject in cycleColoredObjects)
             {
-                Color cycleColor = cosmetics.GetVisualManaColor(cycle.GetCycle()[cyclePosition]);
+                Color cycleColor = cosmetics.GetMainColor(cycle.GetCycle()[cyclePosition]);
                 Color brightenedColor = Color.Lerp(cycleColor, fadeToColor, 0.3f);
                 cycleColoredObject.FadeToColor(brightenedColor);
             }

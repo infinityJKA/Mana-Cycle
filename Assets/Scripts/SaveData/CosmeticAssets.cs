@@ -32,7 +32,7 @@ namespace SaveData {
         [Command]
         public static void ClearCosmeticAssets() {
             current.paletteColors.Clear();
-            current.iconPacks.Clear();
+            current.icons.Clear();
         }
 
         // ===== DATA
@@ -40,7 +40,17 @@ namespace SaveData {
         public readonly Dictionary<string, PaletteColor> paletteColors = new Dictionary<string, PaletteColor>();
 
         // key: id
-        public readonly Dictionary<string, IconPack> iconPacks = new Dictionary<string, IconPack>();
+        public readonly Dictionary<string, ManaIcon> icons = new Dictionary<string, ManaIcon>();
+
+        // List of icon packs
+        // Each string[] contains the mana icon IDs within that pack
+        public readonly Dictionary<string, string[]> iconPacks = new Dictionary<string, string[]>();
+
+        // ---- Equipped
+        // IDs of equipped colors from paletteColors
+        public readonly string[] equippedPaletteColors = new string[5];
+        // IDs of equipped icons from manaIcons
+        public readonly string[] equippedIcons = new string[5];
 
 
         public CosmeticAssets() {
@@ -51,6 +61,18 @@ namespace SaveData {
             foreach (var entry in defaultAssets.iconPacks) {
                 AddIconPack(entry.iconPack);
             }
+
+            int i = 0;
+            foreach (var key in paletteColors.Keys) {
+                equippedPaletteColors[i] = key;
+                i++;
+            }
+
+            i = 0;
+            foreach (var key in icons.Keys) {
+                equippedIcons[i] = key;
+                i++;
+            }
         }
 
         
@@ -59,15 +81,23 @@ namespace SaveData {
         }
 
         public void AddIconPack(IconPack iconPack) {
-            iconPacks.Add(iconPack.id, iconPack);
+            string[] manaIconIds = new string[iconPack.icons.Length];
+
+            for (int i = 0; i < iconPack.icons.Length; i++) {
+                ManaIcon manaIcon = iconPack.icons[i];
+                icons.Add(manaIcon.id, manaIcon);
+                manaIconIds[i] = manaIcon.id;
+            }
+
+            iconPacks.Add(iconPack.id, manaIconIds);
         }
 
         public void AddItem(CosmeticItem item) {
             Type t = item.GetType();
             if (t.Equals(typeof(PaletteColor))) {
-                paletteColors.Add(item.id, (PaletteColor)item);
+                AddPaletteColor((PaletteColor)item);
             } else if (t.Equals(typeof(IconPack))) {
-                iconPacks.Add(item.id, (IconPack)item);
+                AddIconPack((IconPack)item);
             }
         }
     }

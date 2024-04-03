@@ -13,8 +13,10 @@ namespace Cosmetics
         public Color32 darkColor = Color.black;
 
 
+        [JsonIgnore]
         public override Color32 iconColor => mainColor;
 
+        [JsonIgnore]
         public override Sprite icon => CosmeticShop.instance.paletteColorIconSprite;
     }
 }

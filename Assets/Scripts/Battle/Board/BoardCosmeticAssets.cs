@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Battle.Cycle;
 using Sound;
 using Cosmetics;
+using SaveData;
 
 namespace Battle.Board {
     /// <summary>
@@ -20,27 +21,27 @@ namespace Battle.Board {
         //     instance = this;
         // }
 
-        // TODO: read from CosmeticsAssets.cs! not database
-        [SerializeField] private CosmeticDatabase cosmeticDatabase;
+        // if true, cosmetics grabbed form laoded file at battle start.
+        [SerializeField] bool useCosmeticAssetsFile = true;
 
         // some of these probably won't change with cosmetics but im just using this to hold some ability assets together
         // mana palettes
         [Tooltip("Colors to tint the cycle images")]
-        [SerializeField] public List<PaletteColor> manaColors;
+        [SerializeField] public PaletteColor[] paletteColors;
 
         [Tooltip("Lit colors to tint cycle images for ghost blobs and clearing. Auto-generated if omitted. Should be a lighter & yellower version of the original color")]
-        [SerializeField] public List<Color> litManaColors;
+        [SerializeField] public Color[] litManaColors;
 
         [Tooltip("String representations of the mana colors")] 
-        [SerializeField] public List<string> manaColorStrings;
+        [SerializeField] public string[] manaColorStrings;
 
         // mana palettes
         [Tooltip("Square sprites to use for mana in pieces and the cycle")]
-        [SerializeField] public List<ManaIcon> manaVisuals;
+        [SerializeField] public ManaIcon[] manaIcons;
 
 
-        [Tooltip("Ghost tile verisons of manaSprites containing just the sahep outlines.")]
-        [SerializeField] public List<Sprite> ghostManaSprites;
+        [Tooltip("Ghost tile verisons of manaSprites containing just the shape outlines.")]
+        [SerializeField] public Sprite[] ghostManaSprites;
 
         // called Multicolor, but really it's used to display any mana sprite that is represented by a negative ManaColor
         // such as ManaColor.Multicolor (-1) or ManaColor.None (-2).
@@ -65,31 +66,39 @@ namespace Battle.Board {
         
 
         private static readonly Color lightenColor = new Color(1f, 1f, 0.9f);
+
+        // awake
+        // may want to move this into some kind of Init()
+        // because only want to load from cosmetic assets file is this isn't some kind of online opponent
+        // so logic may be needed from an external class like ManaCycle.cs.
         private void Awake() {
+            if (!useCosmeticAssetsFile) return;
+
+            paletteColors = new PaletteColor[ManaCycle.cycleUniqueColors];
+            manaIcons = new ManaIcon[ManaCycle.cycleUniqueColors];
+            litManaColors = new Color[ManaCycle.cycleUniqueColors];
+
             // get mana colors from player prefs
             // TODO: Use dynamic images/icons for mana sprites to use main and dark colors
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < ManaCycle.cycleUniqueColors; i++)
             {
-                manaColors[i] = cosmeticDatabase.colors[PlayerPrefs.GetInt("ManaColor" + i, i)].paletteColor;
-                manaVisuals[i] = cosmeticDatabase.icons[PlayerPrefs.GetInt("ManaIcon" + i, i)];
-            }
-            
-            while (litManaColors.Count < manaColors.Count) {
-                Color originalColor = manaColors[litManaColors.Count].mainColor;
-                Color lighterColor = Color.Lerp(originalColor, lightenColor, 0.75f);
-                litManaColors.Add(lighterColor);
+                paletteColors[i] = CosmeticAssets.current.paletteColors[ CosmeticAssets.current.equippedPaletteColors[i] ];
+                manaIcons[i] = CosmeticAssets.current.icons[ CosmeticAssets.current.equippedIcons[i] ];
+
+                if (litManaColors[i] == Color.clear) {
+                    litManaColors[i] = Color.Lerp(paletteColors[i].mainColor, lightenColor, 0.75f);
+                }
             }
         }
 
-
         /// <summary>
-        /// Get the hex color (not manaColor int) of the mana at the specified index.
+        /// Get the visual main color (not manaColor int) of the mana at the specified index.
         /// </summary>
-        public Color GetVisualManaColor(int index) {
+        public Color GetMainColor(int index) {
             // for special flag colors such as Multicolor/Any/None with negative manacolor ID, just return color white.
             if (index < 0) return Color.white;
 
-            return manaColors[index].mainColor;
+            return paletteColors[index].mainColor;
         }
 
         public Color GetLitManaColor(int index) {
