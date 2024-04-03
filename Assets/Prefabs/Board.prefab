@@ -4187,13 +4187,31 @@ MonoBehaviour:
     darkColor:
       serializedVersion: 2
       rgba: 4288258466
-  obscuredSprite: {fileID: 0}
-  obscureColor: {r: 0, g: 0, b: 0, a: 0}
+  obscuredSprite: {fileID: 21300000, guid: b9903d3d607ce864aab2f0db6236c3b7, type: 3}
+  obscureColor: {r: 0.24886103, g: 0.20106, b: 0.28930807, a: 1}
   ghostMaterial: {fileID: 2100000, guid: 8bcff8ac49ef29f4c8a770975b485376, type: 2}
   mainDarkColorMaterial: {fileID: 2100000, guid: 76c1e24974b38cd48ad91522dc0749c0, type: 2}
   glowAnimCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.5948195
+      outSlope: 0.5948195
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.16388887
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -4204,6 +4222,9 @@ MonoBehaviour:
   miniZmanSprite: {fileID: 21300000, guid: e47d53c8c57e4422f8c285c78faa6038, type: 3}
   goldMineObject: {fileID: 304507001450775626, guid: cdf0240e00ea19d40ac4d0151fe35812, type: 3}
   pyroBombParticleEffect: {fileID: 5484401357604061577, guid: 304d4da4a446ae64abecc5f69036bac6, type: 3}
+  multicolorMaterial: {fileID: 0}
+  multicolorGhostBgMaterial: {fileID: 0}
+  multicolorGhostIconMaterial: {fileID: 0}
 --- !u!1 &9159051575835955899
 GameObject:
   m_ObjectHideFlags: 0
