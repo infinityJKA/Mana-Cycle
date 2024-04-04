@@ -49,11 +49,12 @@ public class PopupManager : MonoBehaviour {
     }
 
     public void ShowPopup(Popup popup) {
-
         if (popupStack.Count == 0) {
             // store selection if there is no stack, meaning no popup is being shown
             previouslySelected = EventSystem.current.currentSelectedGameObject;
         }
+
+        popup.transform.SetParent(transform);
 
         popupStack.Push(popup);
         currentPopup = popup;
@@ -64,6 +65,11 @@ public class PopupManager : MonoBehaviour {
         // neither of these work :(
 
         popup.SelectFirst();
+    }
+
+    public void ShowPopupFromPrefab(Popup popup) {
+        Popup popupInstance = Instantiate(popup.gameObject, transform).GetComponent<Popup>();
+        ShowPopup(popupInstance);
     }
 
     public void CurrentPopupClosed() {
@@ -86,7 +92,7 @@ public class PopupManager : MonoBehaviour {
         basicPopup.title = title;
         basicPopup.description = description;
         basicPopup.confirmButtonText = "Close";
-        basicPopup.onConfirm = onConfirm;
+        basicPopup.onConfirm.AddListener(() => onConfirm());
 
         ShowPopup(basicPopup);
     }

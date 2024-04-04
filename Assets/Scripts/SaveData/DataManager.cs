@@ -21,6 +21,7 @@ public class DataManager : MonoBehaviour {
         CosmeticAssets.Load();
     }
 
+
     private void OnDestroy() {
         CosmeticAssets.Save();
     }

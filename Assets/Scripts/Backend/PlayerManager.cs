@@ -2,6 +2,7 @@ using UnityEngine;
 using LootLocker.Requests;
 
 using Cosmetics;
+using System;
 
 #if !DISABLESTEAMWORKS
 using Steamworks;
@@ -32,6 +33,7 @@ public class PlayerManager {
         LoginIfNotLoggedIn();
     }
 
+    // ======== LOGIN /AUTHENTICATION
     public static void LoginIfNotLoggedIn() {
         if (LootLockerSDKManager.CheckInitialized()) return;
 
@@ -163,6 +165,44 @@ public class PlayerManager {
             
             OnLoginFinished();
             if (SidebarUI.instance) SidebarUI.instance.SelectLastSelected();
+        });
+    }
+
+    // ======== USERNAMES
+    // action will be called with either sucess true or false.
+    // (used by username change popup)
+    public static void SetPlayerName(string name, Action<PlayerNameResponse> action) {
+        LootLockerSDKManager.SetPlayerName(name, (response) =>
+        {
+            action.Invoke(response);
+
+            if (!response.success)
+            {
+                Debug.LogError("Error setting player name: "+response.errorData.message);
+                return;
+            }
+
+            Debug.Log("Successfully set player name to "+name);
+            playerUsername = name;
+            if (SidebarUI.instance) {
+                SidebarUI.instance.UpdatePlayerInfo();
+            }
+        });
+    }
+
+    public static void RetrievePlayerName() {
+        LootLockerSDKManager.GetPlayerName((response) =>
+        {
+            if (!response.success)
+            {
+                Debug.Log("Error getting player name");
+                return;
+            }
+
+            playerUsername = response.name;
+            if (SidebarUI.instance) {
+                SidebarUI.instance.UpdatePlayerInfo();
+            }
         });
     }
 }
