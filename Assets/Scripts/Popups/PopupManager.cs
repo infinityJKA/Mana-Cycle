@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using QFSW.QC;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class PopupManager : MonoBehaviour {
@@ -22,6 +23,8 @@ public class PopupManager : MonoBehaviour {
 
     [SerializeField] private Canvas canvas;
     [SerializeField] private BasicPopup basicPopupPrefab;
+
+    [SerializeField] private InputActionReference backAction;
 
     static PopupManager() {
         popupStack = new Stack<Popup>();
@@ -46,6 +49,18 @@ public class PopupManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.F2)) {
             TestPopup();
         }
+    }
+
+    private void OnEnable() {
+        backAction.action.performed += OnBackPressed;
+    }
+
+    private void OnDisable() {
+        backAction.action.performed -= OnBackPressed;
+    }
+
+    public void OnBackPressed(InputAction.CallbackContext ctx) {
+        if (showingPopup) currentPopup.Close();
     }
 
     public void ShowPopup(Popup popup) {

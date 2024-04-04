@@ -64,7 +64,7 @@ public class ToastManager : MonoBehaviour {
             }
         }
         if (phase == Phase.None) {
-            if (queue.TryPeek(out Toast toast)) {
+            if (queue.TryDequeue(out Toast toast)) {
                 currentToast = toast;
                 toastMessage.text = toast.message;
                 if (toast.status == Status.Success) {

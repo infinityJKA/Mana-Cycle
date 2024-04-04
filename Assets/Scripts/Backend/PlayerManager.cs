@@ -11,7 +11,14 @@ using Steamworks;
 // Handles logging in and logging out to player accounts.
 public class PlayerManager {
     public static string playerID {get; private set;}
+    public static int playerLegacyId {get; private set;}
+
+    // name shown in the sidebar.
     public static string playerUsername {get; private set;}
+    // if using a display name that the user has set via guest mode.
+    public static bool usingDisplayName {get; private set;} = false;
+    // true in guest mode; false in steam mode
+    public static bool canChangeUsername {get; private set;} = false;
 
     public static bool loginInProgress {get; private set;} = false;
     public static bool loginAttempted {get; private set;} = true;
@@ -70,7 +77,8 @@ public class PlayerManager {
             {
                 Debug.Log("Guest player logged in");
                 playerID = response.player_ulid;
-                playerUsername = "Guest "+response.player_id;
+                playerLegacyId = response.player_id;
+                canChangeUsername = true;
                 loggedIn = true;
             } else {
                 loginError = "Login failed";
@@ -128,6 +136,8 @@ public class PlayerManager {
                 loggedIn = true;
                 playerID = response.player_ulid;
                 playerUsername = SteamFriends.GetPersonaName();
+                usingDisplayName = false;
+                canChangeUsername = false;
                 Debug.Log("steam session started!");
                 OnLoginFinished();
             });
@@ -149,6 +159,9 @@ public class PlayerManager {
             WalletManager.GetWallet();
             XPManager.GetPlayerInfo();
             RemoteFileManager.GetPlayerFiles(download: true);
+
+            playerUsername = "Loading...";
+            RetrievePlayerName();
         }  
 
         if (CosmeticShop.instance) CosmeticShop.instance.OnConnected();
@@ -172,6 +185,8 @@ public class PlayerManager {
     // action will be called with either sucess true or false.
     // (used by username change popup)
     public static void SetPlayerName(string name, Action<PlayerNameResponse> action) {
+        if (!canChangeUsername) return;
+        
         LootLockerSDKManager.SetPlayerName(name, (response) =>
         {
             action.Invoke(response);
@@ -184,6 +199,7 @@ public class PlayerManager {
 
             Debug.Log("Successfully set player name to "+name);
             playerUsername = name;
+            usingDisplayName = true;
             if (SidebarUI.instance) {
                 SidebarUI.instance.UpdatePlayerInfo();
             }
@@ -199,7 +215,14 @@ public class PlayerManager {
                 return;
             }
 
-            playerUsername = response.name;
+            if (response.name != null && response.name.Length > 0) {
+                playerUsername = response.name;
+                usingDisplayName = true;
+            } else {
+                playerUsername = "Guest "+playerLegacyId;
+                usingDisplayName = false;
+            }
+            
             if (SidebarUI.instance) {
                 SidebarUI.instance.UpdatePlayerInfo();
             }
