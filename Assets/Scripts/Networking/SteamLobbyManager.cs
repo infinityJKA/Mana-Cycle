@@ -1,14 +1,13 @@
 using UnityEngine;
+
+#if !DISABLESTEAMWORKS
 using Unity.Services.Lobbies.Models;
 using Battle.Board;
 using VersusMode;
-
-#if !DISABLESTEAMWORKS
 using Steamworks;
-#endif
-
 using Mirror;
 using UnityEngine.SceneManagement;
+#endif
 
 namespace Networking {
     public class SteamLobbyManager {
@@ -20,8 +19,7 @@ namespace Networking {
         protected static Callback<LobbyEnter_t> lobbyEntered;
         protected static Callback<PersonaStateChange_t> personaChanged;
         private const string HostAddressKey = "HostAddress";
-        public static CSteamID lobbyId {get; private set;}
-        #endif
+        public static CSteamID lobbyId {get; private set;}  
 
         static SteamLobbyManager() {
             lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
@@ -30,6 +28,7 @@ namespace Networking {
             personaChanged = Callback<PersonaStateChange_t>.Create(OnPersonaStateChanged);
             lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
         }
+        #endif
 
         public static void CreateLobby() {
             #if !DISABLESTEAMWORKS

@@ -481,6 +481,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5557089438371283758, guid: 8946ebf5fd0f82744ae2ad47030068e8, type: 3}
+      propertyPath: storeSelection
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5738291453951774207, guid: 8946ebf5fd0f82744ae2ad47030068e8, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2500,6 +2504,7 @@ MonoBehaviour:
   onlineMenu: {fileID: 392721240}
   charSelectMenu: {fileID: 603813634}
   backAction: {fileID: 5254050053853602190, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
+  swapPanelManager: {fileID: 0}
 --- !u!1001 &429805575
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3048,10 +3053,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e55fca1f4e4844593a3dd65a3ecb39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Channels: 02000000
-  Timeout: 25
-  AllowSteamRelay: 1
-  UseNextGenSteamNetworking: 1
 --- !u!114 &483336643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3073,7 +3074,7 @@ MonoBehaviour:
   autoConnectClientBuild: 0
   offlineScene: 
   onlineScene: 
-  transport: {fileID: 483336641}
+  transport: {fileID: 0}
   networkAddress: localhost
   maxConnections: 2
   disconnectInactiveConnections: 0

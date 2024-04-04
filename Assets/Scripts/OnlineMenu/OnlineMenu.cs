@@ -45,9 +45,11 @@ public class OnlineMenu : MonoBehaviour {
     }
 
     public void OnBack(InputAction.CallbackContext ctx) {
-        if (SidebarUI.instance && SidebarUI.instance.expanded) {
-            SidebarUI.instance.ToggleExpanded();
-        } else if (swapPanelManager.currentPanel != 0) {
+        if (SidebarUI.instance && SidebarUI.instance.expanded) return;
+
+        if (!swapPanelManager) return;
+
+        if (swapPanelManager.currentPanel != 0) {
             swapPanelManager.OpenPanel(0);
         } else {
             Back();

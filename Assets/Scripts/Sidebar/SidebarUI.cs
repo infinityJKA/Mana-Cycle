@@ -40,6 +40,8 @@ public class SidebarUI : MonoBehaviour {
 
     [SerializeField] private InputActionReference toggleAction;
 
+    [SerializeField] private bool selectStoredOnBack = true;
+
     // Note: this class will not be DontDestroyOnLoad()ed but current one in scene will be saved for ref by other scenes.
     private void Awake() {
         instance = this;
@@ -62,12 +64,17 @@ public class SidebarUI : MonoBehaviour {
 
     private void OnTogglePressed(InputAction.CallbackContext ctx) {
         ToggleExpanded();
+
         if (expanded) {
             // todo: use a global lastSelected, possibly in storage, for compatabilitiy with all scenes
             Storage.storedSelection = EventSystem.current.currentSelectedGameObject;
             SelectLastSelected();
         } else {
-            ReselectAfterClose();
+            if (selectStoredOnBack) {
+                ReselectAfterClose();
+            } else {
+                EventSystem.current.SetSelectedGameObject(null);
+            }
         }
     }
 
@@ -82,6 +89,7 @@ public class SidebarUI : MonoBehaviour {
     }
 
     public void ToggleExpanded() {
+        Debug.Log("toggle!");
         expanded = !expanded;
 
         if (showingLoginOptions) {
