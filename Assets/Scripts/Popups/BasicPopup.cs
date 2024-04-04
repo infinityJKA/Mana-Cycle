@@ -6,8 +6,8 @@ using UnityEngine.UI;
 // Basic popup with a title, some text, and a confirm button.
 // Mainly used for error codes and brief but important notifications.
 public class BasicPopup : Popup {
-    [SerializeField] private TMP_Text titleLabel, descriptionLabel, confirmButtonLabel;
-    [SerializeField] private Button confirmButton;
+    [SerializeField] protected TMP_Text titleLabel, descriptionLabel, confirmButtonLabel;
+    [SerializeField] protected Button confirmButton;
 
     public string title {
         set{ titleLabel.text = value; }
@@ -22,6 +22,11 @@ public class BasicPopup : Popup {
     //     set{  }
     // }
 
+    public override void OnShow()
+    {
+        
+    }
+
     public UnityEvent onConfirm;
     // public Action onCancel;
 
@@ -29,4 +34,6 @@ public class BasicPopup : Popup {
         onConfirm.Invoke();
         Close();
     }
+
+
 }

@@ -63,6 +63,8 @@ public class SidebarUI : MonoBehaviour {
     }
 
     private void OnTogglePressed(InputAction.CallbackContext ctx) {
+        if (PopupManager.showingPopup) return;
+
         ToggleExpanded();
 
         if (expanded) {
@@ -105,11 +107,10 @@ public class SidebarUI : MonoBehaviour {
 
     public void UpdatePlayerInfo() {
         // only show logged out window if logged out and not currently a login in progress.
-        bool loggedOut = !PlayerManager.loggedIn && !PlayerManager.loginInProgress;
-        loggedOutWindow.SetActive(loggedOut);
-        playerInfoWindow.SetActive(!loggedOut);
+        loggedOutWindow.SetActive(!PlayerManager.loggedIn);
+        playerInfoWindow.SetActive(PlayerManager.loggedIn);
 
-        if (loggedOut) {
+        if (!PlayerManager.loggedIn && !PlayerManager.loginInProgress) {
             accountButtonLabel.text = "Login";
         } else if (PlayerManager.loggedIn) {
             accountButtonLabel.text = "Account";
@@ -187,7 +188,7 @@ public class SidebarUI : MonoBehaviour {
     }
     [SerializeField] private UsernamePopup usernamePopupPrefab;
     public void ChangeUsernamePressed() {
-        PopupManager.instance.ShowPopupFromPrefab(usernamePopupPrefab);
+        if (PlayerManager.canChangeUsername) PopupManager.instance.ShowPopupFromPrefab(usernamePopupPrefab);
     }
 
     public void LogoutPressed() {

@@ -5,15 +5,22 @@ using UnityEngine.UI;
 public abstract class Popup : MonoBehaviour {
     [SerializeField] private GameObject firstSelected;
 
+    [SerializeField] private bool cancellable = true;
+
+    public abstract void OnShow();
+
     public void SelectFirst() {
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(firstSelected);
     }
 
     public void Close() {
+        if (!cancellable) return;
         if (PopupManager.instance.currentPopup == this) {
             Destroy(gameObject);
             PopupManager.instance.CurrentPopupClosed();
+        } else {
+            Debug.LogError("Trying to close popup that is not current popup. This would cause stack errors");
         }
     }
 }
