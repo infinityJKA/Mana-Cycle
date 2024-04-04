@@ -36,6 +36,9 @@ public class UsernamePopup : BasicPopup {
             description = "Username must be 3-16 characters";
             descriptionLabel.color = errorColor;
             return;
+        } else if (username == PlayerManager.playerUsername) {
+            Close();
+            return;
         }
 
         // maybe want to verify that username is only alphanumeric, though TMP input only allows alphanumeric, and lootlocker should error for that anyways

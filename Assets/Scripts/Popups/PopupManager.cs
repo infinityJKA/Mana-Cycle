@@ -80,6 +80,7 @@ public class PopupManager : MonoBehaviour {
         // neither of these work :(
 
         popup.SelectFirst();
+        popup.OnShow();
     }
 
     public void ShowPopupFromPrefab(Popup popup) {
