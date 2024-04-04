@@ -153,6 +153,7 @@ namespace Battle.Cycle {
         public static void GenerateCycle()
         {
             if (Storage.level) {
+                Debug.Log("cycle len: "+Storage.level.cycleLength);
                 cycleLength = Storage.level.cycleLength;
                 cycleUniqueColors = Storage.level.cycleUniqueColors;
                 lockPieceColors = Storage.level.lockPieceColors;

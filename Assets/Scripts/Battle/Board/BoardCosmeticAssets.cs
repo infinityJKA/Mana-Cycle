@@ -93,13 +93,13 @@ namespace Battle.Board {
         // so logic may be needed from an external class like ManaCycle.cs.
         private void Awake() {
             if (useCosmeticAssetsFile) {
-                paletteColors = new PaletteColor[ManaCycle.cycleUniqueColors];
-                manaIcons = new ManaIcon[ManaCycle.cycleUniqueColors];
-                litManaColors = new Color[ManaCycle.cycleUniqueColors];
+                paletteColors = new PaletteColor[5];
+                manaIcons = new ManaIcon[5];
+                litManaColors = new Color[5];
 
                 // get mana colors from player prefs
                 // TODO: Use dynamic images/icons for mana sprites to use main and dark colors
-                for (int i = 0; i < ManaCycle.cycleUniqueColors; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     paletteColors[i] = CosmeticAssets.current.paletteColors[ CosmeticAssets.current.equippedPaletteColors[i] ];
                     manaIcons[i] = CosmeticAssets.current.icons[ CosmeticAssets.current.equippedIcons[i] ];
@@ -110,12 +110,12 @@ namespace Battle.Board {
                 }
             }
 
-            materials = new Material[ManaCycle.cycleUniqueColors];
-            trashMaterials = new Material[ManaCycle.cycleUniqueColors];
-            ghostBgMaterials = new Material[ManaCycle.cycleUniqueColors];
-            ghostIconMaterials = new Material[ManaCycle.cycleUniqueColors];
+            materials = new Material[5];
+            trashMaterials = new Material[5];
+            ghostBgMaterials = new Material[5];
+            ghostIconMaterials = new Material[5];
 
-            for (int i = 0; i < ManaCycle.cycleUniqueColors; i++)
+            for (int i = 0; i < 5; i++)
             {
                 // If does have an icon, the the ghost sprite will use the ghost material for outline; create one for this color.
                 if (manaIcons[i].iconSprite) {
