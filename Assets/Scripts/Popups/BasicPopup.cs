@@ -1,7 +1,6 @@
-using System;
-using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 // Basic popup with a title, some text, and a confirm button.
@@ -23,11 +22,11 @@ public class BasicPopup : Popup {
     //     set{  }
     // }
 
-    public Action onConfirm;
+    public UnityEvent onConfirm;
     // public Action onCancel;
 
     public void OnConfirm() {
-        if (onConfirm != null) onConfirm();
+        onConfirm.Invoke();
         Close();
     }
 }

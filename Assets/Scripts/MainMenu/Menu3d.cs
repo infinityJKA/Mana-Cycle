@@ -84,7 +84,6 @@ namespace MainMenu {
         {
             VersusWindow.SetActive(true);
             MainWindow.SetActive(false);
-            Storage.lastMainMenuItem = 2;
             if (!mobile) EventSystem.current.SetSelectedGameObject(VersusFirstSelected);
         }
 
@@ -164,7 +163,6 @@ namespace MainMenu {
         public void SelectSolo()
         {
             if (BlackjackMenu.blackjackOpened) return;
-            Storage.lastMainMenuItem = 1;
             Storage.online = false;
             TransitionHandler.WipeToScene("SoloMenu");
         }

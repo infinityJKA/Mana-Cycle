@@ -181,6 +181,16 @@ public class SidebarUI : MonoBehaviour {
     // ==== main buttons
     public void OnAccountPressed()
     {
+        // eventually this will probably have its own account window. but for now, just take to change username.
+        // also, no logout functionality to player. as theres basically no point in logging out
+        ChangeUsernamePressed();        
+    }
+    [SerializeField] private UsernamePopup usernamePopupPrefab;
+    public void ChangeUsernamePressed() {
+        PopupManager.instance.ShowPopupFromPrefab(usernamePopupPrefab);
+    }
+
+    public void LogoutPressed() {
         if (PlayerManager.loginInProgress) return;
         if (PlayerManager.loggedIn) {
             // Log out when account button pressed (THIS IS TEMPORARY, account window will be added later where logout can be found)
@@ -193,7 +203,8 @@ public class SidebarUI : MonoBehaviour {
             loginOptionsFirstSelected.Select();
         }
     }
-    // htp: Menu3d.SelectHTP
+
+    // htp: Menu3d.SelectHTP()
 
     public void OnCosmeticsPressed() {
         Debug.Log("Todo: Transition to cosmetic menu scene");
@@ -210,8 +221,9 @@ public class SidebarUI : MonoBehaviour {
         Debug.Log("Todo: show announcements/changelon window");
     }
 
-    // options: Menu3d.SelectSettings
-    // exit: Menu3d.SelectExit
+    // options: Menu3d.SelectSettings()
+    // home: (depends on scene)
+    // exit: Menu3d.SelectExit()
     
 
     // ==== login options buttons
