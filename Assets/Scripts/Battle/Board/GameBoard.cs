@@ -16,8 +16,6 @@ using Battle.AI;
 // may be a bad idea to namespace this, could be changed later
 using static ArcadeStats.Stat;
 using TMPro;
-using Steamworks;
-//using static Item.DeferType;
 
 namespace Battle.Board {
     public class GameBoard : MonoBehaviour

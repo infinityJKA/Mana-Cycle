@@ -1,8 +1,11 @@
 using UnityEngine;
 using LootLocker.Requests;
-using Steamworks;
-using System;
+
 using Cosmetics;
+
+#if !DISABLESTEAMWORKS
+using Steamworks;
+#endif
 
 // Handles logging in and logging out to player accounts.
 public class PlayerManager {
@@ -75,7 +78,9 @@ public class PlayerManager {
         });
     }
 
+
     public static void LoginSteam() {
+        #if !DISABLESTEAMWORKS
         // To make sure Steamworks.NET is initialized
         if (!SteamManager.Initialized) {
             loginError = "Steam not initialized";
@@ -125,6 +130,7 @@ public class PlayerManager {
                 OnLoginFinished();
             });
         });
+        #endif
     }
 
     // function to be run after login (OR LOGOUT) process is fiinished (successful or not).

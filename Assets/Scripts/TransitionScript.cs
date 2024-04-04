@@ -97,7 +97,7 @@ public class TransitionScript : MonoBehaviour
         WipeOut();
     }
 
-    public void WipeToScene(string scene, float inTime=0.5f, float outTime=0.5f, bool reverse=false, bool autoFadeOut=true, bool asyncLoad = true)
+    public void WipeToScene(string scene, float inTime=0.5f, float outTime=0.5f, bool reverse=false, bool autoFadeOut=true, bool asyncLoad = false)
     {
         // dont start a transition if one is already in progress
         if (transitionState == TransitionState.In) return;
