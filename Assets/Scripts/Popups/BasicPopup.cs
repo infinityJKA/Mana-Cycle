@@ -27,6 +27,11 @@ public class BasicPopup : Popup {
         
     }
 
+    public override bool OnClose()
+    {
+        return true;
+    }
+
     public UnityEvent onConfirm;
     // public Action onCancel;
 

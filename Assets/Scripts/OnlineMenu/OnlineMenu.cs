@@ -39,6 +39,7 @@ public class OnlineMenu : MonoBehaviour {
 
     private void OnEnable() {
         backAction.action.performed += OnBack;
+        backAction.action.Enable();
     }
     private void OnDisable() {
         backAction.action.performed -= OnBack;
@@ -47,9 +48,7 @@ public class OnlineMenu : MonoBehaviour {
     public void OnBack(InputAction.CallbackContext ctx) {
         if (SidebarUI.instance && SidebarUI.instance.expanded) return;
 
-        if (!swapPanelManager) return;
-
-        if (swapPanelManager.currentPanel != 0) {
+        if (swapPanelManager && swapPanelManager.currentPanel != 0) {
             swapPanelManager.OpenPanel(0);
         } else {
             Back();
@@ -125,25 +124,25 @@ public class OnlineMenu : MonoBehaviour {
     }
 
     public void EnableInteractables() {
-        joinCodeField.interactable = true;
-        hostButton.interactable = true;
-        joinButton.interactable = true;
+        if (joinCodeField) joinCodeField.interactable = true;
+        if (hostButton) hostButton.interactable = true;
+        if (joinButton) joinButton.interactable = true;
     } 
 
     public void DisableInteractables() {
-        joinCodeField.interactable = false;
-        hostButton.interactable = false;
-        joinButton.interactable = false;
+        if (joinCodeField) joinCodeField.interactable = false;
+        if (hostButton) hostButton.interactable = false;
+        if (joinButton) joinButton.interactable = false;
     }
 
     public void ShowCharSelect() {
-        onlineMenu.SetActive(false);
-        charSelectMenu.SetActive(true);
+        if (onlineMenu) onlineMenu.SetActive(false);
+        if (charSelectMenu) charSelectMenu.SetActive(true);
     }
 
     public void ShowOnlineMenu() {
-        charSelectMenu.SetActive(false);
-        onlineMenu.SetActive(true);
+        if (charSelectMenu) charSelectMenu.SetActive(false);
+        if (onlineMenu) onlineMenu.SetActive(true);
         EnableInteractables();
     }
 
