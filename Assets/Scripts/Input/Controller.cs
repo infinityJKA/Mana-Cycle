@@ -325,7 +325,6 @@ namespace Battle {
 
         public void OnCancel(InputAction.CallbackContext ctx) {
             if (!gameFocused) return;
-            if (!ctx.performed) return;
             if (SidebarUI.instance && SidebarUI.instance.expanded) return;
             else if (controlMode == ControlMode.CharSelector) {
                 if (ctx.performed) {
