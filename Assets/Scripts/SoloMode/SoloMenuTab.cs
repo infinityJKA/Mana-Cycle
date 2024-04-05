@@ -6,5 +6,6 @@ namespace SoloMode {
     public class SoloMenuTab : ScriptableObject {
         [SerializeField] public string tabName;
         [SerializeField] public Level[] levelsList;
+        [SerializeField] public SoloLevelSeriesProgression progression;
     }
 }

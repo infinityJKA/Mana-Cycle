@@ -157,6 +157,26 @@ namespace SoloMode {
             }
         }
 
+        /// <summary>
+        /// get the length of the chain of levels that are required to beat before this one.
+        /// Effectively the level number in the current tab minus one.
+        /// </summary>
+        /// <value></value>
+        public int requirementCount
+        {
+            get {
+                int count = 0;
+                Level refLevel = this;
+                while (refLevel.levelRequirement != null) 
+                {
+                    count++;
+                    refLevel = refLevel.levelRequirement;
+                }
+
+                return count;
+            }
+        }
+
         /// <summary> return first level in series </summary>
         public Level rootLevel {
             get {
@@ -219,7 +239,7 @@ namespace SoloMode {
         public string timeLeaderboardKey => levelId+"_Time";
     }
 
-    #if (UNITY_EDITOR)
+    #if UNITY_EDITOR
     [CustomEditor(typeof(Level))]
     public class LevelListerEditor : Editor {
         public override void OnInspectorGUI() {

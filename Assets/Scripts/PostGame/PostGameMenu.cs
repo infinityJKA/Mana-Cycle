@@ -124,9 +124,21 @@ namespace PostGame {
                     int score = Storage.level.isEndless ? board.hp : board.hp + (board.lives-1)*2000; // add 2000 to score for each extra life
                     Storage.level.highScore = Math.Max(score, Storage.level.highScore);
 
-                    // Upload score to LootLocker
                     if (PlayerManager.loggedIn) {
+                        // Upload score to LootLocker
                         LeaderboardManager.UploadLeaderboardScore(Storage.level, Storage.level.highScore);
+
+                        // Upload level completion status
+                        if (Storage.tab) {
+                            if (Storage.tab.progression != null) {
+                                ulong level = (ulong)(Storage.level.requirementCount + 1);
+                                Storage.tab.progression.SetLevelCleared(level);
+                            } else {
+                                Debug.LogWarning("Level has no backend progression managing instance, skipping clear status upload");
+                            }
+                        } else {
+                            Debug.LogWarning("Skipping level status upload, tab not setup correctly");
+                        }
                     }
 
                     // If solo mode win: retry -> replay

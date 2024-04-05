@@ -126,6 +126,7 @@ namespace SoloMode {
         {
             selectedLevelIndexes = new int[tabs.Length];
             selectedTabIndex = 0;
+            Storage.tab = tabs[0];
             focused = true;
 
             // generates all the listed levels and organizes them into a transform
@@ -433,6 +434,7 @@ namespace SoloMode {
             }
 
             selectedTabIndex = index;
+            Storage.tab = tabs[selectedTabIndex];
 
             levelTabTransform.GetChild(selectedTabIndex).gameObject.SetActive(true);
             if (animateTabColors) {
@@ -465,11 +467,11 @@ namespace SoloMode {
             // if level series, show length instead of time
             if (selectedLevel.nextSeriesLevel == null)
             {
-                timeText.text = "Time: " + ((selectedLevel.time != -1) ? Utils.FormatTime(selectedLevel.time): "∞");
+                timeText.text = "Time: " + ((selectedLevel.time != -1) ? Utils.FormatTime(selectedLevel.time) : "∞");
             }
             else 
             {
-                timeText.text = (selectedLevel.aheadCount + 1) + " Matches";
+                timeText.text = $"{1 + selectedLevel.aheadCount} Matches";
             }
         }
 
