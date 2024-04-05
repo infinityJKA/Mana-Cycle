@@ -158,6 +158,7 @@ public class PlayerManager {
         if (loggedIn) {
             WalletManager.GetWallet();
             XPManager.GetPlayerInfo();
+            InventoryManager.GetInventory();
             RemoteFileManager.GetPlayerFiles(download: true);
 
             playerUsername = "Loading...";

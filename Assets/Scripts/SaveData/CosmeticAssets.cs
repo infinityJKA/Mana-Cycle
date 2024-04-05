@@ -55,7 +55,13 @@ namespace SaveData {
 
 
         public CosmeticAssets() {
-            var defaultAssets = DataManager.instance.defaultAssets;
+            CosmeticDatabase defaultAssets;
+            if (DataManager.instance) {
+                defaultAssets = DataManager.instance.defaultAssets;
+            } else {
+                Debug.LogError("No datamanager! Cannot create default assets");
+                return;
+            }
             foreach (var entry in defaultAssets.colors) {
                 AddPaletteColor(entry.paletteColor);
             }
