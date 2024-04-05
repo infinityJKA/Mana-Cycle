@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using LootLocker.Requests;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class ProgressData {
     public static ProgressData current {get; private set;}
 
@@ -43,7 +44,6 @@ public class ProgressData {
     /// List of all achievement IDs the player has unlocked
     /// </summary>
     public List<string> achievements = new List<string>();
-
     public override bool Equals(object obj)
     {
         if (obj == null || GetType() != obj.GetType())
@@ -106,30 +106,8 @@ public class ProgressData {
     }
 }
 
-[System.Serializable]
+[Serializable]
 public class LevelData {
     public int highScore;
     public int fastestTime; // clear time in milliseconds; used for leaderboards
-}
-
-[System.Serializable]
-public struct MatchStats {
-    /// <summary>Total amount of points earned (solo) or damage dealt (versus).
-    public int totalScore;
-    /// <summary>Total amount of mana this board has cleared</summary>
-    public int totalManaCleared;
-    /// <summary>Total amount of spellcasts this player has performed */</summary>
-    public int totalSpellcasts;
-    /// <summary> Highest combo performed by the player </summary>
-    public int highestCombo;
-    /// <summary>Highest cascade performed by the player </summary>
-    public int highestCascade;
-    /// <summary>Total amount of spellcast chains this player has started (aka. pressing spellcast and getting a chain of at least 1)</summary>
-    public int totalManualSpellcasts;
-    /// <summary>Highest single damage dealt in one spellcast during the battle </summary>
-    public int highestSingleDamage;
-
-    // ==== Versus only
-    /// <summary>Total amount of damage countered</summary>
-    public int totalDamageCountered;
 }

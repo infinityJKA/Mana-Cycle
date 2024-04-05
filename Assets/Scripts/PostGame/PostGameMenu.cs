@@ -111,8 +111,6 @@ namespace PostGame {
             // ======== SOLO ONLY
             if (Storage.gamemode == Storage.GameMode.Solo)
             {
-                string levelID = Storage.level.levelId;
-
                 // if not endless mode and is winner, level is cleared
                 bool clearedBefore = Storage.level.isCleared;
                 bool cleared = board.IsWinner() || (Storage.level.time == -1 && Storage.level.scoreGoal == 0);
@@ -123,6 +121,13 @@ namespace PostGame {
 
                     int score = Storage.level.isEndless ? board.hp : board.hp + (board.lives-1)*2000; // add 2000 to score for each extra life
                     Storage.level.highScore = Math.Max(score, Storage.level.highScore);
+
+                    MatchHistory.current.AddSoloEntry(new SoloHistoryEntry(){
+                        stats = board.matchStats,
+                        levelId = Storage.level.levelId,
+                        battlerId = board.Battler.battlerId,
+                        date = DateTime.Now.Ticks
+                    });
 
                     if (PlayerManager.loggedIn) {
                         // Upload score to LootLocker
