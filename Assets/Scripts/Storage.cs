@@ -18,6 +18,12 @@ public class Storage
     // in arcade mode- persist HP between matches
     public static int hp;
 
+    /// <summary>
+    /// current level tab player is playing a level within if level is not null.
+    /// set via SoloMode in LevelLister.cs when the tab is selected, via SetTabCursor()
+    /// </summary>
+    public static SoloMode.SoloMenuTab tab;
+
     /** level that the player selected */
     public static SoloMode.Level level;
 

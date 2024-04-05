@@ -158,6 +158,7 @@ public class PlayerManager {
         if (loggedIn) {
             WalletManager.GetWallet();
             XPManager.GetPlayerInfo();
+            XPManager.AddXP(0); // If progression hasn't started, this will start it. progression first auto tier has 2500 ibn for starters money
             InventoryManager.GetInventory();
             RemoteFileManager.GetPlayerFiles(download: true);
 
