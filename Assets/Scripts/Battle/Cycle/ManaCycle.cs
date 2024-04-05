@@ -157,7 +157,10 @@ namespace Battle.Cycle {
                 cycleLength = Storage.level.cycleLength;
                 cycleUniqueColors = Storage.level.cycleUniqueColors;
                 lockPieceColors = Storage.level.lockPieceColors;
-            } // otherwise will use serialized values which should be 7, 5, true
+            } else {
+                cycleLength = 7;
+                cycleUniqueColors = 5;
+            }
 
             cycle = new int[cycleLength];
 
