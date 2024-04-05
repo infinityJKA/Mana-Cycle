@@ -22,7 +22,11 @@ namespace SoloMode
             {
                 portrait.sprite = Storage.level.battler.sprite;
 
-                AchievementHandler.Instance.UnlockAchievement("ArcadeWin" + Storage.level.battler.name);
+                AchievementHandler.Instance.UnlockAchievement("ArcadeWin" + Storage.level.battler.battlerId);
+
+                if (Storage.lives == 3 && Storage.hp == 2000) {
+                    AchievementHandler.Instance.UnlockAchievement("ArcadeWinNoDamage");
+                }
             }
         }
 

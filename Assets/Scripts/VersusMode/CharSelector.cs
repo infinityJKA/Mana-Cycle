@@ -155,7 +155,7 @@ namespace VersusMode {
 
         public bool isRandomSelected {
             get {
-                return selectedIcon.battler.name == "Random";
+                return selectedIcon.battler.battlerId == "Random";
             }
         }
 
@@ -260,7 +260,7 @@ namespace VersusMode {
                 if (randomChangeDelay <= 0 && (!lockedIn || !randomBattler)) {
                     randomChangeDelay = 0.125f;
                     var prevBattler = randomBattler;
-                    while (!randomBattler || randomBattler.name == "Random" || randomBattler == prevBattler) {
+                    while (!randomBattler || randomBattler.battlerId == "Random" || randomBattler == prevBattler) {
                         randomBattler = battlerGrid.transform.GetChild(Random.Range(0, battlerGrid.transform.childCount-1)).GetComponent<CharacterIcon>().battler;
                     }
 

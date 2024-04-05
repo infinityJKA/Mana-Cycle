@@ -5,6 +5,9 @@ using UnityEngine.Localization;
 namespace Battle {
     [CreateAssetMenu(fileName = "Battler", menuName = "ManaCycle/Battler")]
     public class Battler : ScriptableObject {
+        [SerializeField] private string _battlerId;
+        public string battlerId => _battlerId;
+
         [SerializeField] private LocalizedString displayNameEntry;
         public string displayName {get; private set;}
 

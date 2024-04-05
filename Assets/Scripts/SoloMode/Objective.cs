@@ -17,7 +17,7 @@ namespace SoloMode {
         public int value = 0;
         /** String value, can contain comma seperated lists, used by level name / battler name objectives **/
         public string stringValue = "Item1, Item2";
-        /** Bool value, used by defeated/won objective **/
+        /** Bool value, used by defeated/won objective. condition must match this bool value in order for objective to be complete **/
         public bool boolValue = true;
 
         // if not null, replaces the status message displayed on the objective list
@@ -32,18 +32,18 @@ namespace SoloMode {
             switch (condition) {
                 case ObjectiveCondition.TimeRemaining: return board.timer.SecondsRemaining() <= value;
                 case ObjectiveCondition.PointTotal: return board.hp >= value;
-                case ObjectiveCondition.ManaClearedTotal: return board.GetTotalManaCleared() >= value;
-                case ObjectiveCondition.SpellcastTotal: return board.GetTotalSpellcasts() >= value;
-                case ObjectiveCondition.ManualSpellcastTotal: return board.GetManualSpellcasts() >= value && !board.IsCasting(); // wait for spellcast to end to apply incremented count completion
-                case ObjectiveCondition.TopCombo: return board.GetHighestCombo() >= value;
+                case ObjectiveCondition.ManaClearedTotal: return board.matchStats.totalManaCleared >= value;
+                case ObjectiveCondition.SpellcastTotal: return board.matchStats.totalSpellcasts >= value;
+                case ObjectiveCondition.ManualSpellcastTotal: return board.matchStats.totalManualSpellcasts >= value && !board.IsCasting(); // wait for spellcast to end to apply incremented count completion
+                case ObjectiveCondition.TopCombo: return board.matchStats.highestCombo >= value;
                 case ObjectiveCondition.BlobCount: return board.GetBlobCount() >= value;
                 case ObjectiveCondition.Survive: return !(board.timer.TimeUp() || board.IsWinner()) ^ boolValue;
                 case ObjectiveCondition.Defeated: return !board.IsDefeated() ^ boolValue;
                 case ObjectiveCondition.Won: return !board.WonAndNotCasting() ^ boolValue;
-                case ObjectiveCondition.TopCascade: return board.GetHighestCascade() >= value;
-                case ObjectiveCondition.LevelName: return board.level != null && stringValue.Split(", ").Contains(board.level.name);
-                case ObjectiveCondition.BattlerName: return stringValue.Split(", ").Contains(board.Battler.displayName);
-                case ObjectiveCondition.HighestSingleDamage: return board.highestSingleDamage >= value;
+                case ObjectiveCondition.HighestCascade: return board.matchStats.highestCascade >= value;
+                case ObjectiveCondition.LevelID: return board.level != null && stringValue.Split(", ").Contains(board.level.levelId);
+                case ObjectiveCondition.BattlerID: return stringValue.Split(", ").Contains(board.Battler.battlerId);
+                case ObjectiveCondition.HighestSingleDamage: return board.matchStats.highestSingleDamage >= value;
                 case ObjectiveCondition.Lives: return board.lives >= value;
                 default: return false;
             }
@@ -54,17 +54,17 @@ namespace SoloMode {
             if (!inverted) {
                 switch (condition) {
                     case ObjectiveCondition.PointTotal: return board.hp+"/"+value+" Points";
-                    case ObjectiveCondition.ManaClearedTotal: return board.GetTotalManaCleared()+"/"+value+" Mana Cleared";
-                    case ObjectiveCondition.SpellcastTotal: return board.GetTotalSpellcasts()+"/"+value+" Spellcasts";
+                    case ObjectiveCondition.ManaClearedTotal: return board.matchStats.totalManaCleared+"/"+value+" Mana Cleared";
+                    case ObjectiveCondition.SpellcastTotal: return board.matchStats.totalSpellcasts+"/"+value+" Spellcasts";
                     case ObjectiveCondition.Survive: return "Survive!";
-                    case ObjectiveCondition.TopCombo: return "Best Combo: " + board.GetHighestCombo()+"/"+value;
-                    case ObjectiveCondition.TopCascade: return "Best Cascade: " + board.GetHighestCascade()+"/"+value;
+                    case ObjectiveCondition.TopCombo: return "Best Combo: " + board.matchStats.highestCombo+"/"+value;
+                    case ObjectiveCondition.HighestCascade: return "Best Cascade: " + board.matchStats.highestCascade+"/"+value;
                     default: return "This is an objective";
                 }
             }
             else {
                 switch (condition) {
-                    case ObjectiveCondition.ManualSpellcastTotal: return "Spellcast only " + board.GetManualSpellcasts()+"/"+value + (value == 1 ? " time" : "times");
+                    case ObjectiveCondition.ManualSpellcastTotal: return "Spellcast only " + board.matchStats.totalManualSpellcasts+"/"+value + (value == 1 ? " time" : "times");
                     default: return "evil objective gang";
                 }
             }
@@ -78,15 +78,15 @@ namespace SoloMode {
         SpellcastTotal,
         ManualSpellcastTotal,
         TopCombo,
-        TopCascade,
+        HighestCascade,
         BlobCount,
 
         Survive,
         Defeated,
         Won,
 
-        LevelName, // level's name must match string value, used in achievements
-        BattlerName, // battler name must match, used in achievements
+        LevelID, // level's name must match string value, used in achievements
+        BattlerID, // battler name must match, used in achievements
         None, // used for progress stat var value if achievement should not track progress
 
         HighestSingleDamage,
@@ -122,8 +122,8 @@ namespace SoloMode {
 
             // string
             if (
-                condition.enumValueIndex == (int)ObjectiveCondition.LevelName 
-                || condition.enumValueIndex == (int)ObjectiveCondition.BattlerName
+                condition.enumValueIndex == (int)ObjectiveCondition.LevelID 
+                || condition.enumValueIndex == (int)ObjectiveCondition.BattlerID
             ) { 
                 EditorGUI.PropertyField(position, property.FindPropertyRelative("stringValue"), GUIContent.none);
             } 

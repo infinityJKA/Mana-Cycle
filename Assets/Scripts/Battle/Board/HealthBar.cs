@@ -71,6 +71,7 @@ namespace Battle.Board {
                 if (incoming.dmg >= damage)
                 {
                     incoming.SubtractDamage(damage);
+                    board.matchStats.totalDamageCountered += damage;
                     Refresh();
                     return 0;
                 }
@@ -78,6 +79,7 @@ namespace Battle.Board {
                 // (will subtract 0 if empty)
                 else {
                     damage -= incoming.dmg;
+                    board.matchStats.totalDamageCountered += incoming.dmg;
                     incoming.SetDamage(0);
                 }
             }
