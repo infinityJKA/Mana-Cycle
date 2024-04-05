@@ -101,7 +101,7 @@ public class SoloLevelSeriesProgression {
 
     public bool retrieved {get; private set;} = false;
 
-    public ulong currentLevel {get; private set;}
+    public ulong currentLevelPoints {get; private set;}
 
     // may be set externally, should clear this level once level is retrieved
     public ulong desiredLevel {get; set;} = 0;
@@ -120,9 +120,9 @@ public class SoloLevelSeriesProgression {
         LootLockerSDKManager.GetPlayerProgression(progressionKey, response =>
         {
             if (response.success) {
-                currentLevel = response.step;
+                currentLevelPoints = response.points;
                 // Output the player level and show how much points are needed to progress to the next tier
-                Debug.Log($"The player is currently level {response.step} in progression {progressionKey}");
+                Debug.Log($"The player is currently level {response.points} in progression {progressionKey}");
             } else {
                 if (response.statusCode == 404) {
                     Debug.Log("Player progression not found - so effectively at level 0. will still submit score if desiredLevel > 0");
@@ -155,8 +155,8 @@ public class SoloLevelSeriesProgression {
             return;
         }
         
-        if (level > currentLevel) {
-            ulong amount = level - currentLevel;
+        if (level > currentLevelPoints) {
+            ulong amount = level - currentLevelPoints;
             XPManager.AddPoints(progressionKey, amount);
         }
     }

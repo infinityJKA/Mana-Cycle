@@ -226,18 +226,7 @@ namespace Battle.Board {
         public bool convoPaused;
 
         // STATS
-        /** Total amount of mana this board has cleared */
-        private int totalManaCleared;
-        /** Total amount of spellcasts this player has performed */
-        private int totalSpellcasts;
-        /** Highest combo scored by the player */
-        private int highestCombo;
-        /** Highest combo scored by the player */
-        private int highestCascade;
-        /** Total amount of spellcasts this player has performed from manual key presses */
-        private int totalManualSpellcasts;
-        /** Highest single damage spellcast achieved during the battle **/
-        public int highestSingleDamage { get; private set; }
+        public MatchStats matchStats;
 
         public AudioClip[] usableBattleMusic;
 
@@ -301,12 +290,12 @@ namespace Battle.Board {
         }
 
         // if piece will auto place when sliding against the ground for too long.
-        // turned on when this is a board connected by an online opponent
-        // to make srue pieces aren't placed in the wrong place
+        // turned off when this is a board connected by an online opponent
+        // to make sure pieces aren't placed in the wrong place
         private bool autoPlaceTiles = true;
 
         // If spellcast will automatically continue.
-        // Enabled when this is an online opponent.
+        // Disabled when this is an online opponent.
         // If spellcasts happened automatically they could desync if not in sync
         // with enemy's piece placements, so piece clear RPCs are sent in order with piece placement RPCs
         public bool manualCastContinue;
@@ -511,6 +500,7 @@ namespace Battle.Board {
 
             cycleLevelDisplay.Set(cycleLevel);
 
+            matchStats = new MatchStats();
         } // close Start()
 
         void InitBattler() {
@@ -868,7 +858,7 @@ namespace Battle.Board {
                 chain = 1;
                 cascade = 0;
                 Spellcast(refreshBlobs: false);
-                totalManualSpellcasts++;
+                matchStats.totalManualSpellcasts++;
             }
             else {
                 PlaySFX(failedCastSFX);
@@ -1379,17 +1369,20 @@ namespace Battle.Board {
         /// <returns>the amount of residual damage after countering/adding shield</returns>
         public int DealDamageLocal(int damage, Vector3 shootSpawnPos)
         {
+            matchStats.totalScore += damage;
+            matchStats.highestSingleDamage = Math.Max(matchStats.highestSingleDamage, damage);
+
             if (postGame) {
                 // just add score if postgame and singleplayer
                 if (singlePlayer && !Storage.level.aiBattle)
                 {
-                    hp += damage;   
+                    hp += damage;
                 }
                 // otherwise if versus, nothing will happen, other player is already dead so dont damage
                 return 0;
             }
 
-            // ATTACK ANIMATIONS DISABLED (distacting & covers damange queue)
+            // ATTACK ANIMATIONS DISABLED (covers damage queue...)
             // if (chain >= 2) attackPopup.AttackAnimation();
 
             if (useDamageShootParticles) {
@@ -1793,13 +1786,13 @@ namespace Battle.Board {
             }
             averagePos /= totalBlobMana;
 
-            totalSpellcasts++;
+            matchStats.totalSpellcasts++;
             
-            totalManaCleared += totalBlobMana;
+            matchStats.totalManaCleared += totalBlobMana;
             abilityManager.GainMana((int) (totalBlobMana * boardStats[SpecialGainMult]));
 
-            highestCombo = Math.Max(highestCombo, chain);
-            highestCascade = Math.Max(highestCascade, cascade);
+            matchStats.highestCombo = Math.Max(matchStats.highestCombo, chain);
+            matchStats.highestCascade = Math.Max(matchStats.highestCascade, cascade);
 
             float totalPointMult = 0;
             // Clear all blob-contained tiles from the board.
@@ -1832,15 +1825,13 @@ namespace Battle.Board {
                 }
                 else if(hp <= (float)maxHp/2){
                     GeoBoost = 1.15f;
-                    Debug.Log("Geoboost 50% ver!!!");
+                    Debug.Log("Geoboost 50% ver!");
                 }
             }
 
             // Deal damage for the amount of mana cleared.
             // DMG is scaled by chain and cascade.
             int damage = (int)( totalPointMult * damagePerMana * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult] *GeoBoost);
-
-            highestSingleDamage = Math.Max(highestSingleDamage, damage);
 
             // relay to the opponent's client that the chain advance happened at this point in time
             // RPCs should be guaranteed to execute in order send, so desyncs where piece is placed after when it should in the chain should be prevented.
@@ -2372,26 +2363,6 @@ namespace Battle.Board {
 
         public bool IsCasting() {
             return casting;
-        }
-
-        public int GetTotalManaCleared() {
-            return totalManaCleared;
-        }
-
-        public int GetTotalSpellcasts() {
-            return totalSpellcasts;
-        }
-
-        public int GetHighestCombo() {
-            return highestCombo;
-        }
-
-        public int GetHighestCascade() {
-            return highestCascade;
-        }
-
-        public int GetManualSpellcasts() {
-            return totalManualSpellcasts;
         }
 
         public int GetBlobCount() {
