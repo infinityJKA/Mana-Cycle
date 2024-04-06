@@ -69,6 +69,8 @@ public class MatchTotals {
     public int totalSpellcasts;
     /// <summary>Total amount of spellcast chains this player has started (aka. pressing spellcast and getting a chain of at least 1)</summary>
     public int totalManualSpellcasts;
+    /// <summary>Total amount of pieces placed, including ability tiles placed on own board, but not tiles sent to opponent's board*/</summary>
+    public int totalPiecesPlaced;
     /// <summary>Total amount of damage countered (versus matches only)</summary>
     public int totalDamageCountered;
 
@@ -80,6 +82,7 @@ public class MatchTotals {
         totalManaCleared += other.totalManaCleared;
         totalSpellcasts += other.totalSpellcasts;
         totalManualSpellcasts += other.totalManualSpellcasts;
+        totalPiecesPlaced += other.totalPiecesPlaced;
         totalDamageCountered += other.totalDamageCountered;
     }
 }

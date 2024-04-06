@@ -31,6 +31,8 @@ namespace PostGame {
         /** player 1 if solo mode, otherwise winning board in versus */
         [SerializeField] private GameBoard board;
 
+        [SerializeField] private StatDisplay statDisplay, statDisplayP2;
+
         // if this post game menu has been displayed
         private bool displayed = false;
 
@@ -65,6 +67,7 @@ namespace PostGame {
             transitionHandler = GameObject.Find("TransitionHandler").GetComponent<TransitionScript>();
             timerRunning = false;
             continueButton.gameObject.SetActive(false);
+            MenuUI.gameObject.SetActive(false);
         }
 
         // Update is called once per frame
@@ -265,6 +268,15 @@ namespace PostGame {
 
             // Save any achievement or level score data that may have changed
             ProgressData.Save();
+
+            // Display stats
+            statDisplay.Display(board.matchStats);
+            if (board.enemyBoard.gameObject.activeInHierarchy) {
+                statDisplayP2.gameObject.SetActive(true);
+                statDisplayP2.Display(board.enemyBoard.matchStats);
+            } else {
+                statDisplayP2.gameObject.SetActive(false);
+            }
         }
 
         public void AppearAfterDelay()
