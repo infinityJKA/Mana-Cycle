@@ -92,6 +92,7 @@ namespace Battle {
             } else{
                 if(!Storage.level || Storage.level.time != -1){
                     textbox.text = Utils.FormatTime(timeFloat, showDecimal: true);
+                    if (countUpwards) return;
                     int secondsLeftInt = Mathf.CeilToInt(timeFloat);
                     if (timeFloat < 5 && lastTickTime != secondsLeftInt) {
                         Instantiate(beepSFX);
