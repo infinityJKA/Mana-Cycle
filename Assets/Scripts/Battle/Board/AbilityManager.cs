@@ -106,6 +106,8 @@ namespace Battle.Board {
                 Debug.Log("use active ability");
                 abilityActive = true;
 
+                board.matchStats.totalAbilityUses++;
+
                 switch (board.Battler.activeAbilityEffect)
                 {
                     case Battler.ActiveAbilityEffect.IronSword: IronSword(); break;

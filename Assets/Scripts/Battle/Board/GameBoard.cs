@@ -605,6 +605,7 @@ namespace Battle.Board {
             if (!defeated && !recoveryMode && doPieceFalling)
             {
                 if (instaDropThisFrame && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
+                    matchStats.totalAbilityUses++;
                     PlacePiece();
                 } else {
                     fallTimeMult = quickFall ? boardStats[QuickDropSpeed] : 1f;

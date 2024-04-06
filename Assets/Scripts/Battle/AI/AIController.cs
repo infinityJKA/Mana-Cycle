@@ -249,8 +249,11 @@ namespace Battle.AI {
             // Incoming damage will kill: 100% chance, guaranteed unless cast chance multiplier < 1.0
             if (incomingDamage >= board.hp && Random.value < 1.0f*castChanceMultiplier) return true;
 
-            // Incoming damage greater than 600: 30% chance
-            if (incomingDamage >= 600 && Random.value < 0.3f*castChanceMultiplier) return true;
+            // Incoming damage greater than half of remaining HP: 40% chance
+            if (incomingDamage >= (board.hp / 2) && Random.value < 0.4f*castChanceMultiplier) return true;
+
+            // Incoming damage greater than 500: 25% chance
+            if (incomingDamage >= 600 && Random.value < 0.25f*castChanceMultiplier) return true;
 
             // Incoming damage greater than 0: 5% chance
             if (incomingDamage > 0 && Random.value < 0.05f*castChanceMultiplier) return true;
