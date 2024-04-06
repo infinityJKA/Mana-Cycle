@@ -17,22 +17,24 @@ namespace SoloMode {
         public void InitializeObjectiveListItems(GameBoard board) {
             objectiveItems = new List<ObjectiveListItem>();
 
-            var level = board.GetLevel();
-
             // if above 0, add score requirement as objective 
-            if (level.scoreGoal > 0) {
-                Objective scoreObjective = new Objective();
-                scoreObjective.condition = ObjectiveCondition.PointTotal;
-                scoreObjective.value = level.scoreGoal;
+            if (Storage.level.scoreGoal > 0) {
+                Objective scoreObjective = new Objective
+                {
+                    condition = ObjectiveCondition.PointTotal,
+                    value = Storage.level.scoreGoal
+                };
 
                 var scoreItem = Instantiate(objectiveListItemPrefab, objectiveListLayout.transform);
                 scoreItem.objective = scoreObjective;
                 objectiveItems.Add(scoreItem);
             }
             // if survival, add "survive" objective
-            if (level.survivalWin) {
-                Objective surviveObjective = new Objective();
-                surviveObjective.condition = ObjectiveCondition.Survive;
+            if (Storage.level.survivalWin) {
+                Objective surviveObjective = new Objective
+                {
+                    condition = ObjectiveCondition.Survive
+                };
                 // rename survive objective if in endless arcade
                 if (Storage.level.generateNextLevel) surviveObjective.statusOverride = "Get as many points as possible!";
 
@@ -43,7 +45,7 @@ namespace SoloMode {
             
             
             // add all other additional objectives
-            foreach (Objective objective in level.objectives) {
+            foreach (Objective objective in Storage.level.objectives) {
                 var objectiveListItem = Instantiate(objectiveListItemPrefab, objectiveListLayout.transform);
                 objectiveListItem.objective = objective;
                 objectiveItems.Add(objectiveListItem);
@@ -53,7 +55,7 @@ namespace SoloMode {
         }
 
         public void Refresh(GameBoard board) {
-            if (board.singlePlayer && board.level == null) return;
+            if (board.singlePlayer && !Storage.level) return;
 
             // if there are no objectives, don't auto complete
             if (objectiveItems.Count == 0) return;
@@ -69,7 +71,7 @@ namespace SoloMode {
             }
 
             // if all objectives are complete, and score req. is met, level is won
-            if (allObjectivesComplete && (board.hp >= board.GetLevel().scoreGoal || board.GetLevel().scoreGoal == 0)) {
+            if (allObjectivesComplete && (board.hp >= Storage.level.scoreGoal || Storage.level.scoreGoal == 0)) {
                 board.Win();
             }
         }

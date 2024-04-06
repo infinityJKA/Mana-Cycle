@@ -81,18 +81,16 @@ namespace Battle {
             } 
             
             // otherwise, still ticking down, cycle not activated yet
-            else {
+            else if (!timer.running) {
                 // Tick if int time different than last frame
                 if (intTime != lastIntTime){
                     // if countdown has hit 0; init boards, go text and SFX
                     if (currentTimeUntilStart <= 0)
                     {
                         manaCycle.StartBattle();
-                        if (player1.singlePlayer) {
-                            timer.gameObject.SetActive(true);
-                            timer.duration = player1.GetLevel().time;
-                            timer.StartTimer();
-                        }
+                        timer.gameObject.SetActive(true);
+                        if (Storage.level) timer.duration = Storage.level.time;
+                        timer.StartTimer();
                         countDownText.text = "GO!";
                         cycleActivated = true;
                         Instantiate(goSFX);

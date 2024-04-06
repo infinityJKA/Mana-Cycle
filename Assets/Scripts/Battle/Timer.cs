@@ -22,12 +22,18 @@ namespace Battle {
         [SerializeField] private GameObject beepSFX;
 
         /** if the timer is currently running */
-        private bool running = false;
+        public bool running {get; private set;} = false;
 
-        // The time the timer will end at.
+        // Time that the timer started at.
+        private float startTime;
+
+        // The time the timer will end at. 
         private float endTime;
 
-        private string lastDisplayedTime;
+        // show and count upwards in versus matches
+        private bool countUpwards;
+
+        private int lastTickTime;
 
         void Start() {
             textbox.enableVertexGradient = true;
@@ -37,49 +43,62 @@ namespace Battle {
         public void StartTimer() 
         {
             running = true;
-            endTime = Time.time + duration;
+            countUpwards = !player1.singlePlayer;
+            startTime = Time.time;
+            endTime = startTime + duration;
+
+            Update();
+
+            if(Storage.level && Storage.level.time == -1){
+                textbox.text = "∞:∞";
+                enabled = false;
+                return;
+            }
         }
 
         public void StopTimer() {
             running = false;
         }
 
+        float timeFloat;
+
         // Update is called once per frame
         void Update()
         {
             if (!running) return;
 
-            float timeLeft = SecondsRemaining();
+            if (countUpwards) {
+                timeFloat = Time.time - startTime;
+            } else {
+                timeFloat = SecondsRemaining();
+            }
 
-            if (timeLeft <= 20 && !player1.level.survivalWin && player1.level.time != -1) {
+            if (Storage.level && timeFloat <= 20 && !Storage.level.survivalWin && Storage.level.time != -1) {
                 textbox.colorGradientPreset = redGradient;
             }
 
-            if(player1.level.time == -1){
-                textbox.text = "∞:∞";
-                enabled = false;
-                return;
-            }
-
-            if (timeLeft <= 0) {
+            
+            if (timeFloat <= 0) {
                 textbox.text = "0:00";
-                if (!player1.level.survivalWin){
+                if (Storage.level && !Storage.level.survivalWin){
                     if (!player1.IsDefeated()) player1.Defeat();
                 }
-                else if(player1.level.time != -1){
+                else if(Storage.level && Storage.level.time != -1){
                     if (!player1.IsDefeated()) {
                         player1.RefreshObjectives();
                         if (!player1.IsWinner()) player1.Defeat();
                     }
                 }
             } else{
-                if(player1.level.time != -1){
-                    textbox.text = Utils.FormatTime(timeLeft, showMilliseconds: true);
-                    if (timeLeft < 3 && lastDisplayedTime != textbox.text) Instantiate(beepSFX);
+                if(!Storage.level || Storage.level.time != -1){
+                    textbox.text = Utils.FormatTime(timeFloat, showDecimal: true);
+                    int secondsLeftInt = Mathf.CeilToInt(timeFloat);
+                    if (timeFloat < 5 && lastTickTime != secondsLeftInt) {
+                        Instantiate(beepSFX);
+                        lastTickTime = secondsLeftInt;
+                    }
                 }
             }
-
-            lastDisplayedTime = textbox.text;
         }
 
         public float SecondsRemaining() {
