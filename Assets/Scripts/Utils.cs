@@ -53,13 +53,13 @@ public class Utils : MonoBehaviour
     }
 
     // get formatted time from seconds
-    public static string FormatTime(float s, bool showMilliseconds = false)
+    public static string FormatTime(float s, bool showDecimal = false)
     {
         int minutes = (int)(s/60);
         int seconds = (int)(s % 60);
-        int milliseconds = (int)((s * 1000) % 1000);
-        if (showMilliseconds) {
-            return minutes + ":" + (seconds+"").PadLeft(2, '0')+"<size=40%>."+(milliseconds+"").PadLeft(3, '0');
+        int dec = (int)((s * 100) % 100);
+        if (showDecimal) {
+            return minutes + ":" + (seconds+"").PadLeft(2, '0')+"<size=40%>."+(dec+"").PadLeft(2, '0');
         } else {
             return minutes + ":" + (seconds+"").PadLeft(2, '0');
         }

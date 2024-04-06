@@ -9,7 +9,6 @@ using Cosmetics;
 
 namespace Battle.Board {
 
-    [RequireComponent(typeof(Tile))]
     public class TileVisual : MonoBehaviour
     {
         // ---- Serialized
@@ -59,11 +58,11 @@ namespace Battle.Board {
 
         private void Update() {
             if (moving) {
-                if (bgImage.transform.localPosition == targetPosition) {
+                if (transform.localPosition == targetPosition) {
                     moving = false;
                     if (onFallAnimComplete != null) onFallAnimComplete();
                 } else {
-                    bgImage.transform.localPosition = Vector2.MoveTowards(bgImage.transform.localPosition, targetPosition, speed*Time.smoothDeltaTime);
+                    transform.localPosition = Vector2.MoveTowards(transform.localPosition, targetPosition, speed*Time.smoothDeltaTime);
                     speed += acceleration*Time.smoothDeltaTime;
                 }
             }
@@ -186,7 +185,7 @@ namespace Battle.Board {
         }
 
         public void AnimateMovement(Vector2 from, Vector2 to) {
-            bgImage.transform.localPosition = from;
+            transform.localPosition = from;
             targetPosition = to;
             speed = initialSpeed;
             moving = true;

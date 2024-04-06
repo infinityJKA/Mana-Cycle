@@ -211,8 +211,6 @@ namespace Battle.Board {
         /** Can be used to shake the board. cached on start */
         private Shake shake;
 
-        /** The level the player is in, if not in versus mode */
-        [SerializeField] public Level level;
         /** If in singleplayer, the objective list in this scene */
         [SerializeField] private ObjectiveList objectiveList;
         /** Timer, to stop when this player wins **/
@@ -339,12 +337,8 @@ namespace Battle.Board {
             // else if ((playerSide == 0 || !singlePlayer) && inputScripts.Length > 0 && inputScripts[0] != null) controlsGraphic.SetInputs(inputScripts[0]);
 
             // load level if applicable
-            if (Storage.level != null)
-            {
-                level = Storage.level;
-            }
-            if (level != null && level.midLevelConversations != null) {
-                midLevelConvos = new List<MidLevelConversation>(level.midLevelConversations);
+            if (Storage.level != null && Storage.level.midLevelConversations != null) {
+                midLevelConvos = new List<MidLevelConversation>(Storage.level.midLevelConversations);
             } else {
                 midLevelConvos = new List<MidLevelConversation>();
             }
@@ -353,19 +347,19 @@ namespace Battle.Board {
             // Debug.Log("BOOST PER CLEAR IS " + boostPerCycleClear);
 
             if (playerSide == 0) {
-                SoundManager.Instance.LoadBGM(singlePlayer ? level.battleMusic : usableBattleMusic[Random.Range(0, usableBattleMusic.Length - 1)]);
+                SoundManager.Instance.LoadBGM(singlePlayer ? Storage.level.battleMusic : usableBattleMusic[Random.Range(0, usableBattleMusic.Length - 1)]);
                 // wait until after countdown to play mus
                 // SoundManager.Instance.PauseBGM();
             }
 
             if (singlePlayer && !Storage.level.aiBattle) {
                 // hp number is used as score, starts as 0
-                maxHp = level.scoreGoal;
+                maxHp = Storage.level.scoreGoal;
                 hp = 0;
                 if (enemyBoard != null) { enemyBoard.gameObject.SetActive(false); enemyBoard.pointer.SetActive(false); } 
                 if (objectiveList != null) objectiveList.gameObject.SetActive(true);
 
-                fallTime = level.fallTime;
+                fallTime = Storage.level.fallTime;
             } else {
                 // (Later, this may depend on the character/mode)
                 maxHp = 2000;
@@ -418,7 +412,7 @@ namespace Battle.Board {
                 // if in solo mode, use battler and op serialized in level asset
                 if (Storage.gamemode == Storage.GameMode.Solo && playerControlled)
                 {
-                    battler = level.battler;
+                    battler = Storage.level.battler;
 
                     // set opp in ai battles
                     if (Storage.level.aiBattle)
@@ -640,8 +634,8 @@ namespace Battle.Board {
                             // If it can't be moved down,
                             // also check for sliding buffer, and place if beyond that
                             // don't use slide time if quick falling
-                            if (!quickFall && level) {
-                                finalFallTime += slideTime*level.slideTimeMult;
+                            if (!quickFall && Storage.level) {
+                                finalFallTime += slideTime*Storage.level.slideTimeMult;
                             }
 
                             // true if time is up for the extra slide buffer
@@ -746,7 +740,7 @@ namespace Battle.Board {
 
 
             // setup level trash timer if applicable
-            if (Storage.gamemode == Storage.GameMode.Solo && level.trashSendRate > 0) Invoke("AddTrashTile", level.trashSendRate);
+            if (Storage.gamemode == Storage.GameMode.Solo && Storage.level.trashSendRate > 0) Invoke("AddTrashTile", Storage.level.trashSendRate);
 
             portrait.GetComponent<ColorFlash>().SetBaseColor(portrait.color);
             portrait.sprite = battler.sprite;
@@ -905,7 +899,7 @@ namespace Battle.Board {
             }
 
             // start trash timer again if applicable
-            if (level != null && level.trashSendRate > 0) Invoke("AddTrashTile", level.trashSendRate);
+            if (Storage.level && Storage.level.trashSendRate > 0) Invoke("AddTrashTile", Storage.level.trashSendRate);
 
             return col;
         }
@@ -1073,7 +1067,7 @@ namespace Battle.Board {
             // If the piece is already in an invalid position, player has topped out
             if (!ValidPlacement()) {
                 // set hp to 0 if not in endless
-                if (!(level != null && level.time == -1)) hp = 0;
+                if (!(Storage.level != null && Storage.level.time == -1)) hp = 0;
                 
                 piece.gameObject.SetActive(false);
                 Defeat();
@@ -1103,7 +1097,7 @@ namespace Battle.Board {
             // If the piece is already in an invalid position, player has topped out
             if (!ValidPlacement()) {
                 // set hp to 0 if not in endless
-                if (!(level != null && level.time == -1)) hp = 0;
+                if (!(Storage.level != null && Storage.level.time == -1)) hp = 0;
                 
                 piece.gameObject.SetActive(false);
                 Defeat();
@@ -1371,7 +1365,6 @@ namespace Battle.Board {
         /// <returns>the amount of residual damage after countering/adding shield</returns>
         public int DealDamageLocal(int damage, Vector3 shootSpawnPos)
         {
-            matchStats.totalScore += damage;
             matchStats.highestSingleDamage = Math.Max(matchStats.highestSingleDamage, damage);
 
             if (postGame) {
@@ -1419,6 +1412,9 @@ namespace Battle.Board {
             // if in online mode, send remainder of damage to opponent for then to evaluate on their client
             // if not, evaluate on the other board now
             if (damage <= 0) return 0;
+
+            matchStats.totalScore += damage;
+
             if (Storage.online) {
                 return damage;
             } else {
@@ -2278,7 +2274,7 @@ namespace Battle.Board {
 
             if (!singlePlayer) enemyBoard.Win();
 
-            if (level != null) {
+            if (Storage.level) {
                 winMenu.AppearAfterDelay();
                 Instantiate(loseSFX);
                 SoundManager.Instance.PauseBGM();
@@ -2315,7 +2311,7 @@ namespace Battle.Board {
         /** Refreshed the objectives list. Will grant win to this player if all objectives met */
         public void RefreshObjectives() {
             // only check if in a level and are player 1
-            if (playerSide == 0 && level != null) objectiveList.Refresh(this);
+            if (playerSide == 0 && Storage.level != null) objectiveList.Refresh(this);
         }
 
         /** Checks for mid-level conversations that need to be displayed. return true if convo was played */
@@ -2369,10 +2365,6 @@ namespace Battle.Board {
 
         public int GetBlobCount() {
             return blobs.Count;
-        }
-
-        public Level GetLevel() {
-            return level;
         }
 
         public int GetPlayerSide(){

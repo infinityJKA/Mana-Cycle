@@ -41,7 +41,7 @@ namespace SoloMode {
                 case ObjectiveCondition.Defeated: return !board.IsDefeated() ^ boolValue;
                 case ObjectiveCondition.Won: return !board.WonAndNotCasting() ^ boolValue;
                 case ObjectiveCondition.HighestCascade: return board.matchStats.highestCascade >= value;
-                case ObjectiveCondition.LevelID: return board.level != null && stringValue.Split(", ").Contains(board.level.levelId);
+                case ObjectiveCondition.LevelID: return Storage.level != null && stringValue.Split(", ").Contains(Storage.level.levelId);
                 case ObjectiveCondition.BattlerID: return stringValue.Split(", ").Contains(board.Battler.battlerId);
                 case ObjectiveCondition.HighestSingleDamage: return board.matchStats.highestSingleDamage >= value;
                 case ObjectiveCondition.Lives: return board.lives >= value;
