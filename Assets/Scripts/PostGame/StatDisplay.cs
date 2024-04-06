@@ -13,8 +13,9 @@ public class StatDisplay : MonoBehaviour {
 
         AddRow(Storage.isTwoPlayer ? "Damage Dealt" : "Score", stats.totalScore);
         AddRow("Mana Cleared", stats.totalManaCleared);
-        AddRow("Spellcasts", stats.totalSpellcasts);
+        AddRow("Spellcasts Started", stats.totalManualSpellcasts);
         AddRow("Pieces Placed", stats.totalPiecesPlaced);
+        AddRow("Ability Uses", stats.totalAbilityUses);
         AddRow("Highest Combo", stats.highestCombo);
         AddRow("Highest Cascade", stats.highestCascade);
         AddRow("Highest Damage", stats.highestSingleDamage);

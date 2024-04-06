@@ -74,6 +74,8 @@ public class MatchTotals {
     /// <summary>Total amount of damage countered (versus matches only)</summary>
     public int totalDamageCountered;
 
+    public int totalAbilityUses;
+
     /// <summary>
     /// Aggregate new match data into this match totals. Used for aggregatedStats for total running stats across all matches ever played by the player.
     /// </summary>
@@ -84,6 +86,7 @@ public class MatchTotals {
         totalManualSpellcasts += other.totalManualSpellcasts;
         totalPiecesPlaced += other.totalPiecesPlaced;
         totalDamageCountered += other.totalDamageCountered;
+        totalAbilityUses += other.totalAbilityUses;
     }
 }
 
