@@ -45,7 +45,7 @@ namespace Battle.Board {
         void Awake()
         {
             board = GetComponent<GameBoard>();
-            enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
+            enabled = Settings.current.enableAbilities;
             manaBar.gameObject.SetActive(enabled);
             RefreshManaBar();
         }

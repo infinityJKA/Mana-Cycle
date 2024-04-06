@@ -432,12 +432,13 @@ namespace Battle.Board {
             if (Storage.gamemode == Storage.GameMode.Versus) {
                 // AI vs. AI
                 if (!Storage.isPlayerControlled1 && !Storage.isPlayerControlled2) {
-                    SetAIDifficulty(PlayerPrefs.GetInt(playerSide == 0 ? "CpuVsCpuP1Level" : "CpuVsCpuP2Level", 5)/10f);
+                    float cpuLevel = playerSide == 0 ? Settings.current.cvcP1Level : Settings.current.cvcP2Level;
+                    SetAIDifficulty(cpuLevel/10f);
                 }
 
                 // player vs AI - set on player 2 only
                 else if (Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && playerSide == 1) {
-                    SetAIDifficulty(PlayerPrefs.GetInt("CpuLevel", 5)/10f);
+                    SetAIDifficulty(Settings.current.cpuLevel/10f);
                 }
             }
             
@@ -451,10 +452,14 @@ namespace Battle.Board {
                 objectiveList.InitializeObjectiveListItems(this);
             }
 
-            drawGhostPiece = playerControlled && PlayerPrefs.GetInt(playerSide == 0 ? "drawGhostPiece" : "drawGhostPieceP2", 1) == 1;
+            drawGhostPiece = playerControlled && (playerSide == 0 ? Settings.current.drawGhostPiece : Settings.current.drawGhostPieceP2);
             ghostTiles = new List<Tile>();
 
-            abilityManager.enabled = PlayerPrefs.GetInt("enableAbilities", 1) == 1;
+            if (Storage.gamemode == Storage.GameMode.Solo) {
+                abilityManager.enabled = Storage.level && Storage.level.abilityEnabled;
+            } else if (Storage.gamemode == Storage.GameMode.Versus) {
+                abilityManager.enabled = Settings.current.enableAbilities;
+            }
             abilityManager.InitManaBar();
 
             recoveryText.enabled = false;

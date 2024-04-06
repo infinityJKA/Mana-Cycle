@@ -12,6 +12,7 @@ public class StatDisplay : MonoBehaviour {
         }
 
         AddRow(Storage.isTwoPlayer ? "Damage Dealt" : "Score", stats.totalScore);
+        if (Storage.isTwoPlayer) AddRow("Damage Countered", stats.totalDamageCountered);
         AddRow("Mana Cleared", stats.totalManaCleared);
         AddRow("Spellcasts Started", stats.totalManualSpellcasts);
         AddRow("Pieces Placed", stats.totalPiecesPlaced);
@@ -19,7 +20,6 @@ public class StatDisplay : MonoBehaviour {
         AddRow("Highest Combo", stats.highestCombo);
         AddRow("Highest Cascade", stats.highestCascade);
         AddRow("Highest Damage", stats.highestSingleDamage);
-        if (Storage.isTwoPlayer) AddRow("Damage Countered", stats.totalDamageCountered);
 
     }
 

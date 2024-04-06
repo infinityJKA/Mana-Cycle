@@ -52,7 +52,7 @@ namespace Achievements
         }
 
         /// <summary>
-        /// Unlock the passed achievement and save its unlock status in playerPrefs
+        /// Unlock the passed achievement and save its unlock status in ProgressData.
         /// After unlocked it will no longer be greyed out in the achievements list.
         /// </summary>
         /// <param name="achievement">The achievement to unlock</param>

@@ -56,7 +56,7 @@ namespace Achievements {
         public List<Objective> requirements;
 
         /// <summary>
-        /// Returns true if this achievement is shown as unlcoked from the PlayerPrefs
+        /// Returns true if this achievement is shown as unlcoked from ProgressData file
         /// </summary>
         public bool unlocked 
         { 

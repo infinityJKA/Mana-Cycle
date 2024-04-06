@@ -44,10 +44,13 @@ namespace SoloMode {
         [SerializeField] public float slideTimeMult = 1f;
 
         // the actual char you play as in the level, chosen by char select or automatically
-        [HideInInspector] public Battler battler;
+        [NonSerialized] public Battler battler;
 
         // the battlers to choose from in charselect. if only one, they get auto picked like old system
         [SerializeField] public List<Battler> availableBattlers;
+
+        // Whether or not ability use is permitted in this level
+        [SerializeField] public bool abilityEnabled = true;
 
         /** List of additional objectives that must be met to clear the stage **/
         [SerializeField] public List<Objective> objectives;
@@ -265,7 +268,7 @@ namespace SoloMode {
                 Debug.Log("cleared progress of "+level.levelId);
             }
 
-            GUILayout.Label("Clear ALL save data (levels, achievements)");
+            GUILayout.Label("Clear ALL save data (levels, achievements, platform-specific settings)");
 
             if (GUILayout.Button("Reset ALL Progress")) {
                 ProgressData.ClearALLProgress();
