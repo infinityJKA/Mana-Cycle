@@ -27,6 +27,7 @@ namespace Battle.Board {
         private readonly Color litGlowColor = new Color(1,1,1,0.4f);
 
         // ---- Annimation
+        private Transform fallTransform;
         // Target position of this element, used for fall animations
         private Vector3 targetPosition;
         // Initial movement speed of this object when movemnet animated - distance in tiles per sec
@@ -58,11 +59,11 @@ namespace Battle.Board {
 
         private void Update() {
             if (moving) {
-                if (transform.localPosition == targetPosition) {
+                if (fallTransform.localPosition == targetPosition) {
                     moving = false;
                     if (onFallAnimComplete != null) onFallAnimComplete();
                 } else {
-                    transform.localPosition = Vector2.MoveTowards(transform.localPosition, targetPosition, speed*Time.smoothDeltaTime);
+                    fallTransform.localPosition = Vector2.MoveTowards(fallTransform.localPosition, targetPosition, speed*Time.smoothDeltaTime);
                     speed += acceleration*Time.smoothDeltaTime;
                 }
             }
@@ -84,7 +85,12 @@ namespace Battle.Board {
             else {
                 glow = glowTarget; // will be 0 unless animated before this
             }
-            glowImage.color = Color.Lerp(baseGlowColor, litGlowColor, glow);
+            if (glow > 0) {
+                if (!glowImage.enabled) glowImage.enabled = true;
+                glowImage.color = Color.Lerp(baseGlowColor, litGlowColor, glow);
+            } else {
+                if (glowImage.enabled) glowImage.enabled = false;
+            }
         }
 
         
@@ -107,8 +113,10 @@ namespace Battle.Board {
             } 
             // if not, simply use the material set up by BoardCosmeticAssets.
             else {
+                fallTransform = mainDarkColorImage.transform;
                 mainDarkColorImage.gameObject.SetActive(true);
                 bgImage.gameObject.SetActive(false);
+                iconImage.gameObject.SetActive(false);
                 mainDarkColorImage.texture = icon.bgSprite.texture;
                 if (isTrash) {
                     // multicolor trash doesnt exist (yet)
@@ -129,6 +137,7 @@ namespace Battle.Board {
             Color mainColor = isTrash ? Color.Lerp(paletteColor.mainColor, BoardCosmeticAssets.darkenColor, 0.375f) : paletteColor.mainColor;
             Color darkColor = isTrash ? Color.Lerp(paletteColor.darkColor, BoardCosmeticAssets.darkenColor, 0.3f) : paletteColor.darkColor;
 
+            fallTransform = bgImage.transform;
             bgImage.gameObject.SetActive(true);
             mainDarkColorImage.gameObject.SetActive(false);
 
@@ -185,7 +194,7 @@ namespace Battle.Board {
         }
 
         public void AnimateMovement(Vector2 from, Vector2 to) {
-            transform.localPosition = from;
+            fallTransform.localPosition = from;
             targetPosition = to;
             speed = initialSpeed;
             moving = true;

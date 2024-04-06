@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 
 using Battle.Cycle;
-using System;
 
 namespace Battle.Board {
     public class Piece : MonoBehaviour
@@ -249,16 +248,31 @@ namespace Battle.Board {
             }
         }
 
-        // Place this tile's pieces onto the passed board.
-        public virtual void PlaceTilesOnBoard(ref Tile[,] tileGrid, Transform pieceBoard)
-        {
+        public void PlaceTilesOnBoard(ref Tile[,] tileGrid, GameBoard board) {
             foreach (Tile tile in tiles) {
-                Vector2Int boardPos = PieceToBoardPos(tile);
-                tileGrid[boardPos.y, boardPos.x] = tile;
-
-                tile.transform.SetParent(pieceBoard, true);
-                tile.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+                if (tile.manaColor >= 0) {
+                    PlaceTileOnBoard(ref tileGrid, tile, board.perColorTransforms[tile.manaColor]);
+                } else {
+                    PlaceTileOnBoard(ref tileGrid, tile, board.perColorTransforms[5]);
+                }
             }
+        }
+
+        public void PlaceTilesOnBoard(ref Tile[,] tileGrid, Transform pieceBoard) {
+            foreach (Tile tile in tiles) {
+                PlaceTileOnBoard(ref tileGrid, tile, pieceBoard);
+            }
+        }
+
+        // Place this tile's pieces onto the passed board.
+        public virtual void PlaceTileOnBoard(ref Tile[,] tileGrid, Tile tile, Transform pieceBoard)
+        {
+            Vector2Int boardPos = PieceToBoardPos(tile);
+            tileGrid[boardPos.y, boardPos.x] = tile;
+
+            tile.transform.SetParent(pieceBoard, true);
+            tile.transform.localScale = Vector3.one;
+            tile.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
         }
 
         public virtual void DestroyTiles() {

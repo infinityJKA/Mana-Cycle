@@ -48,9 +48,17 @@ namespace Battle.Board {
         [SerializeField] private int playerSide;
 
         /// <summary>
-        /// Obect where pieces are drawn
+        /// Object that stores the 6 transforms that will hold pieces of each color
         /// </summary>
         [SerializeField] public Transform pieceBoard;
+
+        /// <summary>
+        /// Store a different transform for each of the colors.
+        /// This allows pieces with the same image/call to be batched together for better performance as they can be drawn in a single draw call
+        /// The final index is for misc tiles such as z?man, gold mine, etc.
+        /// </summary>
+        public Transform[] perColorTransforms {get; private set;}
+        
 
         /// <summary>
         /// Transform where ghost tiles are parented to
@@ -500,6 +508,16 @@ namespace Battle.Board {
             cycleLevelDisplay.Set(cycleLevel);
 
             matchStats = new MatchStats();
+
+            // Setup per color transforms
+            perColorTransforms = new Transform[6];
+            for (int i = 0; i < 5; i++) {
+                perColorTransforms[i] = new GameObject(cosmetics.paletteColors[i].displayName).transform;
+                perColorTransforms[i].SetParent(pieceBoard, false);
+            }
+            perColorTransforms[5] = new GameObject("Misc").transform;
+            perColorTransforms[5].SetParent(pieceBoard, false);
+
         } // close Start()
 
         void InitBattler() {
@@ -913,9 +931,9 @@ namespace Battle.Board {
         // Add a piece to this board without having the player control or place it (keep their current piece).
         public int SpawnStandalonePiece(Piece newPiece, int column) {
             // Send it to the passed column and drop it
-            newPiece.transform.SetParent(pieceBoard, false);
+            // newPiece.transform.SetParent(pieceBoard, false);
             newPiece.MoveTo(column, 1);
-            newPiece.PlaceTilesOnBoard(ref tiles, pieceBoard);
+            newPiece.PlaceTilesOnBoard(ref tiles, this);
             Destroy(newPiece.gameObject);
             newPiece.OnPlace(this);
 
@@ -1157,7 +1175,8 @@ namespace Battle.Board {
         {
             if (!piece) return;
             lastPlaceTime = Time.time;
-            piece.PlaceTilesOnBoard(ref tiles, piece.ghostPiece ? ghostPieceBoard : pieceBoard.transform);
+
+            piece.PlaceTilesOnBoard(ref tiles, this);
 
             if (!piece.ghostPiece) piece.OnPlace(this);
 
