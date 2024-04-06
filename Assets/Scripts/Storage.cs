@@ -48,6 +48,8 @@ public class Storage
         Versus
     }
 
+    public static bool isTwoPlayer => gamemode == GameMode.Versus || (level && level.aiBattle);
+
     // true when R is pressed to select single player level, so convo doesnt skip first line
     public static bool levelSelectedThisInput;
     // true when R is pressed to prevent input for convo being used in postgamemenu

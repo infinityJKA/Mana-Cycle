@@ -1027,6 +1027,8 @@ namespace Battle.Board {
 
             PlaceTilesOnBoard();
 
+            matchStats.totalPiecesPlaced += 1;
+
             if (advanceDamage) DamageCycle();
 
             // send placement and hp data to opponent in online mode
