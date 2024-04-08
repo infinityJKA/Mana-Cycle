@@ -91,7 +91,6 @@ public class SidebarUI : MonoBehaviour {
     }
 
     public void ToggleExpanded() {
-        Debug.Log("toggle!");
         expanded = !expanded;
 
         if (showingLoginOptions) {

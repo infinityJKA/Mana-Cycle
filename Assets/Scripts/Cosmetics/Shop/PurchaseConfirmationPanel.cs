@@ -23,7 +23,7 @@ namespace Cosmetics
         // todo: change to ShopItem
         private CosmeticItemDisp disp;
         private ShopItem<CosmeticItem> shopItem => disp.shopItem;
-        private CosmeticItem item => disp.shopItem.asset;
+        private CosmeticItem item => disp.shopItem.item;
 
         private void Awake() {
             instance = this;

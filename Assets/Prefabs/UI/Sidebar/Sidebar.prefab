@@ -2754,8 +2754,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
       propertyPath: m_Navigation.m_Mode
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+      propertyPath: m_Navigation.m_SelectOnDown
+      value: 
+      objectReference: {fileID: 4167725922477629770}
     - target: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -3219,6 +3223,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+--- !u!114 &3887584434298529875 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+  m_PrefabInstance: {fileID: 1490961409544562857}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4865933220433118438 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6284687496966597711, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
@@ -3522,6 +3537,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+--- !u!114 &4167725922477629770 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2396914400872857850, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
+  m_PrefabInstance: {fileID: 1771375181470425520}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5738291453951774207 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6284687496966597711, guid: 18c0355bd2884f94f9160bd884006bde, type: 3}
@@ -4214,9 +4240,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 6
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
+    m_SelectOnUp: {fileID: 3887584434298529875}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}

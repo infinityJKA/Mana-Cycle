@@ -22,11 +22,11 @@ namespace Cosmetics
         public void Init(ShopItem<CosmeticItem> shopItem, CosmeticShopTab tab) {
             this.shopItem = shopItem;
             this.tab = tab;
-            nameText.text = shopItem.asset.displayName;
+            nameText.text = shopItem.item.displayName;
             // For now, just use the palette color icon sprite from cosmetic shop instance
             // idk what to do for icon packs yet.
             itemIcon.sprite = CosmeticShop.instance.paletteColorIconSprite;
-            itemIcon.color = shopItem.asset.iconColor;
+            itemIcon.color = shopItem.item.iconColor;
             costText.text = "" + shopItem.cost;
             UpdateOwnedOverlay();
         }
@@ -39,7 +39,7 @@ namespace Cosmetics
         {
             if (!tab) return; // if tab not set probably wasnt initialized and might just be a preview disp
             tab.lastSelected = GetComponent<Selectable>();
-            tab.descriptionText.text = shopItem.asset.description;
+            tab.descriptionText.text = shopItem.item.description;
             tab.scroller.SnapTo(GetComponent<RectTransform>());
         }
 

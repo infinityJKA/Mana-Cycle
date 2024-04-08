@@ -10,11 +10,10 @@ public class FileStorageManager {
         try {
             string json = JsonConvert.SerializeObject(data);
             File.WriteAllText(path, json);
-        } catch (Exception e) {
-            Debug.LogError("Error saving file: "+e);
+            Debug.Log("saved file "+path);
+        } catch {
+            // Debug.LogError("Error saving file: "+e);
         }
-        
-        Debug.Log("saved file "+path);
     }
 
     /// <returns>True if data exists and was loaded successfully</returns>
