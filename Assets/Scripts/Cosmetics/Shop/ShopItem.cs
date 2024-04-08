@@ -1,7 +1,7 @@
 namespace Cosmetics {
     public class ShopItem<T> where T : CosmeticItem {
         public string catalog_listing_id;
-        public T asset;
+        public T item;
         public CurrencyType currencyType;
         public int cost;
 

@@ -57,6 +57,11 @@ namespace Cosmetics
             swapPanel = GetComponent<SwapPanel>();
             swapPanel.onOpened.AddListener(() => {
                 if (PurchaseConfirmationPanel.instance) PurchaseConfirmationPanel.instance.backToPanel = swapPanel.index;
+
+                // if no items loaded, no item to select, select the back button
+                if (assetListIndex == 0) {
+                    backButton.Select();
+                }
             });
         }
 
@@ -77,7 +82,7 @@ namespace Cosmetics
             // if not, RunWhenConnected() will be invoked by PlayerManager upon login complete.
             if (PlayerManager.loggedIn) {
                 RunWhenConnected();
-            }
+            }   
         }
 
         public void UpdateDisplays() {
@@ -113,9 +118,9 @@ namespace Cosmetics
         {
             if (!CosmeticShop.instance.useBackendCatalogs) return;
 
-            assetList.assets = (from e in assetList.assets orderby e.owned select e).ToList();
-            while (assetListIndex < assetList.assets.Count) {
-                CreateCosmeticDisplay(assetList.assets[assetListIndex]);
+            assetList.shopItems = (from e in assetList.shopItems orderby e.owned select e).ToList();
+            while (assetListIndex < assetList.shopItems.Count) {
+                CreateCosmeticDisplay(assetList.shopItems[assetListIndex]);
 
                 // if first item is loaded while panel active, select it
                 if (assetListIndex == 0 && swapPanel.showing) SelectFirstItem();
@@ -134,7 +139,7 @@ namespace Cosmetics
                 foreach (var entry in CosmeticShop.instance.database.iconPacks) {
                     items.Add(new ShopItem<CosmeticItem>()
                     {
-                        asset = entry.iconPack,
+                        item = entry.iconPack,
                         cost = entry.cost
                     });
                 }
@@ -142,7 +147,7 @@ namespace Cosmetics
                 foreach (var entry in CosmeticShop.instance.database.colors) {
                     items.Add(new ShopItem<CosmeticItem>()
                     {
-                        asset = entry.paletteColor,
+                        item = entry.paletteColor,
                         cost = entry.cost
                     });
                 }

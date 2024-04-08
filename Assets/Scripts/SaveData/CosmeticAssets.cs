@@ -90,7 +90,12 @@ namespace SaveData {
                 Debug.LogWarning("Skipping paletteColor with no ID");
                 return;
             }
-            paletteColors.Add(paletteColor.id, paletteColor);
+            if (paletteColors.ContainsKey(paletteColor.id)) {
+                Debug.Log("Overwriting palette color from backend into cosmeticassets file: "+paletteColor.id);
+                paletteColors[paletteColor.id] = paletteColor;
+            } else {
+                paletteColors.Add(paletteColor.id, paletteColor);
+            }
         }
 
         public void AddIconPack(IconPack iconPack) {

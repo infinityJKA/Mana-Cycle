@@ -16,7 +16,7 @@ public class CatalogManager {
     public static readonly AssetList<CosmeticItem> iconPacks = new IconPackList();
 
     public static void PurchaseItem(ShopItem<CosmeticItem> shopItem) {
-        var item = shopItem.asset;
+        var item = shopItem.item;
 
         var itemAndQuantity = new LootLockerCatalogItemAndQuantityPair
         {
@@ -36,7 +36,7 @@ public class CatalogManager {
                 return;
             }
 
-            Debug.Log("Successfully purchased "+shopItem.asset.displayName);
+            Debug.Log("Successfully purchased "+shopItem.item.displayName);
 
             WalletManager.coins -= shopItem.cost;
             CosmeticAssets.current.AddItem(item);
@@ -58,30 +58,9 @@ public class CatalogManager {
     {
         public override string catalogKey => "palette_colors";
 
-        public override CosmeticItem ConvertAsset(LootLockerCatalogEntry entry, LootLockerAssetDetails details)
+        public override CosmeticItem AssetToItem(LootLockerCommonAsset asset)
         {
-            PaletteColor paletteColor = new PaletteColor();
-
-            return paletteColor;
-        }
-
-        public override void UpdateItemDetails(CosmeticItem item, LootLockerCommonAsset asset)
-        {
-            PaletteColor paletteColor = (PaletteColor)item;
-            foreach (var kvp in asset.storage) {
-                switch(kvp.key) {
-                    case "mainColor":
-                        if (ColorUtility.TryParseHtmlString(kvp.value, out Color mainColor)) {
-                            paletteColor.mainColor = mainColor;
-                        }
-                        break;
-                    case "darkColor":
-                        if (ColorUtility.TryParseHtmlString(kvp.value, out Color darkColor)) {
-                            paletteColor.darkColor = darkColor;
-                        }
-                        break;
-                }
-            }
+            return InventoryManager.AssetToPaletteColor(asset);
         }
 
         public override bool IsOwned(string id)
@@ -95,14 +74,7 @@ public class CatalogManager {
     {
         public override string catalogKey => "icon_packs";
 
-        public override CosmeticItem ConvertAsset(LootLockerCatalogEntry entry, LootLockerAssetDetails details)
-        {
-            IconPack iconPack = new IconPack();
-            // todo: add icons according to data received from backend
-            return iconPack;
-        }
-
-        public override void UpdateItemDetails(CosmeticItem item, LootLockerCommonAsset asset)
+        public override CosmeticItem AssetToItem(LootLockerCommonAsset asset)
         {
             throw new NotImplementedException();
         }
@@ -122,11 +94,11 @@ public class CatalogManager {
         public abstract string catalogKey {get;}
 
         // The final assets list that is displayed in the shop.
-        public List<ShopItem<T>> assets = new List<ShopItem<T>>();
+        public List<ShopItem<T>> shopItems = new List<ShopItem<T>>();
         // shop items are stored here when their catalog data (id, name, price) shows up.
         // shopitmes here may be waiting on data from full asset data API call until 
         // all required data has arrived and item is added to assets list.
-        public Dictionary<string, ShopItem<T>> itemsById = new Dictionary<string, ShopItem<T>>();
+        public Dictionary<string, ShopItem<T>> shopItemsById = new Dictionary<string, ShopItem<T>>();
 
         // If there are no more items to load beyond the final index
         public bool reachedEnd {get; private set;} = false;
@@ -142,17 +114,9 @@ public class CatalogManager {
         public LootLockerPaginationResponse<string> pagination;
 
         /// <summary>
-        /// Function that should convert the catalog asset listing and details into a native Mana Cycle object representing it.
+        /// Function that should convert the asset details into a native Mana Cycle object representing it.
         /// </summary>
-        /// <returns>the converted item</returns>
-        public abstract T ConvertAsset(LootLockerCatalogEntry entry,LootLockerAssetDetails details);
-
-        /// <summary>
-        /// Call when details arrive about an item.
-        /// The asset full details API call is seperate from the catalog assets call, but catalog asset is processed right when received, 
-        /// so this just adds additional info, such as the actual palette color for example.
-        /// </summary>
-        public abstract void UpdateItemDetails(T item, LootLockerCommonAsset asset);
+        public abstract T AssetToItem(LootLockerCommonAsset asset);
 
         /// <summary>
         /// Check whether the player already owns this shop item.
@@ -203,29 +167,23 @@ public class CatalogManager {
                     
                     string assetId = details.legacy_id.ToString();
 
-                    if (itemsById.ContainsKey(assetId)) {
-                        Debug.LogWarning("Duplicate item loaded: "+details.name);
+                    ids[i] = assetId;
+
+                    if (shopItemsById.ContainsKey(assetId)) {
+                        Debug.LogWarning("Duplicate item loaded: "+details.name+" (will still re-fetch details)");
                         continue;
                     }
-
-                    ids[i] = assetId;
 
                     if (!entry.purchasable) {
                         Debug.LogWarning("Unpurchasable item in catalog: "+details.name);
                     }
 
-                    T convertedItem = ConvertAsset(entry, details);
-
                     ShopItem<T> shopItem = new ShopItem<T>
                     {
-                        asset = convertedItem,
-                        owned = IsOwned(details.id)
+                        owned = IsOwned(assetId)
                     };
                     
-                    itemsById[assetId] = shopItem;
-                    
-                    convertedItem.id = details.id;
-                    convertedItem.displayName = details.name;
+                    shopItemsById[assetId] = shopItem;
 
                     // if items ever get more than one price this code will need to be updated
                     var price = entry.prices[0];
@@ -251,9 +209,9 @@ public class CatalogManager {
 
                     // set retrieved info, and add it to the assets list now that full info is in
                     foreach (var assetInfo in response.assets) {
-                        var shopItem = itemsById[assetInfo.id.ToString()];
-                        UpdateItemDetails(shopItem.asset, assetInfo);
-                        assets.Add(shopItem);
+                        string id = assetInfo.id.ToString();
+                        shopItemsById[id].item = AssetToItem(assetInfo);
+                        shopItems.Add(shopItemsById[id]);
                     }
 
                     // let the cosmetic shop know there is more assets to display that just arrived
@@ -265,8 +223,8 @@ public class CatalogManager {
         // called on login in case of no domain reload
         public void Reset() {
             Debug.Log("reset asset list "+catalogKey);
-            assets.Clear();
-            itemsById.Clear();
+            shopItems.Clear();
+            shopItemsById.Clear();
             loading = false;
             lastAfterLoad = null;
             reachedEnd = false;
@@ -275,7 +233,7 @@ public class CatalogManager {
 
         // to be called when shop scene is closed; should free up the memory that the shop items list is taking up.
         public void ClearAllEntries() {
-            assets.Clear();
+            shopItems.Clear();
             lastAfterLoad = null;
         }
     }
