@@ -12,6 +12,7 @@ namespace Battle {
         public string displayName {get; private set;}
 
         private void OnEnable() {
+            displayNameEntry.GetLocalizedStringAsync();
             displayNameEntry.StringChanged += UpdateName;
         }
 
