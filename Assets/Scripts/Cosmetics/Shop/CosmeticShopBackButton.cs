@@ -7,7 +7,7 @@ namespace Cosmetics {
 
         public void OnMove(AxisEventData eventData)
             {
-                if (eventData.moveDir == MoveDirection.Left) {
+                if (eventData.moveDir == MoveDirection.Left && tab.lastSelected) {
                     tab.lastSelected.Select();
                 }
             }

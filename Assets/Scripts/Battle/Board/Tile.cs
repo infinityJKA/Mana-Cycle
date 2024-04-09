@@ -56,7 +56,7 @@ namespace Battle.Board {
                 if (ghost) {
                     _visual.SetGhostVisual(board, manaColor);
                 } else {
-                    _visual.SetVisual(board, manaColor, isTrash: trashTile);
+                    _visual.SetVisual(board.cosmetics, manaColor, isTrash: trashTile);
                 }
             }
         }

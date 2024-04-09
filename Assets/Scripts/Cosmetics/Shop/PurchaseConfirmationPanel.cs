@@ -16,7 +16,8 @@ namespace Cosmetics
         [SerializeField] private TextMeshProUGUI nameText;
         // [SerializeField] public TextMeshProUGUI descText;
         [SerializeField] private TextMeshProUGUI costText;
-        [SerializeField] private Image itemIcon;
+        [SerializeField] private Transform iconTransform;
+        [SerializeField] private GameObject icon;
         [SerializeField] private SwapPanelManager swapPanelManager;
         public int backToPanel {get; set;} = 1;
 
@@ -34,9 +35,10 @@ namespace Cosmetics
             this.disp = disp;
             // item property => disp.shopIte.asset
             nameText.text = item.displayName;
-            itemIcon.sprite = item.icon;
-            itemIcon.color = item.iconColor;
             costText.text = "" + shopItem.cost;
+
+            if (icon) Destroy(icon);
+            icon = item.MakeIcon(iconTransform);
         }
 
         // when green Y button pressed
