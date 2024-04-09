@@ -4,8 +4,10 @@ Shader "ManaCycle/MainDarkUI"
     {
         _MainReference("MainReference", Color) = (1, 1, 1, 1)
         _DarkReference("DarkReference", Color) = (0.682353, 0.682353, 0.682353, 1)
-        _Color("Color", Color) = (0.9622642, 0.2133321, 0.2133321, 1)
+        _MainColor("MainColor", Color) = (0.9622642, 0.2133321, 0.2133321, 1)
         _DarkColor("DarkColor", Color) = (0.6320754, 0.03279637, 0.03279637, 1)
+        [NoScaleOffset]_MainTex("MainTex", 2D) = "white" {}
+        _Color("Color", Color) = (1, 1, 1, 0)
 
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
@@ -17,7 +19,6 @@ Shader "ManaCycle/MainDarkUI"
 
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
 
-        _MainTex("MainTex", 2D) = "white" {}
         [HideInInspector]_BUILTIN_Surface("Float", Float) = 1
         [HideInInspector]_BUILTIN_Blend("Float", Float) = 0
         [HideInInspector]_BUILTIN_AlphaClip("Float", Float) = 0
@@ -41,10 +42,10 @@ Shader "ManaCycle/MainDarkUI"
             // DisableBatching: <None>
             "ShaderGraphShader"="true"
             "ShaderGraphTargetId"="BuiltInUnlitSubTarget"
-            "IgnoreProjector"="True"
-            "PreviewType"="Plane"
-            "CanUseSpriteAtlas"="True"
         }
+        Pass
+        {
+            Name "Pass"
 
         Stencil
         {
@@ -54,20 +55,14 @@ Shader "ManaCycle/MainDarkUI"
             ReadMask [_StencilReadMask]
             WriteMask [_StencilWriteMask]
         }
-
-        Pass
-        {
-            Name "Pass"
-            Tags
-            {
-                "LightMode" = "ForwardBase"
-            }
         
         // Render State
         Cull [_BUILTIN_CullMode]
         Blend [_BUILTIN_SrcBlend] [_BUILTIN_DstBlend]
         ZTest [_BUILTIN_ZTest]
         ZWrite [_BUILTIN_ZWrite]
+        Lighting Off
+        ColorMask [_ColorMask]
         
         // Debug
         // <None>
@@ -237,9 +232,10 @@ Shader "ManaCycle/MainDarkUI"
         CBUFFER_START(UnityPerMaterial)
         float4 _DarkReference;
         float4 _MainReference;
-        float4 _Color;
+        float4 _MainColor;
         float4 _DarkColor;
         float4 _MainTex_TexelSize;
+        float4 _Color;
         CBUFFER_END
         
         
@@ -272,6 +268,21 @@ Shader "ManaCycle/MainDarkUI"
         void Unity_Lerp_float4(float4 A, float4 B, float4 T, out float4 Out)
         {
             Out = lerp(A, B, T);
+        }
+        
+        void Unity_Remap_float4(float4 In, float2 InMinMax, float2 OutMinMax, out float4 Out)
+        {
+            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
+        }
+        
+        void Unity_Multiply_float4_float4(float4 A, float4 B, out float4 Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Add_float4(float4 A, float4 B, out float4 Out)
+        {
+            Out = A + B;
         }
         
         // Custom interpolators pre vertex
@@ -314,8 +325,8 @@ Shader "ManaCycle/MainDarkUI"
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
             SurfaceDescription surface = (SurfaceDescription)0;
-            float4 _Property_0267bb2daff644259267d54743db2222_Out_0_Vector4 = _DarkColor;
-            float4 _Property_718cebec5df9432f90acebda11b28b89_Out_0_Vector4 = _Color;
+            float4 _Property_97d8712a54794bd1bff5e8fd82fd21f4_Out_0_Vector4 = _DarkColor;
+            float4 _Property_3bad9d5d5ec24ba699ca18e333631bce_Out_0_Vector4 = _MainColor;
             UnityTexture2D _Property_b01bb4865f2d4f46843a9ce6708d5d69_Out_0_Texture2D = UnityBuildTexture2DStructNoScale(_MainTex);
             float4 _SampleTexture2D_14b956ac9a6d4b2abab68efc24c9bbcc_RGBA_0_Vector4 = SAMPLE_TEXTURE2D(_Property_b01bb4865f2d4f46843a9ce6708d5d69_Out_0_Texture2D.tex, _Property_b01bb4865f2d4f46843a9ce6708d5d69_Out_0_Texture2D.samplerstate, _Property_b01bb4865f2d4f46843a9ce6708d5d69_Out_0_Texture2D.GetTransformedUV(IN.uv0.xy) );
             float _SampleTexture2D_14b956ac9a6d4b2abab68efc24c9bbcc_R_4_Float = _SampleTexture2D_14b956ac9a6d4b2abab68efc24c9bbcc_RGBA_0_Vector4.r;
@@ -336,8 +347,19 @@ Shader "ManaCycle/MainDarkUI"
             float _Remap_d975b198f5dd4ea7b6c470c5a40f59f7_Out_3_Float;
             Unity_Remap_float(_SampleTexture2D_14b956ac9a6d4b2abab68efc24c9bbcc_R_4_Float, _Vector2_5a3e8505ae194cacada58dd2d9333375_Out_0_Vector2, float2 (0, 1), _Remap_d975b198f5dd4ea7b6c470c5a40f59f7_Out_3_Float);
             float4 _Lerp_fd2322e2585c4e3ebb63dd5f719181ab_Out_3_Vector4;
-            Unity_Lerp_float4(_Property_0267bb2daff644259267d54743db2222_Out_0_Vector4, _Property_718cebec5df9432f90acebda11b28b89_Out_0_Vector4, (_Remap_d975b198f5dd4ea7b6c470c5a40f59f7_Out_3_Float.xxxx), _Lerp_fd2322e2585c4e3ebb63dd5f719181ab_Out_3_Vector4);
-            surface.BaseColor = (_Lerp_fd2322e2585c4e3ebb63dd5f719181ab_Out_3_Vector4.xyz);
+            Unity_Lerp_float4(_Property_97d8712a54794bd1bff5e8fd82fd21f4_Out_0_Vector4, _Property_3bad9d5d5ec24ba699ca18e333631bce_Out_0_Vector4, (_Remap_d975b198f5dd4ea7b6c470c5a40f59f7_Out_3_Float.xxxx), _Lerp_fd2322e2585c4e3ebb63dd5f719181ab_Out_3_Vector4);
+            float4 _Property_2ff030a9d4964237944d47d0c2c2f863_Out_0_Vector4 = _Color;
+            float4 _Remap_8b9c516c5ed14e409823e96e387d198f_Out_3_Vector4;
+            Unity_Remap_float4(_Property_2ff030a9d4964237944d47d0c2c2f863_Out_0_Vector4, float2 (0, 1), float2 (-1, 1), _Remap_8b9c516c5ed14e409823e96e387d198f_Out_3_Vector4);
+            float _Split_d90f69c2c62e4b6482f391eb171baa13_R_1_Float = _Property_2ff030a9d4964237944d47d0c2c2f863_Out_0_Vector4[0];
+            float _Split_d90f69c2c62e4b6482f391eb171baa13_G_2_Float = _Property_2ff030a9d4964237944d47d0c2c2f863_Out_0_Vector4[1];
+            float _Split_d90f69c2c62e4b6482f391eb171baa13_B_3_Float = _Property_2ff030a9d4964237944d47d0c2c2f863_Out_0_Vector4[2];
+            float _Split_d90f69c2c62e4b6482f391eb171baa13_A_4_Float = _Property_2ff030a9d4964237944d47d0c2c2f863_Out_0_Vector4[3];
+            float4 _Multiply_af363766ee884c31bdabfd321b11099b_Out_2_Vector4;
+            Unity_Multiply_float4_float4(_Remap_8b9c516c5ed14e409823e96e387d198f_Out_3_Vector4, (_Split_d90f69c2c62e4b6482f391eb171baa13_A_4_Float.xxxx), _Multiply_af363766ee884c31bdabfd321b11099b_Out_2_Vector4);
+            float4 _Add_b8f91584eb2046a88bf3d4f979c54f80_Out_2_Vector4;
+            Unity_Add_float4(_Lerp_fd2322e2585c4e3ebb63dd5f719181ab_Out_3_Vector4, _Multiply_af363766ee884c31bdabfd321b11099b_Out_2_Vector4, _Add_b8f91584eb2046a88bf3d4f979c54f80_Out_2_Vector4);
+            surface.BaseColor = (_Add_b8f91584eb2046a88bf3d4f979c54f80_Out_2_Vector4.xyz);
             surface.Alpha = _SampleTexture2D_14b956ac9a6d4b2abab68efc24c9bbcc_A_7_Float;
             surface.AlphaClipThreshold = 0.5;
             return surface;

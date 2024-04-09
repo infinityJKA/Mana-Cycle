@@ -15,6 +15,7 @@ namespace Cosmetics
         public string displayName;
         public string description;
 
+        // see PaletteColor.cs > MakeIcon
         public abstract GameObject MakeIcon(Transform parent);
     }
 }
