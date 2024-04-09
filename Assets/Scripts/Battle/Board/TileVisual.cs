@@ -137,15 +137,17 @@ namespace Battle.Board {
         /// creates its own unique material.
         /// </summary>
         public void SetVisualStandalone(PaletteColor paletteColor, Sprite iconSprite) {
-            // possible change: input a ManaIcon instead of a sprite, to allow previewing of the icons where icon and bg are seperate.
-            Material mat = new Material(mainDarkColorImage.material);
-            mat.SetColor("_MainColor", paletteColor.mainColor);
-            mat.SetColor("_DarkColor", paletteColor.darkColor);
-
             mainDarkColorImage.gameObject.SetActive(true);
             bgImage.gameObject.SetActive(false);
             iconImage.gameObject.SetActive(false);
+
+            // possible change: input a ManaIcon instead of a sprite, to allow previewing of the icons where icon and bg are seperate.
+            Material mat = new Material(mainDarkColorImage.material);
+            mainDarkColorImage.material = mat;
             mainDarkColorImage.sprite = iconSprite;
+            mat.SetColor("_MainColor", paletteColor.mainColor);
+            mat.SetColor("_DarkColor", paletteColor.darkColor);
+
         }
 
         public void SetupIcon(ManaIcon icon, PaletteColor paletteColor, bool isTrash = false) {
