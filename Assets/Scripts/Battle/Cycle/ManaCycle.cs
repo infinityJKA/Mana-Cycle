@@ -138,7 +138,7 @@ namespace Battle.Cycle {
             {
                 TileVisual cycleObject = Instantiate(manaImageObject, Vector3.zero, Quaternion.identity).GetComponent<TileVisual>();
                 // cycleObject.color = cosmetics.manaColors[cycle[i]].mainColor;
-                cycleObject.SetVisual(boards[0], cycle[i]);
+                cycleObject.SetVisual(boards[0].cosmetics, cycle[i]);
                 cycleObject.DisableVisualUpdates();
                 cycleObjects.Add(cycleObject);
                 cycleObject.transform.SetParent(transform, false);

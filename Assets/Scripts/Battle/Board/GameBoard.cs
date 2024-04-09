@@ -316,8 +316,8 @@ namespace Battle.Board {
         /// </summary>
         public int pieceDropIndex {get; private set;}
         
-        [SerializeField] private BoardCosmeticAssets _cosmetics;
-        public BoardCosmeticAssets cosmetics => _cosmetics;
+        [SerializeField] private CosmeticValues _cosmetics;
+        public CosmeticValues cosmetics => _cosmetics;
 
         // Start is called before the first frame update
         void Start()

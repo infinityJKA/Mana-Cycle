@@ -12,7 +12,8 @@ namespace Cosmetics
 
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI costText;
-        [SerializeField] private Image itemIcon;
+        [SerializeField] private Transform iconTransform;
+        [SerializeField] private GameObject icon;
         [SerializeField] private GameObject ownedOverlay;
 
         // set via shop tab script
@@ -23,11 +24,11 @@ namespace Cosmetics
             this.shopItem = shopItem;
             this.tab = tab;
             nameText.text = shopItem.item.displayName;
-            // For now, just use the palette color icon sprite from cosmetic shop instance
-            // idk what to do for icon packs yet.
-            itemIcon.sprite = CosmeticShop.instance.paletteColorIconSprite;
-            itemIcon.color = shopItem.item.iconColor;
             costText.text = "" + shopItem.cost;
+
+            if (icon) Destroy(icon);
+            icon = shopItem.item.MakeIcon(iconTransform);
+            
             UpdateOwnedOverlay();
         }
 

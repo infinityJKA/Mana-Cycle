@@ -63,56 +63,9 @@ namespace Cosmetics
     {
         public ManaIcon[] icons;
 
-        [JsonIgnore]
-        public override Color32 iconColor => Color.white;
-
-        [JsonIgnore]
-        public override Sprite icon => throw new System.NotImplementedException();
-    }
-
-    public class ManaIconSpriteConverter : JsonConverter<Sprite>
-    {
-        public override Sprite ReadJson(JsonReader reader, Type objectType, Sprite existingValue, bool hasExistingValue, JsonSerializer serializer)
+        public override GameObject MakeIcon(Transform parent)
         {
-            Sprite sprite = default;
-
-            while (reader.Read())
-            {
-                if (reader.TokenType == JsonToken.PropertyName)
-                {
-                    switch (reader.Value.ToString())
-                    {
-                        case "name":
-                            string name = reader.ReadAsString();
-                            // don't load the sprite if already loaded
-                            if (hasExistingValue && existingValue.name == name) {
-                                break;
-                            }
-
-                            sprite = Resources.Load<Sprite>("ManaIcons/" + name);
-                            break;
-                    }
-                }
-                else if (reader.TokenType == JsonToken.EndObject)
-                    break;
-            }
-
-            return sprite;
-        }
-
-        public override void WriteJson(JsonWriter writer, Sprite value, JsonSerializer serializer)
-        {
-            writer.WriteStartObject();            
-            if(serializer.TypeNameHandling != TypeNameHandling.None)
-            {
-                writer.WritePropertyName("$type");
-                writer.WriteValue(string.Format("{0}, {1}", value.GetType().ToString(), value.GetType().Assembly.GetName().Name));
-            }                
-            if (value) {
-                writer.WritePropertyName("name");
-                writer.WriteValue(value.name);
-            }
-            writer.WriteEndObject();
+            throw new NotImplementedException();
         }
     }
 

@@ -15,10 +15,7 @@ namespace Cosmetics
         public string displayName;
         public string description;
 
-        [JsonIgnore]
-        public abstract Sprite icon { get; }
-        [JsonIgnore]
-        public abstract Color32 iconColor {get;}
+        public abstract GameObject MakeIcon(Transform parent);
     }
 }
 

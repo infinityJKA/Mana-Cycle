@@ -9,10 +9,11 @@ using SaveData;
 
 namespace Battle.Board {
     /// <summary>
-    /// Stores all the information needed b ythe Battle scene to reflec tthe currently equipped cosmetics.
-    /// Some Ability-specific assets are also stored here that may or may not change based on equipped cosmetics 
+    /// (Previously BoardCosmeticAssets)
+    /// Stores all the information needed by the Battle, CosmeticShop or owned cosmetics scene to reflect the currently equipped cosmetics.
+    /// Ability-specific assets are also stored here that may or may not change based on equipped cosmetics.
     /// </summary>
-    public class BoardCosmeticAssets : MonoBehaviour
+    public class CosmeticValues : MonoBehaviour
     {
         // ONLY FOR USE IN SINGLEPLAYER
         // public static CosmeticAssets instance {get; private set;}
@@ -54,7 +55,8 @@ namespace Battle.Board {
 
         // Base materials to use for tile visuals
         [SerializeField] private Material ghostMaterial;
-        [SerializeField] private Material mainDarkColorMaterial;
+        [SerializeField] private Material _mainDarkColorMaterial;
+        public Material mainDarkColorMaterial => _mainDarkColorMaterial;
 
         // Controls waht tile glow looks like when blobs are cleared
         [SerializeField] public AnimationCurve glowAnimCurve;
@@ -87,11 +89,11 @@ namespace Battle.Board {
         public Material[] ghostIconMaterials {get; private set;}
         public Material multicolorGhostIconMaterial;
 
-        // awake
-        // may want to move this into some kind of Init()
-        // because only want to load from cosmetic assets file is this isn't some kind of online opponent
-        // so logic may be needed from an external class like ManaCycle.cs.
         private void Awake() {
+            Setup();
+        }
+
+        private void Setup() {
             if (useCosmeticAssetsFile) {
                 paletteColors = new PaletteColor[5];
                 manaIcons = new ManaIcon[5];

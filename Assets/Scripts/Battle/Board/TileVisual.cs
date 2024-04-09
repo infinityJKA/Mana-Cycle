@@ -15,10 +15,9 @@ namespace Battle.Board {
         [SerializeField] private Image bgImage;
         [SerializeField] private Image iconImage;
         [SerializeField] private Image glowImage;
+        [SerializeField] private Image mainDarkColorImage;
 
-        [SerializeField] private RawImage mainDarkColorImage;
-
-        [SerializeField] private Vector2 refIconSize = Vector2.one * 0.5f; // (0.5, 0.5)
+        private readonly Vector2 refIconSize = Vector2.one * 0.5f; // (0.5, 0.5)
 
         // ---- Constants
         /// <summary>Base reference color to use against when this tile is glowed</summary>
@@ -94,17 +93,17 @@ namespace Battle.Board {
         }
 
         
-        public void SetVisual(GameBoard board, int manaColor, bool isTrash = false)
+        public void SetVisual(CosmeticValues cosmetics, int manaColor, bool isTrash = false)
         {
             // Debug.Log("Setting up visual");
             PaletteColor paletteColor;
             ManaIcon icon;
             if (manaColor >= 0) {
-                icon = board.cosmetics.manaIcons[manaColor];
-                paletteColor = board.cosmetics.paletteColors[manaColor];
+                icon = cosmetics.manaIcons[manaColor];
+                paletteColor = cosmetics.paletteColors[manaColor];
             } else {
-                icon = board.cosmetics.multicolorIcon;
-                paletteColor = board.cosmetics.multicolorPaletteColor;
+                icon = cosmetics.multicolorIcon;
+                paletteColor = cosmetics.multicolorPaletteColor;
             }
 
             // if visual has an icon sprte, set up the image
@@ -117,15 +116,15 @@ namespace Battle.Board {
                 mainDarkColorImage.gameObject.SetActive(true);
                 bgImage.gameObject.SetActive(false);
                 iconImage.gameObject.SetActive(false);
-                mainDarkColorImage.texture = icon.bgSprite.texture;
+                mainDarkColorImage.sprite = icon.bgSprite;
                 if (isTrash) {
                     // multicolor trash doesnt exist (yet)
-                    mainDarkColorImage.material = board.cosmetics.trashMaterials[manaColor];
+                    mainDarkColorImage.material = cosmetics.trashMaterials[manaColor];
                 } else {
                     if (manaColor >= 0) {
-                        mainDarkColorImage.material = board.cosmetics.materials[manaColor];
+                        mainDarkColorImage.material = cosmetics.materials[manaColor];
                     } else {
-                        mainDarkColorImage.material = board.cosmetics.multicolorMaterial;
+                        mainDarkColorImage.material = cosmetics.multicolorMaterial;
                     }
                 }
             }
@@ -133,9 +132,25 @@ namespace Battle.Board {
             if (glowImage) glowImage.sprite = icon.bgSprite;
         }
 
+        /// <summary>
+        /// For use in shop / cosmetics views outside of battle scene.
+        /// creates its own unique material.
+        /// </summary>
+        public void SetVisualStandalone(PaletteColor paletteColor, Sprite iconSprite) {
+            // possible change: input a ManaIcon instead of a sprite, to allow previewing of the icons where icon and bg are seperate.
+            Material mat = new Material(mainDarkColorImage.material);
+            mat.SetColor("_MainColor", paletteColor.mainColor);
+            mat.SetColor("_DarkColor", paletteColor.darkColor);
+
+            mainDarkColorImage.gameObject.SetActive(true);
+            bgImage.gameObject.SetActive(false);
+            iconImage.gameObject.SetActive(false);
+            mainDarkColorImage.sprite = iconSprite;
+        }
+
         public void SetupIcon(ManaIcon icon, PaletteColor paletteColor, bool isTrash = false) {
-            Color mainColor = isTrash ? Color.Lerp(paletteColor.mainColor, BoardCosmeticAssets.darkenColor, 0.375f) : paletteColor.mainColor;
-            Color darkColor = isTrash ? Color.Lerp(paletteColor.darkColor, BoardCosmeticAssets.darkenColor, 0.3f) : paletteColor.darkColor;
+            Color mainColor = isTrash ? Color.Lerp(paletteColor.mainColor, CosmeticValues.darkenColor, 0.375f) : paletteColor.mainColor;
+            Color darkColor = isTrash ? Color.Lerp(paletteColor.darkColor, CosmeticValues.darkenColor, 0.3f) : paletteColor.darkColor;
 
             fallTransform = bgImage.transform;
             bgImage.gameObject.SetActive(true);

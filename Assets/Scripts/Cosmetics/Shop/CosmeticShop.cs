@@ -1,3 +1,4 @@
+using Battle.Board;
 using Cosmetics;
 using LootLocker.Requests;
 using TMPro;
@@ -18,8 +19,7 @@ namespace Cosmetics {
 
         // icon sprite to use for palette colors
         // system might change in the future
-        [SerializeField] private Sprite _paletteColorIconSprite;
-        public Sprite paletteColorIconSprite => _paletteColorIconSprite;
+        [SerializeField] private TileVisual tileVisualPrefab;
 
         [SerializeField] InputActionReference backAction;
 
@@ -35,6 +35,8 @@ namespace Cosmetics {
 
         private void Awake() {
             instance = this;
+
+            Storage.tileVisualPrefab = tileVisualPrefab;
         }
 
         private void Start() {

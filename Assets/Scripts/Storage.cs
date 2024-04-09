@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Battle.Board;
 using UnityEngine;
 
 // just a place to store some temporary values between scenes
@@ -65,4 +66,7 @@ public class Storage
 
     // If in an online mode. (applies only to CharSelect & ManaCycle scenes)
     public static bool online = false;
+
+    // used by some cosmetics scenes. contains a object with the tile visual prefab
+    public static TileVisual tileVisualPrefab;
 }
