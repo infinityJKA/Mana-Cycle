@@ -59,7 +59,7 @@ namespace Cosmetics
                 if (PurchaseConfirmationPanel.instance) PurchaseConfirmationPanel.instance.backToPanel = swapPanel.index;
 
                 // if no items loaded, no item to select, select the back button
-                if (assetListIndex == 0) {
+                if (CosmeticShop.instance.useBackendCatalogs && assetListIndex == 0) {
                     backButton.Select();
                 }
             });
