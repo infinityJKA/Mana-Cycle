@@ -655,7 +655,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 35045408}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1574417297}
+        m_TargetAssemblyTypeName: FishingPromptUIManager, Assembly-CSharp
+        m_MethodName: resetBait
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &35045408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -728,7 +740,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 159.99014, y: -128}
+  m_AnchoredPosition: {x: 170, y: -124.26}
   m_SizeDelta: {x: 741.2, y: 248.52}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &40901405
@@ -751,7 +763,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 999 >> 999
+  m_text: use 999 bait
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 8b29aaa3eec7468097ff07adfcf29ac9, type: 2}
@@ -778,8 +790,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 140
-  m_fontSizeBase: 140
+  m_fontSize: 110
+  m_fontSizeBase: 110
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -814,7 +826,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 10.916748, z: 1.7219238, w: -11.644493}
+  m_margin: {x: -33.94629, y: 10.916748, z: 1.7219238, w: -11.644493}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3744,7 +3756,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 399578627}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1574417297}
+        m_TargetAssemblyTypeName: FishingPromptUIManager, Assembly-CSharp
+        m_MethodName: increaseBaitToUse
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &399578627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6598,7 +6622,7 @@ GameObject:
   - component: {fileID: 850371177}
   - component: {fileID: 850371176}
   m_Layer: 5
-  m_Name: LURE ENABLE
+  m_Name: REMOVE LURE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6667,7 +6691,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 850371177}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1574417297}
+        m_TargetAssemblyTypeName: FishingPromptUIManager, Assembly-CSharp
+        m_MethodName: UnequipLure
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &850371177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6788,7 +6824,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 852846277}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1574417297}
+        m_TargetAssemblyTypeName: FishingPromptUIManager, Assembly-CSharp
+        m_MethodName: decreaseBaitToUse
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &852846277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9121,14 +9169,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIInventoryManager, Assembly-CSharp
-        m_MethodName: CreateInventoryDisplay
-        m_Mode: 1
+      - m_Target: {fileID: 1574417297}
+        m_TargetAssemblyTypeName: FishingPromptUIManager, Assembly-CSharp
+        m_MethodName: decreaseBaitToUse
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 10
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -9420,19 +9468,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Value: 000
-
-    ATK: 000
-
-    DEF: 000
-
-    Element: NULL
-
-    Item Type:
-    NULL
+  m_text: '[No lure equipped]
 
 
-    Click a lure to select it.'
+    Click a lure to equip it. Lures are used up upon
+    fishing.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
@@ -9562,7 +9602,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -5, y: -27.900002}
+  m_AnchoredPosition: {x: 0.000015258789, y: -27.900002}
   m_SizeDelta: {x: -85.6825, y: -79.1794}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1244519443
@@ -12377,14 +12417,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIInventoryManager, Assembly-CSharp
-        m_MethodName: CreateInventoryDisplay
-        m_Mode: 1
+      - m_Target: {fileID: 1574417297}
+        m_TargetAssemblyTypeName: FishingPromptUIManager, Assembly-CSharp
+        m_MethodName: increaseBaitToUse
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 10
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -14187,7 +14227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25600cc295224914f9d1af7bf6a99c6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slotPrefab: {fileID: 4673669403580704981}
+  slotPrefab: {fileID: 5327280388212991993, guid: ea8bdd95921dc664984e33be0f0e9735, type: 3}
   itemSlots: []
   inventory: {fileID: 1986572301}
   bigImage: {fileID: 312774444}
@@ -14195,6 +14235,8 @@ MonoBehaviour:
   Description: {fileID: 1243217688}
   lureToUse: {fileID: 0}
   FIBAGC: {fileID: 1624144009}
+  baitBeforeAndAfter: {fileID: 40901405}
+  baitToUse: 0
 --- !u!1 &1576567265
 GameObject:
   m_ObjectHideFlags: 0
@@ -15974,8 +16016,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000015258789, y: 0}
-  m_SizeDelta: {x: -85.6825, y: -79.1794}
+  m_AnchoredPosition: {x: -0.000015258789, y: -6}
+  m_SizeDelta: {x: -89.786, y: -135.603}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1721085777
 MonoBehaviour:
@@ -15997,7 +16039,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: LURE ENABLED
+  m_text: CLICK TO REMOVE LURE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: b246c4190f4e46ec9352fe15a7b09ce0, type: 2}
@@ -16024,7 +16066,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.45
+  m_fontSize: 40.95
   m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -18438,8 +18480,12 @@ MonoBehaviour:
     stackSize: 1
   - itemData: {fileID: 11400000, guid: 0a88715fbd657b04ca083faf43d11323, type: 2}
     stackSize: 1
-  bait: 0
-  gold: 0
+  - itemData: {fileID: 11400000, guid: 150c7b81ec78a3c45b197ed43dec726a, type: 2}
+    stackSize: 5
+  - itemData: {fileID: 11400000, guid: c48972b33832a5540b6e789e974a2d5e, type: 2}
+    stackSize: 2
+  bait: 25
+  gold: 50
   maxHP: 20
   weapon1: {fileID: 11400000, guid: 7ee20dcdf9b35084fa6224919f05625f, type: 2}
   weapon2: {fileID: 11400000, guid: 7ee20dcdf9b35084fa6224919f05625f, type: 2}
@@ -20471,11 +20517,6 @@ PrefabInstance:
 --- !u!224 &4673669403580704980 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1659027744919249522, guid: ea8bdd95921dc664984e33be0f0e9735, type: 3}
-  m_PrefabInstance: {fileID: 4673669403580704979}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4673669403580704981 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5327280388212991993, guid: ea8bdd95921dc664984e33be0f0e9735, type: 3}
   m_PrefabInstance: {fileID: 4673669403580704979}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8280116105999173469
