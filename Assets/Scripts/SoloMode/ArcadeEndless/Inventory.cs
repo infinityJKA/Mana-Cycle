@@ -29,10 +29,13 @@ public class Inventory : MonoBehaviour
 
     [SerializeField] private GameObject equipSFX, unequipSFX;
 
+    private int selectionIndex;
+
     // private float scrollPosTarget = 1f;
 
     void OnEnable()
     {
+        selectionIndex = 0;
         BuildItemList();
         RefreshInfo();
 
@@ -41,7 +44,7 @@ public class Inventory : MonoBehaviour
     private void BuildItemList()
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
-        int selectionIndex = selection.transform.GetSiblingIndex(); 
+        // selectionIndex = selection.transform.GetSiblingIndex(); 
 
         // destroy old item prefabs
         foreach (Transform t in itemDisplayParent.transform)
@@ -75,6 +78,7 @@ public class Inventory : MonoBehaviour
             submitEntry.eventID = EventTriggerType.Submit;
             submitEntry.callback.AddListener(ev => SelectCurrentItem(ev));
             itemEventTrigger.triggers.Add(submitEntry);
+
         }
 
         // we've reset all item display prefabs, so we need to set selection again. use sibling index to keep selection in the same place
@@ -102,13 +106,12 @@ public class Inventory : MonoBehaviour
     public void MoveSelection(BaseEventData ev)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
-        // Item item = selection.GetComponent<ItemDisplay>().item;
+        if (selection.GetComponent<ItemDisplay>() != null) selectionIndex = selection.transform.GetSiblingIndex();
 
         RefreshInfo();
 
         // scoll logic
-        scrollRect.verticalNormalizedPosition = 1f - (selection.transform.GetSiblingIndex() * 1f) / (itemDisplayParent.transform.childCount-1);
-        // Debug.Log(scrollRect.verticalNormalizedPosition);
+        scrollRect.verticalNormalizedPosition = 1f - (selection.transform.GetSiblingIndex() * 1f) / (itemDisplayParent.transform.childCount - 1);
     } 
 
     public void RefreshInfo()
@@ -144,7 +147,6 @@ public class Inventory : MonoBehaviour
     public void SelectCurrentItem(BaseEventData ev)
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
-        // int selectionIndex = selection.transform.GetSiblingIndex();
         Item item = selection.GetComponent<ItemDisplay>().item;
 
         // Using item
@@ -178,7 +180,7 @@ public class Inventory : MonoBehaviour
         }
         catch
         {
-            if (itemDisplayParent.transform.childCount < 0) EventSystem.current.SetSelectedGameObject(itemDisplayParent.transform.GetChild(index-1).gameObject);
+            if (itemDisplayParent.transform.childCount < 0) EventSystem.current.SetSelectedGameObject(itemDisplayParent.transform.GetChild(index - 1).gameObject);
             else EventSystem.current.SetSelectedGameObject(GetComponent<WindowPannel>().selectOnOpen);
         }
         
@@ -207,5 +209,18 @@ public class Inventory : MonoBehaviour
             
         }
         ArcadeStats.inventory[item] += 1;
+    }
+
+    public void OnCloseButtonMove(BaseEventData eventData)
+    {
+        AxisEventData e = (AxisEventData) eventData;
+        if (e.moveDir == MoveDirection.Left) 
+        {
+            StartCoroutine(SetSelectedItem(selectionIndex));
+        }
+        if (e.moveDir == MoveDirection.Up)
+        {
+            StartCoroutine(SetSelectedItem(0));
+        }
     }
 }

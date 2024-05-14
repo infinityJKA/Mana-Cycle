@@ -29,6 +29,8 @@ public class Shop : MonoBehaviour
 
     [SerializeField] GameObject puchaseSFX, failPuchaseSFX;
 
+    private int selectionIndex;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +39,7 @@ public class Shop : MonoBehaviour
 
     void Awake()
     {
+        selectionIndex = 0;
         // add display prefabs for each item in shop inventory
         foreach (Item item in shopItems)
         {
@@ -81,6 +84,7 @@ public class Shop : MonoBehaviour
     {
         GameObject selection = EventSystem.current.currentSelectedGameObject;
         Item item = selection.GetComponent<ItemDisplay>().item;
+        selectionIndex = selection.transform.GetSiblingIndex(); 
         // Debug.Log(data);
         // Debug.Log(this);
         // set item to first in list if not given
@@ -150,6 +154,19 @@ public class Shop : MonoBehaviour
         foreach (MoneyDisp m in moneyDisplays)
         {
             m.RefreshText();
+        }
+    }
+
+    public void OnCloseButtonMove(BaseEventData eventData)
+    {
+        AxisEventData e = (AxisEventData) eventData;
+        if (e.moveDir == MoveDirection.Left) 
+        {
+            EventSystem.current.SetSelectedGameObject(itemDisplayParent.transform.GetChild(selectionIndex).gameObject);
+        }
+        if (e.moveDir == MoveDirection.Up)
+        {
+            EventSystem.current.SetSelectedGameObject(itemDisplayParent.transform.GetChild(0).gameObject);
         }
     }
 }

@@ -3583,6 +3583,22 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - eventID: 11
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 133690322}
+          m_TargetAssemblyTypeName: Shop, Assembly-CSharp
+          m_MethodName: OnCloseButtonMove
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!114 &1293426284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3596,7 +3612,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -5212,6 +5228,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ItemList
       objectReference: {fileID: 0}
+    - target: {fileID: 1563583897856203542, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3416185320517791534, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -5291,6 +5311,10 @@ PrefabInstance:
     - target: {fileID: 3416185320517791534, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576171029835278272, guid: cc66abfcb0d268142ac55796a19f6cc6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5530,42 +5554,22 @@ MonoBehaviour:
   - eventID: 9
     callback:
       m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 384109335}
-          m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
-          m_MethodName: RefreshInfo
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: Two players go against each other!
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 56786069}
-          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
-          m_MethodName: PlaySound
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 8300000, guid: 5350ac1151c0d07459a7aa692b9e88da, type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
   - eventID: 15
     callback:
       m_PersistentCalls:
+        m_Calls: []
+  - eventID: 11
+    callback:
+      m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 56786069}
-          m_TargetAssemblyTypeName: Sound.SoundManager, Assembly-CSharp
-          m_MethodName: PlaySound
-          m_Mode: 2
+        - m_Target: {fileID: 384109335}
+          m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
+          m_MethodName: OnCloseButtonMove
+          m_Mode: 0
           m_Arguments:
-            m_ObjectArgument: {fileID: 8300000, guid: 7b2f49b9e77fee244807cd657d5276ae, type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -5584,7 +5588,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
