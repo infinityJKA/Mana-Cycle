@@ -104,7 +104,7 @@ namespace Battle.Cycle {
             // Start game boards - their first piece will begin falling.
             foreach (GameBoard board in boards)
             {
-                if (board.enabled) board.StartBattle();
+                if (board.enabled && board.gameObject.activeInHierarchy) board.StartBattle();
                 if (!board.gameObject.activeInHierarchy) board.pointer.SetActive(false);
             }
         }
