@@ -28,6 +28,7 @@ namespace SoloMode
             }
 
             newLevel.levelName = "Generated level";
+            newLevel.levelId = "Generated";
             newLevel.description = "Default generated level description";
             newLevel.conversation = defaultConvo;
             newLevel.generateNextLevel = true;

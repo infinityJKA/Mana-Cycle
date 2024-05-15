@@ -134,7 +134,7 @@ namespace PostGame {
 
                     if (PlayerManager.loggedIn) {
                         // Upload score to LootLocker
-                        LeaderboardManager.UploadLeaderboardScore(Storage.level, Storage.level.highScore);
+                        if (Storage.level.levelId != "Gauntlet" && Storage.level.levelId != "Generated") LeaderboardManager.UploadLeaderboardScore(Storage.level, Storage.level.highScore);
 
                         // Upload level completion status
                         if (Storage.tab) {
