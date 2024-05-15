@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -19,15 +20,19 @@ public class RemoteFileManager {
     }
 
     public static void UploadFile(string filePath, string name, bool isPublic) {
-        FileStream fileStream = File.Open(filePath, FileMode.Open);
+        try {
+            FileStream fileStream = File.Open(filePath, FileMode.Open);
 
-        // if the file exists, update it
-        // otherwise, upload it
-
-        if (fileIds.TryGetValue(name, out int id)) {
-            LootLockerSDKManager.UpdatePlayerFile(id, fileStream, OnFileUpload);
-        } else {
-            LootLockerSDKManager.UploadPlayerFile(fileStream, name, isPublic, OnFileUpload);
+            // if the file exists, update it
+            // otherwise, upload it
+            if (fileIds.TryGetValue(name, out int id)) {
+                LootLockerSDKManager.UpdatePlayerFile(id, fileStream, OnFileUpload);
+            } else {
+                LootLockerSDKManager.UploadPlayerFile(fileStream, name, isPublic, OnFileUpload);
+            }
+        } catch (Exception e) {
+            Debug.Log("Error opening/uploading file: "+e);
+            return;
         }
     }
 

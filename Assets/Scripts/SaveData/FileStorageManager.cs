@@ -11,8 +11,8 @@ public class FileStorageManager {
             string json = JsonConvert.SerializeObject(data);
             File.WriteAllText(path, json);
             Debug.Log("saved file "+path);
-        } catch {
-            // Debug.LogError("Error saving file: "+e);
+        } catch (Exception e) {
+            Debug.LogError("Error saving file: "+e);
         }
     }
 
