@@ -81,7 +81,7 @@ public class Item : ScriptableObject
     
     public void OnEnable()
     {
-        cost = baseCost;
+        // cost = baseCost;
         // Debug.Log(itemName + " " + cost);
     }
 
