@@ -226,11 +226,13 @@ namespace Battle.Board {
         }
 
         public void SetAnchoredPosition(Vector2 position) {
-            bgImage.rectTransform.anchoredPosition = position;
+            if (bgImage.gameObject.activeSelf) bgImage.rectTransform.anchoredPosition = position;
+            else mainDarkColorImage.rectTransform.anchoredPosition = position;
         }
 
         public void SetSizeDelta(Vector2 size) {
-            bgImage.rectTransform.sizeDelta = size;
+            if (bgImage.gameObject.activeSelf) bgImage.rectTransform.sizeDelta = size;
+            else mainDarkColorImage.rectTransform.sizeDelta = size;
         }
 
         public void SetSprite(Sprite sprite) {
@@ -244,6 +246,10 @@ namespace Battle.Board {
         public void SetColor(Color color) {
             bgImage.color = color;
             mainDarkColorImage.color = color;
+        }
+
+        public void SetDarkColorSprite(Sprite sprite){ 
+            mainDarkColorImage.sprite = sprite;
         }
     }
 }

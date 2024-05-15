@@ -1460,7 +1460,7 @@ namespace Battle.Board {
             // then enqueue damage
             if (damage > 0) {
                 EnqueueDamage(damage);
-                PlayDamageShootSFX();
+                PlayDamageShootSFX(1 + hpBar.DamageQueue[0].dmg * 0.002f);
             }
 
             // in online, relay damage queue state to the opponent afterwards
@@ -1469,8 +1469,8 @@ namespace Battle.Board {
             }
         }
 
-        public void PlayDamageShootSFX() {
-            PlaySFX(dmgShootSFX);
+        public void PlayDamageShootSFX(float p = 1f) {
+            PlaySFX(dmgShootSFX, p);
         }
 
         public void DamageShootAtTarget(DamageShoot shoot) {

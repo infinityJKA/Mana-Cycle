@@ -381,11 +381,12 @@ namespace Battle.Board {
             effect = Battler.ActiveAbilityEffect.IronSword;
             slowFall = true;
             center.DontDoGravity();
+            center.visual.SetVisual(board.cosmetics, ManaColor.Colorless);
             center.SetManaColor(ManaColor.Colorless, board, setVisual: false);
-            center.visual.SetSprite(board.cosmetics.ironSwordSprite);
             center.visual.SetColor(Color.white);
             center.visual.SetSizeDelta(new Vector2(1, 2));
             center.visual.SetAnchoredPosition(new Vector2(0, 0.5f)); // aligns the bottom of the 2 tile large image to the bottom of the single tile
+            center.visual.SetDarkColorSprite(board.cosmetics.ironSwordSprite);
 
             accumulatedDamage = 0;
             center.visual.onFallAnimComplete = () => IronSwordDestroyTileBelow(board);
