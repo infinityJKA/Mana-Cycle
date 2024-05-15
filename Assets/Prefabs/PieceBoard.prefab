@@ -44,6 +44,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1348053432746382372}
+  - component: {fileID: 3501972688879512438}
+  - component: {fileID: 5039534561267698270}
   m_Layer: 5
   m_Name: PieceBoard
   m_TagString: Untagged
@@ -72,6 +74,38 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3501972688879512438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5361449157405113791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bb94b2e5fb3f4acc9484bf83053c408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  center: {x: 0, y: 0, z: 0}
+  shakeDirection: {x: 1, y: 0, z: 0}
+  magnitude: 8
+  frequency: 5
+  duration: 1
+--- !u!114 &5039534561267698270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5361449157405113791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62f5c0f67a66d4c5e84c4c6c484aa915, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fallAcceleration: 1250
+  angularAcceleration: -14
+  initialFallSpeed: -225
 --- !u!1 &6093798688415312154
 GameObject:
   m_ObjectHideFlags: 0

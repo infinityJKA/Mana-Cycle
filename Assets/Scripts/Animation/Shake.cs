@@ -27,7 +27,7 @@ namespace Animation {
         private float intensity;
 
         // Update is called once per frame
-        void Update()
+        void LateUpdate()
         {
             if (shaking) {
                 shakeTime -= Time.smoothDeltaTime;

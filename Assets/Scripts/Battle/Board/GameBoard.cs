@@ -111,7 +111,7 @@ namespace Battle.Board {
         /** Attak popup object */
         [SerializeField] private Battle.AttackPopup attackPopup;
         /** Board background. Animated fall down when defeated */
-        [SerializeField] private BoardDefeatFall boardDefeatFall;
+        [SerializeField] private BoardDefeatFall boardDefeatFall, pieceBoardDefeatFall;
 
         /// If the board is inputting to quick fall the current piece. 
         private bool _quickFall = false;
@@ -216,8 +216,10 @@ namespace Battle.Board {
 
         /** Prefab for damage shoots, spawned when dealing damage. */
         [SerializeField] private GameObject damageShootPrefab;
-        /** Can be used to shake the board. cached on start */
+        /** Can be used to shake the board. cached on start. */
         private Shake shake;
+        // for newly seperated piece container on seperate canvas
+        [SerializeField] private Shake pieceShake;
 
         /** If in singleplayer, the objective list in this scene */
         [SerializeField] private ObjectiveList objectiveList;
@@ -1596,6 +1598,7 @@ namespace Battle.Board {
         public void DamageShake(float intensity) {
             // shake the board and portrait when damaged
             shake.StartShake(intensity);
+            pieceShake.StartShake(intensity);
             portrait.GetComponent<Shake>().StartShake(intensity);
             // flash portrait red
             portrait.GetComponent<ColorFlash>().Flash(intensity);
@@ -2296,6 +2299,8 @@ namespace Battle.Board {
             winText.text = "LOSE";
 
             boardDefeatFall.StartFall();
+            pieceShake.StopShake();
+            pieceBoardDefeatFall.StartFall();
 
             if (!singlePlayer) enemyBoard.Win();
 
