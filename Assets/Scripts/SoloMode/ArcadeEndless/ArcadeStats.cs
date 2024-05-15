@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// pretty much just storage.cs but a different name to keep stuff organized
+// Keeps track of the gauntlet mode game state
 public class ArcadeStats
 {
     // maxhp in arcade endless, changed by some items

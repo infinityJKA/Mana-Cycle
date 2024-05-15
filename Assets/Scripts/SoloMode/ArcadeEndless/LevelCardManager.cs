@@ -31,6 +31,7 @@ namespace SoloMode
 
         [SerializeField] public List<Item> itemRewardPool;
         [SerializeField] public List<Item> startingInventory;
+        [SerializeField] private Shop shop;
 
         [SerializeField] private AudioClip bgm;
 
@@ -68,6 +69,9 @@ namespace SoloMode
                 ArcadeStats.itemRewardPool = itemRewardPool;
 
                 foreach (Item item in startingInventory) Inventory.ObtainItem(item);
+
+                // reset all shop items to their base cost
+                foreach (Item item in shop.shopItems) item.cost = item.baseCost;
             }
 
             if (Storage.nextLevelChoices != null)
