@@ -55,7 +55,7 @@ public class TransitionScript : MonoBehaviour
     {
         if (transitionState == TransitionState.In)
         {
-            timePassed += Time.deltaTime;
+            timePassed += Time.unscaledDeltaTime;
             wipeImg.fillAmount = Mathf.Pow((timePassed + 0.1f) / inTime, 2);
             if (timePassed >= inTime){
                 if (loadingAsync) {
