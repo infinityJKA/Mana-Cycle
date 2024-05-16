@@ -171,7 +171,9 @@ namespace Battle.Board {
         public void SetObscuredVisual(GameBoard board)
         {
             bgImage.sprite = board.cosmetics.obscuredSprite;
-            bgImage.color = board.cosmetics.obscureColor;
+            mainDarkColorImage.sprite = board.cosmetics.obscuredSprite;
+            SetColor(board.cosmetics.obscureColor);
+            mainDarkColorImage.material = null;
         }
 
         public void SetGhostVisual(GameBoard board, int manaColor)
