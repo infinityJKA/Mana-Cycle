@@ -65,7 +65,7 @@ namespace SoloMode
                 };
                 Utils.Shuffle(statsToChange);
 
-                Debug.Log(statsToChange.Count - 2);
+                // Debug.Log(statsToChange.Count - 2);
 
                 // spread statDifficulty across all stats to allocate
                 for (int i = 0; i <= statsToChange.Count - 2; i++)
@@ -73,11 +73,11 @@ namespace SoloMode
                     ArcadeStats.Stat stat = statsToChange[i];
 
                     float toAllocate = statDifficulty * (Random.Range(0, 10) / 10f);
-                    Debug.Log("To allocate: " + toAllocate);
+                    // Debug.Log("To allocate: " + toAllocate);
 
                     statDifficulty -= toAllocate;
                     if (statDifficulty <= 0) break;
-                    Debug.Log("statDifficulty:" + statDifficulty);
+                    // Debug.Log("statDifficulty:" + statDifficulty);
                     float deltaStat;
                     deltaStat = AllocateToStat(stat, toAllocate);
 
@@ -93,7 +93,7 @@ namespace SoloMode
                 // 1 in 4 chance for item reward
                 if (Random.Range(0,3) == 0 && ArcadeStats.itemRewardPool != null) newLevel.itemReward = ArcadeStats.itemRewardPool[Random.Range(0, ArcadeStats.itemRewardPool.Count-1)];
                 newLevel.CalculateRewardAmount();
-                Debug.Log("Card difficulty: " + difficulty);
+                // Debug.Log("Card difficulty: " + difficulty);
             }
             // generate a solo level with objectives
             else if (SoloLevelsEnabled)
