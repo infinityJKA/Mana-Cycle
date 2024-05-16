@@ -130,7 +130,9 @@ public class Shop : MonoBehaviour
             // Debug.Log("purchase win");
 
             ArcadeStats.moneyAmount -= item.cost;
-            item.cost = (int) (item.cost * item.costIncreaseMult);
+            // item.cost = (int) (item.cost * item.costIncreaseMult);
+            ArcadeStats.itemCosts[item] = (int) (ArcadeStats.itemCosts[item] * item.costIncreaseMult);
+            item.cost = ArcadeStats.itemCosts[item];
             Inventory.ObtainItem(item);
             // update money counters
             RefreshAllDisplays();

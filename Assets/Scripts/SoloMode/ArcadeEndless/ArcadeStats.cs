@@ -39,6 +39,9 @@ public class ArcadeStats
     // the stats of the player, to be modified in AE
     public static Dictionary<Stat, float> playerStats = new Dictionary<Stat, float>(defaultStats);
 
+    // prices of shop items during run, may not be base cost
+    public static Dictionary<Item, int> itemCosts = new Dictionary<Item, int>();
+
     // the stats to change at the end of a match. also reset after each match. used for temp mid-game stat boosts
     public static Dictionary<Stat, float> deltaPlayerStats = new Dictionary<Stat, float>()
         {

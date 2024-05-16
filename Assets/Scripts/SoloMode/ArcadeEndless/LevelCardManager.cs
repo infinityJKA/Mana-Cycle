@@ -73,9 +73,12 @@ namespace SoloMode
 
                 foreach (Item item in startingInventory) Inventory.ObtainItem(item);
 
-                // reset all shop items to their base cost
-                foreach (Item item in shop.shopItems) item.cost = item.baseCost;
+                // setup shop cost dict
+                foreach (Item item in shop.shopItems) ArcadeStats.itemCosts.Add(item, item.baseCost);
             }
+
+            // set shop items cost
+            foreach (Item item in shop.shopItems) item.cost = ArcadeStats.itemCosts[item];
 
             if (Storage.nextLevelChoices != null)
             {
