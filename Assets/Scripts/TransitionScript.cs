@@ -11,7 +11,7 @@ public class TransitionScript : MonoBehaviour
 
     [SerializeField] private GameObject wipeObj;
     [SerializeField] private Image wipeImg;
-    public TransitionState transitionState {get; private set;} = TransitionState.None;
+    public static TransitionState transitionState {get; private set;} = TransitionState.None;
 
     public enum TransitionState {
         None,
@@ -53,6 +53,8 @@ public class TransitionScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        wipeImg.fillOrigin = ((!inverted && !(transitionState == TransitionState.In)) ||  (inverted && (transitionState == TransitionState.In))) ? 1 : 0;
+
         if (transitionState == TransitionState.In)
         {
             timePassed += Time.unscaledDeltaTime;
@@ -79,13 +81,14 @@ public class TransitionScript : MonoBehaviour
             }
 
             timePassed += Time.deltaTime;
-            wipeImg.fillAmount = Mathf.Pow(timePassed  / outTime, 2) * -1 + 1;
+            wipeImg.fillAmount = 1f - Mathf.Pow(timePassed / outTime, 2);
             if (wipeImg.fillAmount <= 0)
             {
                 transitionState = TransitionState.None;
                 wipingOut = false;
             }
         }
+
     }
 
     IEnumerator TransitionOutWhenSceneLoaded()
@@ -97,20 +100,12 @@ public class TransitionScript : MonoBehaviour
         WipeOut();
     }
 
-    public void WipeToScene(string scene, float inTime=0.5f, float outTime=0.5f, bool reverse=false, bool autoFadeOut=true, bool asyncLoad = false)
+    public void WipeToScene(string scene, float inTime=0.4f, float outTime=0.4f, bool reverse=false, bool autoFadeOut=true, bool asyncLoad = false)
     {
         // dont start a transition if one is already in progress
         if (transitionState == TransitionState.In) return;
 
         inverted = reverse;
-        if (!inverted)
-        {
-            wipeImg.fillOrigin = (int) Image.OriginHorizontal.Right;
-        }
-        else
-        {
-            wipeImg.fillOrigin = (int) Image.OriginHorizontal.Left;
-        }
 
         TransitionScript.inTime = inTime;
         TransitionScript.outTime = outTime;
@@ -136,14 +131,6 @@ public class TransitionScript : MonoBehaviour
         if (wipingOut) return;
         wipingOut = true;
 
-        if (!inverted)
-        {
-            wipeImg.fillOrigin = (int) Image.OriginHorizontal.Left;
-        }
-        else
-        {
-            wipeImg.fillOrigin = (int) Image.OriginHorizontal.Right;
-        }
         timePassed = 0;
         wipeImg.fillAmount = 1;
         transitionState = TransitionState.Out;
