@@ -45,7 +45,7 @@ namespace Achievements
             // do not advance queue while transition is happening
             if (achievementNotifyQueue.Count > 0 
                 && !notification.animator.GetCurrentAnimatorStateInfo(0).IsName("AchievementNotificationAppear")
-                && TransitionScript.instance.transitionState == TransitionScript.TransitionState.Out)
+                && TransitionScript.transitionState == TransitionScript.TransitionState.Out)
             {
                 notification.ShowAchievement(achievementNotifyQueue.Dequeue());
             }
