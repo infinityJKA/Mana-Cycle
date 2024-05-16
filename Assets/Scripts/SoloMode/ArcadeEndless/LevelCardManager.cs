@@ -29,6 +29,9 @@ namespace SoloMode
         [SerializeField] GameObject lifeContainer;
         [SerializeField] GameObject lifePrefab;
 
+        [SerializeField] GauntletStarBG bg;
+        [SerializeField] Sprite altBgSprite;
+
         [SerializeField] public List<Item> itemRewardPool;
         [SerializeField] public List<Item> startingInventory;
         [SerializeField] private Shop shop;
@@ -98,6 +101,7 @@ namespace SoloMode
 
             // update title text
             if (Storage.level != null) matchText.text = "-= Match " + (Storage.level.behindCount + 1) + " =-";
+            if (Storage.level != null && Storage.level.behindCount + 1 == 42) bg.bgSprite = altBgSprite;
         }
 
         void OnEnable()
