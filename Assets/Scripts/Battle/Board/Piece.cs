@@ -503,8 +503,10 @@ namespace Battle.Board {
         }
 
         public void MakeZman(GameBoard board) {
+            center.visual.SetVisual(board.cosmetics, ManaColor.Colorless);
             center.SetManaColor(ManaColor.Colorless, board, setVisual: false);
             center.visual.SetSprite(board.cosmetics.miniZmanSprite);
+            center.visual.SetDarkColorSprite(board.cosmetics.miniZmanSprite);
             center.MakeObscuresColor();
             center.MakeFragile();
             center.pointMultiplier -= 1.0f;
