@@ -74,6 +74,7 @@ namespace SoloMode
                 foreach (Item item in startingInventory) Inventory.ObtainItem(item);
 
                 // setup shop cost dict
+                ArcadeStats.itemCosts = new Dictionary<Item, int>();
                 foreach (Item item in shop.shopItems) ArcadeStats.itemCosts.Add(item, item.baseCost);
             }
 
