@@ -212,8 +212,8 @@ public class SidebarUI : MonoBehaviour {
 
     public void OnShopPressed()
     {
-        CosmeticShop.sceneOnBack = SceneManager.GetActiveScene().name;
-        TransitionScript.instance.WipeToScene("CosmeticShop");
+        // CosmeticShop.sceneOnBack = SceneManager.GetActiveScene().name;
+        // TransitionScript.instance.WipeToScene("CosmeticShop");
     }
 
     public void OnNewsPressed()
