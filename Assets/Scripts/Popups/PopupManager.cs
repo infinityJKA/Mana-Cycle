@@ -108,7 +108,9 @@ public class PopupManager : MonoBehaviour {
         basicPopup.title = title;
         basicPopup.description = description;
         basicPopup.confirmButtonText = "Close";
-        basicPopup.onConfirm.AddListener(() => onConfirm());
+        if (onConfirm != null) {
+            basicPopup.onConfirm.AddListener(() => onConfirm());
+        }
 
         ShowPopup(basicPopup);
     }
