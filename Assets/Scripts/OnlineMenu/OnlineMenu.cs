@@ -25,6 +25,8 @@ public class OnlineMenu : MonoBehaviour {
 
     public SwapPanelManager swapPanelManager;
 
+    [SerializeField] private GameObject loadingIcon;
+
 
     private void Awake() {
         singleton = this;
@@ -130,12 +132,14 @@ public class OnlineMenu : MonoBehaviour {
         if (joinCodeField) joinCodeField.interactable = true;
         if (hostButton) hostButton.interactable = true;
         if (joinButton) joinButton.interactable = true;
+        loadingIcon.SetActive(false);
     } 
 
     public void DisableInteractables() {
         if (joinCodeField) joinCodeField.interactable = false;
         if (hostButton) hostButton.interactable = false;
         if (joinButton) joinButton.interactable = false;
+        loadingIcon.SetActive(true);
     }
 
     public void ShowCharSelect() {

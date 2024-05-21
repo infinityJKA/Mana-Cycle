@@ -19,11 +19,12 @@ public class LoadingIcon : MonoBehaviour {
     private void Start() {
         colorImage.color = colors[colorIndex];
         Utils.Shuffle(colors);
+        t = animationDuration;
     }
 
     private void Update() {
         t += Time.smoothDeltaTime;
-        if (t > animationDuration) {
+        if (t >= animationDuration) {
             t -= animationDuration;
 
             int oldColorIndex = colorIndex;
