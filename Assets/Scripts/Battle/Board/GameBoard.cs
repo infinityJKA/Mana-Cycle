@@ -555,7 +555,6 @@ namespace Battle.Board {
             // wait for cycle to initialize (after countdown) to run game logic
             if (!IsBattleStarted() || isPaused() || isPostGame()) return;
 
-            // TODO: this was recently commented out, make sure this doesn't break the game. removed for performance
             // PointerReposition();
 
             if (Application.isEditor && Input.GetKey(KeyCode.Alpha1) && playerSide == 0)
