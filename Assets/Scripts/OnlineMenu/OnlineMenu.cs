@@ -34,6 +34,7 @@ public class OnlineMenu : MonoBehaviour {
         if (networkAddressField) networkAddressField.text = NetworkManager.singleton.networkAddress;
         if (!Storage.online) {
             ShowCharSelect();
+            enabled = false;
         }
     }
 
@@ -46,6 +47,7 @@ public class OnlineMenu : MonoBehaviour {
     }
 
     public void OnBack(InputAction.CallbackContext ctx) {
+        if (!Storage.online) return;
         if (SidebarUI.instance && SidebarUI.instance.expanded) return;
 
         if (swapPanelManager && swapPanelManager.currentPanel != 0) {
