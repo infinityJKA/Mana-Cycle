@@ -38,7 +38,7 @@ public class SidebarUI : MonoBehaviour {
     // notifiers that popup based on login/other states
     [SerializeField] private GameObject offlineNotifier, loggingInNotifier;
 
-    [SerializeField] private InputActionReference toggleAction;
+    [SerializeField] private InputActionReference toggleAction, backAction;
 
     [SerializeField] private bool selectStoredOnBack = true;
 
@@ -56,6 +56,11 @@ public class SidebarUI : MonoBehaviour {
         toggleAction.action.performed += OnTogglePressed;
         toggleAction.action.Enable(); // i dont know how but pause action got disabled, probably something to do with rebinds
         animator.SetBool("expanded", expanded);
+
+        backAction.action.performed += (ctx) => {
+            if (expanded) OnTogglePressed(ctx);
+        };
+        backAction.action.Enable();
     }
 
     private void OnDisable() {
