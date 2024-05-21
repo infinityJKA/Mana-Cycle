@@ -98,6 +98,8 @@ namespace Networking {
 
             SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey, SteamUser.GetSteamID().ToString());
             SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), "name", SteamFriends.GetPersonaName().ToString()+"'s lobby");
+
+            Debug.Log("lobby created");
         }
 
         private static void OnLobbyMatchListReceived(LobbyMatchList_t callback) {
