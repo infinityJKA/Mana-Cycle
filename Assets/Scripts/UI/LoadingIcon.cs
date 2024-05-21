@@ -6,36 +6,41 @@ public class LoadingIcon : MonoBehaviour {
 
     [SerializeField] private Color[] colors;
 
-    [SerializeField] private AnimationCurve colorChangeCurve;
+    [SerializeField] private AnimationCurve rotationCurve, colorCurve;
 
     [SerializeField] private float animationDuration = 1f;
-    [SerializeField] private float rotationSpeed = 90f;
 
 
     private float t;
     private Color startColor, endColor;
+    private float startRotation, endRotation;
     private int colorIndex = 0;
 
     private void Start() {
         colorImage.color = colors[colorIndex];
+        Utils.Shuffle(colors);
     }
 
     private void Update() {
-        transform.Rotate(Vector3.forward, rotationSpeed * Time.smoothDeltaTime);
-
         t += Time.smoothDeltaTime;
         if (t > animationDuration) {
             t -= animationDuration;
 
             int oldColorIndex = colorIndex;
-            while (colorIndex == oldColorIndex) {
-                colorIndex = Random.Range(0, colors.Length);
-            }
+            colorIndex += 1;
+            if (colorIndex >= colors.Length) colorIndex = 0;
+
             startColor = colors[oldColorIndex];
             endColor = colors[colorIndex];
+
+            startRotation = endRotation;
+            endRotation = startRotation + 90f;
         }
 
-        float animT = t / animationDuration;
-        colorImage.color = Color.Lerp(startColor, endColor, colorChangeCurve.Evaluate(animT));
+        float rotationT = rotationCurve.Evaluate(t / animationDuration);
+        transform.eulerAngles = new Vector3(0, 0, Mathf.LerpUnclamped(startRotation, endRotation, rotationT));
+
+        float colorT = colorCurve.Evaluate(t / animationDuration);
+        colorImage.color = Color.Lerp(startColor, endColor, Mathf.Clamp01(colorT));
     }
 }
