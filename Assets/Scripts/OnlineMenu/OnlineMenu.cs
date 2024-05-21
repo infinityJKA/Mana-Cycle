@@ -52,9 +52,10 @@ public class OnlineMenu : MonoBehaviour {
 
         if (swapPanelManager && swapPanelManager.currentPanel != 0) {
             swapPanelManager.OpenPanel(0);
-        } else {
-            Back();
-        }
+        } 
+        // else {
+        //     Back();
+        // }
     }
 
     public void Back() {
