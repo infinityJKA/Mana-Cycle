@@ -754,7 +754,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 291, y: 118}
-  m_SizeDelta: {x: 75, y: 75}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &50127418
 MonoBehaviour:
@@ -770,37 +770,78 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorImage: {fileID: 667067246}
   colors:
-  - {r: 0.12375401, g: 0.9716981, b: 0.12611814, a: 1}
-  - {r: 1, g: 0.9898232, b: 0.1273585, a: 1}
-  - {r: 1, g: 0.11792451, b: 0.11792451, a: 1}
-  - {r: 0.08627451, g: 0.3963857, b: 0.98039216, a: 1}
-  - {r: 0.8261264, g: 0.06132078, b: 1, a: 1}
-  colorChangeCurve:
+  - {r: 0.24390352, g: 0.8207547, b: 0.24390352, a: 1}
+  - {r: 0.8867924, g: 0.8788321, b: 0.2300641, a: 1}
+  - {r: 0.9056604, g: 0.18369527, b: 0.18369527, a: 1}
+  - {r: 0.11774653, g: 0.39871514, b: 0.9245283, a: 1}
+  - {r: 0.714069, g: 0.1544589, b: 0.8396226, a: 1}
+  rotationCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 0.0027205315
+      outSlope: 0.0027205315
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.5492907
     - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
+      time: 0.4026481
+      value: 0.5049765
+      inSlope: 5.904529
+      outSlope: 5.904529
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.110058315
+      outWeight: 0.06682081
+    - serializedVersion: 3
+      time: 0.7999878
+      value: 1
+      inSlope: -0.004414878
+      outSlope: -0.004414878
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.3829335
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  animationDuration: 3
-  rotationSpeed: 90
+  colorCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0.0027205315
+      outSlope: 0.0027205315
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.5492907
+    - serializedVersion: 3
+      time: 0.4026481
+      value: 0.5049765
+      inSlope: 5.904529
+      outSlope: 5.904529
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.110058315
+      outWeight: 0.06682081
+    - serializedVersion: 3
+      time: 0.7999878
+      value: 1
+      inSlope: -0.004414878
+      outSlope: -0.004414878
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.3829335
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  animationDuration: 0.85
 --- !u!114 &50127419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4381,10 +4422,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 50127417}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 75, y: 75}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &667067246
 MonoBehaviour:
