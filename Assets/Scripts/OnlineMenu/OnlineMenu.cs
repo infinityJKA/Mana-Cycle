@@ -13,11 +13,13 @@ using UnityEngine.UI;
 using Networking;
 using UnityEngine.InputSystem;
 using System;
+using UnityEngine.EventSystems;
 
 public class OnlineMenu : MonoBehaviour {
     public static OnlineMenu singleton;
     public TMPro.TMP_InputField joinCodeField, networkAddressField;
     public Button hostButton, joinButton;
+    public Toggle publicToggle;
 
     public GameObject onlineMenu, charSelectMenu;
 
@@ -37,6 +39,8 @@ public class OnlineMenu : MonoBehaviour {
         if (!Storage.online) {
             ShowCharSelect();
             enabled = false;
+        } else {
+            hostButton.Select();
         }
     }
 
@@ -102,7 +106,7 @@ public class OnlineMenu : MonoBehaviour {
             // ======== STEAM
             if (NetManager.IsUseSteam() && SteamManager.Initialized) {
                 // TODO: implement join via friends list or soemthing similar
-                SteamLobbyManager.JoinLobbyWithID(joinCode);
+                SteamLobbyManager.JoinLobbyWithStringId(joinCode);
                 // NetworkManager.singleton.StartClient();
             } 
             // ======== RELAY
@@ -151,6 +155,7 @@ public class OnlineMenu : MonoBehaviour {
         if (charSelectMenu) charSelectMenu.SetActive(false);
         if (onlineMenu) onlineMenu.SetActive(true);
         EnableInteractables();
+        hostButton.Select();
     }
 
     public static bool CheckOnline() {

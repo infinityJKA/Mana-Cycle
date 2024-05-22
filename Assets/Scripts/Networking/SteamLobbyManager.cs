@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+
 
 #if !DISABLESTEAMWORKS
 using Unity.Services.Lobbies.Models;
@@ -14,32 +16,53 @@ namespace Networking {
 
         #if !DISABLESTEAMWORKS
         protected static Callback<LobbyCreated_t> lobbyCreated;
-        protected static Callback<LobbyMatchList_t> lobbyListReceived;
+        
         protected static Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
         protected static Callback<LobbyEnter_t> lobbyEntered;
         protected static Callback<PersonaStateChange_t> personaChanged;
         private const string HostAddressKey = "HostAddress";
-        public static CSteamID lobbyId {get; private set;}  
+
+
+        protected static Callback<AvatarImageLoaded_t> avatarImageLoaded; 
+
+        // lobby search callbacks
+        protected static Callback<LobbyMatchList_t> lobbyListReceived;
+        protected static Callback<LobbyDataUpdate_t> lobbyDataUpdated;
+
+        // list of all CSteamIDs of (public) discovered lobbies.
+        private static List<CSteamID> lobbyIDs;
+
+        // ID of the current lobby that has been entered.
+        public static CSteamID currentLobbyId {get; private set;}
+
+        // Maps Steam IDs to players within the current lobby.
+        public static Dictionary<CSteamID, NetPlayer> netPlayersByID;
 
         static SteamLobbyManager() {
             lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
-            lobbyListReceived = Callback<LobbyMatchList_t>.Create(OnLobbyMatchListReceived);
+            lobbyListReceived = Callback<LobbyMatchList_t>.Create(OnGetLobbyList);
+            lobbyDataUpdated = Callback<LobbyDataUpdate_t>.Create(OnGetLobbyData);
             gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
             personaChanged = Callback<PersonaStateChange_t>.Create(OnPersonaStateChanged);
             lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+            avatarImageLoaded = Callback<AvatarImageLoaded_t>.Create(OnAvatarLoaded);
+
+            lobbyIDs = new List<CSteamID>();
+            netPlayersByID = new Dictionary<CSteamID, NetPlayer>();
         }
         #endif
 
         public static void CreateLobby() {
             #if !DISABLESTEAMWORKS
                 Debug.Log("Starting steam lobby");
-                SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, NetworkManager.singleton.maxConnections);
+                var lobbyType = OnlineMenu.singleton.publicToggle.isOn ? ELobbyType.k_ELobbyTypePublic : ELobbyType.k_ELobbyTypePrivate;
+                SteamMatchmaking.CreateLobby(lobbyType, 2);
             #else
                 Debug.LogError("Trying to start a Steam lobby, but Steamworks is disabled!");
             #endif
         }
 
-        public static void JoinLobbyWithID(string idStr) {
+        public static void JoinLobbyWithStringId(string idStr) {
             #if !DISABLESTEAMWORKS
                 ulong id;
                 if (!ulong.TryParse(idStr, out id)) {
@@ -50,15 +73,19 @@ namespace Networking {
                 // SteamMatchmaking.AddRequestLobbyListFilterSlotsAvailable(1);
                 // SteamMatchmaking.RequestLobbyList();
 
-                SteamMatchmaking.JoinLobby(new CSteamID(id));
+                JoinLobby(new CSteamID(id));
             #else
                 Debug.LogError("Trying to join a Steam lobby, but Steamworks is disabled!");
             #endif
         }
 
+        public static void JoinLobby(CSteamID lobbyID) {
+            SteamMatchmaking.JoinLobby(lobbyID);
+        }
+
         #if !DISABLESTEAMWORKS
         public static void OnDisconnected() {
-            SteamMatchmaking.LeaveLobby(lobbyId);
+            SteamMatchmaking.LeaveLobby(currentLobbyId);
         }
         private void OnDestroy() {
             SteamAPI.Shutdown();
@@ -87,9 +114,18 @@ namespace Networking {
             }
         }
 
+        // lobbies searching
+        public static void GetLobbiesList() {
+            if (lobbyIDs.Count > 0) lobbyIDs.Clear();
+
+            SteamMatchmaking.AddRequestLobbyListResultCountFilter(10);
+            SteamMatchmaking.RequestLobbyList();
+        }
+
         private static void OnLobbyCreated(LobbyCreated_t callback) {
             if (callback.m_eResult != EResult.k_EResultOK) {
-                Debug.LogError("Error creating steam lobby: "+callback.m_eResult);
+                PopupManager.instance.ShowErrorMessage("Error creating Steam lobby: "+callback.m_eResult);
+                Debug.LogError("Error creating Steam lobby: "+callback.m_eResult);
                 OnlineMenu.singleton.ShowOnlineMenu();
                 return;
             }
@@ -99,14 +135,24 @@ namespace Networking {
             SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey, SteamUser.GetSteamID().ToString());
             SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), "name", SteamFriends.GetPersonaName().ToString()+"'s lobby");
 
-            Debug.Log("lobby created");
+            Debug.Log("lobby created! id: "+callback.m_ulSteamIDLobby);
         }
 
-        private static void OnLobbyMatchListReceived(LobbyMatchList_t callback) {
+        private static void OnGetLobbyList(LobbyMatchList_t callback) {
+            LobbyListManager.instance.DestroyLobbyEntries();
+
             for (int i = 0; i < callback.m_nLobbiesMatching; i++) {
-                var lobbyId = SteamMatchmaking.GetLobbyByIndex(i);
-                if (!lobbyId.IsValid() || !lobbyId.IsLobby()) continue;
+                CSteamID lobbyID = SteamMatchmaking.GetLobbyByIndex(i);
+                // if (!lobbyID.IsValid() || !lobbyID.IsLobby()) continue;
+                lobbyIDs.Add(lobbyID);
+                SteamMatchmaking.RequestLobbyData(lobbyID);
             }
+        }
+
+
+
+        private static void OnGetLobbyData(LobbyDataUpdate_t callback) {
+            LobbyListManager.instance.DisplayLobbies(lobbyIDs, callback);
         }
 
         private static void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback) {
@@ -128,22 +174,71 @@ namespace Networking {
 
 
         private static void OnLobbyEntered(LobbyEnter_t callback) {
-            lobbyId = new CSteamID(callback.m_ulSteamIDLobby);
+            currentLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
 
             if (NetworkClient.activeHost) {
-                CSteamID opponentId = SteamMatchmaking.GetLobbyMemberByIndex(lobbyId, 1);
+                CSteamID opponentId = SteamMatchmaking.GetLobbyMemberByIndex(currentLobbyId, 1);
                 RequestUserData(opponentId);
             }
             else if (!NetworkServer.active)
             {
-                string hostAddress = SteamMatchmaking.GetLobbyData(lobbyId, HostAddressKey);
+                string hostAddress = SteamMatchmaking.GetLobbyData(currentLobbyId, HostAddressKey);
                 NetworkManager.singleton.networkAddress = hostAddress;
                 NetworkManager.singleton.StartClient();
 
-                CSteamID hostId = SteamMatchmaking.GetLobbyMemberByIndex(lobbyId, 0);
+                CSteamID hostId = SteamMatchmaking.GetLobbyMemberByIndex(currentLobbyId, 0);
                 RequestUserData(hostId);
             }
         }
+
+        public static ulong GetLobbyMemberID(int index) {
+            return (ulong)SteamMatchmaking.GetLobbyMemberByIndex(currentLobbyId, index);
+        }
+
+        public static void AddNetPlayerForID(ulong id, NetPlayer player) {
+            netPlayersByID.Add((CSteamID)id, player);
+        }
+
+        public static void LoadAvatar(ulong id) {
+            int imageID = SteamFriends.GetLargeFriendAvatar((CSteamID)id); // will call OnAvatarLoaded callback when loading finished
+            if (imageID == -1) {
+                Debug.LogError("Trying to load invalid avatar image ID");
+                return;
+            }
+            Debug.Log("loading avatar for id "+id);
+        }
+
+        private static void OnAvatarLoaded(AvatarImageLoaded_t callback) {
+            if (netPlayersByID.TryGetValue(callback.m_steamID, out NetPlayer netPlayer)) {
+                var texture = GetSteamImageAsTexture(callback.m_iImage);
+                netPlayer.SetAvatar(texture);
+                Debug.Log("received avatar for id "+callback.m_steamID);
+            } else {
+                Debug.LogError("Received avatar, but no NetPlayer with id "+callback.m_steamID);
+            }
+        }
+
+        private static Texture2D GetSteamImageAsTexture(int iImage) {
+            Texture2D texture = null;
+
+            bool isValid = SteamUtils.GetImageSize(iImage, out uint width, out uint height);
+            if (isValid)
+            {
+                byte[] image = new byte[width * height * 4];
+
+                isValid = SteamUtils.GetImageRGBA(iImage, image, (int)(width * height * 4));
+
+                if (isValid)
+                {
+                    texture = new Texture2D((int)width, (int)height, TextureFormat.RGBA32, false, true);
+                    texture.LoadRawTextureData(image);
+                    texture.Apply();
+                }
+            }
+
+            return texture;
+        }
+
         #endif
     }
 }
