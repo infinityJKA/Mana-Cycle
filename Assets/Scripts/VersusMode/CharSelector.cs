@@ -199,6 +199,8 @@ namespace VersusMode {
         // Username text label
         public TMP_Text usernameLabel;
 
+        public RawImage avatarImage;
+
         [SerializeField] private HoldInput returnMenuHoldInput;
 
         void Start() {
@@ -215,6 +217,7 @@ namespace VersusMode {
             gameObject.SetActive(true);
 
             usernameLabel.gameObject.SetActive(Storage.online);
+            avatarImage.gameObject.SetActive(Storage.online);
 
             abilityInfoDisplayed = false;
             settingsDisplayed = false;
@@ -847,12 +850,21 @@ namespace VersusMode {
             if (player != null) {
                 netPlayer = player;
                 SetUsername(player.username);
+                SetAvatar(player.avatar);
             }
         }
 
         public void SetUsername(string username) {
             usernameLabel.gameObject.SetActive(true);
             usernameLabel.text = username;
+        }
+
+        public void SetAvatar(Texture texture) {
+            if (texture != null) {
+                avatarImage.texture = texture;
+            } else {
+                Debug.LogWarning("Trying to set null texture as charselector avatar");
+            }
         }
 
         public void UpdateInputPrompts(PlayerInput playerInput) {

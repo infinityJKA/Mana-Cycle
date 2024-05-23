@@ -6,6 +6,8 @@ using PostGame;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VersusMode;
+using Networking;
+
 
 #if !DISABLESTEAMWORKS
 using Steamworks;
@@ -21,13 +23,17 @@ public class NetPlayer : NetworkBehaviour {
     /// </summary>
     public string username {get; private set;} = "";
 
+    public Texture avatar;
 
     private NetPlayer enemyPlayer {get{return board.enemyBoard.netPlayer;}}
+
+    // Steam ID for this connected player - only when using steam.
+    public ulong steamId;
 
     private void Start() {
         DontDestroyOnLoad(gameObject);
 
-        // if using steam & this is local player, set username to be steam local name
+        // if using steam & this is local player, set username to be steam local name, and also fetch avatar
         #if !DISABLESTEAMWORKS
             if (NetManager.IsUseSteam()) {
                 SetUsername(SteamFriends.GetPersonaName());
@@ -67,6 +73,14 @@ public class NetPlayer : NetworkBehaviour {
         // in charselect, update username immediately when received
         if (charSelector != null) {
             charSelector.SetUsername(username);
+        }
+    }
+
+    public void SetAvatar(Texture texture) {
+        avatar = texture;
+
+        if (charSelector != null) {
+            charSelector.SetAvatar(texture);
         }
     }
 

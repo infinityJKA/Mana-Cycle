@@ -27,6 +27,11 @@ public class NetManager : NetworkManager {
     {
         base.OnServerAddPlayer(conn);
         if (!conn.identity.isOwned) NetworkServer.localConnection.identity.GetComponent<NetPlayer>().CmdSetLockedIn();
+
+        var netPlayer = conn.identity.GetComponent<NetPlayer>();
+        netPlayer.steamId = SteamLobbyManager.GetLobbyMemberID(numPlayers - 1);
+        SteamLobbyManager.AddNetPlayerForID(netPlayer.steamId, netPlayer);
+        SteamLobbyManager.LoadAvatar(netPlayer.steamId);
     }
 
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
