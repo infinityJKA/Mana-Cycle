@@ -223,6 +223,10 @@ namespace VersusMode {
             settingsDisplayed = false;
 
             if (Storage.online) Disconnect();
+
+            if (!isPlayer1 && (!Storage.isPlayerControlled2 || Storage.online)) {
+                tipText.gameObject.SetActive(false);
+            }
         }
 
         private void OnDisable() {
@@ -454,7 +458,7 @@ namespace VersusMode {
                 Active = true;
             }
             
-            if (Storage.gamemode == Storage.GameMode.Solo || (isPlayer1 && (!Storage.isPlayerControlled2 && Storage.level != null)))
+            if (Storage.gamemode == Storage.GameMode.Solo || (isPlayer1 && !Storage.isPlayerControlled2 && Storage.level != null))
             {
                 // set solo mode inputs 
                 // TODO change tip text depending on inputs
