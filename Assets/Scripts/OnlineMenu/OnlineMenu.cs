@@ -14,10 +14,12 @@ using Networking;
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class OnlineMenu : MonoBehaviour {
     public static OnlineMenu singleton;
-    public TMPro.TMP_InputField joinCodeField, networkAddressField;
+    // public TMP_InputField joinCodeField, networkAddressField;
+    [SerializeField] private TMP_Text statusLabel;
     public Button hostButton, joinButton;
     public Toggle publicToggle;
 
@@ -35,12 +37,13 @@ public class OnlineMenu : MonoBehaviour {
     }
 
     private void Start() {
-        if (networkAddressField) networkAddressField.text = NetworkManager.singleton.networkAddress;
+        // if (networkAddressField) networkAddressField.text = NetworkManager.singleton.networkAddress;
         if (!Storage.online) {
             ShowCharSelect();
             enabled = false;
         } else {
             hostButton.Select();
+            statusLabel.text = "";
         }
     }
 
@@ -72,11 +75,12 @@ public class OnlineMenu : MonoBehaviour {
         if (!CheckOnline()) return;
 
         DisableInteractables();
-        if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
+        // if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
         
         try {
             // STEAM
             if (NetManager.IsUseSteam() && SteamManager.Initialized) {
+                statusLabel.text = "Creating lobby...";
                 SteamLobbyManager.CreateLobby();
             } 
             // RELAY
@@ -95,23 +99,35 @@ public class OnlineMenu : MonoBehaviour {
     }
 
     public async void JoinButtonPressed() {
-        string joinCode = joinCodeField.text;
+        if (NetManager.IsUseSteam()) {
+            #if !DISABLESTEAMWORKS
+                // PopupManager.instance.ShowBasicPopup("Message", "Press Shift+Tab to open the friend's list, and joina  player from there.\nOnline random matchmaking coming in the future.");
+                Debug.Log("Opening friends list");
+                SteamLobbyManager.OpenFriendsList();
+            #else
+                PopupManager.instance.ShowBasicPopup("Message", "Online joining not implemented outside of Steam");
+            #endif
+            return;
+        }
 
         if (!CheckOnline()) return;
 
         DisableInteractables();
-        if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
+        // if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
+
+
         
         try {
             // ======== STEAM
             if (NetManager.IsUseSteam() && SteamManager.Initialized) {
-                // TODO: implement join via friends list or soemthing similar
-                SteamLobbyManager.JoinLobbyWithStringId(joinCode);
-                // NetworkManager.singleton.StartClient();
+                // just show friends list so player can join friend from there. baiscally same as presing shift-tab
+                // in future, online random matchmaking will probably be this button.
+                SteamFriends.ActivateGameOverlay("friends");
             } 
             // ======== RELAY
             else if (RelayManager.relayNetworkManager != null) {
                 // validate code length
+                string joinCode = ""; // todo: once relay is added for online (if ever), use this
                 if (joinCode.Length != 6) {
                     PopupManager.instance.ShowErrorMessage("Enter a valid join code");
                     EnableInteractables();
@@ -133,14 +149,14 @@ public class OnlineMenu : MonoBehaviour {
     }
 
     public void EnableInteractables() {
-        if (joinCodeField) joinCodeField.interactable = true;
+        // if (joinCodeField) joinCodeField.interactable = true;
         if (hostButton) hostButton.interactable = true;
         if (joinButton) joinButton.interactable = true;
         loadingIcon.SetActive(false);
     } 
 
     public void DisableInteractables() {
-        if (joinCodeField) joinCodeField.interactable = false;
+        // if (joinCodeField) joinCodeField.interactable = false;
         if (hostButton) hostButton.interactable = false;
         if (joinButton) joinButton.interactable = false;
         loadingIcon.SetActive(true);
@@ -156,6 +172,7 @@ public class OnlineMenu : MonoBehaviour {
         if (onlineMenu) onlineMenu.SetActive(true);
         EnableInteractables();
         hostButton.Select();
+        statusLabel.text = "";
     }
 
     public static bool CheckOnline() {

@@ -1,4 +1,5 @@
 using Mirror;
+using Networking;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -106,8 +107,6 @@ public class SoloCharSelectController : MonoBehaviour {
     }
 
     public void OnBack(InputAction.CallbackContext ctx) {
-        
-
         // dont handle back or pause while shift pressed (messes up steam menu)
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) return;
 
@@ -118,7 +117,15 @@ public class SoloCharSelectController : MonoBehaviour {
         }
 
         if (!ctx.performed) return;
-        OnPauseOrBack();
+        
+        if (charSelectMenu.gameObject.activeInHierarchy) {
+            charSelector.OnBack();
+            charSelector = charSelectMenu.GetActiveSelector();
+            if (charSelector.lockedIn) charSelector.ToggleLock();
+            if (netPlayer && NetworkClient.active) netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
+        } else { // online menu
+            TransitionScript.instance.WipeToScene("MainMenu", reverse: true);
+        }
     }
 
     // public void OnPause(InputAction.CallbackContext ctx) {
@@ -136,14 +143,14 @@ public class SoloCharSelectController : MonoBehaviour {
     //     // charSelector.ReturnMenuPress();
     // }
 
-    private void OnPauseOrBack() {
-        if (charSelectMenu.gameObject.activeInHierarchy) {
-            charSelector.OnBack();
-            charSelector = charSelectMenu.GetActiveSelector();
-            if (charSelector.lockedIn) charSelector.ToggleLock();
-            if (netPlayer && NetworkClient.active) netPlayer.CmdSetLockedIn(charSelector.selectedIcon.index, charSelector.isRandomSelected, charSelector.lockedIn);
-        } else { // online menu
-            TransitionScript.instance.WipeToScene("MainMenu", reverse: true);
+    public void OnPause(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) return;
+
+        if (Storage.online) {
+            #if !DISABLESTEAMWORKS
+            Debug.Log("opening invite dialog");
+                SteamLobbyManager.OpenInviteDialog();
+            #endif
         }
     }
 

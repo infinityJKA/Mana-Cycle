@@ -4,11 +4,11 @@ using TMPro;
 using UnityEngine;
 
 public class LobbyEntry : MonoBehaviour {
-    private CSteamID lobbyId;
+    private ulong lobbyId;
     private string lobbyName;
     [SerializeField] private TMP_Text lobbyNameText;
 
-    public void SetLobbyData(CSteamID id, string name) {
+    public void SetLobbyData(ulong id, string name) {
         lobbyId = id;
         lobbyName = name;
 

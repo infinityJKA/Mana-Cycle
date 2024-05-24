@@ -217,7 +217,7 @@ namespace VersusMode {
             gameObject.SetActive(true);
 
             usernameLabel.gameObject.SetActive(Storage.online);
-            avatarImage.gameObject.SetActive(Storage.online);
+            avatarImage.gameObject.SetActive(false); // don't show until avatar is loaded
 
             abilityInfoDisplayed = false;
             settingsDisplayed = false;
@@ -862,8 +862,10 @@ namespace VersusMode {
         public void SetAvatar(Texture texture) {
             if (texture != null) {
                 avatarImage.texture = texture;
+                avatarImage.gameObject.SetActive(true);
             } else {
                 Debug.LogWarning("Trying to set null texture as charselector avatar");
+                avatarImage.gameObject.SetActive(false);
             }
         }
 
