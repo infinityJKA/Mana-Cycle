@@ -26,8 +26,16 @@ public class LobbyListManager : MonoBehaviour {
 
     private void OnEnable() {
         DestroyLobbyEntries();
-        noLobbiesLabel.text = "Loading lobbies...";
-        SteamLobbyManager.GetLobbiesList();
+        #if !DISABLESTEAMWORKS
+            if (SteamManager.Initialized) {
+                noLobbiesLabel.text = "Loading lobbies...";
+                SteamLobbyManager.GetLobbiesList();
+            } else {
+                noLobbiesLabel.text = "You are offline :(";
+            }
+        #else
+            LobbiesLoadError();
+        #endif
     }
 
     public void LobbiesCountFound(int count) {

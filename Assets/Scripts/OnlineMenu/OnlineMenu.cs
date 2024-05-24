@@ -75,15 +75,19 @@ public class OnlineMenu : MonoBehaviour {
     {
         if (!CheckOnline()) return;
 
-        DisableInteractables();
         // if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
 
         try
         {
             // STEAM
-            if (NetManager.IsUseSteam() && SteamManager.Initialized)
+            if (NetManager.IsUseSteam())
             {
+                if (!SteamManager.Initialized) {
+                    PopupManager.instance.ShowErrorMessage("Could not connect to Steam");
+                    return;
+                }
                 statusLabel.text = "Creating lobby...";
+                DisableInteractables();
                 SteamLobbyManager.CreateLobby();
             }
             // RELAY
@@ -110,6 +114,10 @@ public class OnlineMenu : MonoBehaviour {
     public async void JoinButtonPressed() {
         if (NetManager.IsUseSteam()) {
             #if !DISABLESTEAMWORKS
+                if (!SteamManager.Initialized) {
+                    PopupManager.instance.ShowErrorMessage("Could not connect to Steam");
+                    return;
+                }
                 // PopupManager.instance.ShowBasicPopup("Message", "Press Shift+Tab to open the friend's list, and joina  player from there.\nOnline random matchmaking coming in the future.");
                 Debug.Log("Opening friends list");
                 SteamLobbyManager.OpenFriendsList();
