@@ -31,7 +31,7 @@ public class LobbyListManager : MonoBehaviour {
                 noLobbiesLabel.text = "Loading lobbies...";
                 SteamLobbyManager.GetLobbiesList();
             } else {
-                noLobbiesLabel.text = "You are offline :(";
+                noLobbiesLabel.text = "Can't connect to Steam...";
             }
         #else
             LobbiesLoadError();
