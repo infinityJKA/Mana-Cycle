@@ -46,6 +46,7 @@ namespace Networking {
             personaChanged = Callback<PersonaStateChange_t>.Create(OnPersonaStateChanged);
             lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
             avatarImageLoaded = Callback<AvatarImageLoaded_t>.Create(OnAvatarLoaded);
+            Debug.Log("SteamLobbyManager listening for callbacks!");
 
             lobbyIDs = new List<CSteamID>();
             netPlayersByID = new Dictionary<CSteamID, NetPlayer>();
@@ -73,18 +74,18 @@ namespace Networking {
                 // SteamMatchmaking.AddRequestLobbyListFilterSlotsAvailable(1);
                 // SteamMatchmaking.RequestLobbyList();
 
-                JoinLobby(new CSteamID(id));
+                JoinLobby(id);
             #else
                 Debug.LogError("Trying to join a Steam lobby, but Steamworks is disabled!");
             #endif
         }
 
-        public static void JoinLobby(CSteamID lobbyID) {
-            SteamMatchmaking.JoinLobby(lobbyID);
+        public static void JoinLobby(ulong lobbyID) {
+            SteamMatchmaking.JoinLobby((CSteamID)lobbyID);
         }
 
         #if !DISABLESTEAMWORKS
-        public static void OnDisconnected() {
+        public static void DisconnectFromLobby() {
             SteamMatchmaking.LeaveLobby(currentLobbyId);
         }
         private void OnDestroy() {
@@ -132,14 +133,28 @@ namespace Networking {
 
             NetworkManager.singleton.StartHost();
 
-            SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey, SteamUser.GetSteamID().ToString());
-            SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), "name", SteamFriends.GetPersonaName().ToString()+"'s lobby");
+            var lobbyID = new CSteamID(callback.m_ulSteamIDLobby);
+            SteamMatchmaking.SetLobbyData(lobbyID, HostAddressKey, SteamUser.GetSteamID().ToString());
+            SteamMatchmaking.SetLobbyData(lobbyID, "name", SteamFriends.GetPersonaName().ToString()+"'s lobby");
 
             Debug.Log("lobby created! id: "+callback.m_ulSteamIDLobby);
         }
 
+        public static void OpenFriendsList() {
+            SteamFriends.ActivateGameOverlay("friends");
+        }
+
+        public static void OpenInviteDialog() {
+            SteamFriends.ActivateGameOverlayInviteDialog(currentLobbyId);
+        }
+
         private static void OnGetLobbyList(LobbyMatchList_t callback) {
+            Debug.Log("Lobby list received.");
             LobbyListManager.instance.DestroyLobbyEntries();
+
+            if (callback.m_nLobbiesMatching == 0) {
+                LobbyListManager.instance.NoLobbiesAvailable();
+            }
 
             for (int i = 0; i < callback.m_nLobbiesMatching; i++) {
                 CSteamID lobbyID = SteamMatchmaking.GetLobbyByIndex(i);
@@ -149,10 +164,9 @@ namespace Networking {
             }
         }
 
-
-
         private static void OnGetLobbyData(LobbyDataUpdate_t callback) {
-            LobbyListManager.instance.DisplayLobbies(lobbyIDs, callback);
+            string name = SteamMatchmaking.GetLobbyData((CSteamID)callback.m_ulSteamIDLobby, "name");
+            LobbyListManager.instance.DisplayLobby(callback.m_ulSteamIDLobby, name);
         }
 
         private static void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback) {
@@ -179,6 +193,11 @@ namespace Networking {
             if (NetworkClient.activeHost) {
                 CSteamID opponentId = SteamMatchmaking.GetLobbyMemberByIndex(currentLobbyId, 1);
                 RequestUserData(opponentId);
+
+                // open invite dialog right away when host started to invite friend.
+                // may remove this in future
+                // but this same menu can also be reached easily by pressing tab (or shift_tab to open full steam overlay, friends menu included)
+                OpenInviteDialog();
             }
             else if (!NetworkServer.active)
             {
@@ -196,7 +215,7 @@ namespace Networking {
         }
 
         public static void AddNetPlayerForID(ulong id, NetPlayer player) {
-            netPlayersByID.Add((CSteamID)id, player);
+            netPlayersByID.TryAdd((CSteamID)id, player);
         }
 
         public static void LoadAvatar(ulong id) {

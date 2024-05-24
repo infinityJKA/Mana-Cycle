@@ -11,11 +11,8 @@ public class ToggleAnimator : MonoBehaviour {
 
     [SerializeField] private string offLabel, onLabel;
 
-    private void Awake() {
-        Animate();
-    }
-
     private void Start() {
+        Animate();
         toggle.onValueChanged.AddListener((newValue) => {
             Animate();
         });

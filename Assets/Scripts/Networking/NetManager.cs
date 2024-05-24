@@ -28,10 +28,12 @@ public class NetManager : NetworkManager {
         base.OnServerAddPlayer(conn);
         if (!conn.identity.isOwned) NetworkServer.localConnection.identity.GetComponent<NetPlayer>().CmdSetLockedIn();
 
+        #if !DISABLESTEAMWORKS
         var netPlayer = conn.identity.GetComponent<NetPlayer>();
         netPlayer.steamId = SteamLobbyManager.GetLobbyMemberID(numPlayers - 1);
         SteamLobbyManager.AddNetPlayerForID(netPlayer.steamId, netPlayer);
         SteamLobbyManager.LoadAvatar(netPlayer.steamId);
+        #endif
     }
 
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
@@ -48,6 +50,9 @@ public class NetManager : NetworkManager {
     {
         base.OnStopHost();
         BackToOnlineMenu();
+        #if !DISABLESTEAMWORKS
+        SteamLobbyManager.DisconnectFromLobby();
+        #endif
     }
 
     public override void OnStopClient()
@@ -55,6 +60,9 @@ public class NetManager : NetworkManager {
         base.OnStopClient();
         // PopupManager.instance.ShowBasicPopup("Disconnected", "You have been disconnected",
         //     onConfirm: BackToOnlineMenu);
+        #if !DISABLESTEAMWORKS
+        SteamLobbyManager.DisconnectFromLobby();
+        #endif
         BackToOnlineMenu();
     }
 
