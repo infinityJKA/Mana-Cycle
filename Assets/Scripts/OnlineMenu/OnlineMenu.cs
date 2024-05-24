@@ -71,28 +71,37 @@ public class OnlineMenu : MonoBehaviour {
         TransitionScript.instance.WipeToScene("MainMenu", reverse: true);
     }
 
-    public async void HostButtonPressed() {
+    public void HostButtonPressed()
+    {
         if (!CheckOnline()) return;
 
         DisableInteractables();
         // if (networkAddressField) NetworkManager.singleton.networkAddress = networkAddressField.text;
-        
-        try {
+
+        try
+        {
             // STEAM
-            if (NetManager.IsUseSteam() && SteamManager.Initialized) {
+            if (NetManager.IsUseSteam() && SteamManager.Initialized)
+            {
                 statusLabel.text = "Creating lobby...";
                 SteamLobbyManager.CreateLobby();
-            } 
-            // RELAY
-            else if (RelayManager.relayNetworkManager != null) {
-                bool success = await RelayManager.CreateRelay();
-                if (!success) EnableInteractables();
-            } 
-            // IP
-            else {
-                NetworkManager.singleton.StartHost();
             }
-        } catch (Exception e) {
+            // RELAY
+            else if (RelayManager.relayNetworkManager != null)
+            {
+                // bool success = await RelayManager.CreateRelay();
+                // if (!success) EnableInteractables();
+                PopupManager.instance.ShowBasicPopup("Message", "Online hosting not implemented outside of Steam");
+            }
+            // IP
+            else
+            {
+                // NetworkManager.singleton.StartHost();
+                PopupManager.instance.ShowBasicPopup("Message", "Online joining not implemented outside of Steam");
+            }
+        }
+        catch (Exception e)
+        {
             PopupManager.instance.ShowError(e);
             EnableInteractables();
         }
