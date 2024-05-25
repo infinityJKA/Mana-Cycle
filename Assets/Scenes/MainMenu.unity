@@ -797,23 +797,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2.4054
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2.4054
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_LocalScale.z
-      value: 2.4054
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -17.52906
+      value: -24.58
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.9
+      value: 16.13
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -846,6 +846,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -5894863403822994359, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -921,7 +925,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5233112405309087440, guid: 0353f1927d068154cafc49223fa9941a, type: 3}
       propertyPath: m_Name
@@ -2518,7 +2522,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Online
+  m_text: Settings
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 79459efec17a4d00a321bdcc27bbc385, type: 2}
@@ -2555,7 +2559,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -2.17
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -6081,7 +6085,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 725939795}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71dfba47535e8413c8a74cd73fcfe07f, type: 3}
   m_Name: 
@@ -11519,7 +11523,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1213793300}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fac5ad2ea79e894e8d88b74117f4aab, type: 3}
   m_Name: 
@@ -16133,7 +16137,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1706744409}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71dfba47535e8413c8a74cd73fcfe07f, type: 3}
   m_Name: 
@@ -22337,8 +22341,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 102548625}
         m_TargetAssemblyTypeName: MainMenu.Menu3d, Assembly-CSharp
-        m_MethodName: GoToCharSelect
-        m_Mode: 3
+        m_MethodName: SelectSettings
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -22411,9 +22415,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thisCam: {fileID: 1397294731}
   brain: {fileID: 501347703}
-  enableWhenSelected:
-  - {fileID: 1706744413}
-  - {fileID: 725939799}
+  enableWhenSelected: []
   selectSFX: {fileID: 7978053776321691471, guid: 5097454699299d344af329404a1ffb22, type: 3}
   clickSFX: {fileID: 7978053776321691471, guid: 9d926372c82ba884ca940bf83bde5fd9, type: 3}
   buttonIndex: 2
@@ -24894,8 +24896,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thisCam: {fileID: 1430177269}
   brain: {fileID: 501347703}
-  enableWhenSelected:
-  - {fileID: 1213793305}
+  enableWhenSelected: []
   selectSFX: {fileID: 7978053776321691471, guid: 5097454699299d344af329404a1ffb22, type: 3}
   clickSFX: {fileID: 7978053776321691471, guid: 9d926372c82ba884ca940bf83bde5fd9, type: 3}
   buttonIndex: 3
