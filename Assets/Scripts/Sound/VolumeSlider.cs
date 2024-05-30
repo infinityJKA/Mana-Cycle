@@ -9,6 +9,7 @@ namespace Sound {
         private SoundManager soundManager;
         [SerializeField] private Slider slider;
         [SerializeField] private string valueKey;
+        [SerializeField] private GameObject changeSliderSFX;
 
         void Start()
         {
@@ -25,12 +26,15 @@ namespace Sound {
 
         public void setMusVolume(float value)
         {
+            if (soundManager == null) return;
             soundManager.ChangeMusicVolume(value);
         }
 
         public void setSFXVolume(float value)
         {
+            if (soundManager == null) return;
             soundManager.ChangeSFXVolume(value);
+            Instantiate(changeSliderSFX);
         }
 
         // public void PlaySound(AudioClip clip)
