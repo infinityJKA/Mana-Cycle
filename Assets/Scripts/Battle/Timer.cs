@@ -47,13 +47,13 @@ namespace Battle {
             startTime = Time.time;
             endTime = startTime + duration;
 
-            Update();
-
             if(Storage.level && Storage.level.time == -1){
                 textbox.text = "∞:∞";
                 enabled = false;
                 return;
             }
+
+            Update();
         }
 
         public void StopTimer() {
