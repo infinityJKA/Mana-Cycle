@@ -902,31 +902,38 @@ namespace Battle.Board {
         /// <param name="col">column to spawn in, -1 for random</param>
         /// <returns>the column it was spawned in.</returns>
         public int AddTrashTile(System.Random rng, int col = -1) {
-            /// Add a new trash piece with a random color
-            Piece trashPiece = Instantiate(abilityManager.singlePiecePrefab).GetComponent<Piece>();
-            // give it a unique id
-            trashPiece.id = piecePreview.NextPieceId();
+            if (battleStarted)
+            {
+                /// Add a new trash piece with a random color
+                Piece trashPiece = Instantiate(abilityManager.singlePiecePrefab).GetComponent<Piece>();
+                // give it a unique id
+                trashPiece.id = piecePreview.NextPieceId();
 
-            trashPiece.GetTile(0).SetManaColor(Piece.RandomColor(rng), this);
+                trashPiece.GetTile(0).SetManaColor(Piece.RandomColor(rng), this);
 
-            // if col is -1, send to random tile, will return the column sent in
-            if (col == -1) {
-                col = SpawnStandalonePiece(trashPiece);
-            } 
-            // if not, send in the specified column
-            else {
-                SpawnStandalonePiece(trashPiece, col);
-            }
+                // if col is -1, send to random tile, will return the column sent in
+                if (col == -1) {
+                    col = SpawnStandalonePiece(trashPiece);
+                } 
+                // if not, send in the specified column
+                else {
+                    SpawnStandalonePiece(trashPiece, col);
+                }
 
-            // start trash damage timer only if at 0 (not running)
-            if (trashDamageTimer == 0) {
-                trashDamageTimer = trashDamageTimerDuration;
+                // start trash damage timer only if at 0 (not running)
+                if (trashDamageTimer == 0) {
+                    trashDamageTimer = trashDamageTimerDuration;
+                }
             }
 
             // start trash timer again if applicable
             if (Storage.level && Storage.level.trashSendRate > 0) Invoke("AddTrashTile", Storage.level.trashSendRate);
 
             return col;
+        }
+
+        public int AddTrashTile() {
+            return AddTrashTile(rngManager.rng, -1);
         }
 
         // Add a piece to this board without having the player control or place it (keep their current piece).
