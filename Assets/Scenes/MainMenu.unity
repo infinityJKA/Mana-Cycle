@@ -4548,7 +4548,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -425, y: -10.860107}
+  m_AnchoredPosition: {x: -425, y: -10.859863}
   m_SizeDelta: {x: -1050, y: -478.28015}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &472243072
@@ -21558,18 +21558,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: HowToPlayWindow
       objectReference: {fileID: 0}
-    - target: {fileID: 2388539909615176990, guid: 314ea24dad36edd45843009e3c9c28fc, type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 102548625}
-    - target: {fileID: 2713881249397664653, guid: 314ea24dad36edd45843009e3c9c28fc, type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 102548625}
+    - target: {fileID: 676776651273740954, guid: 314ea24dad36edd45843009e3c9c28fc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4525580170246605153, guid: 314ea24dad36edd45843009e3c9c28fc, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 102548625}
+      objectReference: {fileID: 539888908}
+    - target: {fileID: 4525580170246605153, guid: 314ea24dad36edd45843009e3c9c28fc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 240257911}
+    - target: {fileID: 4525580170246605153, guid: 314ea24dad36edd45843009e3c9c28fc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 944471979983961628}
     - target: {fileID: 5626324072699682108, guid: 314ea24dad36edd45843009e3c9c28fc, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -21650,10 +21654,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7141126201761048321, guid: 314ea24dad36edd45843009e3c9c28fc, type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 102548625}
+    - target: {fileID: 5791790733729683033, guid: 314ea24dad36edd45843009e3c9c28fc, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 612.54535
+      objectReference: {fileID: 0}
+    - target: {fileID: 5957073920115836026, guid: 314ea24dad36edd45843009e3c9c28fc, type: 3}
+      propertyPath: m_fontSize
+      value: 72
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

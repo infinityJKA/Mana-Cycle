@@ -6977,7 +6977,7 @@ MonoBehaviour:
   m_ScrollWheelAction: {fileID: 6240969308177333660, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
   m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
   m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: 32718bc9abaab7545a682dd47328e53a, type: 3}
-  m_DeselectOnBackgroundClick: 1
+  m_DeselectOnBackgroundClick: 0
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
 --- !u!1 &1516831165
@@ -8579,6 +8579,14 @@ PrefabInstance:
     - target: {fileID: 1706197361647348878, guid: 8946ebf5fd0f82744ae2ad47030068e8, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2520097630831616277, guid: 8946ebf5fd0f82744ae2ad47030068e8, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2520097630831616277, guid: 8946ebf5fd0f82744ae2ad47030068e8, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.000015258789
       objectReference: {fileID: 0}
     - target: {fileID: 2681374724728015550, guid: 8946ebf5fd0f82744ae2ad47030068e8, type: 3}
       propertyPath: m_Pivot.x
