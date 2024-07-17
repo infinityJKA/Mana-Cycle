@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.Localization.Settings;
 using System.Collections;
+using System;
 
 namespace MainMenu {
     /// <summary>
@@ -22,6 +23,9 @@ namespace MainMenu {
 
         [SerializeField] private TMP_Dropdown windowModeDropdown;
 
+        // todo move more settings to use PlayerPrefSetter script for modularity
+        [SerializeField] private PlayerPrefSetter[] prefSetters;
+
         [SerializeField] private Menu3d menu3D;
 
         private void OnEnable() {
@@ -29,6 +33,8 @@ namespace MainMenu {
             closeAction.action.performed += OnMenuClose;
             pauseAction.action.Enable();
             pauseAction.action.performed += OnMenuClose;
+
+            Array.ForEach(prefSetters, pref => pref.Sync());
         }
 
         private void OnDisable() {

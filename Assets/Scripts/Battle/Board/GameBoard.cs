@@ -321,9 +321,12 @@ namespace Battle.Board {
         [SerializeField] private CosmeticValues _cosmetics;
         public CosmeticValues cosmetics => _cosmetics;
 
+        private float particleOpacity = 1f;
+
         // Start is called before the first frame update
         void Start()
         {
+            particleOpacity = PlayerPrefs.GetFloat("particleOpacity");
             // serialize lastSeriesLevel, if applicable 
             if (Storage.level != null && Storage.level.nextSeriesLevel != null) Storage.level.nextSeriesLevel.lastSeriesLevel = Storage.level;
             
@@ -1334,13 +1337,14 @@ namespace Battle.Board {
         /// Play the default piece-clearing partifle effect at the given row and col with specified color.
         /// </summary>
         public void SpawnParticles(int row, int col, Color color) {
+            if (particleOpacity <= 0f) return;
             // instantiate particle system to have multiple bursts at once
             GameObject tileParticleSystem = Instantiate(clearParticleSystem, particleParent, false);
 
             // set particle color based on tile
             var particleSystem = tileParticleSystem.GetComponent<ParticleSystem>();
             var particleSystemMain = particleSystem.main;
-            particleSystemMain.startColor = color;
+            particleSystemMain.startColor = new Color(color.r, color.g, color.b, particleOpacity);
 
             // move to tile position and play burst
             tileParticleSystem.transform.localPosition = BoardToLocalSpace(row, col);
