@@ -20,7 +20,7 @@ public class StatsWindow : MonoBehaviour
         {
             statText.text += ArcadeStats.StatToString(stat.Key) + "\n";
             for (int i = 0; i < leftPad; i++) valueText.text += " ";
-            valueText.text += (stat.Value + (stat.Key == ArcadeStats.Stat.StartingCycleModifier ? 1 : 0) * (stat.Key == ArcadeStats.Stat.StartingSpecial ? 100 : 1)) + ArcadeStats.StatToUnit(stat.Key) + "\n";
+            valueText.text += (stat.Value * (stat.Key == ArcadeStats.Stat.StartingSpecial ? 100 : 1)) + (stat.Key == ArcadeStats.Stat.StartingCycleModifier ? 1 : 0) + ArcadeStats.StatToUnit(stat.Key) + "\n";
         }
     }
 
