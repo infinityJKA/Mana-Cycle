@@ -17,6 +17,10 @@ public class LeaderboardManager {
     }
 
     public static void UploadScore(string key, int score) {
+        #if UNITY_EDITOR
+            return;
+        #endif
+        
         if (uploadingScore) return;
         uploadingScore = true;
 
