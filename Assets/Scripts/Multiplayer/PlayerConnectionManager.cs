@@ -33,7 +33,7 @@ namespace Multiplayer {
         private void Awake() {
             // destroy self if not a multiplayer mode or in online mode where only player 1 will control
             if (Storage.gamemode == Storage.GameMode.Solo || !Storage.isPlayerControlled2 || Storage.online) Destroy(gameObject);
-
+    
             if (instance == null) {
                 if (connectMode == ConnectMode.DestroyMultiplayer) {
                     Destroy(gameObject);
@@ -62,6 +62,7 @@ namespace Multiplayer {
                     // if in dual keyboard mode, give each board a controller
                     if (Storage.useDualKeyboardInput) {
                         foreach (var board in boards) {
+                            
                             GameObject controllerObject = Instantiate(controllerPrefab);
                             Destroy(controllerObject.GetComponent<PlayerInput>());
 
@@ -69,18 +70,21 @@ namespace Multiplayer {
                             controller.SetBoard(board);
                             controller.EnableInputScripts();
                         }
+                    }
+                    
+                    foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
+                        OnPlayerJoined(playerInput);
                     } 
                 }  
                 
                 // after all this tomfoolery, destroy this gameobject since the existing one should be the only one.
                 Destroy(gameObject);
             }
-        }
 
-        private void Start() {
-            if (Storage.useDualKeyboardInput) return;
-            foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
-                OnPlayerJoined(playerInput);
+            if (connectMode == ConnectMode.Battle)
+            {
+                boards[0] = GameObject.Find("Board").GetComponent<GameBoard>();
+                boards[1] = GameObject.Find("Enemy Board").GetComponent<GameBoard>();
             }
         }
         
@@ -120,6 +124,7 @@ namespace Multiplayer {
         }
 
         public void ConnectControllerToCharSelector(PlayerInput playerInput) {
+            if (playerInput.playerIndex >= charSelectors.Length) return;
             var controller = playerInput.GetComponent<Controller>();
             var charSelector = charSelectors[playerInput.playerIndex];
             controller.SetCharSelector(charSelector);
@@ -127,6 +132,7 @@ namespace Multiplayer {
         }
 
         public void DisconnectCharSelector(PlayerInput playerInput) {
+            if (playerInput.playerIndex >= charSelectors.Length) return;
             if (connectMode == ConnectMode.CharSelect) {
                 var charSelector = charSelectors[playerInput.playerIndex];
                 charSelector.Disconnect();
