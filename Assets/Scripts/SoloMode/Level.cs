@@ -49,6 +49,9 @@ namespace SoloMode {
         // the battlers to choose from in charselect. if only one, they get auto picked like old system
         [SerializeField] public List<Battler> availableBattlers;
 
+        // set a fixed background to appear in this level. if null, choose randomly
+        [SerializeField] public GameObject backgroundOverride = null;
+
         // Whether or not ability use is permitted in this level
         [SerializeField] public bool abilityEnabled = true;
 
