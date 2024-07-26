@@ -911,6 +911,7 @@ namespace Battle.Board {
                 Piece trashPiece = Instantiate(abilityManager.singlePiecePrefab).GetComponent<Piece>();
                 // give it a unique id
                 trashPiece.id = piecePreview.NextPieceId();
+                trashPiece.GetTile(0).MakeTrashTile();
 
                 trashPiece.GetTile(0).SetManaColor(Piece.RandomColor(rng), this);
 
