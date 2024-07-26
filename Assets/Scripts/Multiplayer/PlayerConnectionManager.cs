@@ -10,9 +10,9 @@ namespace Multiplayer {
     public class PlayerConnectionManager : MonoBehaviour {
         public static PlayerConnectionManager instance;
 
-        [SerializeField] private GameBoard[] boards;
+        [SerializeField] private GameBoard[] boards = new GameBoard[2];
 
-        [SerializeField] private CharSelector[] charSelectors;
+        [SerializeField] private CharSelector[] charSelectors = new CharSelector[2];
 
         [SerializeField] public ConnectMode connectMode;
 
@@ -31,6 +31,7 @@ namespace Multiplayer {
         private bool reparent = false;
 
         private void Awake() {
+
             // destroy self if not a multiplayer mode or in online mode where only player 1 will control
             if (Storage.gamemode == Storage.GameMode.Solo || !Storage.isPlayerControlled2 || Storage.online) Destroy(gameObject);
     
@@ -57,6 +58,7 @@ namespace Multiplayer {
                 instance.connectMode = connectMode;
 
                 if (connectMode == ConnectMode.DestroyMultiplayer) {
+                    Debug.Log("Destroying...");
                     Destroy(instance.gameObject);
                 } else {
                     // if in dual keyboard mode, give each board a controller
@@ -71,11 +73,12 @@ namespace Multiplayer {
                             controller.EnableInputScripts();
                         }
                     }
-                    
-                    foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
-                        OnPlayerJoined(playerInput);
-                    } 
-                }  
+                    else {
+                        foreach (var playerInput in instance.transform.GetComponentsInChildren<PlayerInput>()) {
+                            OnPlayerJoined(playerInput);
+                        } 
+                    }
+                }
                 
                 // after all this tomfoolery, destroy this gameobject since the existing one should be the only one.
                 Destroy(gameObject);
@@ -83,8 +86,15 @@ namespace Multiplayer {
 
             if (connectMode == ConnectMode.Battle)
             {
-                boards[0] = GameObject.Find("Board").GetComponent<GameBoard>();
-                boards[1] = GameObject.Find("Enemy Board").GetComponent<GameBoard>();
+                instance.boards[0] = GameObject.Find("Board").GetComponent<GameBoard>();
+                instance.boards[1] = GameObject.Find("Enemy Board").GetComponent<GameBoard>();
+            }
+
+            if (connectMode == ConnectMode.CharSelect)
+            {
+                Debug.Log("bruh " + GameObject.Find("P1Selector").GetComponent<CharSelector>());
+                instance.charSelectors[0] = GameObject.Find("P1Selector").GetComponent<CharSelector>();
+                instance.charSelectors[1] = GameObject.Find("P2Selector").GetComponent<CharSelector>();
             }
         }
         
