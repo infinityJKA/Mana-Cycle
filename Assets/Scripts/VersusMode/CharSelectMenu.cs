@@ -230,7 +230,7 @@ namespace VersusMode {
             }
         }
 
-        bool dualKeybaord = false;
+        bool dualKeybaord = Storage.useDualKeyboardInput;
         public void ToggleDualKeyboard() {
             dualKeybaord = !dualKeybaord;
             if (dualKeybaord) {
