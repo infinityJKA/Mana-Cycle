@@ -32,7 +32,7 @@ namespace VersusMode {
         [SerializeField] private Selectable startText;
 
         // for handling Controllers
-        [SerializeField] private PlayerConnectionManager connectionManager;
+        // [SerializeField] private PlayerConnectionManager connectionManager;
 
         [SerializeField] private Button dualKeyboardButton;
 
@@ -45,9 +45,10 @@ namespace VersusMode {
         void Awake() {
             Instance = this;
 
-            if (!connectionManager) {
-                connectionManager = FindFirstObjectByType<PlayerConnectionManager>();
-            }
+            // if (!connectionManager) {
+            //     // connectionManager = FindFirstObjectByType<PlayerConnectionManager>();
+            //     connectionManager = PlayerConnectionManager.instance;
+            // }
 
             characterIcons = GetComponentsInChildren<CharacterIcon>();
             for (int i = 0; i < characterIcons.Length; i++) {
@@ -242,7 +243,7 @@ namespace VersusMode {
         public void SwitchToDualKeyboardMode() {
             p1Selector.DualKeyboardEnabled();
             p2Selector.DualKeyboardEnabled();
-            connectionManager.DisableControllers();
+            PlayerConnectionManager.instance.DisableControllers();
             Storage.useDualKeyboardInput = true;
             Debug.Log("Switched to dual keyboard mode");
         }
@@ -250,7 +251,7 @@ namespace VersusMode {
         public void SwitchToControllers() {
             p1Selector.DualKeyboardDisabled();
             p2Selector.DualKeyboardDisabled();
-            connectionManager.EnableControllers();
+            PlayerConnectionManager.instance.EnableControllers();
             Storage.useDualKeyboardInput = false;
             Debug.Log("Switched to multi-device controller mode");
         }
