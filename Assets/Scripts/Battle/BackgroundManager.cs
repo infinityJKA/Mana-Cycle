@@ -18,7 +18,7 @@ namespace Battle
             }
 
             if (Storage.level && Storage.level.backgroundOverride != null) Instantiate(Storage.level.backgroundOverride);
-            else Instantiate(backgrounds[Random.Range(0, backgrounds.Length - 1)]);
+            else Instantiate(backgrounds[Random.Range(0, backgrounds.Length)]);
         }
 
     }
