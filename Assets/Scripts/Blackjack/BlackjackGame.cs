@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using Achievements;
 
 
 namespace MainMenu {
@@ -92,6 +93,16 @@ namespace MainMenu {
             int n = r.Next(1,CurrentDeck.Count);
             PlayerHand.Add(CurrentDeck[n-1]);
             CurrentDeck.RemoveAt(n);
+
+            // Check for achievements
+            if(PlayerHand[PlayerHand.Count-1].cardSprite.name=="romra"){
+                Debug.Log("romra");
+                FindObjectOfType<AchievementHandler>().UnlockAchievement("Romra");
+            }
+            else if(PlayerHand[PlayerHand.Count-1].cardSprite.name=="999billion"){
+                Debug.Log("999billion");
+                FindObjectOfType<AchievementHandler>().UnlockAchievement("999billion");
+            }
 
             // Updates Graphics and Num
             if(PlayerHand.Count == 1){

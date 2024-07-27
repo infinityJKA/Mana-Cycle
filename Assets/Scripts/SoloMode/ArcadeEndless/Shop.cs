@@ -141,6 +141,7 @@ public class Shop : MonoBehaviour
             selection.GetComponent<ItemDisplay>().Refresh();
             Instantiate(puchaseSFX);
 
+            // activate achivement
             FindObjectOfType<AchievementHandler>().UnlockAchievement("BuyGauntletItem");
         }
         else

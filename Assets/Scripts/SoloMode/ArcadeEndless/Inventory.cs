@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 
 using Sound;
+using Achievements;
 
 public class Inventory : MonoBehaviour
 {
@@ -153,6 +154,13 @@ public class Inventory : MonoBehaviour
         switch (item.useType)
         {
             case Item.UseType.Consume:
+                
+                if(item.itemName == "J-Fuel"){
+                    // activate achivement
+                    // Debug.Log("DRANK");
+                    FindObjectOfType<AchievementHandler>().UnlockAchievement("ConsumeJFuel");
+                }
+
                 item.ActivateEffect(); ArcadeStats.inventory[item] -= 1; break;
 
             case Item.UseType.Equip: 
