@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 
 using Sound;
+using Achievements;
 
 public class Shop : MonoBehaviour
 {
@@ -72,12 +73,12 @@ public class Shop : MonoBehaviour
     void Update()
     {
         // debug
-        // if (Application.isEditor && Input.GetKeyDown(KeyCode.F1))
-        //     {
-        //         ArcadeStats.moneyAmount += 500;
-        //         RefreshAllDisplays();
-        //         // Debug.Log(string.Join(",", ArcadeStats.inventory));
-        //     }
+        if (Application.isEditor && Input.GetKeyDown(KeyCode.F1))
+            {
+                ArcadeStats.moneyAmount += 500;
+                RefreshAllDisplays();
+                // Debug.Log(string.Join(",", ArcadeStats.inventory));
+            }
     }
 
     public void MoveSelection(BaseEventData ev)
@@ -139,6 +140,8 @@ public class Shop : MonoBehaviour
             RefreshText();
             selection.GetComponent<ItemDisplay>().Refresh();
             Instantiate(puchaseSFX);
+
+            FindObjectOfType<AchievementHandler>().UnlockAchievement("BuyGauntletItem");
         }
         else
         {
