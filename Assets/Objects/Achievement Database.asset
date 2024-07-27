@@ -252,8 +252,8 @@ MonoBehaviour:
     requirements:
     - condition: 11
       value: 0
-      stringValue: Endless_01, Endless_02, Endless_03, Endless D1, Endless D2, Endless
-        D3, Endless D4
+      stringValue: Endless, EndlessHard, EndlessUlt, EndlessD1, EndlessD2, EndlessD3,
+        EndlessD4
       boolValue: 0
       statusOverride: 
       inverted: 0
@@ -263,7 +263,7 @@ MonoBehaviour:
         D3, Endless D4
       boolValue: 0
       statusOverride: 
-      inverted: 0
+      inverted: 1
   - id: Endless100000
     displayName: Mana Addict
     description: Score 100000+ points in Endless Mode.
@@ -274,8 +274,8 @@ MonoBehaviour:
     requirements:
     - condition: 11
       value: 0
-      stringValue: Endless_01, Endless_02, Endless_03, Endless D1, Endless D2, Endless
-        D3, Endless D4
+      stringValue: Endless, EndlessHard, EndlessUlt, EndlessD1, EndlessD2, EndlessD3,
+        EndlessD4
       boolValue: 0
       statusOverride: 
       inverted: 0
@@ -285,7 +285,7 @@ MonoBehaviour:
         D3, Endless D4
       boolValue: 0
       statusOverride: 
-      inverted: 0
+      inverted: 1
   - id: ArcadeWin
     displayName: Winner
     description: Complete Arcade Mode.
@@ -372,5 +372,53 @@ MonoBehaviour:
       value: 0
       stringValue: z5
       boolValue: 1
+      statusOverride: 
+      inverted: 0
+  - id: BuyGauntletItem
+    displayName: Shopping
+    description: Purchase an item in Gauntlet Mode.
+    icon: {fileID: 21300000, guid: bbd10e1e72109cb4b8507018b3a1cd04, type: 3}
+    lockedIcon: {fileID: 21300000, guid: 40ea4f667e5dc0e41802428cf581eb90, type: 3}
+    hidden: 0
+    progressStat: 13
+    requirements: []
+  - id: EndlessD410k
+    displayName: Survivor
+    description: Score over 10,000 points in Endless D4.
+    icon: {fileID: 21300000, guid: bbd10e1e72109cb4b8507018b3a1cd04, type: 3}
+    lockedIcon: {fileID: 21300000, guid: 40ea4f667e5dc0e41802428cf581eb90, type: 3}
+    hidden: 0
+    progressStat: 13
+    requirements:
+    - condition: 1
+      value: 10000
+      stringValue: 
+      boolValue: 0
+      statusOverride: 
+      inverted: 1
+    - condition: 11
+      value: 10000
+      stringValue: EndlessD4
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+  - id: Level1Complete
+    displayName: Entering the Simulation
+    description: Clear level 1.
+    icon: {fileID: 21300000, guid: bbd10e1e72109cb4b8507018b3a1cd04, type: 3}
+    lockedIcon: {fileID: 21300000, guid: 40ea4f667e5dc0e41802428cf581eb90, type: 3}
+    hidden: 0
+    progressStat: 13
+    requirements:
+    - condition: 10
+      value: 10000
+      stringValue: 
+      boolValue: 1
+      statusOverride: 
+      inverted: 0
+    - condition: 11
+      value: 10000
+      stringValue: Level1
+      boolValue: 0
       statusOverride: 
       inverted: 0
