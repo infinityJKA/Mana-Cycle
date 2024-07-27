@@ -5,6 +5,8 @@ using UnityEngine;
 using Sound;
 using Battle.Board;
 
+using Achievements;
+
 #if (UNITY_EDITOR)
 using UnityEditor;
 #endif
@@ -190,6 +192,19 @@ public class Item : ScriptableObject
                 case EffectType.TakeDamageFlat: board.TakeDamage((int) e.value); break;
                 default: Debug.Log("Effect Type Not Handled! :("); break;
             }
+
+            // check for stat achivements
+            if(ArcadeStats.playerStats[ArcadeStats.Stat.DamageMult] >= 1.1 && ArcadeStats.playerStats[ArcadeStats.Stat.SpecialGainMult] >= 1.1){
+                Debug.Log("Wombo Combo");
+                FindObjectOfType<AchievementHandler>().UnlockAchievement("WomboCombo");
+            }
+            if(ArcadeStats.maxHp >= 3000){
+                Debug.Log("Tank Build");
+                FindObjectOfType<AchievementHandler>().UnlockAchievement("TankBuild");
+            }
+
+
+
         }
 
     }
