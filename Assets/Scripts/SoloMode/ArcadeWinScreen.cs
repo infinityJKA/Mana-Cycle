@@ -22,11 +22,24 @@ namespace SoloMode
             {
                 portrait.sprite = Storage.level.battler.sprite;
 
-                AchievementHandler.Instance.UnlockAchievement("ArcadeWin" + Storage.level.battler.battlerId);
+                //Check for achievements
+                // AchievementHandler AH = FindObjectOfType<AchievementHandler>();
+
+                string battlerID = Storage.level.battler.battlerId;
+                Debug.Log("BATTLERID = "+ battlerID);
+                if(battlerID == "Infinity"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinInfinity");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+                else if (battlerID == "Aqua"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinAqua");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+                else if (battlerID == "Pyro"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinPyro");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+                else if (battlerID == "Psychic"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinPsychic");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+                else if (battlerID == "Geo"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinGeo");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+                else if (battlerID == "Trainbot"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinTrainbot");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+                else if (battlerID == "zman"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinzman");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+                else if (battlerID == "Electro"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinElectro");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
 
                 if (Storage.lives == 3 && Storage.hp == 2000) {
-                    AchievementHandler.Instance.UnlockAchievement("ArcadeWinNoDamage");
+                    AchievementHandler.Instance.UnlockAchievement("ArcadeWinNoDamage");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");
                 }
+
             }
         }
 

@@ -200,7 +200,7 @@ namespace PostGame {
                     // arcade endless level won
                     if (Storage.level.generateNextLevel && cleared)
                     {
-                        Debug.Log("Curious");
+                        Debug.Log("Curious"); // <-- what?
                         retryButton.gameObject.SetActive(false);
                         continueButton.gameObject.SetActive(true);
 

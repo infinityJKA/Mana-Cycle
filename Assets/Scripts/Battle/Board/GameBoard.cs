@@ -653,6 +653,10 @@ namespace Battle.Board {
                         finalFallTime = 0.8f;
                     }
 
+                    if(abilityManager.thunderRushActive){
+                        finalFallTime = finalFallTime/2.8f;
+                    }
+
                     if (Time.time - previousFallTime > finalFallTime) {
 
                         // Try to move the piece down.
@@ -1866,9 +1870,18 @@ namespace Battle.Board {
                 }
             }
 
+            // Electro's multi-mana bonus
+            float ElectroBoost = 1f;
+            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.UnstableMana){
+                if(totalBlobMana >= 10){
+                    ElectroBoost = 1.5f + ((totalBlobMana-10) * 0.1f);
+                    Debug.Log("Electroboost "+ ElectroBoost + " (" + totalBlobMana + " mana)");
+                }
+            }
+
             // Deal damage for the amount of mana cleared.
             // DMG is scaled by chain and cascade.
-            int damage = (int)( totalPointMult * damagePerMana * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult] *GeoBoost);
+            int damage = (int)( totalPointMult * damagePerMana * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult] * GeoBoost * ElectroBoost);
 
             // relay to the opponent's client that the chain advance happened at this point in time
             // RPCs should be guaranteed to execute in order send, so desyncs where piece is placed after when it should in the chain should be prevented.
