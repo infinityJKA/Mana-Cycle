@@ -2486,6 +2486,18 @@ PrefabInstance:
       propertyPath: _battler
       value: 
       objectReference: {fileID: 11400000, guid: 1c93cc654a75a784a838ad03a98b9304, type: 2}
+    - target: {fileID: 2647383539624076135, guid: 933349e09274f407a8270c47548d8fa4, type: 3}
+      propertyPath: p1Cursor
+      value: 
+      objectReference: {fileID: 1427890151}
+    - target: {fileID: 2647383539624076135, guid: 933349e09274f407a8270c47548d8fa4, type: 3}
+      propertyPath: p2Cursor
+      value: 
+      objectReference: {fileID: 1837650086}
+    - target: {fileID: 2647383539624076135, guid: 933349e09274f407a8270c47548d8fa4, type: 3}
+      propertyPath: cpuCursor
+      value: 
+      objectReference: {fileID: 667644331}
     - target: {fileID: 7264203811073235287, guid: 933349e09274f407a8270c47548d8fa4, type: 3}
       propertyPath: m_Name
       value: Electro
@@ -4944,6 +4956,10 @@ PrefabInstance:
     - target: {fileID: 6816705848351969957, guid: a9f1c8642b463774db13b377254e0f22, type: 3}
       propertyPath: offset.x
       value: -300
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816705848351969957, guid: a9f1c8642b463774db13b377254e0f22, type: 3}
+      propertyPath: offset.y
+      value: 425
       objectReference: {fileID: 0}
     - target: {fileID: 7144913847811964866, guid: a9f1c8642b463774db13b377254e0f22, type: 3}
       propertyPath: m_Name
@@ -7715,7 +7731,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -35}
   m_SizeDelta: {x: 500, y: 804}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1471823743
@@ -7776,7 +7792,7 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 225, y: 175}
+  m_CellSize: {x: 225, y: 150}
   m_Spacing: {x: 25, y: 25}
   m_Constraint: 1
   m_ConstraintCount: 2
@@ -8666,6 +8682,10 @@ PrefabInstance:
     - target: {fileID: 6816705848351969957, guid: a9f1c8642b463774db13b377254e0f22, type: 3}
       propertyPath: offset.x
       value: -300
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816705848351969957, guid: a9f1c8642b463774db13b377254e0f22, type: 3}
+      propertyPath: offset.y
+      value: 425
       objectReference: {fileID: 0}
     - target: {fileID: 7144913847811964866, guid: a9f1c8642b463774db13b377254e0f22, type: 3}
       propertyPath: m_Name
@@ -11411,6 +11431,10 @@ PrefabInstance:
     - target: {fileID: 269091609147172268, guid: a9f1c8642b463774db13b377254e0f22, type: 3}
       propertyPath: m_Color.r
       value: 0.8745098
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816705848351969957, guid: a9f1c8642b463774db13b377254e0f22, type: 3}
+      propertyPath: offset.y
+      value: 425
       objectReference: {fileID: 0}
     - target: {fileID: 7144913847811964866, guid: a9f1c8642b463774db13b377254e0f22, type: 3}
       propertyPath: m_Name
