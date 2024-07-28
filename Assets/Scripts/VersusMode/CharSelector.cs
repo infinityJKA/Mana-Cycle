@@ -29,6 +29,7 @@ namespace VersusMode {
         [SerializeField] private Image background;
         [SerializeField] private Image portrait;
         [SerializeField] private TextMeshProUGUI nameText;
+        [SerializeField] private Image backgroundAccent;
 
         [SerializeField] private GameObject cpuLevelObject;
         [SerializeField] private TextMeshProUGUI cpuLevelText;
@@ -105,13 +106,13 @@ namespace VersusMode {
                     nameText.enabled = true;
                     if (selectedIcon) {
                         SetSelection(selectedIcon.selectable);
-                        selectedIcon.cursorImage.color = Color.white;
+                        // selectedIcon.cursorImage.color = Color.white;
                     }
                 }
                 // if not active (player vs. cpu only): dimmed cursor if p1, hide if p2
                 else {
                     if (isPlayer1) {
-                        if (selectedIcon) selectedIcon.cursorImage.color = new Color(1f, 1f, 1f, 0.5f);
+                        // if (selectedIcon) selectedIcon.cursorImage.color = new Color(1f, 1f, 1f, 0.5f);
                     } else {
                         portrait.color = new Color(1f, 1f, 1f, 0.5f);
                         nameText.enabled = false;
@@ -272,6 +273,8 @@ namespace VersusMode {
                     }
 
                     portrait.sprite = selectedBattler.sprite;
+                    SetAccentMaterialColor(new Color(selectedBattler.textBoxColor.r, selectedBattler.textBoxColor.g, selectedBattler.textBoxColor.b, 0.25f));
+                    
                     // nameText.text = selectedBattler.displayName;
 
                     if (selectedBattler.passiveAbilityEffect == Battle.Battler.PassiveAbilityEffect.None && selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
@@ -345,6 +348,12 @@ namespace VersusMode {
             {
                 if (!menu.Mobile) ToggleSettings();
             }
+        }
+
+        private void SetAccentMaterialColor(Color col)
+        {
+            backgroundAccent.material = new Material(backgroundAccent.material);
+            backgroundAccent.material.SetColor("_Color", col);
         }
 
         // for use with CharSelectorController
@@ -497,6 +506,9 @@ namespace VersusMode {
             SetSettingsSelection(ghostPieceToggle);
             ghostPieceToggle.isOn = Settings.current.drawGhostPiece;
             abilityToggle.isOn = Settings.current.enableAbilities;
+
+            // selectedIcon = menu.characterIcons[0];
+            // SetSelectedIcon(selectedIcon);
         }
 
         public void ToggleLock()
@@ -625,6 +637,7 @@ namespace VersusMode {
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, (selectingCpuLevel && !menu.Mobile) ? 0.65f : 1f);
                 nameText.text = selectedBattler.displayName;
                 nameText.fontStyle = TMPro.FontStyles.Bold;
+                SetAccentMaterialColor(new Color(selectedBattler.textBoxColor.r, selectedBattler.textBoxColor.g, selectedBattler.textBoxColor.b, 0.5f));
             }
             else {
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
@@ -716,6 +729,7 @@ namespace VersusMode {
                 return;
             }
 
+            Debug.Log("Setting New Selected Icon " + newSelectedIcon);
             SetSelectedIcon(newSelectedIcon);
         }
 
@@ -753,6 +767,7 @@ namespace VersusMode {
         public void SelectBattler() {
             portrait.sprite = selectedBattler.sprite;
             nameText.text = isRandomSelected ? selectedIcon.battler.displayName : selectedBattler.displayName;
+            SetAccentMaterialColor(new Color(selectedBattler.textBoxColor.r, selectedBattler.textBoxColor.g, selectedBattler.textBoxColor.b, 0.25f));
 
             if (selectedBattler.passiveAbilityEffect == Battle.Battler.PassiveAbilityEffect.None && selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
                 abilityText.text = "No special abilities";

@@ -31,6 +31,8 @@ namespace VersusMode {
         // Start text to darken when button disabled
         [SerializeField] private Selectable startText;
 
+        [SerializeField] private CharSelectCursor p1Cursor, p2Cursor, cpuCursor;
+
         // for handling Controllers
         // [SerializeField] private PlayerConnectionManager connectionManager;
 
@@ -38,7 +40,6 @@ namespace VersusMode {
 
         [SerializeField] private bool mobile;
         public bool Mobile { get {return mobile;} }
-
 
         public bool started {get; private set;}
         // (for debug purposes)
@@ -61,10 +62,10 @@ namespace VersusMode {
         {
             Selectable firstSelection = grid.GetChild(0).GetComponent<Selectable>();
 
-            p2Selector.SetSelection(firstSelection);
-            if (!p2Selector.connected) p2Selector.HideSelection();
-            p1Selector.SetSelection(firstSelection);
-            if (!p1Selector.connected) p1Selector.HideSelection();
+            // p2Selector.SetSelection(firstSelection);
+            // if (!p2Selector.connected) p2Selector.HideSelection();
+            // p1Selector.SetSelection(firstSelection);
+            // if (!p1Selector.connected) p1Selector.HideSelection();
 
             p2Selector.MenuInit();
             p1Selector.MenuInit();
@@ -79,10 +80,21 @@ namespace VersusMode {
                 p1Selector.SetLives(Settings.current.versusLives);
             }
 
-            if (!Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) {
+
+            cpuCursor.gameObject.SetActive(Storage.level == null && !Storage.isPlayerControlled2);
+            p2Cursor.gameObject.SetActive(Storage.level == null && Storage.isPlayerControlled2);
+            // cpu vs cpu
+            if (!Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) 
+            {
                 p1Selector.CpuLevel = Settings.current.cvcP1Level;
                 p2Selector.CpuLevel = Settings.current.cvcP2Level;
-            } else if (Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) {
+
+                p2Cursor.gameObject.SetActive(true);
+                cpuCursor.gameObject.SetActive(false);
+            } 
+            // player vs cpu
+            else if (Storage.isPlayerControlled1 && !Storage.isPlayerControlled2 && Storage.level == null) 
+            {
                 p2Selector.CpuLevel = Settings.current.cpuLevel;
             }
 
