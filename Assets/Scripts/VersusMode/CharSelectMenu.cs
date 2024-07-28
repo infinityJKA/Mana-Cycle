@@ -20,7 +20,8 @@ namespace VersusMode {
         private TransitionScript transitionHandler;
 
         // Gameobject to show when both players are ready and game is ready to start
-        [SerializeField] private GameObject readyObject;
+        [SerializeField] private GameObject readyBlinkObject;
+        [SerializeField] private GameObject readyHoldObject;
 
         // Sound to play when both players are ready and match is starting
         [SerializeField] private GameObject startSFX;
@@ -117,7 +118,8 @@ namespace VersusMode {
 
         void Update() {
             // while both ready, blink the ready gameobject
-            if (!mobile) readyObject.SetActive(ready && Mathf.PingPong(Time.time, 0.4f) > 0.125f);
+            if (!mobile) readyBlinkObject.SetActive(ready && Mathf.PingPong(Time.time, 0.4f) > 0.125f);
+            if (!mobile) readyHoldObject.SetActive(ready);
         }
 
         // Called when player casts while locked in. If both players are ready, match will begin
