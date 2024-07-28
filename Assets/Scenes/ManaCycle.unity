@@ -1535,7 +1535,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1144700038}
-  - {fileID: 1636478271}
   - {fileID: 371667896}
   m_Father: {fileID: 1280025126}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3470,6 +3469,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7561198744834971609, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: thunderIconPrefab
+      value: 
+      objectReference: {fileID: 826832136261694759, guid: 7b4fa36a47b7c26409bf1d6261e50836, type: 3}
+    - target: {fileID: 7561198744834971609, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: thunderActivateSFX
+      value: 
+      objectReference: {fileID: 7978053776321691471, guid: b8ec0be31265b95449585b32a78fe7ca, type: 3}
     - target: {fileID: 7768733765845821182, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -8522,11 +8529,11 @@ RectTransform:
   m_Children:
   - {fileID: 2600962730657970978}
   - {fileID: 1493097852}
-  m_Father: {fileID: 255643304}
+  m_Father: {fileID: 1144700038}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2, y: 4}
+  m_AnchoredPosition: {x: 579.8333, y: 3.0000203}
   m_SizeDelta: {x: 475, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1690793190
@@ -10097,7 +10104,7 @@ PrefabInstance:
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: battler
       value: 
-      objectReference: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+      objectReference: {fileID: 11400000, guid: 1c93cc654a75a784a838ad03a98b9304, type: 2}
     - target: {fileID: 2738482425047349209, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: winMenu
       value: 
@@ -11078,6 +11085,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7561198744834971609, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: thunderIconPrefab
+      value: 
+      objectReference: {fileID: 826832136261694759, guid: 7b4fa36a47b7c26409bf1d6261e50836, type: 3}
+    - target: {fileID: 7561198744834971609, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      propertyPath: thunderActivateSFX
+      value: 
+      objectReference: {fileID: 7978053776321691471, guid: b8ec0be31265b95449585b32a78fe7ca, type: 3}
     - target: {fileID: 7648401473216926979, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
       propertyPath: m_StartCorner
       value: 1
@@ -11244,7 +11259,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 109460369072555598, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 1636478271}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: baffa8246fd9246ec88edbb5fb5293a6, type: 3}
 --- !u!1001 &306529073703901306
