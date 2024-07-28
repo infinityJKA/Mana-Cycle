@@ -653,6 +653,10 @@ namespace Battle.Board {
                         finalFallTime = 0.8f;
                     }
 
+                    if(abilityManager.thunderRushActive){
+                        finalFallTime = finalFallTime/2.8f;
+                    }
+
                     if (Time.time - previousFallTime > finalFallTime) {
 
                         // Try to move the piece down.
