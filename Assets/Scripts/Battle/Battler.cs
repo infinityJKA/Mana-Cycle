@@ -40,6 +40,7 @@ namespace Battle {
             Osmose, // gain special when opponent uses ability
             Instadrop, // trainbot's definitely not overpowered ability
             LastStand, // Geo's revenge mechanic
+            UnstableMana // Electro's blob bonus
         }
 
         /// <summary>Description this battler's passive ability</summary>
@@ -55,7 +56,8 @@ namespace Battle {
             PyroBomb,
             Foresight,
             GoldMine,
-            ZBlind
+            ZBlind,
+            ThunderRush
         }
 
         /// <summary>If true, this battler will start at full mana</summary>

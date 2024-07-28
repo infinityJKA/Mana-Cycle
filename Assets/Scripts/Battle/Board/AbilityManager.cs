@@ -41,6 +41,12 @@ namespace Battle.Board {
         // used for synchronizing ability with the opponent's client.
         public int[] abilityData;
 
+        // Timer for when to stop Electro's ability
+        private float abilityEndTime;
+        public bool thunderRushActive = false;
+        [SerializeField] public Transform thunderIconPrefab;
+         [SerializeField] private GameObject thunderActivateSFX;
+
 
         void Awake()
         {
@@ -48,6 +54,16 @@ namespace Battle.Board {
             enabled = Settings.current.enableAbilities;
             manaBar.gameObject.SetActive(enabled);
             RefreshManaBar();
+        }
+
+        void Update(){
+            if(thunderRushActive){
+                Debug.Log("THUNDER RUSH ACTIVE "+ abilityEndTime+" !< "+Time.time);
+                if(abilityEndTime <= Time.time){
+                    Destroy(symbolList.GetChild(0).gameObject);
+                    thunderRushActive = false;
+                }
+            }
         }
 
         public void InitManaBar() {
@@ -73,7 +89,6 @@ namespace Battle.Board {
 
         public void RefreshManaBar()
         {        
-            
             if (!enabled) return;
             // if this is disabled, also disable mana bar
             manaDisp.fillAmount = 1f * mana / board.Battler.activeAbilityMana;
@@ -116,6 +131,7 @@ namespace Battle.Board {
                     case Battler.ActiveAbilityEffect.Foresight: Foresight(); break;
                     case Battler.ActiveAbilityEffect.GoldMine: GoldMine(); break;
                     case Battler.ActiveAbilityEffect.ZBlind: ZBlind(); break;
+                    case Battler.ActiveAbilityEffect.ThunderRush: ThunderRush(); break;
                     default: break;
                 }
 
@@ -246,6 +262,16 @@ namespace Battle.Board {
                 abilityData = new int[1];
                 abilityData[0] = board.enemyBoard.SpawnStandalonePiece(zmanPiece);
             }
+        }
+
+        private void ThunderRush(){
+            abilityEndTime = Time.time + 13;
+            Instantiate(thunderActivateSFX);
+            if(!thunderRushActive){
+                Instantiate(thunderIconPrefab, symbolList);
+                thunderRushActive = true;
+            }
+            // thunderIcon.gameObject.SetActive(true);
         }
 
         public void ClearAbilityData() {
