@@ -11,20 +11,22 @@ namespace Animation
         [SerializeField] Vector3 maxPos;
         [SerializeField] bool useUnscaledTime = false;
         private float signx;
+        private float signz;
         // Start is called before the first frame update
         void Start()
         {
             signx = Mathf.Sign(maxPos.x);
+            signz = Mathf.Sign(maxPos.z);
         }
 
         // Update is called once per frame
         void Update()
         {
-            transform.position += speed * (useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime);
-            transform.position = new Vector3(
-                transform.position.x * signx >= maxPos.x * signx ? minPos.x : transform.position.x, 
-                transform.position.y >= maxPos.y ? minPos.y : transform.position.y,
-                transform.position.z >= maxPos.z ? minPos.z : transform.position.z
+            transform.localPosition += speed * (useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime);
+            transform.localPosition = new Vector3(
+                transform.localPosition.x * signx >= maxPos.x * signx ? minPos.x : transform.localPosition.x, 
+                transform.localPosition.y >= maxPos.y ? minPos.y : transform.localPosition.y,
+                transform.localPosition.z * signz >= maxPos.z * signz ? minPos.z : transform.localPosition.z
             );
         }
     }
