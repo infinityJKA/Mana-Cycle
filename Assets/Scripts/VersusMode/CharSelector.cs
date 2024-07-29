@@ -36,7 +36,7 @@ namespace VersusMode {
         [SerializeField] private GameObject cpuLevelLeftArrow, cpuLevelRightArrow;
 
         ///<summary>SFX played when interacting with menu</summary>
-        [SerializeField] private GameObject switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX, settingsToggleSFX, connectSFX;
+        [SerializeField] private GameObject switchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX, settingsToggleSFX, connectSFX;
         // cursor animations played when hovering / selecting
         [SerializeField] Animator cursorAnimator, cpuCursorAnimator;
         // whether to use regular cursor animator or cpu animator
@@ -232,6 +232,8 @@ namespace VersusMode {
             if (!isPlayer1 && (!Storage.isPlayerControlled2 || Storage.online)) {
                 tipText.gameObject.SetActive(false);
             }
+
+            RefreshLockVisuals();
         }
 
         private void OnDisable() {
@@ -454,7 +456,6 @@ namespace VersusMode {
 
         // initialization :(
         public void MenuInit() {
-            RefreshLockVisuals();
 
             curCursorAnimator = cursorAnimator;
             if (!isPlayer1 && !Storage.isPlayerControlled2 && Storage.isPlayerControlled1) curCursorAnimator = cpuCursorAnimator;
@@ -507,6 +508,8 @@ namespace VersusMode {
                         portrait.SetActive(false);
                     }
                 }
+
+                RefreshLockVisuals();
             }
 
             if (menu.Mobile && isCpuCursor && Active) {
@@ -754,7 +757,7 @@ namespace VersusMode {
 
         public void SetSelection(Selectable newSelection) {
             if (!newSelection) {
-                if (Application.isPlaying) Instantiate(noswitchSFX);
+                // if (Application.isPlaying) Instantiate(noswitchSFX);
                 return;
             }
 
