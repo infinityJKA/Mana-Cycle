@@ -1446,7 +1446,16 @@ namespace Battle.Board {
             }
 
             // first try to counter incoming damage from furthest to closest
-            if (damage > 0) damage = hpBar.CounterIncoming(damage);
+            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender){  // extra defense for romra
+                Debug.Log("romra dmg "+damage+" >defending> "+ (damage*1.3f));
+                damage = (int)(damage*1.3f);
+                if (damage > 0) damage = hpBar.CounterIncoming(damage);
+                Debug.Log("romra dmg after defending "+damage+" >attacking> "+ (damage/1.3f/1.3f));
+                damage = (int)(damage/1.3f/1.3f); // reduce damage to 0.7x for attacking
+            }
+            else{
+                if (damage > 0) damage = hpBar.CounterIncoming(damage);
+            }
 
             // then add shield to self
             if (damage > 0 && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields) damage = AddShield(damage);
