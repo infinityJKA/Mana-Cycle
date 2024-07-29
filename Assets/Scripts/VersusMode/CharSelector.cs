@@ -37,6 +37,10 @@ namespace VersusMode {
 
         ///<summary>SFX played when interacting with menu</summary>
         [SerializeField] private GameObject switchSFX, noswitchSFX, selectSFX, unselectSFX, infoOpenSFX, infoCloseSFX, settingsToggleSFX, connectSFX;
+        // cursor animations played when hovering / selecting
+        [SerializeField] Animator cursorAnimator, cpuCursorAnimator;
+        // whether to use regular cursor animator or cpu animator
+        private Animator curCursorAnimator;
 
         /// Fade in/out speed for the ability info & settings box
         [SerializeField] private float fadeSpeed;
@@ -419,6 +423,8 @@ namespace VersusMode {
                 Instantiate(selectSFX);
                 Active = false;
                 opponentSelector.Active = true;
+                opponentSelector.curCursorAnimator.ResetTrigger("Wait");
+                opponentSelector.curCursorAnimator.SetTrigger("Hover");
                 RefreshLockVisuals();
             }
             // otherwise, lock/unlock in this character
@@ -450,6 +456,9 @@ namespace VersusMode {
         public void MenuInit() {
             RefreshLockVisuals();
 
+            curCursorAnimator = cursorAnimator;
+            if (!isPlayer1 && !Storage.isPlayerControlled2 && Storage.isPlayerControlled1) curCursorAnimator = cpuCursorAnimator;
+
             // Set cpu cursor to true if in Versus: player vs. opponent only. set to cpu cursor and false if this is p2
             if (Storage.gamemode == Storage.GameMode.Versus && !Storage.isPlayerControlled2 && Storage.level == null) {
                 if (!isPlayer1) {
@@ -466,6 +475,14 @@ namespace VersusMode {
             } else {
                 Active = true;
             }
+
+            if (Active)
+            {
+                curCursorAnimator.ResetTrigger("Wait");
+                curCursorAnimator.SetTrigger("Hover");
+            }
+
+            Debug.Log(curCursorAnimator);
             
             if (Storage.gamemode == Storage.GameMode.Solo || (isPlayer1 && !Storage.isPlayerControlled2 && Storage.level != null))
             {
@@ -506,9 +523,6 @@ namespace VersusMode {
             SetSettingsSelection(ghostPieceToggle);
             ghostPieceToggle.isOn = Settings.current.drawGhostPiece;
             abilityToggle.isOn = Settings.current.enableAbilities;
-
-            // selectedIcon = menu.characterIcons[0];
-            // SetSelectedIcon(selectedIcon);
         }
 
         public void ToggleLock()
@@ -531,6 +545,8 @@ namespace VersusMode {
                     } else {
                         Active = false;
                         opponentSelector.Active = true;
+                        opponentSelector.curCursorAnimator.ResetTrigger("Wait");
+                        opponentSelector.curCursorAnimator.SetTrigger("Hover");
                     }
                 }
             }
@@ -542,6 +558,24 @@ namespace VersusMode {
                     cpuLevelObject.SetActive(menu.Mobile && isCpuCursor);
                 }
                 if (cpuLevelObject.activeInHierarchy) RefreshCpuLevel();
+            }
+
+            // cursor animation triggers
+            if (lockedIn)
+            {
+                curCursorAnimator.ResetTrigger("Hover");
+                curCursorAnimator.SetTrigger("Select");
+
+            }
+            else if (isPlayer1 && opponentSelector.isCpuCursor && !opponentSelector.Active)
+            {
+                opponentSelector.curCursorAnimator.ResetTrigger("Hover");
+                opponentSelector.curCursorAnimator.SetTrigger("Wait");
+            }
+            if (!lockedIn)
+            {
+                curCursorAnimator.ResetTrigger("Select");
+                curCursorAnimator.SetTrigger("Hover");
             }
 
             RefreshLockVisuals();
@@ -729,7 +763,6 @@ namespace VersusMode {
                 return;
             }
 
-            Debug.Log("Setting New Selected Icon " + newSelectedIcon);
             SetSelectedIcon(newSelectedIcon);
         }
 

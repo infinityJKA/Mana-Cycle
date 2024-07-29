@@ -51,7 +51,6 @@ namespace VersusMode {
         ///<param name="isPlayer1">true for p1, false for p2</param>
         ///<param name="hovered">true if the player's cursor is here, false if not</param>
         public void SetSelected(bool isPlayer1, bool hovered, bool dim = false) {
-            Debug.Log("isPlayer1 " + isPlayer1);
             if (isPlayer1) {
                 p1hovered = hovered;
             } else if (Storage.gamemode != Storage.GameMode.Solo) {
