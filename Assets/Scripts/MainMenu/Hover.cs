@@ -10,6 +10,8 @@ namespace MainMenu {
         private float originY;
         [SerializeField] private float scale;
         [SerializeField] private float speed;
+        [SerializeField] private float timeOffset = 0;
+        [SerializeField] bool useUnscaledTime = false;
         // Start is called before the first frame update
         void Start()
         {
@@ -20,8 +22,8 @@ namespace MainMenu {
         // Update is called once per frame
         void Update()
         {
-            t += Time.smoothDeltaTime;
-            y = (float) Math.Sin(t*speed) * scale;
+            t += (useUnscaledTime) ? Time.unscaledDeltaTime : Time.smoothDeltaTime;
+            y = (float) Math.Sin(t*speed + timeOffset) * scale;
             transform.localPosition = new Vector3(transform.localPosition.x, originY + y, transform.localPosition.z);
         }
     }
