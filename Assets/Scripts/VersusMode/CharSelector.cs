@@ -675,6 +675,7 @@ namespace VersusMode {
             }
             else {
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+                SetAccentMaterialColor(new Color(selectedBattler.textBoxColor.r, selectedBattler.textBoxColor.g, selectedBattler.textBoxColor.b, 0.25f));
                 nameText.fontStyle = TMPro.FontStyles.Normal;
                 nameText.text = isRandomSelected ? selectedIcon.battler.displayName : selectedBattler.displayName;
             }
