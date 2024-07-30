@@ -45,7 +45,7 @@ namespace Battle.Board {
         private float abilityEndTime;
         public bool thunderRushActive = false;
         [SerializeField] public Transform thunderIconPrefab;
-         [SerializeField] private GameObject thunderActivateSFX;
+         [SerializeField] private GameObject thunderActivateSFX,heroicShieldSFX;
 
 
         void Awake()
@@ -132,6 +132,7 @@ namespace Battle.Board {
                     case Battler.ActiveAbilityEffect.GoldMine: GoldMine(); break;
                     case Battler.ActiveAbilityEffect.ZBlind: ZBlind(); break;
                     case Battler.ActiveAbilityEffect.ThunderRush: ThunderRush(); break;
+                    case Battler.ActiveAbilityEffect.HeroicShield: HeroicShield(); break;
                     default: break;
                 }
 
@@ -272,6 +273,14 @@ namespace Battle.Board {
                 thunderRushActive = true;
             }
             // thunderIcon.gameObject.SetActive(true);
+        }
+
+        private void HeroicShield(){
+            Instantiate(heroicShieldSFX);
+            for (int i=5; i>=1; i--){
+                board.hpBar.DamageQueue[0].AddDamage(board.hpBar.DamageQueue[i].dmg);
+                board.hpBar.DamageQueue[i].SetDamage(0);
+            }
         }
 
         public void ClearAbilityData() {
