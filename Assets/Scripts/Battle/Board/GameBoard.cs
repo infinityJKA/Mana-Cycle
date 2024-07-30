@@ -641,7 +641,7 @@ namespace Battle.Board {
                     // If it is greater than fall time (or fallTime/10 if holding down),
                     // move the piece one down.
                     // (Final fall time has to be greater than 0.05)
-                    float finalFallTime = fallTime*this.fallTimeMult;
+                    float finalFallTime = fallTime*fallTimeMult;
 
                     // If not fast-dropping, slow down fall if this is a slow falling tile
                     if (piece && piece.slowFall && fallTimeMult > 0.2f) finalFallTime *= 2f;
@@ -649,12 +649,13 @@ namespace Battle.Board {
                     if (finalFallTime < 0.05f){
                         finalFallTime = 0.05f;
                     }
+                    // Most ability tiles have slow fall - ex. infinity's sword, geo's crystal
                     if (finalFallTime < 0.8f && piece && piece.slowFall && !quickFall) {
                         finalFallTime = 0.8f;
                     }
 
                     if(abilityManager.thunderRushActive){
-                        finalFallTime = finalFallTime/2.8f;
+                        finalFallTime /= 2.8f;
                     }
 
                     if (Time.time - previousFallTime > finalFallTime) {
@@ -687,7 +688,7 @@ namespace Battle.Board {
                                     rowFallCount = 0;
                                 } else {
                                     rowFallCount++;
-                                    // if row fall count exceeds 3, auto place
+                                    // if row fall count exceeds 3, auto place (cannot fall to the same row 3 times, prevents infinite fall stalling)
                                     if (rowFallCount > 3) {
                                         PlacePiece();
                                     }
@@ -803,7 +804,6 @@ namespace Battle.Board {
 
             if(!ValidPlacement()){
                 // try nudging left, then right, then up. If none work, undo the rotation
-                // only bump up if row fallen to 3 or less times
                 if (!MovePiece(-1, 0) && !MovePiece(1, 0) && !MovePiece(0, -1)) piece.RotateRight();
             }
 
@@ -1339,7 +1339,7 @@ namespace Battle.Board {
         }
 
         /// <summary>
-        /// Play the default piece-clearing partifle effect at the given row and col with specified color.
+        /// Play the default piece-clearing particle effect at the given row and col with specified color.
         /// </summary>
         public void SpawnParticles(int row, int col, Color color) {
             if (particleOpacity <= 0f) return;
@@ -1379,8 +1379,13 @@ namespace Battle.Board {
         /// </summary>
         /// <param name="damage">damage to deal</param>
         /// <param name="shootSpawnPos">spawn point of the damage shoot particle if using damage shoots</param>
-        /// <param name="partOfChain">determines waht type of packet is sent to the opponent in online mode</param>
+        /// <param name="partOfChain">determines what type of packet is sent to the opponent in online mode</param>
         public void DealDamage(int damage, Vector3 shootSpawnPos, bool partOfChain) {
+            if (damage <= 0) {
+                Debug.LogWarning("trying to do 0 damage");
+                return;
+            }
+
             if (Storage.online) {
                 // when online, only evaluate damage if the client owns this board
                 if (netPlayer.isOwned) {
@@ -1407,6 +1412,11 @@ namespace Battle.Board {
         /// <returns>the amount of residual damage after countering/adding shield</returns>
         public int DealDamageLocal(int damage, Vector3 shootSpawnPos)
         {
+            if (damage <= 0) {
+                Debug.LogWarning("trying to do 0 damage locally");
+                return 0;
+            }
+
             matchStats.highestSingleDamage = Math.Max(matchStats.highestSingleDamage, damage);
 
             if (postGame) {
@@ -1434,7 +1444,8 @@ namespace Battle.Board {
         }
 
         /// <summary>
-        /// Evaluate incoming damage instantly.
+        /// Evaluate outgoing (countring/shielding) damage instantly only for this board, so only countering and shielding.
+        /// Will call the enemy's board to evaulate their damage if there is any left over after countering and shielding. 
         /// </summary>
         /// <param name="damage">amount of damage to take</param>
         /// <returns>residual damage not dealt (only applicable to online mode where damage is sent to opponent to eval on their client)</returns>
@@ -1445,30 +1456,37 @@ namespace Battle.Board {
                 return 0;
             }
 
+            if (damage <= 0) {
+                Debug.LogWarning("trying to do 0 damage outgoing");
+                return 0;
+            }
+
             // first try to counter incoming damage from furthest to closest
             if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender){  // extra defense for romra
                 Debug.Log("romra dmg "+damage+" >defending> "+ (damage*1.3f));
-                damage = (int)(damage*1.3f);
-                if (damage > 0) damage = hpBar.CounterIncoming(damage);
-                Debug.Log("romra dmg after defending "+damage+" >attacking> "+ (damage/1.3f/1.3f));
-                damage = (int)(damage/1.3f/1.3f); // reduce damage to 0.7x for attacking
+                damage = hpBar.CounterIncoming((int)(damage*1.3f));
+
+                Debug.Log("romra dmg after defending "+damage+" >attacking> "+ (int)(damage*0.7f));
+                damage = (int)(damage*0.7f); // reduce damage to 0.7x for attacking
             }
             else{
-                if (damage > 0) damage = hpBar.CounterIncoming(damage);
+                damage = hpBar.CounterIncoming(damage);
             }
 
-            // then add shield to self
-            if (damage > 0 && battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields) damage = AddShield(damage);
-
-            // if in online mode, send remainder of damage to opponent for then to evaluate on their client
-            // if not, evaluate on the other board now
+            // stop if no leftover damage
             if (damage <= 0) return 0;
 
+            // add shield to self after countering, but before attacking opponent
+            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields) damage = AddShield(damage);
+            // add to total score - which is damage dealt in versus modes.
             matchStats.totalScore += damage;
 
+            // if in online mode, send remainder of damage to opponent for then to evaluate on their client (return leftover damage to DealDamageLocal() that called this)
             if (Storage.online) {
                 return damage;
-            } else {
+            } 
+            // if not, evaluate on the other board now
+            else {
                 enemyBoard.EvaluateInstantIncomingDamage(damage);
                 return 0;
             }
@@ -1818,7 +1836,8 @@ namespace Battle.Board {
                 cascadePopup.Flash(cascade.ToString());
             }
 
-            // Get the average of all tile positions; this is where shoot particle is spawned
+            // Remove tiles from blobs
+            // During this, accumulate the average of all tile positions; this is where shoot particle is spawned
             Vector3 averagePos = Vector3.zero;
             foreach (Blob blob in blobs) {
                 for (int index = 0; index < blob.tiles.Count; index++) {
@@ -1844,53 +1863,67 @@ namespace Battle.Board {
             matchStats.highestCombo = Math.Max(matchStats.highestCombo, chain);
             matchStats.highestCascade = Math.Max(matchStats.highestCascade, cascade);
 
+            // Total accumulated point multiplier. multiplied by damagePerMana to get base damage (before chain/cascade/gauntlet stats)
             float totalPointMult = 0;
             // Clear all blob-contained tiles from the board.
             foreach (Blob blob in blobs) {
-                // run onclear first to check for point multiplier increases or other effects (geo gold mine)
+                float blobPointMult = 0f; // point mult total for just this blob
+
+                float blobDamageMultiplier = 1f; // damage modifier that can be influenced by abilities (ex. Electro's unstable mana)
+                if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.UnstableMana && blob.tiles.Count >= 9) {
+                    blobDamageMultiplier = 1.5f;
+                }
+
+                // run onclear first to check for point multiplier increases or other effects (ex. geo's gold mine)
                 foreach (Vector2Int pos in blob.tiles) {
                     if (tiles[pos.y, pos.x]) {
                         tiles[pos.y, pos.x].BeforeClear(blob);
                     }
                 }
-                // then remove the tiles from the board 
+
+                
+                // then remove the tiles from the board, acumulating point multipliers
                 foreach (Vector2Int pos in blob.tiles) {
-                    totalPointMult += ClearTile(pos.x, pos.y);
+                    blobPointMult += ClearTile(pos.x, pos.y);
 
                     // clear adjacent fragile tiles (mini z?men)
-                    totalPointMult += ClearTile(pos.x - 1, pos.y, true, onlyClearFragile: true);
-                    totalPointMult += ClearTile(pos.x + 1, pos.y, true, onlyClearFragile: true);
-                    totalPointMult += ClearTile(pos.x, pos.y - 1, true, onlyClearFragile: true);
-                    totalPointMult += ClearTile(pos.x, pos.y + 1, true, onlyClearFragile: true);
+                    blobPointMult += ClearTile(pos.x - 1, pos.y, true, onlyClearFragile: true);
+                    blobPointMult += ClearTile(pos.x + 1, pos.y, true, onlyClearFragile: true);
+                    blobPointMult += ClearTile(pos.x, pos.y - 1, true, onlyClearFragile: true);
+                    blobPointMult += ClearTile(pos.x, pos.y + 1, true, onlyClearFragile: true);
                 }
+
+                blobPointMult *= blobDamageMultiplier;
+                totalPointMult += blobPointMult;
             }
             if (cascade <= 1) PlaySFX(castSFX, 1f + chain * 0.1f);
 
+            // Multiplier to total damage, used in some abilities (ex. geo's last stand)
+            float totalDamageMultiplier = 1f;
+
             // Geo's revenge system
-            float GeoBoost = 1f;
             if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.LastStand){
                 if(hp <= (float)maxHp/4){
-                    GeoBoost = 1.4f;
+                    totalDamageMultiplier = 1.4f;
                     Debug.Log("Geoboost 25% ver!!!");
                 }
                 else if(hp <= (float)maxHp/2){
-                    GeoBoost = 1.15f;
+                    totalDamageMultiplier = 1.15f;
                     Debug.Log("Geoboost 50% ver!");
                 }
             }
 
-            // Electro's multi-mana bonus
-            float ElectroBoost = 1f;
-            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.UnstableMana){
-                if(totalBlobMana >= 10){
-                    ElectroBoost = 1.5f + ((totalBlobMana-10) * 0.1f);
-                    Debug.Log("Electroboost "+ ElectroBoost + " (" + totalBlobMana + " mana)");
-                }
-            }
+            // // Electro's multi-mana bonus
+            // if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.UnstableMana){
+            //     if(totalBlobMana >= 10){
+            //         totalDamageMultiplier = 1.5f + ((totalBlobMana-10) * 0.1f);
+            //         Debug.Log("Electroboost "+ ElectroBoost + " (" + totalBlobMana + " mana)");
+            //     }
+            // }
 
             // Deal damage for the amount of mana cleared.
             // DMG is scaled by chain and cascade.
-            int damage = (int)( totalPointMult * damagePerMana * chain * (Math.Pow(3,cascade) / 3f) * boardStats[DamageMult] * GeoBoost * ElectroBoost);
+            int damage = (int)( totalPointMult * damagePerMana * totalDamageMultiplier * chain * (Math.Pow(3, cascade - 1)) * boardStats[DamageMult] );
 
             // relay to the opponent's client that the chain advance happened at this point in time
             // RPCs should be guaranteed to execute in order send, so desyncs where piece is placed after when it should in the chain should be prevented.
@@ -1900,7 +1933,7 @@ namespace Battle.Board {
             // when in onlinemode, residual damage may be left that will be sent to the opponent to add to their damage queue within their client
             // and they will then send back an rpc with their damage queue state
             // do not deal damage here if online;
-            // instead the damageSent part of the AdvanceChain rpc will be used to call damage after this was calle dto update the boar dand clear the mana
+            // instead the damageSent part of the AdvanceChain rpc will be used to call damage after this was called to update the board and clear the mana
             DealDamage(damage, averagePos, partOfChain: true);
 
             // Do gravity everywhere
@@ -1917,7 +1950,9 @@ namespace Battle.Board {
             if (totalBlobMana > 0) {
                 GlowBlobs(cascadeDelay);
                 if (manualCastContinue) StartCoroutine(AdvanceChainAndCascadeAfterDelay(cascadeDelay));
-            } else {
+            } 
+            // otherwise advance the cycle and attempt to clear the next color in combo
+            else {
                 AdvanceCycle();
                 cascade = 0;
                 chain++;
@@ -2058,7 +2093,7 @@ namespace Battle.Board {
                         // i don't know enough about transforms to know why. bandaid solution moment.
                         tiles[fr, c].transform.localPosition = BoardToLocalSpace(fr, c);
 
-                        // Animate falling from offset from current row down to current row.
+                        // Animate falling from offset from previous row down to current row.
                         tiles[fr, c].AnimateMovement(
                             new Vector2(0, fr - r),
                             new Vector2(0, 0)
@@ -2107,7 +2142,7 @@ namespace Battle.Board {
                     if (rFall-1 != r) {
                         simulatedTiles[rFall-1, c] = simulatedTiles[r, c];
 
-                        // ddo not animate tile; have it immediately snap to where it will fall
+                        // do not animate tile; have it immediately snap to where it will fall
                         simulatedTiles[rFall-1, c].transform.localPosition = new Vector3(
                             c - width/2f + 0.5f, 
                             -rFall + 1 + physicalHeight/2f - 0.5f + height - physicalHeight, 
@@ -2194,7 +2229,6 @@ namespace Battle.Board {
             for (int r = 0; r < height; r++)
             {
                 // Loop over rows (BOTTOM to top)
-                // Skip bottom tiles, as those cannot fall
                 for (int c = 0; c < width; c++)
                 {
                     if (tiles[r, c]) action(tiles[r, c]);
