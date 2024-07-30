@@ -17,9 +17,8 @@ public class LeaderboardManager {
     }
 
     public static void UploadScore(string key, int score) {
-        #if UNITY_EDITOR
-            return;
-        #endif
+        // don't upload scores in editor
+        if (Application.isEditor) return;
         
         if (uploadingScore) return;
         uploadingScore = true;
