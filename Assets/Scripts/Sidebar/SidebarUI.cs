@@ -70,6 +70,8 @@ public class SidebarUI : MonoBehaviour {
     private void OnTogglePressed(InputAction.CallbackContext ctx) {
         if (PopupManager.showingPopup) return;
 
+        if (BlackjackMenu.blackjackOpened) return;
+
         ToggleExpanded();
 
         if (expanded) {
