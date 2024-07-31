@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HomeFarMountains
-  m_Shader: {fileID: -6465566751694194690, guid: c3b666d82c154b64b8ccf2cddc116b13, type: 3}
+  m_Name: Tree
+  m_Shader: {fileID: -6465566751694194690, guid: b20de568d6f87c34db477e91a428ec80, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -81,20 +81,20 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _GridThickness: 0.25
+    - _Grid_Cube_Size: 10
     - _Height: 0.61
-    - _Line_Thickness: 0.12
+    - _Line_Thickness: 0.15
     - _Metallic: 0
     - _Mode: 0
     - _NoiseScale: 10
     - _OcclusionStrength: 1
-    - _Outer_Thickness: 0.25
     - _Parallax: 0.02
-    - _Smoothness: 0.1
+    - _Smoothness: 0.25
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Steepness: 1
-    - _Subdivision: 101
+    - _Subdivision: 12
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
@@ -105,12 +105,10 @@ Material:
     - _Dimensions: {r: 4, g: 4, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GridColor: {r: 0.7830189, g: 0.7830189, b: 0.7830189, a: 1}
-    - _Grid_Base_Color: {r: 0.083704144, g: 0.7507881, b: 0.9339623, a: 1}
-    - _Grid_Color: {r: 0, g: 0, b: 0, a: 1}
-    - _Grid_Emission: {r: 0, g: 0, b: 0, a: 0}
+    - _Grid_Color: {r: 0.11654504, g: 0.65052104, b: 0.9150943, a: 0}
+    - _Grid_Emission: {r: 0.13082945, g: 0.8976272, b: 1.8490566, a: 0}
     - _MainColor: {r: 0.9622642, g: 0.2133321, b: 0.2133321, a: 1}
     - _MainReference: {r: 1, g: 1, b: 1, a: 1}
-    - _Outer_Color: {r: 0, g: 0.9979036, b: 4.649013, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &3508093117877877749
 MonoBehaviour:
