@@ -13,7 +13,7 @@ namespace VersusMode
 
         public void SetTarget(Vector3 pos)
         {
-
+            // Debug.Log(pos + offset);
             targetPos = pos + offset;
         }
 

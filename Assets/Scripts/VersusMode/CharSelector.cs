@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 using Sound;
 using Mirror;
@@ -216,7 +217,7 @@ namespace VersusMode {
                 centerPosition = abilityInfoCanvasGroup.transform.localPosition;
             }
 
-            selectedIcon = menu.characterIcons[0];
+            // selectedIcon = menu.characterIcons[0];
 
             if (tipText) tipText.gameObject.SetActive(!menu.Mobile);
             gameObject.SetActive(true);
@@ -526,6 +527,9 @@ namespace VersusMode {
             SetSettingsSelection(ghostPieceToggle);
             ghostPieceToggle.isOn = Settings.current.drawGhostPiece;
             abilityToggle.isOn = Settings.current.enableAbilities;
+
+            // wait for frame so grid layout group can set up
+            StartCoroutine(SetSelectionAfterFrame(0));
         }
 
         public void ToggleLock()
@@ -755,7 +759,14 @@ namespace VersusMode {
             settingsSelection.OnSelect(null);
         }
 
-        public void SetSelection(Selectable newSelection) {
+        private IEnumerator SetSelectionAfterFrame(int index, bool triggerSFX = false)
+        {
+            yield return new WaitForEndOfFrame();
+            SetSelection(index, triggerSFX);
+            yield return null;
+        }
+
+        public void SetSelection(Selectable newSelection, bool triggerSFX = true) {
             if (!newSelection) {
                 // if (Application.isPlaying) Instantiate(noswitchSFX);
                 return;
@@ -767,19 +778,18 @@ namespace VersusMode {
                 return;
             }
 
-            SetSelectedIcon(newSelectedIcon);
+            SetSelectedIcon(newSelectedIcon, triggerSFX);
         }
 
         // Set battler to a specific index in the charselectmenu's grid of selectable battlers.
         // Called hen the controller receives a SetBattlerServerRpc.
         // battlerDisplayOnly used for when random is selected by the opponent
-        public void SetSelection(int index) {
-            if (selectedIcon.index == index) return;
-
-            SetSelection(menu.characterIcons[index].GetComponent<Selectable>());
+        public void SetSelection(int index, bool triggerSFX = true) {
+            if (selectedIcon && selectedIcon.index == index) return;
+            SetSelection(menu.characterIcons[index].GetComponent<Selectable>(), triggerSFX);
         }
 
-        public void SetSelectedIcon(CharacterIcon newSelectedIcon) {
+        public void SetSelectedIcon(CharacterIcon newSelectedIcon, bool triggerSFX = true) {
             // only actually display the curosr if this is either not online, or online but client is controlling (player1 is always client, player2 is oppnent)
             if (isCpuCursor) {
                 if (!Storage.isPlayerControlled1) {
@@ -794,7 +804,7 @@ namespace VersusMode {
                 newSelectedIcon.SetSelected(isPlayer1, true);
             }
 
-            Instantiate(switchSFX);
+            if (triggerSFX) Instantiate(switchSFX);
 
             selectedIcon = newSelectedIcon;
 
