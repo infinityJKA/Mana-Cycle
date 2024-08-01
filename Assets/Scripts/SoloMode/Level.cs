@@ -40,9 +40,9 @@ namespace SoloMode {
 
         // To be run when the name language string needs to be updated
         private void UpdateConversationLocale(Conversation localizedConvo) {
-            if (localizedConvo == null) {
-                Debug.LogError(levelName+" has no localized cutscene for current language");
-            }
+            // if (localizedConvo == null) {
+            //     Debug.LogError(levelName+" has no localized cutscene for current language");
+            // }
 
             conversation = localizedConvo;
         }

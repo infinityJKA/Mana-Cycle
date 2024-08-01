@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 namespace ConvoSystem {
     public class ConvoSpeaker : MonoBehaviour {
-        /** Battler being displayed as speaker */
-        [SerializeField] private Battle.Battler speaker;
         /** Image sprite of speaker */
         [SerializeField] private Image portrait;
         /** Gameobject for speaker's name */
@@ -23,14 +21,12 @@ namespace ConvoSystem {
         public bool animating = false;
 
         public void SetSpeaker(Battle.Battler speaker, bool focused) {
-            this.speaker = speaker;
-
             if (speaker != null) {
                 gameObject.SetActive(true);
                 nameObj.SetActive(true);
                 portrait.sprite = speaker.sprite;
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, focused ? 1.0f : 0.5f);
-                nameGUI.text = speaker.name;
+                nameGUI.text = speaker.displayName;
 
                 foreach (Image i in battlerColoredObjects)
                 {
