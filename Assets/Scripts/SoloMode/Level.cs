@@ -8,6 +8,8 @@ using UnityEditor;
 
 using ConvoSystem;
 using Battle;
+using UnityEngine.Localization;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace SoloMode {
     [CreateAssetMenu(fileName = "Level", menuName = "ManaCycle/Level")]
@@ -16,8 +18,34 @@ namespace SoloMode {
         [SerializeField] public string levelName = "Level";
         [SerializeField] public string description = "One of the levels of time";
 
-        /** Conversation that happens before this level */
-        [SerializeField] public Conversation conversation;
+        /** Conversation that happens before this level. if null, convo hasn't been loaded yet */
+        public Conversation conversation {get; private set;}
+
+        [SerializeField] private LocalizedAsset<Conversation> conversationEntry;
+
+        private void OnEnable() {
+            if (conversationEntry == null) {
+                Debug.LogError(levelName+" has no cutscene table set");
+                return;
+            }
+
+            Debug.Log("loading localized cutscene with key "+conversationEntry.TableEntryReference.Key);
+            conversationEntry.LoadAssetAsync();
+            conversationEntry.AssetChanged += UpdateConversationLocale;
+        }
+
+        private void OnDisable() {
+            conversationEntry.AssetChanged -= UpdateConversationLocale;
+        }
+
+        // To be run when the name language string needs to be updated
+        private void UpdateConversationLocale(Conversation localizedConvo) {
+            if (localizedConvo == null) {
+                Debug.LogError(levelName+" has no localized cutscene for current language");
+            }
+
+            conversation = localizedConvo;
+        }
 
         /** Conversations that happen during the level, each with their own condition */
         [SerializeField] public List<MidLevelConversation> midLevelConversations;
@@ -243,6 +271,23 @@ namespace SoloMode {
 
         public string scoreLeaderboardKey => levelId+"_Score";
         public string timeLeaderboardKey => levelId+"_Time";
+
+        public void BeginLevel() {
+            Storage.level = this;
+            Storage.lives = lives;
+
+            // if multiple chars can be chosen from, go to char select
+            if (availableBattlers.Count > 1)
+            {
+                GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("CharSelect");
+            }
+            // if only one available char, set battler and go to manacycle
+            else 
+            {
+                battler = Storage.level.availableBattlers[0];
+                GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("ManaCycle");
+            }
+        }
     }
 
     #if UNITY_EDITOR

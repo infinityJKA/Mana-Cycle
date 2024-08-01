@@ -12,9 +12,8 @@ namespace SoloMode
 {
     public class LevelGenerator : MonoBehaviour
     {
-        [SerializeField] private List<Battle.Battler> usableBattlerList;
+        [SerializeField] private List<Battler> usableBattlerList;
         [SerializeField] private List<AudioClip> usableSongList;
-        [SerializeField] private Conversation defaultConvo;
 
         public Level Generate(float difficulty = 0.5f, bool VersusLevelsEnabled = true, bool SoloLevelsEnabled = false, Battler battler = null, Level lastLevel = null)
         {
@@ -23,14 +22,13 @@ namespace SoloMode
             // if both solo and versus levels can generate, randomly pick between the two by disabling one
             if (VersusLevelsEnabled && SoloLevelsEnabled)
             {
-                VersusLevelsEnabled = (Random.value >= 0.5f);
+                VersusLevelsEnabled = Random.value >= 0.5f;
                 SoloLevelsEnabled = !VersusLevelsEnabled; 
             }
 
             newLevel.levelName = "Generated level";
             newLevel.levelId = "Generated";
             newLevel.description = "Default generated level description";
-            newLevel.conversation = defaultConvo;
             newLevel.generateNextLevel = true;
             newLevel.lastSeriesLevel = lastLevel;
             newLevel.levelDifficulty = difficulty;

@@ -15,7 +15,14 @@ MonoBehaviour:
   levelId: Level1
   levelName: Level 1
   description: Learn the basics of the game!
-  conversation: {fileID: 11400000, guid: a8f7eda06f98c46919a29cdb6a1ed9bb, type: 2}
+  conversationEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:0e80a4fe958458648b847e2c7ed437a9
+    m_TableEntryReference:
+      m_KeyId: 36670058496
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
   midLevelConversations:
   - {fileID: 11400000, guid: 1f149f7bf8fac49e7aa298694a90455d, type: 2}
   - {fileID: 11400000, guid: 04bff79bbfdfd4610aa0cbb1d5c07b1d, type: 2}

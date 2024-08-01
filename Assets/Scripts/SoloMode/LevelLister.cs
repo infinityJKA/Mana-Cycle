@@ -233,11 +233,16 @@ namespace SoloMode {
             Storage.gamemode = Storage.GameMode.Solo;
             Storage.isPlayerControlled1 = true;
             Storage.isPlayerControlled2 = false;
-            convoHandler.StartLevel(pressedLevel);
             focused = false;
             Storage.levelSelectedThisInput = true;
 
-            gameObject.SetActive(false);
+            if (pressedLevel.conversation != null) {
+                gameObject.SetActive(false);
+                convoHandler.StartLevel(pressedLevel);
+            } else {
+                Debug.LogError("Level conversation is null; skipping cutscene");
+                pressedLevel.BeginLevel();
+            }
         }
 
         public void ConfirmSelectedLevel() {

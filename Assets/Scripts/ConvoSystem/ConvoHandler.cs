@@ -161,21 +161,7 @@ namespace ConvoSystem {
             // once the end of the convo is reached, transition to manacycle or char select scene
             if (level != null)
             {
-                Storage.level = level;
-                Storage.lives = Storage.level.lives;
-
-                // if multiple chars can be chosen from, go to char select
-                if (Storage.level.availableBattlers.Count > 1)
-                {
-                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("CharSelect");
-                }
-                // if only one available char, set battler and go to manacycle
-                else 
-                {
-                    Storage.level.battler = Storage.level.availableBattlers[0];
-                    GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("ManaCycle");
-                }
-                
+                level.BeginLevel();
             }
             else
             {
