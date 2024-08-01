@@ -68,10 +68,10 @@ Shader "Unlit/CheckerBackground"
             fixed4 frag (v2f i) : SV_Target
             {
                 float aspect = _ScreenParams.x / _ScreenParams.y;
-                i.uv.x = i.uv.x * aspect;
+                // i.uv.x = i.uv.x * aspect;
 
                 fixed4 col = tex2D(_MainTex, i.uv);
-                float x = abs(i.uv.x + _Time * _SpeedX) * _ScaleX % 1.0;
+                float x = (abs(i.uv.x * aspect + _Time * _SpeedX) * _ScaleX % 1.0) ;
                 float y = abs(i.uv.y + _Time * _SpeedY) * _ScaleY % 1.0;
 
                 if (length(col.rgb - _ReplaceColor.rgb) < _Tolerance)
