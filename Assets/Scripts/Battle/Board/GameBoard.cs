@@ -2417,12 +2417,16 @@ namespace Battle.Board {
             if (playerSide == 1) return false;
 
             // loop through and find the first with requirements met
-            foreach (MidLevelConversation convo in midLevelConvos) {
-                if (convo.ShouldAppear(this)) {
+            foreach (MidLevelConversation midLevelConvo in midLevelConvos) {
+                if (midLevelConvo.ShouldAppear(this)) {
                     convoPaused = true;
                     Time.timeScale = 0;
-                    convoHandler.StartConvo(convo, this);
-                    midLevelConvos.Remove(convo);
+                    if (midLevelConvo.conversation != null) {
+                        convoHandler.StartMidLevelConvo(midLevelConvo.conversation, this);
+                    } else {
+                        Debug.LogError("Midlevelconvo is missing convo");
+                    }
+                    midLevelConvos.Remove(midLevelConvo);
                     // only one per check; return after, if any would be shown after this, they will be next check
                     return true;
                 }
@@ -2433,7 +2437,7 @@ namespace Battle.Board {
 
         public Tile[,] getBoard()
         {
-            return this.tiles;
+            return tiles;
         }
 
         public int getColHeight(int col)

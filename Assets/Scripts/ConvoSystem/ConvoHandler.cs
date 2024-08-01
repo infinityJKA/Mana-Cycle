@@ -130,16 +130,12 @@ namespace ConvoSystem {
                 obj.SetActive(false);
             }
 
-            var midLevelConvo = convo as MidLevelConversation;
-            if (midLevelConvo != null) {
-                isMidLevelConvo = true;
-            }
-
             DisplayConvoLine();
         }
 
-        public void StartConvo(Conversation convo, GameBoard board) {
+        public void StartMidLevelConvo(Conversation convo, GameBoard board) {
             this.board = board;
+            isMidLevelConvo = true;
             StartConvo(convo);
         }
 

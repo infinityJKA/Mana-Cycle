@@ -12,12 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level9
   m_EditorClassIdentifier: 
+  levelId: Level9
   levelName: Level 9
   description: With increased drop speed, score 2800 points and a combo of 5.
-  conversation: {fileID: 11400000, guid: b6539458d80341e4ea28d3b5faebb223, type: 2}
+  conversationEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:0e80a4fe958458648b847e2c7ed437a9
+    m_TableEntryReference:
+      m_KeyId: 32152359317504
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
   midLevelConversations: []
   time: 120
   scoreGoal: 2800
+  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
   lockPieceColors: 1
@@ -25,15 +34,22 @@ MonoBehaviour:
   slideTimeMult: 1
   availableBattlers:
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+  backgroundOverride: {fileID: 0}
+  abilityEnabled: 1
   objectives:
   - condition: 5
     value: 5
+    stringValue: Item1, Item2
+    boolValue: 1
+    statusOverride: 
     inverted: 0
   levelRequirement: {fileID: 11400000, guid: 9e9db0819655b64469e94f6a439a0f46, type: 2}
   nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
+  generateNextLevel: 0
   aiDifficulty: 1
+  levelDifficulty: 0
   trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: 2d4799e5a59601b44a2f1673cb0e301c, type: 3}

@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 896ebd1f723514040a5077ee8ae145f9, type: 3}
-  m_Name: S1Mid1
+  m_Script: {fileID: 11500000, guid: 670696f7b5b01e4438299a5538f61cba, type: 3}
+  m_Name: S1 Mid 1
   m_EditorClassIdentifier: 
   dialogueList:
   - text: This sequence of colors in the center is known as the Mana Cycle. All actions
@@ -19,7 +19,7 @@ MonoBehaviour:
     rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
     rightFocused: 1
     leftAnim: 0
-    rightAnim: 0
+    rightAnim: 4
     background: {fileID: 0}
   - text: In this exercise, the first color is {cycle0}. This means you must connect
       at least 3 {cycle0} tiles together before you can cast the spell.
@@ -37,14 +37,10 @@ MonoBehaviour:
     leftAnim: 0
     rightAnim: 0
     background: {fileID: 0}
-  - text: Try to connect 3 or more {cycle0} tiles!
+  - text: Try to connect 3 or more {cycle0} tiles adjacent to each other!
     leftSpeaker: {fileID: 0}
     rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
     rightFocused: 1
     leftAnim: 0
     rightAnim: 0
     background: {fileID: 0}
-  appearConditions:
-  - condition: 0
-    value: 9999
-  tutorialMaskID: 1

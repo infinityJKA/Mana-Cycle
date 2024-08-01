@@ -12,23 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level6
   m_EditorClassIdentifier: 
+  levelId: Level6
   levelName: Level 6
   description: Survive for 2 minutes with faster-falling mana!
-  conversation: {fileID: 11400000, guid: f01842f7a3ab4124d94e9ae417837dc8, type: 2}
+  conversationEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:0e80a4fe958458648b847e2c7ed437a9
+    m_TableEntryReference:
+      m_KeyId: 32011116130304
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
   midLevelConversations: []
   time: 120
   scoreGoal: 0
+  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
+  lockPieceColors: 1
   fallTime: 0.4
+  slideTimeMult: 1
   availableBattlers:
   - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
   - {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
   - {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
+  backgroundOverride: {fileID: 0}
+  abilityEnabled: 1
   objectives: []
   levelRequirement: {fileID: 11400000, guid: b84cfa6119d471c4fab842be77a7dcf0, type: 2}
+  nextSeriesLevel: {fileID: 0}
   survivalWin: 1
   aiBattle: 0
   opponent: {fileID: 0}
+  generateNextLevel: 0
+  aiDifficulty: 1
+  levelDifficulty: 0
+  trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: fb57511c6889dca40852f3af2fac5e0f, type: 3}

@@ -15,7 +15,14 @@ MonoBehaviour:
   levelId: z5
   levelName: z-5
   description: Score 8000 points by spellcasting only once.
-  conversation: {fileID: 11400000, guid: bcc7eb7d6da2ff64480e10b9e00a3b46, type: 2}
+  conversationEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:0e80a4fe958458648b847e2c7ed437a9
+    m_TableEntryReference:
+      m_KeyId: 33546051039232
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
   midLevelConversations: []
   time: 180
   scoreGoal: 0
@@ -27,6 +34,7 @@ MonoBehaviour:
   slideTimeMult: 1
   availableBattlers:
   - {fileID: 11400000, guid: 5a6cc11cf862ef6419c07f5c48c9f26a, type: 2}
+  backgroundOverride: {fileID: 0}
   abilityEnabled: 1
   objectives:
   - condition: 1

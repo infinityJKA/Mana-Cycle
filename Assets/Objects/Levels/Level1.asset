@@ -24,9 +24,54 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
   midLevelConversations:
-  - {fileID: 11400000, guid: 1f149f7bf8fac49e7aa298694a90455d, type: 2}
-  - {fileID: 11400000, guid: 04bff79bbfdfd4610aa0cbb1d5c07b1d, type: 2}
-  - {fileID: 11400000, guid: e6820c27a95a044839fef0d535b720e2, type: 2}
+  - appearConditions:
+    - condition: 0
+      value: 9999
+      stringValue: 
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+    tutorialMaskID: 1
+    conversationEntry:
+      m_TableReference:
+        m_TableCollectionName: GUID:fd279e852c7feee469c7af7afd7a2f3a
+      m_TableEntryReference:
+        m_KeyId: 2415524098048
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+  - appearConditions:
+    - condition: 7
+      value: 1
+      stringValue: 
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+    tutorialMaskID: 2
+    conversationEntry:
+      m_TableReference:
+        m_TableCollectionName: GUID:fd279e852c7feee469c7af7afd7a2f3a
+      m_TableEntryReference:
+        m_KeyId: 2851266146304
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+  - appearConditions:
+    - condition: 3
+      value: 1
+      stringValue: 
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+    tutorialMaskID: 3
+    conversationEntry:
+      m_TableReference:
+        m_TableCollectionName: GUID:fd279e852c7feee469c7af7afd7a2f3a
+      m_TableEntryReference:
+        m_KeyId: 3031889653760
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
   time: 120
   scoreGoal: 150
   lives: 1

@@ -23,7 +23,7 @@ namespace SoloMode {
         // if not null, replaces the status message displayed on the objective list
         public string statusOverride = "";
 
-        // lose if condition is met
+        // will only be true if the objective is not fulfilled. used for lose if condition is met
         public bool inverted = false;
 
         /** Method to decide when the conversation should be shown, when all conditions are met */

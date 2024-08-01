@@ -12,21 +12,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level11
   m_EditorClassIdentifier: 
+  levelId: Level11
   levelName: Level 11
   description: Survive for 100 seconds with lightspeed falling!
-  conversation: {fileID: 11400000, guid: e90f254f983f9f149b5a905073990f1e, type: 2}
+  conversationEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:0e80a4fe958458648b847e2c7ed437a9
+    m_TableEntryReference:
+      m_KeyId: 32292742672384
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
   midLevelConversations: []
   time: 100
   scoreGoal: 0
+  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
+  lockPieceColors: 1
   fallTime: 0.1
+  slideTimeMult: 1
   availableBattlers:
   - {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+  backgroundOverride: {fileID: 0}
+  abilityEnabled: 1
   objectives: []
   levelRequirement: {fileID: 11400000, guid: 5102af8a2f506bf4e98c5f3f14487889, type: 2}
   nextSeriesLevel: {fileID: 0}
   survivalWin: 1
   aiBattle: 0
   opponent: {fileID: 0}
+  generateNextLevel: 0
+  aiDifficulty: 1
+  levelDifficulty: 0
+  trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: f3a2008f23b3ceb49bf70a79682f26da, type: 3}

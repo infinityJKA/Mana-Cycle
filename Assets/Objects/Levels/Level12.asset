@@ -12,22 +12,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8dc45444cfc49e49b9a37796cd4fbc, type: 3}
   m_Name: Level12
   m_EditorClassIdentifier: 
+  levelId: Level12
   levelName: Level 12
   description: With increased drop speed, clear 120 mana in 90 seconds!
-  conversation: {fileID: 11400000, guid: bb4d16c43c754db4b846b123514fc908, type: 2}
+  conversationEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:0e80a4fe958458648b847e2c7ed437a9
+    m_TableEntryReference:
+      m_KeyId: 32345720926208
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
   midLevelConversations: []
   time: 90
   scoreGoal: 0
+  lives: 1
   cycleLength: 7
   cycleUniqueColors: 5
+  lockPieceColors: 1
   fallTime: 0.15
+  slideTimeMult: 1
   availableBattlers:
   - {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+  backgroundOverride: {fileID: 0}
+  abilityEnabled: 1
   objectives:
   - condition: 2
     value: 120
+    stringValue: Item1, Item2
+    boolValue: 1
+    statusOverride: 
+    inverted: 0
   levelRequirement: {fileID: 11400000, guid: 13588a560ccdc47418d30e1e2d520c0e, type: 2}
+  nextSeriesLevel: {fileID: 0}
   survivalWin: 0
   aiBattle: 0
   opponent: {fileID: 0}
+  generateNextLevel: 0
+  aiDifficulty: 1
+  levelDifficulty: 0
+  trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: 8f57f9b80aeb41e4b92ad52f5743bdf0, type: 3}

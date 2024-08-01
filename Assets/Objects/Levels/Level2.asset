@@ -15,9 +15,31 @@ MonoBehaviour:
   levelId: Level2
   levelName: Level 2
   description: Clear a total of five times to finish this stage.
-  conversation: {fileID: 11400000, guid: b18c48acfa6864947868fe145b2c8682, type: 2}
+  conversationEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:0e80a4fe958458648b847e2c7ed437a9
+    m_TableEntryReference:
+      m_KeyId: 31655204270080
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
   midLevelConversations:
-  - {fileID: 11400000, guid: c610bf817881b48239dfced29710ffd7, type: 2}
+  - appearConditions:
+    - condition: 3
+      value: 4
+      stringValue: 
+      boolValue: 0
+      statusOverride: 
+      inverted: 0
+    tutorialMaskID: -1
+    conversationEntry:
+      m_TableReference:
+        m_TableCollectionName: GUID:fd279e852c7feee469c7af7afd7a2f3a
+      m_TableEntryReference:
+        m_KeyId: 5932695465984
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
   time: 120
   scoreGoal: 0
   lives: 1

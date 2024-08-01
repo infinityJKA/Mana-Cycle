@@ -24,18 +24,21 @@ namespace SoloMode {
         [SerializeField] private LocalizedAsset<Conversation> conversationEntry;
 
         private void OnEnable() {
-            if (conversationEntry == null) {
-                Debug.LogError(levelName+" has no cutscene table set");
-                return;
-            }
-
-            Debug.Log("loading localized cutscene with key "+conversationEntry.TableEntryReference.Key);
+            if (conversationEntry == null || conversationEntry.IsEmpty) return;
             conversationEntry.LoadAssetAsync();
             conversationEntry.AssetChanged += UpdateConversationLocale;
+            
+            foreach (var mlc in midLevelConversations) {
+                mlc.LoadConvo();
+            }
         }
 
         private void OnDisable() {
             conversationEntry.AssetChanged -= UpdateConversationLocale;
+
+            foreach (var mlc in midLevelConversations) {
+                mlc.UnloadConvo();
+            }
         }
 
         // To be run when the name language string needs to be updated

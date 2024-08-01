@@ -15,7 +15,14 @@ MonoBehaviour:
   levelId: Level3
   levelName: Level 3
   description: Survive the timer! Pieces fall faster in this stage!
-  conversation: {fileID: 11400000, guid: 6b17c9aeb16624238933645f08185eaf, type: 2}
+  conversationEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:0e80a4fe958458648b847e2c7ed437a9
+    m_TableEntryReference:
+      m_KeyId: 31782207795200
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
   midLevelConversations: []
   time: 60
   scoreGoal: 0
