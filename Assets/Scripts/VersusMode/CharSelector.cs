@@ -101,6 +101,9 @@ namespace VersusMode {
         public bool isCpuCursor {get; private set;}
         ///<summary> If active. Will only be inactive if this is CPU and player1 is currently selecting </summary>
         private bool active;
+
+        public Image gameLogo;
+
         public bool Active {
             get { return active; }
             set {
@@ -280,6 +283,7 @@ namespace VersusMode {
                     }
 
                     portrait.sprite = selectedBattler.sprite;
+                    gameLogo.sprite = selectedBattler.gameLogo;
                     SetAccentMaterialColor(new Color(selectedBattler.textBoxColor.r, selectedBattler.textBoxColor.g, selectedBattler.textBoxColor.b, 0.25f));
                     
                     // nameText.text = selectedBattler.displayName;
@@ -813,6 +817,8 @@ namespace VersusMode {
 
         public void SelectBattler() {
             portrait.sprite = selectedBattler.sprite;
+            gameLogo.sprite = selectedBattler.gameLogo;
+
             nameText.text = isRandomSelected ? selectedIcon.battler.displayName : selectedBattler.displayName;
             SetAccentMaterialColor(new Color(selectedBattler.textBoxColor.r, selectedBattler.textBoxColor.g, selectedBattler.textBoxColor.b, 0.25f));
 

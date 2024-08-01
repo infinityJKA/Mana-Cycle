@@ -81,6 +81,7 @@ namespace Battle {
         // used for the attack popup gradients
         [SerializeField] public Material gradientMat;
         [SerializeField] public Color textBoxColor;
+        [SerializeField] public Sprite gameLogo;
     }
 
     public enum PieceRng {
