@@ -6,6 +6,7 @@ using Battle.Cycle;
 using Sound;
 using Cosmetics;
 using SaveData;
+using UnityEngine.Localization;
 
 namespace Battle.Board {
     /// <summary>
@@ -33,7 +34,23 @@ namespace Battle.Board {
         [SerializeField] public Color[] litManaColors;
 
         [Tooltip("String representations of the mana colors")] 
-        [SerializeField] public string[] manaColorStrings;
+        [SerializeField] private LocalizedString manaColorsEntry;
+        
+        public string[] manaColorStrings {get; private set;}
+
+        private void OnEnable() {
+            manaColorsEntry.GetLocalizedStringAsync();
+            manaColorsEntry.StringChanged += UpdateManaColorStrings;
+        }
+
+        private void OnDisable() {
+            manaColorsEntry.StringChanged -= UpdateManaColorStrings;
+        }
+
+        // To be run when the name language string needs to be updated
+        private void UpdateManaColorStrings(string manaColors) {
+            manaColorStrings = manaColors.Split(",");
+        }
 
         // mana palettes
         [Tooltip("Square sprites to use for mana in pieces and the cycle")]

@@ -192,7 +192,11 @@ namespace ConvoSystem {
 
             formattedText = line.text;
             if (board != null) {
-                formattedText = formattedText.Replace("{cycle0}", board.cosmetics.manaColorStrings[board.cycle.GetColor(0)]);
+                string ManaColorString(int i) {
+                    return "<color=#" + ColorUtility.ToHtmlStringRGB(board.cosmetics.paletteColors[i].mainColor) + ">" + board.cosmetics.manaColorStrings[i] + "<color=white>";
+                }
+
+                formattedText = formattedText.Replace("{cycle0}", ManaColorString(board.cycle.GetColor(0)));
                 formattedText = formattedText.Replace("{cycle1}", board.cosmetics.manaColorStrings[board.cycle.GetColor(1)]);
                 formattedText = formattedText.Replace("{cycle2}", board.cosmetics.manaColorStrings[board.cycle.GetColor(2)]);
                 // TODO: use new action input scripts here
@@ -200,6 +204,8 @@ namespace ConvoSystem {
                 formattedText = formattedText.Replace("{rotatecw}", board.inputScripts[0].RotateCW.ToString());
                 formattedText = formattedText.Replace("{spellcast}", board.inputScripts[0].Cast.ToString());
             }
+
+            
 
             leftSpeaker.SetSpeaker(line.leftSpeaker, !line.rightFocused);
             rightSpeaker.SetSpeaker(line.rightSpeaker, line.rightFocused);

@@ -221,6 +221,10 @@ MonoBehaviour:
   foresightConsumeSFX: {fileID: 7978053776321691471, guid: a70e3da4eb4370945b815df3cf9f472f, type: 3}
   abilityActive: 0
   abilityData: 
+  thunderRushActive: 0
+  thunderIconPrefab: {fileID: 0}
+  thunderActivateSFX: {fileID: 0}
+  heroicShieldSFX: {fileID: 0}
 --- !u!114 &4174570119449310702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3931,12 +3935,15 @@ MonoBehaviour:
   useCosmeticAssetsFile: 1
   paletteColors: []
   litManaColors: []
-  manaColorStrings:
-  - blue
-  - red
-  - green
-  - yellow
-  - purple
+  manaColorsEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:3b14a58029a492f4daf5fec31cad3df1
+    m_TableEntryReference:
+      m_KeyId: 54020794555346944
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   manaIcons: []
   multicolorIcon:
     id: star
@@ -3994,6 +4001,9 @@ MonoBehaviour:
   multicolorMaterial: {fileID: 0}
   multicolorGhostBgMaterial: {fileID: 0}
   multicolorGhostIconMaterial: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &9159051575835955899
 GameObject:
   m_ObjectHideFlags: 0
