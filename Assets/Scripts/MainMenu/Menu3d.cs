@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System;
 using Cinemachine;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 
 namespace MainMenu {
     /// <summary>
@@ -31,6 +32,8 @@ namespace MainMenu {
         [SerializeField] private GameObject VersusWindow, VersusButton, VersusFirstSelected;
 
         [SerializeField] private TMPro.TextMeshProUGUI versusDescription;
+
+        [SerializeField] private LocalizedString pvpDesc, pvcDesc, cvcDesc;
 
         // p1 input script so that R to submit works in menu
         [SerializeField] private InputScript[] inputScripts;
@@ -94,9 +97,15 @@ namespace MainMenu {
             SelectLastSelected();
         }
 
-        public void setVersusDescription(string newText)
+        public void SetVersusDescription(int id)
         {
-            versusDescription.text = newText;
+            if (id == 0) {
+                versusDescription.text = pvpDesc.GetLocalizedString();
+            } else if (id == 1) {
+                versusDescription.text = pvcDesc.GetLocalizedString();
+            } else if (id == 2) {
+                versusDescription.text = cvcDesc.GetLocalizedString();
+            }
         }
 
         public void GoToCharSelect(int setup){
