@@ -125,7 +125,7 @@ namespace SoloMode {
 
         [SerializeField] private LocalizedString timeStringEntry, highScoreStringEntry, matchCountStringEntry;
 
-        private string timeString, highscoreString, matchCountString;
+        private string timeString = "Time", highscoreString = "High Score", matchCountString = "Matches";
 
         // Start is called before the first frame update
         void Start()
@@ -134,9 +134,6 @@ namespace SoloMode {
             selectedTabIndex = 0;
             Storage.tab = tabs[0];
             focused = true;
-
-            // generates all the listed levels and organizes them into a transform
-            MakeTabLevelLists();
 
             // initialize offsets for position animation
             listOffset = listTransform.anchoredPosition;
@@ -151,13 +148,19 @@ namespace SoloMode {
             RefreshTab();
             RefreshCursor();
             RefreshDescription();
-
         }
 
         void OnEnable() {
             timeString = timeStringEntry.GetLocalizedString();
             highscoreString = highScoreStringEntry.GetLocalizedString();
             matchCountString = matchCountStringEntry.GetLocalizedString();
+
+            // generates all the listed levels and organizes them into a transform
+            MakeTabLevelLists();
+
+            RefreshTab();
+            RefreshCursor();
+            RefreshDescription();
         }
 
         // new action input system controls

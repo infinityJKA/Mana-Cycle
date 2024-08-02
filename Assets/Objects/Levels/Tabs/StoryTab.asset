@@ -12,7 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d8288bbfcea168468166d2ffa513ad5, type: 3}
   m_Name: StoryTab
   m_EditorClassIdentifier: 
-  tabName: Story
+  tabNameEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:a69a81e05e1b72c49a9193cf08a98bf3
+    m_TableEntryReference:
+      m_KeyId: 21205762748416
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   levelsList:
   - {fileID: 11400000, guid: bbedf4065086e4008927c4ea8aa60c0f, type: 2}
   - {fileID: 11400000, guid: 1d1de2ddae3e142328c78b53cb5e82de, type: 2}
@@ -30,3 +38,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e7d0146692b4ce24481c3a30c6bc733f, type: 2}
   progression:
     progressionKey: storymode
+  references:
+    version: 2
+    RefIds: []
