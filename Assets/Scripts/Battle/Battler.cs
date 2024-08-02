@@ -11,20 +11,6 @@ namespace Battle {
         [SerializeField] private LocalizedString displayNameEntry;
         public string displayName {get; private set;}
 
-        private void OnEnable() {
-            displayNameEntry.GetLocalizedStringAsync();
-            displayNameEntry.StringChanged += UpdateName;
-        }
-
-        private void OnDisable() {
-            displayNameEntry.StringChanged -= UpdateName;
-        }
-
-        // To be run when the name language string needs to be updated
-        private void UpdateName(string localizedName) {
-            displayName = localizedName;
-        }
-
         [SerializeField] public Sprite sprite;
 
         /// <summary>Offset of the portrait in the battle view</summary>
@@ -44,8 +30,9 @@ namespace Battle {
             Defender // Romra's ability
         }
 
+        [SerializeField] private LocalizedString passiveAbilityDescEntry;
         /// <summary>Description this battler's passive ability</summary>
-        [SerializeField] public string passiveAbilityDesc;
+        public string passiveAbilityDesc {get; private set;}
 
         /// <summary>Effect of the active ability</summary>
         [SerializeField] public ActiveAbilityEffect activeAbilityEffect;
@@ -65,12 +52,21 @@ namespace Battle {
         /// <summary>If true, this battler will start at full mana</summary>
         public bool startAtFullMana;
             
+        [SerializeField] public LocalizedString activeAbilityNameEntry;
         /// <summary>Name of this character's active ability</summary>
-        [SerializeField] public string activeAbilityName;
+        public string activeAbilityName {get; private set;}
+
+
+        [SerializeField] private LocalizedString activeAbilityDescEntry;
         /// <summary>Describes this battler's active ability</summary>
-        [SerializeField] public string activeAbilityDesc;
+        public string activeAbilityDesc {get; private set;}
+
+
+        [SerializeField] private LocalizedString soloAbilityDescEntry;
         /// <summary>Describes this character's ability in singleplayer mode, if it is different. Blank for same desc</summary>
-        [SerializeField] public string soloAbilityDesc;
+        public string soloAbilityDesc {get; private set;}
+
+
         /// <summary>Amount of mana required to use active ability</summary>
         [SerializeField] public int activeAbilityMana;
         /// <summary>The piece RNG used for this battler</summary>
@@ -82,6 +78,61 @@ namespace Battle {
         [SerializeField] public Material gradientMat;
         [SerializeField] public Color textBoxColor;
         [SerializeField] public Sprite gameLogo;
+
+
+        private void OnEnable() {
+            // i wish there was an easier way to do this
+            // there probably is but whatever
+            displayNameEntry.GetLocalizedStringAsync();
+            displayNameEntry.StringChanged += UpdateName;
+
+            if (!passiveAbilityDescEntry.IsEmpty) {
+                passiveAbilityDescEntry.GetLocalizedStringAsync();
+                passiveAbilityDescEntry.StringChanged += UpdatePassiveDesc;
+            }
+
+            if (!activeAbilityNameEntry.IsEmpty) {
+                activeAbilityNameEntry.GetLocalizedStringAsync();
+                activeAbilityNameEntry.StringChanged += UpdateActiveName;
+
+                activeAbilityDescEntry.GetLocalizedStringAsync();
+                activeAbilityDescEntry.StringChanged += UpdateActiveDesc;
+            }
+
+            if (!soloAbilityDescEntry.IsEmpty) {
+                soloAbilityDescEntry.GetLocalizedStringAsync();
+                soloAbilityDescEntry.StringChanged += UpdateSoloDesc;
+            }
+        }
+
+        private void OnDisable() {
+            displayNameEntry.StringChanged -= UpdateName;
+            passiveAbilityDescEntry.StringChanged -= UpdatePassiveDesc;
+            activeAbilityNameEntry.StringChanged -= UpdateActiveName;
+            activeAbilityDescEntry.StringChanged -= UpdateActiveDesc;
+            soloAbilityDescEntry.StringChanged -= UpdateSoloDesc;
+        }
+
+        // To be run when the name language string needs to be updated
+        private void UpdateName(string str) {
+            displayName = str;
+        }
+
+        private void UpdatePassiveDesc(string str) {
+            passiveAbilityDesc = str;
+        }
+
+        private void UpdateActiveName(string str) {
+            activeAbilityName = str;
+        }
+
+        private void UpdateActiveDesc(string str) {
+            activeAbilityDesc = str;
+        }
+
+        private void UpdateSoloDesc(string str) {
+            soloAbilityDesc = str;
+        }
     }
 
     public enum PieceRng {
