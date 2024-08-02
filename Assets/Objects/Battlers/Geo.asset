@@ -25,16 +25,47 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 22d808126ee4e314ebd0162e62641c59, type: 3}
   portraitOffset: {x: 80, y: 0}
   passiveAbilityEffect: 5
-  passiveAbilityDesc: Starts with full special meter, gains strength when at lower
-    health.
+  passiveAbilityDescEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:c392bbe86b94c48468d1c9f4269f1405
+    m_TableEntryReference:
+      m_KeyId: 54282518843928576
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   activeAbilityEffect: 5
   startAtFullMana: 1
-  activeAbilityName: Gold Mine
-  activeAbilityDesc: Drop a crystal that powers up surrounding mana
-  soloAbilityDesc: 
+  activeAbilityNameEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:c392bbe86b94c48468d1c9f4269f1405
+    m_TableEntryReference:
+      m_KeyId: 54283299546509312
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  activeAbilityDescEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:c392bbe86b94c48468d1c9f4269f1405
+    m_TableEntryReference:
+      m_KeyId: 54283452139483136
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  soloAbilityDescEntry:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   activeAbilityMana: 42
   pieceRng: 0
-  voiceSFX: {fileID: 8300000, guid: e085d0dc29407b64d857820b2cb7526c, type: 3}
+  voiceSFX: {fileID: 7978053776321691471, guid: 5de8aa3df5e6b1045a70ef13f799fffc, type: 3}
   gradientMat: {fileID: 2100000, guid: 1a990fa14325a46fc9eee5708abf0723, type: 2}
   textBoxColor: {r: 0.81960785, g: 0.69411767, b: 0.4, a: 1}
   gameLogo: {fileID: 21300000, guid: c12d9a08da74b1b47a9a416c01e1dcc9, type: 3}

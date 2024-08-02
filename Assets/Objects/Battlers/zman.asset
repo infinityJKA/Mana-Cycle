@@ -25,14 +25,44 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 53adb852c5f96ff47926f7b505e04bdb, type: 3}
   portraitOffset: {x: 88.7, y: 0}
   passiveAbilityEffect: 3
-  passiveAbilityDesc: Starts with full special meter, Special meter increases when
-    the opponent uses their ability.
+  passiveAbilityDescEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:c392bbe86b94c48468d1c9f4269f1405
+    m_TableEntryReference:
+      m_KeyId: 54287506462781440
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   activeAbilityEffect: 6
   startAtFullMana: 1
-  activeAbilityName: Z?Blind
-  activeAbilityDesc: Send a z?man to your opponent's board that obscures surrounding
-    mana
-  soloAbilityDesc: 
+  activeAbilityNameEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:c392bbe86b94c48468d1c9f4269f1405
+    m_TableEntryReference:
+      m_KeyId: 54287876148736000
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  activeAbilityDescEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:c392bbe86b94c48468d1c9f4269f1405
+    m_TableEntryReference:
+      m_KeyId: 54288085691969536
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  soloAbilityDescEntry:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   activeAbilityMana: 60
   pieceRng: 0
   voiceSFX: {fileID: 7978053776321691471, guid: 50eee854e6772144bb55dc7c5ab9069e, type: 3}
