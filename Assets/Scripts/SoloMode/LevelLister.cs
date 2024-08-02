@@ -158,6 +158,8 @@ namespace SoloMode {
             // generates all the listed levels and organizes them into a transform
             MakeTabLevelLists();
 
+            tabTexts[selectedTabIndex].color = tabSelectedColor;
+
             RefreshTab();
             RefreshCursor();
             RefreshDescription();
@@ -267,15 +269,13 @@ namespace SoloMode {
         public void LeftTabArrow() {
             if (showingInfo) return;
 
-            MoveTabCursor(-1);
-            Instantiate(swapTabSFX);
+            MoveTabCursor(-1);   
         }
 
         public void RightTabArrow() {
             if (showingInfo) return;
 
             MoveTabCursor(1);
-            Instantiate(swapTabSFX);
         }
 
         /// <summary>
@@ -436,13 +436,19 @@ namespace SoloMode {
 
         void MoveTabCursor(int delta) {
             // don't move cursor if movement will send cursor outside the list
-            if (selectedTabIndex+delta < 0 || selectedTabIndex+delta >= tabs.Length) return;
+            if (selectedTabIndex+delta < 0 || selectedTabIndex+delta >= tabs.Length) 
+            {
+                // Instantiate(errorSFX);
+                return;
+            }
 
             SetTabCursor(selectedTabIndex + delta);
         }
 
         void SetTabCursor(int index) {
             if (showingInfo) return;
+
+            Instantiate(swapTabSFX);
 
             levelTabTransform.GetChild(selectedTabIndex).gameObject.SetActive(false);
             if (animateTabColors) {
