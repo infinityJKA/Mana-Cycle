@@ -6,6 +6,7 @@ using System.Collections;
 using Sound;
 using Mirror;
 using UnityEngine.InputSystem;
+using System;
 
 namespace VersusMode {
     /// <summary>
@@ -260,6 +261,7 @@ namespace VersusMode {
                 } else {
                     abilityInfoCanvasGroup.transform.localPosition = centerPosition;
                 }
+                gameLogo.color = new Color(1, 1, 1, 1 - Math.Min(abilityInfoFadeAmount + settingsFadeAmount, 1));
             }
 
             if (settingsAnimating) {
@@ -272,6 +274,7 @@ namespace VersusMode {
                 } else {
                     settingsCanvasGroup.transform.localPosition = centerPosition;
                 }
+                gameLogo.color = new Color(1, 1, 1, 1 - Math.Min(abilityInfoFadeAmount + settingsFadeAmount, 1));
             }
 
             if (isRandomSelected) {
@@ -279,7 +282,7 @@ namespace VersusMode {
                     randomChangeDelay = 0.125f;
                     var prevBattler = randomBattler;
                     while (!randomBattler || randomBattler.battlerId == "Random" || randomBattler == prevBattler) {
-                        randomBattler = battlerGrid.transform.GetChild(Random.Range(0, battlerGrid.transform.childCount-1)).GetComponent<CharacterIcon>().battler;
+                        randomBattler = battlerGrid.transform.GetChild(UnityEngine.Random.Range(0, battlerGrid.transform.childCount-1)).GetComponent<CharacterIcon>().battler;
                     }
 
                     portrait.sprite = selectedBattler.sprite;
