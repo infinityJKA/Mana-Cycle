@@ -244,10 +244,9 @@ namespace VersusMode {
             }
         }
 
-        bool dualKeybaord = Storage.useDualKeyboardInput;
         public void ToggleDualKeyboard() {
-            dualKeybaord = !dualKeybaord;
-            if (dualKeybaord) {
+            Storage.useDualKeyboardInput = !Storage.useDualKeyboardInput;
+            if (Storage.useDualKeyboardInput) {
                 SwitchToDualKeyboardMode(); 
             } else {
                 SwitchToControllers();

@@ -7,6 +7,7 @@ using Sound;
 using Mirror;
 using UnityEngine.InputSystem;
 using System;
+using UnityEngine.Localization;
 
 namespace VersusMode {
     /// <summary>
@@ -845,15 +846,17 @@ namespace VersusMode {
             if (selectedIcon) selectedIcon.SetSelected(isPlayer1, false);
         }
 
+        [SerializeField] private LocalizedString dualKeyboardString, multiDeviceString;
+
         public void DualKeyboardEnabled() {
             useInputScripts = true;
-            settingsInputModeButtonLabel.text = "Switch to Multi-Device Inputs";
+            settingsInputModeButtonLabel.text = multiDeviceString.GetLocalizedString();
             if (settingsDisplayed) ToggleSettings();
         }
 
         public void DualKeyboardDisabled() {
             useInputScripts = false;
-            settingsInputModeButtonLabel.text = "Switch to Dual-Keyboard Inputs";
+            settingsInputModeButtonLabel.text = dualKeyboardString.GetLocalizedString();
             if (settingsDisplayed) ToggleSettings();
         }
 
