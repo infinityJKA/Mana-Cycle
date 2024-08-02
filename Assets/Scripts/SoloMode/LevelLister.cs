@@ -5,6 +5,8 @@ using TMPro;
 using ConvoSystem;
 using Sound;
 using UnityEngine.InputSystem;
+using UnityEngine.Localization;
+
 
 
 #if (UNITY_EDITOR)
@@ -121,6 +123,10 @@ namespace SoloMode {
         // if the details + leaderboard info is being shown.
         bool showingInfo = false;
 
+        [SerializeField] private LocalizedString timeStringEntry, highScoreStringEntry, matchCountStringEntry;
+
+        private string timeString, highscoreString, matchCountString;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -146,6 +152,12 @@ namespace SoloMode {
             RefreshCursor();
             RefreshDescription();
 
+        }
+
+        void OnEnable() {
+            timeString = timeStringEntry.GetLocalizedString();
+            highscoreString = highScoreStringEntry.GetLocalizedString();
+            matchCountString = matchCountStringEntry.GetLocalizedString();
         }
 
         // new action input system controls
@@ -458,6 +470,9 @@ namespace SoloMode {
             RefreshCursor();
         }
 
+        
+        
+
         void RefreshDescription()
         {
             if (!showDescription) return;
@@ -467,16 +482,16 @@ namespace SoloMode {
 
             bool selectedCleared = selectedLevel.isSeriesCleared;
             highScoreBG.SetActive(selectedCleared);
-            highScoreText.text = "High Score: "+selectedLevel.finalHighScore;
+            highScoreText.text = highscoreString+": "+selectedLevel.finalHighScore;
 
             // if level series, show length instead of time
             if (selectedLevel.nextSeriesLevel == null)
             {
-                timeText.text = "Time: " + ((selectedLevel.time != -1) ? Utils.FormatTime(selectedLevel.time) : "∞");
+                timeText.text = timeString + ": " + ((selectedLevel.time != -1) ? Utils.FormatTime(selectedLevel.time) : "∞");
             }
             else 
             {
-                timeText.text = $"{1 + selectedLevel.aheadCount} Matches";
+                timeText.text = $"{1 + selectedLevel.aheadCount} "+matchCountString;
             }
         }
 

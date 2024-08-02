@@ -14,8 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelId: Gauntlet
   levelName: Gauntlet
-  description: Fight an increasingly difficult series of versus battles until you
-    lose!
+  description: Fight an increasingly difficult series of infinite battlers. Buy items
+    and upgrades along the way to make yourself stronger!
+  descriptionEntry:
+    m_TableReference:
+      m_TableCollectionName: GUID:f4f165ae57584c24f8536f868ea9bb6b
+    m_TableEntryReference:
+      m_KeyId: 3433934663680
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   conversationEntry:
     m_TableReference:
       m_TableCollectionName: GUID:0e80a4fe958458648b847e2c7ed437a9
@@ -57,3 +66,6 @@ MonoBehaviour:
   levelDifficulty: 0.2
   trashSendRate: -1
   battleMusic: {fileID: 8300000, guid: 2a665a4aa8207bf4cb08fdef494218ff, type: 3}
+  references:
+    version: 2
+    RefIds: []

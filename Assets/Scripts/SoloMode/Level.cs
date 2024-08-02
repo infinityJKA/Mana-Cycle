@@ -16,7 +16,9 @@ namespace SoloMode {
     public class Level : ScriptableObject {
         [SerializeField] public string levelId = "";
         [SerializeField] public string levelName = "Level";
+        
         [SerializeField] public string description = "One of the levels of time";
+        [SerializeField] public LocalizedString descriptionEntry;
 
         /** Conversation that happens before this level. if null, convo hasn't been loaded yet */
         public Conversation conversation {get; private set;}
@@ -25,6 +27,9 @@ namespace SoloMode {
 
         private void OnEnable() {
             if (conversationEntry == null || conversationEntry.IsEmpty) return;
+            descriptionEntry.GetLocalizedStringAsync();
+            descriptionEntry.StringChanged += UpdateDescription;
+
             conversationEntry.LoadAssetAsync();
             conversationEntry.AssetChanged += UpdateConversationLocale;
             
@@ -34,6 +39,8 @@ namespace SoloMode {
         }
 
         private void OnDisable() {
+            descriptionEntry.StringChanged -= UpdateDescription;
+
             conversationEntry.AssetChanged -= UpdateConversationLocale;
 
             foreach (var mlc in midLevelConversations) {
@@ -48,6 +55,10 @@ namespace SoloMode {
             // }
 
             conversation = localizedConvo;
+        }
+
+        private void UpdateDescription(string desc) {
+            description = desc;
         }
 
         /** Conversations that happen during the level, each with their own condition */
