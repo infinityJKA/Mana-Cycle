@@ -876,9 +876,13 @@ namespace Battle.Board {
 
             // get current mana color from cycle, and clear that color
             // start at chain of 1
-            // canCast is true if a spellcast is currently in process.
+            // casting is true if a spellcast is currently in process.
             RefreshBlobs();
-            if (!casting && blobs.Count != 0) {
+            
+            // don't do anything if already spellcasting, including audiovisual feedback
+            if (casting) return;
+
+            if (blobs.Count != 0) {
                 var shake = pointer.GetComponent<Shake>();
                 if (shake != null) shake.StopShake();
                 chain = 1;
