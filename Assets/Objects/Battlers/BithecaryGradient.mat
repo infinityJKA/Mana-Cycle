@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CitySkybox
-  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
+  m_Name: BithecaryGradient
+  m_Shader: {fileID: 4800000, guid: b7c109a55ddaf4a2b8efdc9414fefd7c, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -44,9 +44,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 851abf4f8cd707b48b53cab4a4fbf86e, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: -5.2168674}
+        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -61,23 +61,66 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha0: 1
+    - _Alpha1: 1
+    - _Alpha2: -1
+    - _Alpha3: -1
+    - _Alpha4: -1
+    - _Alpha5: -1
+    - _Alpha6: -1
+    - _Alpha7: -1
+    - _AlphaTime0: 0
+    - _AlphaTime1: 1
+    - _AlphaTime2: -1
+    - _AlphaTime3: -1
+    - _AlphaTime4: -1
+    - _AlphaTime5: -1
+    - _AlphaTime6: -1
+    - _AlphaTime7: -1
+    - _Alphas: 2
     - _BumpScale: 1
+    - _ColorMask: 15
+    - _ColorTime0: 0
+    - _ColorTime1: 0.5058824
+    - _ColorTime2: 1
+    - _ColorTime3: -1
+    - _ColorTime4: -1
+    - _ColorTime5: -1
+    - _ColorTime6: -1
+    - _ColorTime7: -1
+    - _Colors: 3
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _IsVertical: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Scale: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
     - _UVSec: 0
+    - _UseUIAlphaClip: 0
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color0: {r: 0.4811321, g: 0.052198302, b: 0.31615612, a: 1}
+    - _Color1: {r: 0.84544235, g: 0.5066305, b: 0.9339623, a: 1}
+    - _Color2: {r: 0.48235297, g: 0.050980397, b: 0.31764707, a: 1}
+    - _Color3: {r: 1, g: 0, b: 1, a: 1}
+    - _Color4: {r: 1, g: 0, b: 1, a: 1}
+    - _Color5: {r: 1, g: 0, b: 1, a: 1}
+    - _Color6: {r: 1, g: 0, b: 1, a: 1}
+    - _Color7: {r: 1, g: 0, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

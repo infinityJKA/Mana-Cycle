@@ -112,6 +112,7 @@ namespace Battle.Board {
         [SerializeField] private Battle.AttackPopup attackPopup;
         /** Board background. Animated fall down when defeated */
         [SerializeField] private BoardDefeatFall boardDefeatFall, pieceBoardDefeatFall;
+        [SerializeField] public TMP_Text recoveryGaugeText;
 
         /// If the board is inputting to quick fall the current piece. 
         private bool _quickFall = false;
@@ -458,6 +459,13 @@ namespace Battle.Board {
             cyclePosition = 0;
 
             SetShield(0);
+
+            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.HealingGauge){
+                recoveryGaugeText.transform.parent.gameObject.SetActive(true);
+            }
+            else{
+                recoveryGaugeText.transform.parent.gameObject.SetActive(false);
+            }
 
             hpBar.Setup(this);
 

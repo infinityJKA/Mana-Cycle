@@ -45,7 +45,9 @@ namespace Battle.Board {
         private float abilityEndTime;
         public bool thunderRushActive = false;
         [SerializeField] public Transform thunderIconPrefab;
-         [SerializeField] private GameObject thunderActivateSFX,heroicShieldSFX;
+        [SerializeField] private GameObject thunderActivateSFX,heroicShieldSFX;
+
+        private int recoveryGaugeAmount;
 
 
         void Awake()
