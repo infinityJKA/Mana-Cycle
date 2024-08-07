@@ -462,6 +462,8 @@ namespace Battle.Board {
 
             if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.HealingGauge){
                 recoveryGaugeText.transform.parent.gameObject.SetActive(true);
+                abilityManager.recoveryGaugeAmount = 0;
+                recoveryGaugeText.text = ""+abilityManager.recoveryGaugeAmount;
             }
             else{
                 recoveryGaugeText.transform.parent.gameObject.SetActive(false);
@@ -1471,6 +1473,12 @@ namespace Battle.Board {
             if (damage <= 0) {
                 Debug.LogWarning("trying to do 0 damage outgoing");
                 return 0;
+            }
+
+            // for Bithecary recovery gauge
+            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.HealingGauge){
+                abilityManager.recoveryGaugeAmount += (damage/15);
+                recoveryGaugeText.text = ""+abilityManager.recoveryGaugeAmount;
             }
 
             // first try to counter incoming damage from furthest to closest
@@ -2503,6 +2511,9 @@ namespace Battle.Board {
 
         public void SetHp(int amount, bool allowDeath = true) {
             hp = amount;
+            if(hp > maxHp){
+                hp = maxHp;
+            }
             hpBar.Refresh();
             if (allowDeath && hp <= 0) Defeat();
         }
