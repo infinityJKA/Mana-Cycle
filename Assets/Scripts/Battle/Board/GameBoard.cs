@@ -16,6 +16,7 @@ using Battle.AI;
 // may be a bad idea to namespace this, could be changed later
 using static ArcadeStats.Stat;
 using TMPro;
+using UnityEngine.InputSystem.Controls;
 
 namespace Battle.Board {
     public class GameBoard : MonoBehaviour
@@ -1477,7 +1478,7 @@ namespace Battle.Board {
 
             // for Bithecary recovery gauge
             if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.HealingGauge){
-                abilityManager.recoveryGaugeAmount += (damage/15);
+                abilityManager.recoveryGaugeAmount += (damage/7);
                 recoveryGaugeText.text = ""+abilityManager.recoveryGaugeAmount;
             }
 

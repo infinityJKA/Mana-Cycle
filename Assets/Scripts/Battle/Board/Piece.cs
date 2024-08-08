@@ -571,7 +571,7 @@ namespace Battle.Board {
             board.abilityManager.recoveryGaugeAmount = 0;
             board.recoveryGaugeText.text = ""+board.abilityManager.recoveryGaugeAmount;
 
-            board.ClearTile(row,col); // <<---- somehow isn't working, need to find solution
+            board.ClearTile(col, row);
         }
 
         private void BithecaryBombExplode(GameBoard board) {
@@ -637,7 +637,7 @@ namespace Battle.Board {
             board.DealDamage((int)(board.damagePerMana*totalPointMult*bombDamageMult), explosionCenter, partOfChain: false);
 
             // recoil damage
-            board.SetHp(board.hp - 200);
+            board.SetHp(board.hp - 300);
         }
 
     }
