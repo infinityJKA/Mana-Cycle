@@ -81,7 +81,11 @@ namespace Networking {
         }
 
         public static void JoinLobby(ulong lobbyID) {
-            SteamMatchmaking.JoinLobby((CSteamID)lobbyID);
+            #if !DISABLESTEAMWORKS
+                SteamMatchmaking.JoinLobby((CSteamID)lobbyID);
+            #else
+                Debug.LogError("Cannot join lobby; steam not enabled!");
+            #endif
         }
 
         #if !DISABLESTEAMWORKS

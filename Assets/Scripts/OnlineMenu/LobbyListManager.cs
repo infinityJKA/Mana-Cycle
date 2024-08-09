@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using Networking;
+
+#if !DISABLESTEAMWORKS
 using Steamworks;
+#endif
+
 using TMPro;
 using UnityEngine;
 

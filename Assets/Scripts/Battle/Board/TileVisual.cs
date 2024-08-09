@@ -26,13 +26,15 @@ namespace Battle.Board {
         private readonly Color litGlowColor = new Color(1,1,1,0.4f);
 
         // ---- Annimation
+        // Root transform to animate position of when  (set to either bg or maindarkcolor based on mana skin type)
         private Transform fallTransform;
         // Target position of this element, used for fall animations
         private Vector3 targetPosition;
-        // Initial movement speed of this object when movemnet animated - distance in tiles per sec
+        // Initial movement speed of this object when movement animated - distance in tiles per sec
         private const float initialSpeed = 40;
-        // Acceleration of this piece when falling
-        private const float acceleration = 55; 
+        // Acceleration of this piece when falling - distance in tiles per sec squared
+        private const float acceleration = 55;
+        // current speed
         private float speed;
         // If this piece is currently moving
         private bool moving = false;
@@ -51,26 +53,36 @@ namespace Battle.Board {
         // this probably belongs in Tile.cs and not TileVisual.cs... but nah
         public Action onFallAnimComplete {get; set;}
 
+        private void Start() {
+            if (glowImage == null) {
+                Debug.LogWarning("No glow image on tile \""+name+"\"");
+            }
+        }
+
         // to be called if this is a ghost or cycle visual. animation/glow should not be used
         public void DisableVisualUpdates() {
             enabled = false;
         }
 
         private void Update() {
-            if (moving) {
-                if (fallTransform.localPosition == targetPosition) {
-                    moving = false;
-                    if (onFallAnimComplete != null) onFallAnimComplete();
-                } else {
-                    fallTransform.localPosition = Vector2.MoveTowards(fallTransform.localPosition, targetPosition, speed*Time.smoothDeltaTime);
-                    speed += acceleration*Time.smoothDeltaTime;
-                }
+            if (moving) MovementUpdate();
+            GlowUpdate();
+        }
+
+        private void MovementUpdate() {
+            if (fallTransform.localPosition == targetPosition) {
+                moving = false;
+                if (onFallAnimComplete != null) onFallAnimComplete();
+            } else {
+                fallTransform.localPosition = Vector2.MoveTowards(fallTransform.localPosition, targetPosition, speed * Time.smoothDeltaTime);
+                speed += acceleration * Time.smoothDeltaTime;
             }
+        }
 
-            // Animate glow
-            if (!glowImage) return;
+        private void GlowUpdate() {
+            if (glowImage == null) return;
 
-            if (Time.time-glowStartTime < glowDuration) {
+            if (Time.time - glowStartTime < glowDuration) {
                 // glow = Mathf.Lerp(glowStart, glowTarget, (Time.time-glowStartTime)/glowDuration);
                 glow = Mathf.Lerp(glowStart, glowTarget, glowAnimCurve.Evaluate((Time.time-glowStartTime)/glowDuration));
 

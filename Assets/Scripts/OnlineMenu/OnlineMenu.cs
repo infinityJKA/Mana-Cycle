@@ -139,7 +139,9 @@ public class OnlineMenu : MonoBehaviour {
             if (NetManager.IsUseSteam() && SteamManager.Initialized) {
                 // just show friends list so player can join friend from there. baiscally same as presing shift-tab
                 // in future, online random matchmaking will probably be this button.
+                #if !DISABLESTEAMWORKS
                 SteamFriends.ActivateGameOverlay("friends");
+                #endif
             } 
             // ======== RELAY
             else if (RelayManager.relayNetworkManager != null) {

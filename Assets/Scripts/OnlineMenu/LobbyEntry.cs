@@ -1,5 +1,9 @@
 using Networking;
+
+#if !DISABLESTEAMWORKS
 using Steamworks;
+#endif
+
 using TMPro;
 using UnityEngine;
 
@@ -16,6 +20,10 @@ public class LobbyEntry : MonoBehaviour {
     }
 
     public void JoinLobbyPressed() {
+        #if !DISABLESTEAMWORKS
         SteamLobbyManager.JoinLobby(lobbyId);
+        #else
+        Debug.LogError("Steam not enabled! Cannot join lobby");
+        #endif
     }
 }
