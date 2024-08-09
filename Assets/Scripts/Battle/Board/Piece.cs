@@ -174,6 +174,16 @@ namespace Battle.Board {
         // Rotate this piece to the right about the center.
         public void RotateRight()
         {
+            if(effect == Battler.ActiveAbilityEffect.Alchemy){
+                if(center.name == "explosivePotion"){
+                    SetBithecaryHealing();
+                }
+                else{
+                    SetBithecaryBomb();
+                }
+                return;
+            }
+
             if (!isRotatable) {
                 Debug.LogWarning("Trying to rotate an unrotatable piece");
                 return;
@@ -196,6 +206,16 @@ namespace Battle.Board {
         // Rotate this piece to the left about the center.
         public void RotateLeft()
         {
+            if(effect == Battler.ActiveAbilityEffect.Alchemy){
+                if(center.name == "explosivePotion"){
+                    SetBithecaryHealing();
+                }
+                else{
+                    SetBithecaryBomb();
+                }
+                return;
+            }
+
             if (!isRotatable) {
                 Debug.LogWarning("Trying to rotate an unrotatable piece");
                 return;
@@ -369,6 +389,15 @@ namespace Battle.Board {
                     // Debug.Log("Pyro Bomb effect");
                     PyroBombExplode(board);
                     break;
+                case Battler.ActiveAbilityEffect.Alchemy:
+                    if(center.name == "explosivePotion"){
+                        BithecaryBombExplode(board);
+                    }
+                    else{
+                        BithecaryHeal(board);
+                    }
+                    break;
+
                 default:
                     // Debug.Log("default single piece fall");
                     break;
@@ -511,5 +540,105 @@ namespace Battle.Board {
             center.MakeFragile();
             center.pointMultiplier -= 1.0f;
         }
+
+        private GameBoard savedBoard;
+
+        public void MakeBithecaryBomb(GameBoard board)
+        {
+            savedBoard = board;
+            effect = Battler.ActiveAbilityEffect.Alchemy;
+            center.SetManaColor(ManaColor.Colorless, board, setVisual: false);
+            center.visual.SetSprite(board.cosmetics.explosivePotionSprite);
+            center.visual.SetColor(Color.white);
+            center.name = "explosivePotion";
+        }
+
+        private void SetBithecaryBomb(){
+            center.visual.SetSprite(savedBoard.cosmetics.explosivePotionSprite);
+            center.name = "explosivePotion";
+        }
+
+        private void SetBithecaryHealing(){
+            center.visual.SetSprite(savedBoard.cosmetics.healingPotionSprite);
+            center.name = "healingPotion";
+        }
+
+        private void BithecaryHeal(GameBoard board){
+            Debug.Log("bithecary heal");
+            Instantiate(board.cosmetics.ironSwordSFX);
+            
+            board.SetHp(board.hp + board.abilityManager.recoveryGaugeAmount);
+            board.abilityManager.recoveryGaugeAmount = 0;
+            board.recoveryGaugeText.text = ""+board.abilityManager.recoveryGaugeAmount;
+
+            board.ClearTile(col, row);
+        }
+
+        private void BithecaryBombExplode(GameBoard board) {
+            Debug.Log("bithecary bomb explosion");
+            Instantiate(board.cosmetics.pyroBombSFX);
+
+            
+            // Destroy tiles in a 5x5 grid (including this piece's bomb tile, which is in the center)
+            // exclude this tile initial count
+
+            var explosionCenter = center.transform.position; // grab this before tile is destroyed
+            board.SpawnParticles(row, col, board.cosmetics.pyroBombParticleEffect, new Vector3(0, 0, 4));
+
+            float totalPointMult = 0; // this is definetely an efficient method
+            for (int r = row-3; r <= row+3; r++) {
+                for (int c = col-3; c <= col+3; c++) {
+                    totalPointMult += board.ClearTile(c, r);
+                }
+            }
+
+            for (int r = row-2; r <= row+2; r++) {
+                for (int c = col-4; c <= col+4; c++) {
+                    totalPointMult += board.ClearTile(c, r);
+                }
+            }
+
+            for (int r = row-1; r <= row+1; r++) {
+                for (int c = col-5; c <= col+5; c++) {
+                    totalPointMult += board.ClearTile(c, r);
+                }
+            }
+
+            for (int r = row; r <= row; r++) {
+                for (int c = col-6; c <= col+6; c++) {
+                    totalPointMult += board.ClearTile(c, r);
+                }
+            }
+
+            for (int r = row-4; r <= row+4; r++) {
+                for (int c = col-2; c <= col+2; c++) {
+                    totalPointMult += board.ClearTile(c, r);
+                }
+            }
+
+            for (int r = row-5; r <= row+5; r++) {
+                for (int c = col-1; c <= col+1; c++) {
+                    totalPointMult += board.ClearTile(c, r);
+                }
+            }
+
+            for (int r = row-6; r <= row+6; r++) {
+                for (int c = col; c <= col; c++) {
+                    totalPointMult += board.ClearTile(c, r);
+                }
+            }
+
+            board.AllTileGravity();
+
+            // Because this may cause a tile to fall outside of a blob, unglow un blob tiles
+            board.UnglowNotInBlobs();
+
+            float bombDamageMult = 1.5f;
+            board.DealDamage((int)(board.damagePerMana*totalPointMult*bombDamageMult), explosionCenter, partOfChain: false);
+
+            // recoil damage
+            board.SetHp(board.hp - 300);
+        }
+
     }
 }

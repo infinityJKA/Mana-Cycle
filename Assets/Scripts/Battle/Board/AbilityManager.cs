@@ -45,7 +45,10 @@ namespace Battle.Board {
         private float abilityEndTime;
         public bool thunderRushActive = false;
         [SerializeField] public Transform thunderIconPrefab;
-         [SerializeField] private GameObject thunderActivateSFX,heroicShieldSFX;
+        [SerializeField] private GameObject thunderActivateSFX,heroicShieldSFX;
+
+        public int recoveryGaugeAmount;
+        private bool alchemyIsHealing;
 
 
         void Awake()
@@ -133,6 +136,7 @@ namespace Battle.Board {
                     case Battler.ActiveAbilityEffect.ZBlind: ZBlind(); break;
                     case Battler.ActiveAbilityEffect.ThunderRush: ThunderRush(); break;
                     case Battler.ActiveAbilityEffect.HeroicShield: HeroicShield(); break;
+                    case Battler.ActiveAbilityEffect.Alchemy: Alchemy(); break;
                     default: break;
                 }
 
@@ -154,9 +158,9 @@ namespace Battle.Board {
         /// <summary>
         /// Returns a newly instantiated single piece with a unique ID.
         /// </summary>
-        private Piece CreateSinglePiece() {
+        private Piece CreateSinglePiece(bool rotatable) {
             Piece newPiece = Instantiate(singlePiecePrefab).GetComponent<Piece>();
-            newPiece.isRotatable = false;
+            newPiece.isRotatable = rotatable;
             newPiece.id = board.piecePreview.NextPieceId();
             return newPiece;
         }
@@ -167,7 +171,7 @@ namespace Battle.Board {
         /// </summary>
         private void IronSword() {
             ClearAbilityData();
-            Piece ironSwordPiece = CreateSinglePiece();
+            Piece ironSwordPiece = CreateSinglePiece(false);
             ironSwordPiece.MakeIronSword(board);
             board.ReplacePiece(ironSwordPiece);
         }
@@ -212,7 +216,7 @@ namespace Battle.Board {
         }
 
         private Piece MakePyroBomb() {
-            Piece pyroBombPiece = CreateSinglePiece();
+            Piece pyroBombPiece = CreateSinglePiece(false);
             pyroBombPiece.MakePyroBomb(board);
             return pyroBombPiece;
         }
@@ -242,7 +246,7 @@ namespace Battle.Board {
         /// </summary>
         private void GoldMine() {
             ClearAbilityData();
-            Piece goldMinePiece = CreateSinglePiece();
+            Piece goldMinePiece = CreateSinglePiece(false);
             goldMinePiece.MakeGoldMine(board);
             board.ReplacePiece(goldMinePiece);
         }
@@ -252,7 +256,7 @@ namespace Battle.Board {
         /// After a short duration the tile destroys itself
         /// </summary>
         private void ZBlind() {
-            Piece zmanPiece = CreateSinglePiece();
+            Piece zmanPiece = CreateSinglePiece(false);
             zmanPiece.MakeZman(board);
 
             if (Storage.online && !board.netPlayer.isOwned) {
@@ -282,6 +286,18 @@ namespace Battle.Board {
                 board.hpBar.DamageQueue[i].SetDamage(0);
             }
         }
+
+        private void Alchemy() {
+            ClearAbilityData();
+            board.ReplacePiece(MakeBithecaryBomb());
+        }
+
+        private Piece MakeBithecaryBomb() {
+            Piece potion = CreateSinglePiece(true);
+            potion.MakeBithecaryBomb(board);
+            return potion;
+        }
+
 
         public void ClearAbilityData() {
             if (abilityData.Length > 0) abilityData = new int[0];

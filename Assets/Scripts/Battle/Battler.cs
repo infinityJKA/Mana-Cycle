@@ -27,7 +27,8 @@ namespace Battle {
             Instadrop, // trainbot's definitely not overpowered ability
             LastStand, // Geo's revenge mechanic
             UnstableMana, // Electro's blob bonus
-            Defender // Romra's ability
+            Defender, // Romra's ability
+            HealingGauge // Bithecary's ability
         }
 
         [SerializeField] private LocalizedString passiveAbilityDescEntry;
@@ -46,7 +47,8 @@ namespace Battle {
             GoldMine,
             ZBlind,
             ThunderRush,
-            HeroicShield
+            HeroicShield,
+            Alchemy,
         }
 
         /// <summary>If true, this battler will start at full mana</summary>

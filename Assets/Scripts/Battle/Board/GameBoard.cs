@@ -16,6 +16,7 @@ using Battle.AI;
 // may be a bad idea to namespace this, could be changed later
 using static ArcadeStats.Stat;
 using TMPro;
+using UnityEngine.InputSystem.Controls;
 
 namespace Battle.Board {
     public class GameBoard : MonoBehaviour
@@ -112,6 +113,7 @@ namespace Battle.Board {
         [SerializeField] private Battle.AttackPopup attackPopup;
         /** Board background. Animated fall down when defeated */
         [SerializeField] private BoardDefeatFall boardDefeatFall, pieceBoardDefeatFall;
+        [SerializeField] public TMP_Text recoveryGaugeText;
 
         /// If the board is inputting to quick fall the current piece. 
         private bool _quickFall = false;
@@ -458,6 +460,15 @@ namespace Battle.Board {
             cyclePosition = 0;
 
             SetShield(0);
+
+            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.HealingGauge){
+                recoveryGaugeText.transform.parent.gameObject.SetActive(true);
+                abilityManager.recoveryGaugeAmount = 0;
+                recoveryGaugeText.text = ""+abilityManager.recoveryGaugeAmount;
+            }
+            else{
+                recoveryGaugeText.transform.parent.gameObject.SetActive(false);
+            }
 
             hpBar.Setup(this);
 
@@ -876,9 +887,13 @@ namespace Battle.Board {
 
             // get current mana color from cycle, and clear that color
             // start at chain of 1
-            // canCast is true if a spellcast is currently in process.
+            // casting is true if a spellcast is currently in process.
             RefreshBlobs();
-            if (!casting && blobs.Count != 0) {
+            
+            // don't do anything if already spellcasting, including audiovisual feedback
+            if (casting) return;
+
+            if (blobs.Count != 0) {
                 var shake = pointer.GetComponent<Shake>();
                 if (shake != null) shake.StopShake();
                 chain = 1;
@@ -1459,6 +1474,12 @@ namespace Battle.Board {
             if (damage <= 0) {
                 Debug.LogWarning("trying to do 0 damage outgoing");
                 return 0;
+            }
+
+            // for Bithecary recovery gauge
+            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.HealingGauge){
+                abilityManager.recoveryGaugeAmount += (damage/7);
+                recoveryGaugeText.text = ""+abilityManager.recoveryGaugeAmount;
             }
 
             // first try to counter incoming damage from furthest to closest
@@ -2491,6 +2512,9 @@ namespace Battle.Board {
 
         public void SetHp(int amount, bool allowDeath = true) {
             hp = amount;
+            if(hp > maxHp){
+                hp = maxHp;
+            }
             hpBar.Refresh();
             if (allowDeath && hp <= 0) Defeat();
         }
