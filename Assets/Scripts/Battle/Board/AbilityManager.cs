@@ -13,13 +13,13 @@ namespace Battle.Board {
         // cached GameBoard
         private GameBoard board;
 
-        /// <summary>Background image for the mana (MP) bar </summary>
-        [SerializeField] public RectTransform manaBar; 
-        [SerializeField] public RectTransform manaBarMask;
-        [SerializeField] public RectTransform manaBarOutline;  
-        /// <summary>Fill image for the mana (MP) bar </summary>
-        [SerializeField] public Image manaDisp;
+        // Image that has the material that controls the ability bar visuals
+        [SerializeField] private Image abilityBarImage;
+
+        /// <summary>Material that controls the ability bar shader visuals</summary>
+        private Material abilityBarMaterial;
         
+        // used for some abilities
         [SerializeField] public GameObject singlePiecePrefab;
 
         // Symbol list that appears near the cycle, used by Psychic's Foresight
@@ -55,7 +55,8 @@ namespace Battle.Board {
         {
             board = GetComponent<GameBoard>();
             enabled = Settings.current.enableAbilities;
-            manaBar.gameObject.SetActive(enabled);
+            abilityBarMaterial = new Material(abilityBarImage.material);
+            abilityBarImage.material = abilityBarMaterial;
             RefreshManaBar();
         }
 
@@ -74,16 +75,15 @@ namespace Battle.Board {
 
             // don't show mana bar if battler does not use mana.
             if(board.Battler.activeAbilityMana == 0) {
-                manaBar.gameObject.SetActive(false);
-                manaBarMask.gameObject.SetActive(false);
-                manaBarOutline.gameObject.SetActive(false);
+                abilityBarImage.enabled = false;
                 return;
             }
 
             // set height based on mana required for battler - 7px per mana
             // manaBar.sizeDelta = new Vector2(manaBar.sizeDelta.x, board.Battler.activeAbilityMana*7f);
-            manaBarMask.sizeDelta = new Vector2(manaBarMask.sizeDelta.x, board.Battler.activeAbilityMana*7f);
-            // manaBarOutline.sizeDelta = new Vector2(manaBar.sizeDelta.x, board.Battler.activeAbilityMana*7f);
+            abilityBarImage.rectTransform.sizeDelta = new Vector2(abilityBarImage.rectTransform.sizeDelta.x, board.Battler.activeAbilityMana*7f);
+            abilityBarMaterial.SetFloat("_AspectRatio", abilityBarImage.rectTransform.sizeDelta.x / abilityBarImage.rectTransform.sizeDelta.y);
+            abilityBarMaterial.SetFloat("_Flip", board.GetPlayerSide());
 
             mana = (int) (board.Battler.startAtFullMana ? board.Battler.activeAbilityMana : board.Battler.activeAbilityMana * board.boardStats[ArcadeStats.Stat.StartingSpecial]);
 
@@ -94,7 +94,8 @@ namespace Battle.Board {
         {        
             if (!enabled) return;
             // if this is disabled, also disable mana bar
-            manaDisp.fillAmount = 1f * mana / board.Battler.activeAbilityMana;
+            abilityBarMaterial.SetFloat("_CurrentValue", 1f * mana / board.Battler.activeAbilityMana);
+            abilityBarMaterial.SetFloat("_Ready", canUseAbility ? 1 : 0);
         }
 
         public void GainMana(int count)
@@ -103,22 +104,22 @@ namespace Battle.Board {
             if (mana >= board.Battler.activeAbilityMana) return;
 
             mana = Math.Min(mana+count, board.Battler.activeAbilityMana);
-            RefreshManaBar();
 
             // mana filled to max, play sound and animation. only run if ability requires mana
             if (mana >= board.Battler.activeAbilityMana && board.Battler.activeAbilityMana > 0)
             {
                 Instantiate(manaFillSFX);
-                manaDisp.GetComponent<ColorFlash>().Flash();
             }
+
+            RefreshManaBar();
         }
 
-                
+        public bool canUseAbility => board.Battler.activeAbilityEffect != Battler.ActiveAbilityEffect.None && mana >= board.Battler.activeAbilityMana;
 
         public void UseAbility() {
             if (!enabled) return;
             
-            if (board.Battler.activeAbilityEffect != Battler.ActiveAbilityEffect.None && mana >= board.Battler.activeAbilityMana) {
+            if (canUseAbility) {
                 mana = 0;
                 RefreshManaBar();
                 Debug.Log("use active ability");
