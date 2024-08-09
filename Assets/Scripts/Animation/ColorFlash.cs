@@ -17,6 +17,9 @@ namespace Animation {
         private float duration = 0.7f;
         /** Amount of flash time remaining **/
         private float time = 0f;
+
+        // If true, animate the "Flash" property on the material instead of the color, from 1 to 0
+        [SerializeField] private bool animateFlashProperty;
         
         // Current intensity
         private float intensity;
@@ -32,11 +35,21 @@ namespace Animation {
         {
             time -= Time.smoothDeltaTime;
 
-            if (time > 0) {
-                graphic.color = Color.Lerp(baseColor, flashColor, time / duration);
+            if (animateFlashProperty) {
+                if (time > 0) {
+                    graphic.color = Color.Lerp(baseColor, flashColor, time / duration);
+                } else {
+                    graphic.color = baseColor;
+                }
             } else {
-                graphic.color = baseColor;
+                if (time > 0) {
+                    graphic.material.SetFloat("_Flash", Mathf.Lerp(1, 0, time / duration));
+                } else {
+                    graphic.material.SetFloat("_Flash", 0);
+                }
             }
+
+            
         }
 
         public void Flash(Color color, float duration, float intensity) {

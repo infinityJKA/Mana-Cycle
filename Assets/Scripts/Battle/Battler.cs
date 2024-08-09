@@ -85,8 +85,10 @@ namespace Battle {
         private void OnEnable() {
             // i wish there was an easier way to do this
             // there probably is but whatever
-            displayNameEntry.GetLocalizedStringAsync();
-            displayNameEntry.StringChanged += UpdateName;
+            if (!displayNameEntry.IsEmpty) {
+                displayNameEntry.GetLocalizedStringAsync();
+                displayNameEntry.StringChanged += UpdateName;
+            }
 
             if (!passiveAbilityDescEntry.IsEmpty) {
                 passiveAbilityDescEntry.GetLocalizedStringAsync();

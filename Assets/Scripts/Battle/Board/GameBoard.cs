@@ -253,6 +253,8 @@ namespace Battle.Board {
         // Timer starts when a trash tile is added, and will stop running when no trash tiles tick when timer is up
         private float trashDamageTimer;
 
+        // Shortcute to access hpbar's total incomg damage (wht is the method there of all places? idk.)
+        public int totalIncomingDamage => hpBar.TotalIncomingDamage();
 
         // Amount of remaining lives. When dying, lose a life. If more than one life is remaining,
         // clear all incoming damage, clear the board, and suffer a 6-second delay before you can place pieces again.
@@ -1636,8 +1638,8 @@ namespace Battle.Board {
         /// <param name="damage">amount of damage to take</param>
         /// <param name="intensity">strength in which the board should be shaken</param>
         /// <param name="canDamageShield">if false, will go through shield</param>
-        /// <param name="allowDeath">if false, player will not die when reaching 0, used in online to prevent desyncs</param>
-        public void TakeDamage(int damage, float intensity = 1f, bool canDamageShield = false) {
+        /// <param name="preventDeath">if true, hp will be set to 1 if this damae ould result ina  death</param>
+        public void TakeDamage(int damage, float intensity = 1f, bool canDamageShield = false, bool preventDeath = false) {
             DamageShake(intensity);
 
             // subtract from hp
@@ -1650,10 +1652,14 @@ namespace Battle.Board {
             hp -= damage;
             hpBar.Refresh();
 
+            if (preventDeath && hp <= 0) {
+                hp = 1;
+            }
+
             // If this player is out of HP, run defeat
             // if online and not owner, wait for other client to verify this client is dead
-            bool allowDeath = !Storage.online || netPlayer.isOwned;
-            if (allowDeath && hp <= 0) Defeat();
+            bool allowOfficialDeath = !Storage.online || netPlayer.isOwned;
+            if (allowOfficialDeath && hp <= 0) Defeat();
 
             CheckMidLevelConversations();
         }

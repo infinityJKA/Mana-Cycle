@@ -91,8 +91,15 @@ namespace Battle.AI {
 
             var piece = board.GetPiece();
             center = piece.GetTile(0).manaColor;
-            top = piece.GetTile(1).manaColor;
-            right = piece.GetTile(2).manaColor;
+            if (piece.tileCount >= 3) {
+                top = piece.GetTile(1).manaColor;
+                right = piece.GetTile(2).manaColor;
+            } else {
+                Debug.LogWarning("Running best placement job on a piece with less than 3 tiles. Consider a custom placement algoritm in AiController for this type of piece.");
+                top = 0;
+                right = 0;
+            }
+
             tileIndex = 0;
             invalidPlacement = false;
             willKill = false;

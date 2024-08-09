@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 using Battle.Cycle;
+using System;
 
 namespace Battle.Board {
     public class Piece : MonoBehaviour
@@ -334,6 +335,10 @@ namespace Battle.Board {
         }
 
         public Tile GetTile(int index) {
+            if (tiles.Length <= index) {
+                Debug.LogError("Trying to access invalid index of tile in piece");
+                return null;
+            }
             return tiles[index];
         }
 
@@ -556,11 +561,13 @@ namespace Battle.Board {
         private void SetBithecaryBomb(){
             center.visual.SetSprite(savedBoard.cosmetics.explosivePotionSprite);
             center.name = "explosivePotion";
+            orientation = Orientation.up;
         }
 
         private void SetBithecaryHealing(){
             center.visual.SetSprite(savedBoard.cosmetics.healingPotionSprite);
             center.name = "healingPotion";
+            orientation = Orientation.left;
         }
 
         private void BithecaryHeal(GameBoard board){
@@ -585,46 +592,18 @@ namespace Battle.Board {
             var explosionCenter = center.transform.position; // grab this before tile is destroyed
             board.SpawnParticles(row, col, board.cosmetics.pyroBombParticleEffect, new Vector3(0, 0, 4));
 
-            float totalPointMult = 0; // this is definetely an efficient method
-            for (int r = row-3; r <= row+3; r++) {
-                for (int c = col-3; c <= col+3; c++) {
-                    totalPointMult += board.ClearTile(c, r);
-                }
-            }
+            const int boxRadius = 3;
+            const int circleRadius = 4;
 
-            for (int r = row-2; r <= row+2; r++) {
-                for (int c = col-4; c <= col+4; c++) {
-                    totalPointMult += board.ClearTile(c, r);
-                }
-            }
+            float totalPointMult = 0;
+            for (int r = -boxRadius; r <= boxRadius; r++) {
+                for (int c = -boxRadius; c <= boxRadius; c++) {
+                    // exclude tiles outside obscure distance, creates a curved border
+                    if (Mathf.Abs(r) + Mathf.Abs(c) > circleRadius) {
+                        continue;
+                    }
 
-            for (int r = row-1; r <= row+1; r++) {
-                for (int c = col-5; c <= col+5; c++) {
-                    totalPointMult += board.ClearTile(c, r);
-                }
-            }
-
-            for (int r = row; r <= row; r++) {
-                for (int c = col-6; c <= col+6; c++) {
-                    totalPointMult += board.ClearTile(c, r);
-                }
-            }
-
-            for (int r = row-4; r <= row+4; r++) {
-                for (int c = col-2; c <= col+2; c++) {
-                    totalPointMult += board.ClearTile(c, r);
-                }
-            }
-
-            for (int r = row-5; r <= row+5; r++) {
-                for (int c = col-1; c <= col+1; c++) {
-                    totalPointMult += board.ClearTile(c, r);
-                }
-            }
-
-            for (int r = row-6; r <= row+6; r++) {
-                for (int c = col; c <= col; c++) {
-                    totalPointMult += board.ClearTile(c, r);
+                    totalPointMult += board.ClearTile(col + c, row + r);
                 }
             }
 
@@ -634,10 +613,10 @@ namespace Battle.Board {
             board.UnglowNotInBlobs();
 
             float bombDamageMult = 1.5f;
-            board.DealDamage((int)(board.damagePerMana*totalPointMult*bombDamageMult), explosionCenter, partOfChain: false);
+            board.DealDamage((int)(board.damagePerMana * totalPointMult * bombDamageMult), explosionCenter, partOfChain: false);
 
             // recoil damage
-            board.SetHp(board.hp - 300);
+            board.TakeDamage(300, preventDeath: true);
         }
 
     }

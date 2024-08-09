@@ -1,9 +1,7 @@
 // using System;
 using UnityEngine;
-using System.Collections.Generic;
 using Unity.Jobs;
 using Unity.Collections;
-
 using Battle.Board;
 
 namespace Battle.AI {
@@ -134,7 +132,7 @@ namespace Battle.AI {
                 }
 
                 // quick-drop when the target rotation and column are met (or if concurrent actions)
-                bool reachedTargetCol = board.GetPiece().GetCol() == this.targetCol;
+                bool reachedTargetCol = board.GetPiece().GetCol() == targetCol;
                 if ((reachedTargetRot && reachedTargetCol) || concurrentActions) {
                     // will not insta-drop if highest row is >4 from top
                     if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Instadrop) {
@@ -193,6 +191,46 @@ namespace Battle.AI {
                     targetRot = 0;
                     break;
 
+                // Bithecary potion:
+                // More likely to heal if low health, and more likely to destroy if high health / board is getting high.
+                case Battler.ActiveAbilityEffect.Alchemy:
+                    float redWeight = 0f, blueWeight = 0f;
+
+                    // add chance to use red potion scaling with HP, up to +100%
+                    redWeight += 1f * board.hp / board.maxHp;
+
+                    // add chance to use blue potion scaling with HP lost, up to +100%
+                    blueWeight += 1f * (2000 - board.hp) / board.maxHp;
+
+                    // add chance to use blue potion scaling with current stored hp, +50% for every 100 stored, starting at 100
+                    blueWeight += Mathf.Max(0, (board.abilityManager.recoveryGaugeAmount - 100) * 0.5f);
+
+                    // add chance to use red potion if highest row is 7 from the top (+50%)
+                    if (rowsFromTop > 7) redWeight += 0.5f;
+                    // additional 150% if highest row is 4 from top
+                    if (rowsFromTop > 4) redWeight += 1.5f;
+
+                    // blue +300% chance if incoming damage will kill
+                    if (board.totalIncomingDamage >= board.hp) blueWeight += 3f;
+
+                    // multiply chance to use blue proportional to the amount of overheal HP that would be wasted by using blue
+                    int hpLost = board.maxHp - board.hp;
+                    int overheal = Mathf.Max(0, board.abilityManager.recoveryGaugeAmount - hpLost);
+                    blueWeight *= 1f - Mathf.Clamp(1f * overheal / board.abilityManager.recoveryGaugeAmount, 0f, 1f);
+
+                    // don't use blue if heal amount is somehow 0, not sure if that's even possible
+                    if (board.abilityManager.recoveryGaugeAmount == 0) blueWeight = 0f;
+
+                    // make weighted choice on target potion rotation
+                    float totalWeight = redWeight + blueWeight;
+                    if (Random.value * totalWeight < redWeight) {
+                        targetRot = (int)Piece.Orientation.up; // value from MakeBithecaryBomb() in Piece.cs
+                    } else {
+                        targetRot = (int)Piece.Orientation.left; // value from MakeBithecaryHealing()
+                    }
+
+                    break;
+
                 // default: AI best placement algorithm
                 default:
                     // Schedule the job that calcualtes the tile position to run later after this frame
@@ -236,7 +274,7 @@ namespace Battle.AI {
         }
 
         // Decides if this AI should spellcast now or not.
-        // Called when a piece is spawned.
+        // Called when a piece is placed.
         bool ShouldCast() {
             // board.getColHeight(FindNthLowestCols(0)[0]) > GameBoard.height/2 && board.GetBlobCount()>0 && !board.GetCasting()
             
@@ -302,10 +340,6 @@ namespace Battle.AI {
 
                     return false;
 
-                // whirlpool: random chance while ready
-                case Battler.ActiveAbilityEffect.Whirlpool:
-                    return Random.value < 0.35*abilityChanceMultiplier;
-
                 // pyro bomb: same numbers as iron sword, for now
                 case Battler.ActiveAbilityEffect.PyroBomb:
                     // if the highest column is less than 3 tiles high, do not use
@@ -325,25 +359,39 @@ namespace Battle.AI {
 
                     return false;
 
-                // foresight: random chance while ready
-                case Battler.ActiveAbilityEffect.Foresight:
-                    return Random.value < 0.5*abilityChanceMultiplier;
-
-                // gold mine: random chance while ready
-                case Battler.ActiveAbilityEffect.GoldMine:
-                    return Random.value < 0.35*abilityChanceMultiplier;
-
                 // z?blind: random chance while ready, much higher chance if likely to spellcast soon
                 case Battler.ActiveAbilityEffect.ZBlind:
                     float chance = 0.05f;
                     for (int i = 0; i < 5; i++) {
                         if (ShouldCast()) chance *= 2;
                     }
-                    return Random.value < 0.05*abilityChanceMultiplier;
+                    return Random.value < chance*abilityChanceMultiplier;
 
-                // default: random chance
+                // thunder rush: persistent random chance, but never if row is too high.
+                case Battler.ActiveAbilityEffect.ThunderRush:
+                    // if the highest column is less than 3 tiles high, do not use
+                    if (rowsFromTop > 11) return false;
+
+                    return Random.value < 0.275f*abilityChanceMultiplier;
+
+                case Battler.ActiveAbilityEffect.HeroicShield:
+                    // if there is any incoming damage
+                    if (board.totalIncomingDamage > 0) {
+                        // don't use the ability until there is any damage in the last slot before taking damage
+                        if (board.hpBar.DamageQueue[5].dmg > 0) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                    // if no incoming damage, 10% persistent chance.
+                    else {
+                        return Random.value < 0.1f*abilityChanceMultiplier;
+                    }   
+
+                // default: random chance, very likely while ability ready
                 default:
-                    return Random.value < 0.5*abilityChanceMultiplier;
+                    return Random.value < 0.35*abilityChanceMultiplier;
             }
         }
 

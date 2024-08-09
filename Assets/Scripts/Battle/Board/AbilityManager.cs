@@ -109,6 +109,7 @@ namespace Battle.Board {
             if (mana >= board.Battler.activeAbilityMana && board.Battler.activeAbilityMana > 0)
             {
                 Instantiate(manaFillSFX);
+                abilityBarImage.GetComponent<ColorFlash>().Flash();
             }
 
             RefreshManaBar();
