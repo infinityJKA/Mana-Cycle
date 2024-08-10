@@ -1472,7 +1472,7 @@ namespace Battle.Board {
         public void SendDamageShoot(int damage, Vector3 shootSpawnPos) {
             GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
             DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
-            shoot.damage = damage;
+            shoot.SetDamage(damage);
 
             // add score if singleplayer; shoot towards score (hp) number
             if (singlePlayer && !Storage.level.aiBattle) {
@@ -1511,7 +1511,7 @@ namespace Battle.Board {
 
             // romra - remove 30% damage boost and apply -30% offensive damage
             if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender) {
-                shoot.damage = (int)(shoot.damage / 1.3f * 0.7f);
+                shoot.SetDamage((int)(shoot.damage / 1.3f * 0.7f));
             }
 
             // send towards opponent's board, shield if they have any, otherwise straight to damage queue

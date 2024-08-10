@@ -573,7 +573,8 @@ namespace Battle.Board {
         private void BithecaryHeal(GameBoard board){
             Debug.Log("bithecary heal");
             Instantiate(board.cosmetics.ironSwordSFX);
-        
+
+            board.abilityManager.BithecaryHealActivate();
 
             board.ClearTile(col, row);
         }

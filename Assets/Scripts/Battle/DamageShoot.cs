@@ -7,7 +7,7 @@ using Battle.Board;
 namespace Battle {
     public class DamageShoot : MonoBehaviour {
         /** The amount of damage carried by this DamageShoot */
-        public int damage;
+        public int damage {get; private set;}
 
         /** True if countering incoming damage; False if damaging an enemy */
         private Mode mode;
@@ -28,18 +28,14 @@ namespace Battle {
         private Vector3 destination;
 
         /** speed, in screen widths / sec */
-        [SerializeField] private float speed = 0.5f;
+        [SerializeField] private float initialSpeed = 0.2f;
+
+        private float speed;
 
         /** acceleration, in screen widths / sec^2 **/
-        [SerializeField] private float accel = 0.5f;
+        [SerializeField] private float accel = 0.1f;
 
         [SerializeField] private GameObject dmgShootSFX;
-
-        // save initial un-accelerated speed to reset back to if countering
-        private float initialSpeed;
-        void Start() {
-            initialSpeed = speed;
-        }
 
         void Update() {
             if (mode == Mode.Standby) return;
@@ -61,6 +57,12 @@ namespace Battle {
             this.target = target;
             this.mode = mode;
             this.destination = destination;
+
+            // in case this has already been shot and is now travelling towards its new target, reset to base unacellerated speed, 
+            // will somewhat signify a momentum (damage) transfer
+            speed = initialSpeed;
+
+            Debug.Log("shooting towards "+target.name+" with mode "+mode);
         }
 
         void EvaluateOnDestination() {
