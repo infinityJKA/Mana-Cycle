@@ -1,39 +1,37 @@
 using UnityEngine;
 
 using Sound;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
+using Battle.Board;
 
 namespace Battle {
     public class DamageShoot : MonoBehaviour {
-        /// <summary>
-        /// If true, shoots will evaluate on the other board instantly.
-        /// This may be the new default since synchronizing animated ones online would be pretty complicated.
-        /// </summary>
-        public readonly static bool instant = true;
-
         /** The amount of damage carried by this DamageShoot */
         public int damage;
 
         /** True if countering incoming damage; False if damaging an enemy */
-        public Mode mode;
+        private Mode mode;
         public enum Mode {
-            Attacking,
-            Countering,
-            Shielding,
-            AttackingEnemyShield,
-            Heal // add score in solo mode
+            Standby, // basically just the default mode when this is intantated
+            AddScore, // sent towards hp bar, used in singleplayer score-based modes
+            Healing, // sent towards hp number, same as add score but caps at max hp, used in versus modes
+            Countering, // sent towards an incoming damage on the sender's own board
+            Shielding, // sent towards shield icon location to add shield
+            AttackingShield, // sent towards opponent's shield icon; will damage their shield and send to queue after
+            Attacking // sent towards opponent's incoming damage bar to add damage. will still damage shield if there is somehow any.
         }
 
         /** The board that this is targeting, for countering or dealing damage. */
-        public Board.GameBoard target;
+        private GameBoard target;
 
         /** Position to move towards */
-        public Vector3 destination;
+        private Vector3 destination;
 
         /** speed, in screen widths / sec */
-        public float speed = 1f;
+        [SerializeField] private float speed = 0.5f;
 
-        /** acceleration, in screen widths / sec / sec **/
-        public float accel = 1f;
+        /** acceleration, in screen widths / sec^2 **/
+        [SerializeField] private float accel = 0.5f;
 
         [SerializeField] private GameObject dmgShootSFX;
 
@@ -44,7 +42,8 @@ namespace Battle {
         }
 
         void Update() {
-            if (instant) return;
+            if (mode == Mode.Standby) return;
+
             transform.position = Vector3.MoveTowards(transform.position, destination, speed * Screen.width * Time.smoothDeltaTime);
             speed += accel * Time.smoothDeltaTime;
 
@@ -54,91 +53,117 @@ namespace Battle {
             }
         }
 
-        public void InstantEvaluate() {
-            if (!instant) return;
-            while (gameObject) {
-                EvaluateOnDestination();
-            }
+        public void SetDamage(int damage) {
+            this.damage = damage;
+        }
+
+        public void Shoot(GameBoard target, Mode mode, Vector3 destination) {
+            this.target = target;
+            this.mode = mode;
+            this.destination = destination;
         }
 
         void EvaluateOnDestination() {
             if (mode == Mode.Countering) {
-                // Counter incoming
-                int residualDamage = target.hpBar.CounterIncoming(damage);
+                // Counter any incoming damage in the queue
+                damage = target.hpBar.CounterIncoming(damage);
 
-                // If there is any leftover damage, travel to enemy board and damage them
-                if (residualDamage > 0) {
-                    damage = residualDamage;
-                    Attack(target.enemyBoard);
-                } else {
-                    // if not, destroy here
+                // Stop here if no damage left
+                if (damage == 0) {
                     Destroy(gameObject);
+                    return;
+                }
+
+                // if Pyro, after all countering, send towards shield icon to add shield if shield is not already full
+                if (target.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields && target.shield < target.abilityManager.PyroMaxDamageDealShield()) {
+                    Shield(target);
+                    return;
+                } 
+                // otherwise, attack the opponent
+                else {
+                    // undo romra defensive +30% damage boost
+                    if (target.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender) {
+                        damage = (int)(damage / 1.3f);
+                    }
+                    Attack(target.enemyBoard);
                 }
             }
 
             else if (mode == Mode.Shielding) {
-                target.AddShield(damage);
-
-                // overshield stuff disabled; compilation errors happening and don't want to fix this rn but if damageshoots are readded which is likely this needs fixing
-                // int overshield = target.AddShield(damage);
-
-                // // If there is any leftover damage, travel to enemy board and damage them
-                // if (overshield > 0) {
-                //     damage = overshield;
-                //     Attack(target.enemyBoard);
-                // } else {
-                //     // if not, destroy here
-                //     Destroy(gameObject);
-                // }
-            }
-
-            else if (mode == Mode.AttackingEnemyShield) {
-                int overflow = target.DamageShield(damage);
-
-                // If there is any leftover damage, travel to enemy board and damage them
-                if (overflow > 0) {
-                    damage = overflow;
-                    Attack(target);
-                } else {
-                    // if not, destroy here
-                    Destroy(gameObject);
+                int possibleShield = target.abilityManager.PyroMaxDamageDealShield() - target.shield;
+                if (possibleShield > 0) {
+                    // if there is more damage than allowed shield, fill all alotted shield and save leftover damage
+                    if (damage > possibleShield) {
+                        target.AddShield(possibleShield);
+                        damage -= possibleShield;
+                    } 
+                    // otherwise, add it all to shield; this damageshoot stops here
+                    else {
+                        target.AddShield(damage);
+                        Destroy(gameObject);
+                    }
                 }
-            }
 
-            else if (mode == Mode.Heal) { 
-                // if singleplayer, add to "score" (hp bar)
-                if (target.singlePlayer && !Storage.level.aiBattle) {
-                    target.AddScore(damage);
-                    Destroy(gameObject);
+                // if there is any damage left over after shielding (or no shielding happened at all), send to opponent
+                if (damage > 0) {
+                    Attack(target.enemyBoard);
                 }
             }
 
             // default: deal damage to target
-            else {
-                // target is invincible while in recovery mode
-                // if (target.recoveryMode) {
-                //     Destroy(this.gameObject); 
-                //     return;
-                // }
+            else if (mode == Mode.AttackingShield) {
+                damage = target.DamageShield(damage);
+                if (damage > 0) {
+                    // if leftover damage after attacking shield, send to their damage queue
+                    Shoot(target, Mode.Attacking, target.hpBar.DamageQueue[0].transform.position);
+                } else {
+                    Destroy(gameObject);
+                }
+            }
 
+            else if (mode == Mode.Attacking) {
                 target.EnqueueDamage(damage);
-                Destroy(this.gameObject);
-                target.PlaySFX(dmgShootSFX);
+                Destroy(gameObject);
+            }
+
+            else if (mode == Mode.AddScore) {
+                target.AddScore(damage);
+                Destroy(gameObject);
+            }
+
+            else if (mode == Mode.Healing) {
+                target.Heal(damage);
+                Destroy(gameObject);
             }
         }
 
-        void Attack(Board.GameBoard target) {
-            this.target = target;
+        public void Shield(GameBoard target) {
+            Shoot(target, Mode.Shielding, target.hpBar.shieldObject.transform.position);
+        }
 
-            if (target.shield > 0) {
-                mode = Mode.AttackingEnemyShield;
-                destination = target.hpBar.shieldObject.transform.position;
-            } else {
-                mode = Mode.Attacking;
-                destination = target.hpBar.DamageQueue[0].transform.position;
+        /// <summary>
+        /// Send this damage shoot towards the opponent, changing it to attack mode
+        /// Should only be called if this damage shoot is not already in an attacking (so only defense or newly instantiated)
+        /// </summary>
+        /// <param name="target">the board being attacked</param>
+        public void Attack(GameBoard target) {
+            // don't shoot at opponent while they are in recovery mode
+            if (target.recoveryMode) {
+                Destroy(gameObject);
+                return;
             }
 
-            speed = initialSpeed;
+            if (mode == Mode.AttackingShield || mode == Mode.Attacking) {
+                Debug.LogError("Trying to attack again with a damage shoot that has already been sent to attack");
+                Destroy(gameObject);
+                return;
+            }
+
+            if (target.shield > 0) {
+                Shoot(target, Mode.AttackingShield, target.hpBar.shieldObject.transform.position);
+            } else {
+                Shoot(target, Mode.Attacking, target.hpBar.DamageQueue[0].transform.position);
+            }
         }
 
         /** Checks if this has reached its destination */

@@ -113,7 +113,6 @@ namespace Battle.Board {
         [SerializeField] private Battle.AttackPopup attackPopup;
         /** Board background. Animated fall down when defeated */
         [SerializeField] private BoardDefeatFall boardDefeatFall, pieceBoardDefeatFall;
-        [SerializeField] public TMP_Text recoveryGaugeText;
 
         /// If the board is inputting to quick fall the current piece. 
         private bool _quickFall = false;
@@ -463,15 +462,6 @@ namespace Battle.Board {
 
             SetShield(0);
 
-            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.HealingGauge){
-                recoveryGaugeText.transform.parent.gameObject.SetActive(true);
-                abilityManager.recoveryGaugeAmount = 0;
-                recoveryGaugeText.text = ""+abilityManager.recoveryGaugeAmount;
-            }
-            else{
-                recoveryGaugeText.transform.parent.gameObject.SetActive(false);
-            }
-
             hpBar.Setup(this);
 
             if (singlePlayer && !Storage.level.aiBattle) {
@@ -792,8 +782,6 @@ namespace Battle.Board {
             portrait.sprite = battler.sprite;
 
             attackPopup.SetBattler(battler);
-
-            abilityManager.InitManaBar();
 
             hpBar.Refresh();
 
@@ -1398,7 +1386,7 @@ namespace Battle.Board {
             return ClearTile(col, row, true);
         }
 
-        bool useDamageShootParticles = false;
+        bool useDamageShootParticles = true;
         
         /// <summary>
         /// Deal damage / gain points. Counter incoming damage on this board first in order of closest/furthest.
@@ -1441,7 +1429,7 @@ namespace Battle.Board {
         public int DealDamageLocal(int damage, Vector3 shootSpawnPos)
         {
             if (damage <= 0) {
-                Debug.LogWarning("trying to do 0 damage locally");
+                Debug.LogWarning("trying to do "+damage+" damage locally");
                 return 0;
             }
 
@@ -1460,20 +1448,80 @@ namespace Battle.Board {
             // ATTACK ANIMATIONS DISABLED (covers damage queue...)
             // if (chain >= 2) attackPopup.AttackAnimation();
 
+            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.HealingGauge){
+                abilityManager.FillHealingGauge(damage/7);
+            }
+
+            // romra +30% damage boost defensively
+            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender) {
+                damage = (int)(damage * 1.3f);
+            }
+
             if (useDamageShootParticles) {
-                GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
-                DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
-                shoot.damage = damage;
-                DamageShootAtTarget(shoot);
+                SendDamageShoot(damage, shootSpawnPos);
                 return 0;
             } else {
+                // if damage shoots are disabled, all damage is evaluated instantly
                 return EvaluateInstantOutgoingDamage(damage);
             }
         }
 
+        // Shoot the given damage towards the appropriate target.
+        // Will first try to counter incoming damage, then add shields if possible, then damage the opponent.
+        // Or, if in singleplayer, will send towards HP number and add to score.
+        public void SendDamageShoot(int damage, Vector3 shootSpawnPos) {
+            GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
+            DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
+            shoot.damage = damage;
+
+            // add score if singleplayer; shoot towards score (hp) number
+            if (singlePlayer && !Storage.level.aiBattle) {
+                shoot.Shoot(this, DamageShoot.Mode.AddScore, hpBar.hpNum.transform.position);
+                return;
+            }
+
+            // If there is any incoming damage, shoot towards it
+            for (int i=5; i>=0; i--)
+            {
+                if (hpBar.DamageQueue[i].dmg > 0) {
+                    shoot.Shoot(this, DamageShoot.Mode.Countering, hpBar.DamageQueue[i].transform.position);
+                    return;
+                }
+            }
+
+            // If the damage bar is empty and this fighter can make shields, make a shield if below max shield
+            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields) {
+                int possibleShield = abilityManager.PyroMaxDamageDealShield() - shield;
+                if (possibleShield > 0) {
+                    shoot.Shield(this);
+                    return;
+                }   
+            }
+
+            // If this is network and not controlled by this player, skip and let other player evaluate dealt for their board.
+            // they will send an rpc back after evaluation with the current damage queue state
+            if (Storage.online && !netPlayer.isOwned) {
+                return;
+            }
+
+            // won't send to opponent if they are recovering
+            if (enemyBoard.recoveryMode) {
+                return;
+            }
+
+            // romra - remove 30% damage boost and apply -30% offensive damage
+            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender) {
+                shoot.damage = (int)(shoot.damage / 1.3f * 0.7f);
+            }
+
+            // send towards opponent's board, shield if they have any, otherwise straight to damage queue
+            shoot.Attack(enemyBoard);
+        }
+
         /// <summary>
         /// Evaluate outgoing (countring/shielding) damage instantly only for this board, so only countering and shielding.
-        /// Will call the enemy's board to evaulate their damage if there is any left over after countering and shielding. 
+        /// Will call the enemy's board to evaulate their damage if there is any left over after countering and shielding.
+        /// Only used when damage shoots are disabled
         /// </summary>
         /// <param name="damage">amount of damage to take</param>
         /// <returns>residual damage not dealt (only applicable to online mode where damage is sent to opponent to eval on their client)</returns>
@@ -1489,23 +1537,8 @@ namespace Battle.Board {
                 return 0;
             }
 
-            // for Bithecary recovery gauge
-            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.HealingGauge){
-                abilityManager.recoveryGaugeAmount += damage/7;
-                recoveryGaugeText.text = ""+abilityManager.recoveryGaugeAmount;
-            }
-
             // first try to counter incoming damage from furthest to closest
-            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender){  // extra defense for romra
-                Debug.Log("romra dmg "+damage+" >defending> "+ (int)(damage*1.3f));
-                damage = hpBar.CounterIncoming((int)(damage*1.3f));
-
-                Debug.Log("romra dmg after defending "+damage+" >attacking> "+ (int)(damage*0.7f));
-                damage = (int)(damage*0.7f); // reduce damage to 0.7x for attacking
-            }
-            else{
-                damage = hpBar.CounterIncoming(damage);
-            }
+            damage = hpBar.CounterIncoming(damage);
 
             // stop if no leftover damage
             if (damage <= 0) return 0;
@@ -1518,8 +1551,6 @@ namespace Battle.Board {
                     damage -= possibleShield;
                 }
             }
-            // add to total score - which is damage dealt in versus modes.
-            matchStats.totalScore += damage;
 
             // if in online mode, send remainder of damage to opponent for then to evaluate on their client (return leftover damage to DealDamageLocal() that called this)
             if (Storage.online) {
@@ -1527,24 +1558,37 @@ namespace Battle.Board {
             } 
             // if not, evaluate on the other board now
             else {
-                enemyBoard.EvaluateInstantIncomingDamage(damage);
+                AttackInstant(enemyBoard, damage);
                 return 0;
             }
         }
 
+        // Attack another board. Targets their shield first and then enqueues damage.
+        // Called after countering and shielding in EvaluateInstantOutgoingDamage (only if damage shoots are disabled)
+        public void AttackInstant(GameBoard target, int damage) {
+            // romra -30% damage when attacking
+            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender) {
+                damage = (int)(damage / 1.3f * 0.7f);
+            }
+
+            // add to total score - which is damage dealt in versus modes.
+            matchStats.totalScore += damage;
+
+            target.EvaluateInstantIncomingDamage(damage);
+        }
+
         /// <summary>
-        /// Instantly evaulate receiving damage. Damages shield first and then queues damage if any leftover
+        /// Instantly evaulate receiving damage. Damages shield first and then queues damage if any leftover.
+        /// Only used when damageshoots are disabled./// Onl
         /// </summary>
         /// <param name="damage">amount of damage to take</param>
-        /// <returns>amount of residual damage - the amount that </returns>
         public void EvaluateInstantIncomingDamage(int damage) {
-            // Attack this board's shield first
+            // Attacks this board's shield first
             if (damage > 0) damage = DamageShield(damage);
 
             // then enqueue damage
             if (damage > 0) {
                 EnqueueDamage(damage);
-                PlayDamageShootSFX(1 + hpBar.DamageQueue[0].dmg * 0.002f);
             }
 
             // in online, relay damage queue state to the opponent afterwards
@@ -1557,83 +1601,12 @@ namespace Battle.Board {
             PlaySFX(dmgShootSFX, p);
         }
 
-        public void DamageShootAtTarget(DamageShoot shoot) {
-            // Send it to the appropriate location
-            // if singleplayer, add damage to score, send towards hp bar
-            if (singlePlayer && !Storage.level.aiBattle) {
-                shoot.target = this;
-                shoot.mode = DamageShoot.Mode.Heal;
-                shoot.destination = hpBar.hpNum.transform.position;
-            } 
-
-            // if multiplayer, send damage to opponent
-            else {
-                // damage = hpBar.CounterIncoming(damage);
-                // enemyBoard.EnqueueDamage(damage);
-                // hpBar.Refresh();
-
-                // move towards the closest damage
-                // Iterate in reverse order; target closer daamges first
-                for (int i=5; i>=0; i--)
-                {
-                    if (hpBar.DamageQueue[i].dmg > 0) {
-                        shoot.target = this;
-                        shoot.mode = DamageShoot.Mode.Countering;
-                        shoot.destination = hpBar.DamageQueue[i].transform.position;
-                        break;
-                    }
-                }
-
-                // If the damage bar is empty and this fighter can make shields, make a shield if below max shield
-                
-                if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields) {
-                    int maxShield = 300 + 50 * cycleLevel;
-                    int possibleShield = maxShield - shield;
-                    if (possibleShield > 0) {
-                        shoot.target = this;
-                        shoot.mode = DamageShoot.Mode.Shielding;
-                        shoot.destination = hpBar.shieldObject.transform.position;
-                        return;
-                    }   
-                }
-
-                // If this is network and not controlled by this player, skip and let other player evaluate dealt for their board.
-                // they will send an rpc back after evaluation with the current damage queue state
-                if (Storage.online && !netPlayer.isOwned) {
-                    return;
-                }
-
-              
-
-                //After shields, try to damage opponent's shield
-                if (enemyBoard.shield > 0) {
-                    shoot.target = enemyBoard;
-                    shoot.mode = DamageShoot.Mode.AttackingEnemyShield;
-                    shoot.destination = enemyBoard.hpBar.shieldObject.transform.position;
-                    return;
-                }
-
-                // if no incoming damage/enemy shield was found, send straight to opponent
-                if (enemyBoard.recoveryMode) {
-                    Destroy(shoot.gameObject);
-                   return;
-                }
-                
-                shoot.target = enemyBoard;
-                shoot.mode = DamageShoot.Mode.Attacking;
-                shoot.destination = enemyBoard.hpBar.DamageQueue[0].transform.position;
-            }
-
-            if (DamageShoot.instant) {
-                shoot.InstantEvaluate();
-            }
-        }
-
         // Enqueues damage to this board.
         // Called from another board's DealDamage() method.
         public void EnqueueDamage(int damage)
         {
             hpBar.DamageQueue[0].AddDamage(damage);
+            PlayDamageShootSFX(1 + hpBar.DamageQueue[0].dmg * 0.002f);
             hpBar.Refresh();
             CheckMidLevelConversations();
         }
@@ -2527,7 +2500,8 @@ namespace Battle.Board {
 
         public void Heal(int amount)
         {
-            hp = Math.Min(hp, maxHp + amount);
+            hp += amount;
+            if (hp >= maxHp) hp = maxHp;
         }
 
         public void SetHp(int amount, bool allowDeath = true) {

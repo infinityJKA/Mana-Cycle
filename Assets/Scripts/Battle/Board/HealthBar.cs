@@ -63,6 +63,11 @@ namespace Battle.Board {
         // Return the amount of leftover damage.
         public int CounterIncoming(int damage)
         {
+            // romra +30% damage when defending
+            if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender) {
+                damage = (int)(damage * 1.3f);
+            }
+
             // Iterate in reverse order; target closer daamges first
             for (int i=5; i>=0; i--)
             {

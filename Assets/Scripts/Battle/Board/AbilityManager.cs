@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 using Sound; 
 using Animation;
+using TMPro;
 
 namespace Battle.Board {
     /// <summary>
@@ -33,22 +34,18 @@ namespace Battle.Board {
         /// <summary>Current amount of mana the player has generated</summary>
         public int mana {get; private set;}
 
-        /// <summary>
-        /// True while the battler's ability is active.
-        /// </summary>
-        public bool abilityActive;
-
         // used for synchronizing ability with the opponent's client.
         public int[] abilityData;
 
         // Timer for when to stop Electro's ability
         private float abilityEndTime;
         public bool thunderRushActive = false;
-        [SerializeField] public Transform thunderIconPrefab;
+        [SerializeField] private Transform thunderIconPrefab;
         [SerializeField] private GameObject thunderActivateSFX,heroicShieldSFX;
 
-        public int recoveryGaugeAmount;
-        private bool alchemyIsHealing;
+        [SerializeField] private TMP_Text recoveryGaugeText;
+
+        public int recoveryGaugeAmount {get; private set;}
 
 
         void Awake()
@@ -71,7 +68,25 @@ namespace Battle.Board {
         }
 
         public void InitManaBar() {
-            if (!enabled || !board || !board.Battler) return;
+            if (!enabled || !board) {
+                Debug.LogWarning("trying to init mana bar while it is disabled");
+                return;
+            }
+
+            if (!board.Battler) {
+                Debug.LogWarning("trying to init mana bar with no battler!");
+                return;
+            }
+
+
+            if(board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.HealingGauge){
+                recoveryGaugeText.transform.parent.gameObject.SetActive(true);
+                recoveryGaugeAmount = 0;
+                recoveryGaugeText.text = ""+recoveryGaugeAmount;
+            }
+            else{
+                recoveryGaugeText.transform.parent.gameObject.SetActive(false);
+            }
 
             // don't show mana bar if battler does not use mana.
             if(board.Battler.activeAbilityMana == 0) {
@@ -124,7 +139,6 @@ namespace Battle.Board {
                 mana = 0;
                 RefreshManaBar();
                 Debug.Log("use active ability");
-                abilityActive = true;
 
                 board.matchStats.totalAbilityUses++;
 
@@ -276,7 +290,7 @@ namespace Battle.Board {
         }
 
         private void ThunderRush(){
-            abilityEndTime = Time.time + 13;
+            abilityEndTime = Time.time + 10f;
             Instantiate(thunderActivateSFX);
             if(!thunderRushActive){
                 Instantiate(thunderIconPrefab, symbolList);
@@ -288,15 +302,22 @@ namespace Battle.Board {
         private void HeroicShield(){
             Instantiate(heroicShieldSFX);
 
+            // if incoming is empty generate 150 shield
             if (board.totalIncomingDamage == 0) {
-                board.AddShield(200 + board.CycleLevel * 40);
+                board.AddShield(150 + board.CycleLevel * 25);
                 return;
+            } 
+            // if there is incoming damage send it to the start and counter 150 of it
+            else {
+                board.hpBar.CounterIncoming(150 + board.CycleLevel * 25);
+
+                for (int i=5; i>=1; i--){
+                    board.hpBar.DamageQueue[0].AddDamage(board.hpBar.DamageQueue[i].dmg);
+                    board.hpBar.DamageQueue[i].SetDamage(0);
+                }
             }
 
-            for (int i=5; i>=1; i--){
-                board.hpBar.DamageQueue[0].AddDamage(board.hpBar.DamageQueue[i].dmg);
-                board.hpBar.DamageQueue[i].SetDamage(0);
-            }
+            
         }
 
         private void Alchemy() {
@@ -310,6 +331,21 @@ namespace Battle.Board {
             return potion;
         }
 
+        public void UpdateHealingGauge() {
+            recoveryGaugeText.text = ""+recoveryGaugeAmount;
+        }
+
+        // Fills healing gauge based on damage passed (actual amount added is damage/7 as of writing; code in gameobard.cs)
+        public void FillHealingGauge(int amount) {
+            recoveryGaugeAmount += amount;
+            UpdateHealingGauge();
+        }
+
+        public void BithecaryHealActivate() {
+            board.SetHp(board.hp + recoveryGaugeAmount); // this is basically an uncapped heal but could be fun. if this is too op, change to normal Heal()
+            recoveryGaugeAmount = 0;
+            UpdateHealingGauge();
+        }
 
         public void ClearAbilityData() {
             if (abilityData.Length > 0) abilityData = new int[0];
