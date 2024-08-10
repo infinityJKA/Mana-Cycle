@@ -283,6 +283,12 @@ namespace Battle.Board {
 
         private void HeroicShield(){
             Instantiate(heroicShieldSFX);
+
+            if (board.hpBar.TotalIncomingDamage() == 0) {
+                board.AddShield(150 + board.CycleLevel * 30);
+                return;
+            }
+
             for (int i=5; i>=1; i--){
                 board.hpBar.DamageQueue[0].AddDamage(board.hpBar.DamageQueue[i].dmg);
                 board.hpBar.DamageQueue[i].SetDamage(0);

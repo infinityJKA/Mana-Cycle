@@ -157,7 +157,6 @@ namespace Battle.Board {
 
         /// Amount of shield this battler has. As of rn Pyro is the only character to gain shield
         public int shield {get; private set;} = 0;
-        public int maxShield { get { return 300 + 50 * cycleLevel; } }
 
         /** Stores the ManaCycle in this scene. (on start) */
         public ManaCycle cycle { get; private set; }
@@ -192,6 +191,7 @@ namespace Battle.Board {
 
         /** Amount of times the player has cleared the cycle. Used in damage formula */
         private int cycleLevel = 0;
+        public int CycleLevel => cycleLevel;
         
         // Amount of boost this board gets from each cycle clear
         public int boostPerCycleClear {get; private set;} = 2;
@@ -1500,7 +1500,14 @@ namespace Battle.Board {
             if (damage <= 0) return 0;
 
             // add shield to self after countering, but before attacking opponent
-            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields) damage = AddShield(damage);
+            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields) {
+                int maxShield = 300 + 50 * cycleLevel;
+                int possibleShield = maxShield - shield;
+                if (possibleShield > 0) {
+                    AddShield(possibleShield);
+                    damage -= possibleShield;
+                }
+            }
             // add to total score - which is damage dealt in versus modes.
             matchStats.totalScore += damage;
 
@@ -1568,11 +1575,16 @@ namespace Battle.Board {
                 }
 
                 // If the damage bar is empty and this fighter can make shields, make a shield if below max shield
-                if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields && shield < maxShield) {
-                    shoot.target = this;
-                    shoot.mode = DamageShoot.Mode.Shielding;
-                    shoot.destination = hpBar.shieldObject.transform.position;
-                    return; 
+                
+                if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields) {
+                    int maxShield = 300 + 50 * cycleLevel;
+                    int possibleShield = maxShield - shield;
+                    if (possibleShield > 0) {
+                        shoot.target = this;
+                        shoot.mode = DamageShoot.Mode.Shielding;
+                        shoot.destination = hpBar.shieldObject.transform.position;
+                        return;
+                    }   
                 }
 
                 // If this is network and not controlled by this player, skip and let other player evaluate dealt for their board.
@@ -1686,18 +1698,9 @@ namespace Battle.Board {
             UpdateShield();
         }
 
-        // Add shield to this board. Returns any leftover unaddable shield due to maximum reached.
-        public int AddShield(int addShield) {
+        // Add shield to this board.
+        public void AddShield(int addShield) {
             shield += addShield;
-            if (shield > maxShield) {
-                int overflow = shield - maxShield;
-                shield = maxShield;
-                UpdateShield();
-                return overflow;
-            } else {
-                UpdateShield();
-                return 0;
-            }
         }
 
         // Deal damage to the shield. If overdamaged, return overflow
