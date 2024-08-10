@@ -77,16 +77,19 @@ namespace Battle {
             }
 
             else if (mode == Mode.Shielding) {
-                int overshield = target.AddShield(damage);
+                target.AddShield(damage);
 
-                // If there is any leftover damage, travel to enemy board and damage them
-                if (overshield > 0) {
-                    damage = overshield;
-                    Attack(target.enemyBoard);
-                } else {
-                    // if not, destroy here
-                    Destroy(gameObject);
-                }
+                // overshield stuff disabled; compilation errors happening and don't want to fix this rn but if damageshoots are readded which is likely this needs fixing
+                // int overshield = target.AddShield(damage);
+
+                // // If there is any leftover damage, travel to enemy board and damage them
+                // if (overshield > 0) {
+                //     damage = overshield;
+                //     Attack(target.enemyBoard);
+                // } else {
+                //     // if not, destroy here
+                //     Destroy(gameObject);
+                // }
             }
 
             else if (mode == Mode.AttackingEnemyShield) {

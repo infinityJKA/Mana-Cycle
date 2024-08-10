@@ -207,6 +207,10 @@ namespace Battle.Board {
             }
         }
 
+        public int PyroMaxDamageDealShield() {
+            return 300 + 50 * board.CycleLevel;
+        }
+
         /// <summary>
         /// Replaces current piece and the next 2 in the preview with bombs.
         /// </summary>
@@ -284,8 +288,8 @@ namespace Battle.Board {
         private void HeroicShield(){
             Instantiate(heroicShieldSFX);
 
-            if (board.hpBar.TotalIncomingDamage() == 0) {
-                board.AddShield(150 + board.CycleLevel * 30);
+            if (board.totalIncomingDamage == 0) {
+                board.AddShield(200 + board.CycleLevel * 40);
                 return;
             }
 

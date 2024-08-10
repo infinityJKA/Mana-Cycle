@@ -1480,13 +1480,13 @@ namespace Battle.Board {
 
             // for Bithecary recovery gauge
             if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.HealingGauge){
-                abilityManager.recoveryGaugeAmount += (damage/7);
+                abilityManager.recoveryGaugeAmount += damage/7;
                 recoveryGaugeText.text = ""+abilityManager.recoveryGaugeAmount;
             }
 
             // first try to counter incoming damage from furthest to closest
             if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender){  // extra defense for romra
-                Debug.Log("romra dmg "+damage+" >defending> "+ (damage*1.3f));
+                Debug.Log("romra dmg "+damage+" >defending> "+ (int)(damage*1.3f));
                 damage = hpBar.CounterIncoming((int)(damage*1.3f));
 
                 Debug.Log("romra dmg after defending "+damage+" >attacking> "+ (int)(damage*0.7f));
@@ -1501,8 +1501,7 @@ namespace Battle.Board {
 
             // add shield to self after countering, but before attacking opponent
             if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shields) {
-                int maxShield = 300 + 50 * cycleLevel;
-                int possibleShield = maxShield - shield;
+                int possibleShield = abilityManager.PyroMaxDamageDealShield() - shield;
                 if (possibleShield > 0) {
                     AddShield(possibleShield);
                     damage -= possibleShield;
@@ -1701,6 +1700,7 @@ namespace Battle.Board {
         // Add shield to this board.
         public void AddShield(int addShield) {
             shield += addShield;
+            UpdateShield();
         }
 
         // Deal damage to the shield. If overdamaged, return overflow
