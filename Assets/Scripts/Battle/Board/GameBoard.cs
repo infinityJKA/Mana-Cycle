@@ -1514,8 +1514,10 @@ namespace Battle.Board {
                 shoot.SetDamage((int)(shoot.damage / 1.3f * 0.7f));
             }
 
+            matchStats.totalScore += shoot.damage;
+
             // send towards opponent's board, shield if they have any, otherwise straight to damage queue
-            shoot.Attack(enemyBoard);
+            shoot.Attack(this, enemyBoard);
         }
 
         /// <summary>

@@ -87,7 +87,7 @@ namespace Battle {
                     if (target.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender) {
                         damage = (int)(damage / 1.3f);
                     }
-                    Attack(target.enemyBoard);
+                    Attack(target, target.enemyBoard);
                 }
             }
 
@@ -108,7 +108,7 @@ namespace Battle {
 
                 // if there is any damage left over after shielding (or no shielding happened at all), send to opponent
                 if (damage > 0) {
-                    Attack(target.enemyBoard);
+                    Attack(target, target.enemyBoard);
                 }
             }
 
@@ -148,7 +148,7 @@ namespace Battle {
         /// Should only be called if this damage shoot is not already in an attacking (so only defense or newly instantiated)
         /// </summary>
         /// <param name="target">the board being attacked</param>
-        public void Attack(GameBoard target) {
+        public void Attack(GameBoard attacker, GameBoard target) {
             // don't shoot at opponent while they are in recovery mode
             if (target.recoveryMode) {
                 Destroy(gameObject);
@@ -160,6 +160,8 @@ namespace Battle {
                 Destroy(gameObject);
                 return;
             }
+
+            attacker.matchStats.totalScore += damage;
 
             if (target.shield > 0) {
                 Shoot(target, Mode.AttackingShield, target.hpBar.shieldObject.transform.position);
