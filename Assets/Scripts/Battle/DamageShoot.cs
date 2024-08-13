@@ -28,13 +28,15 @@ namespace Battle {
         /** Position to move towards */
         private Vector3 destination;
 
-        /** speed, in screen widths / sec */
-        [SerializeField] private float initialSpeed = 0.2f;
+        /** Time the shoot should take to reach wherever it is going */
+        [SerializeField] private float travelTime = 0.4f;
+
+        /** small additional speed boost in screenwidths/sec added to speed **/
+        [SerializeField] private float additionalSpeed = 0.05f;
 
         private float speed;
 
-        /** acceleration, in screen widths / sec^2 **/
-        [SerializeField] private float accel = 0.1f;
+        private float speedMultiplier;
 
         [SerializeField] private GameObject dmgShootSFX;
 
@@ -58,12 +60,12 @@ namespace Battle {
         [SerializeField] private Material[] trailMaterials;
 
         [SerializeField] private GameObject[] levelParticles;
+        [SerializeField] private float[] speedMultipliers;
 
         void Update() {
             if (mode == Mode.Standby) return;
 
-            transform.position = Vector3.MoveTowards(transform.position, destination, speed * Screen.width * Time.smoothDeltaTime);
-            speed += accel * Time.smoothDeltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.smoothDeltaTime);
 
             if (spawnedParticleSystem) {
                 spawnedParticleSystem.transform.LookAt(destination);
@@ -96,6 +98,8 @@ namespace Battle {
             manaImage.sprite = manaSprite;
             trail.startWidth = size * 0.6f;
             trail.endWidth = 0;
+
+            speedMultiplier = speedMultipliers[visualLevel];
             
             var particles = levelParticles[visualLevel];
             if (particles) {
@@ -117,7 +121,8 @@ namespace Battle {
 
             // in case this has already been shot and is now travelling towards its new target, reset to base unacellerated speed, 
             // will somewhat signify a momentum (damage) transfer
-            speed = initialSpeed;
+            speed = (destination - transform.position).magnitude / travelTime + additionalSpeed * Screen.width;
+            speed *= speedMultiplier;
 
             Debug.Log("shooting towards "+target.name+" with mode "+mode);
         }

@@ -368,8 +368,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d89a6dfee04ac4ab68684b5cd0d85ec1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialSpeed: 0.3
-  accel: 0.7
+  travelTime: 0.8
+  additionalSpeed: 0.125
   dmgShootSFX: {fileID: 7978053776321691471, guid: 59a75a4271ab25b48ad06a582fa8fd3a, type: 3}
   trail: {fileID: 8762898162408010503}
   glowImage: {fileID: 8404538013218620733}
@@ -398,5 +398,10 @@ MonoBehaviour:
   levelParticles:
   - {fileID: 0}
   - {fileID: 3126389786114031877, guid: b4b044a0958966547836055fd31f8285, type: 3}
-  - {fileID: 3126389786114031877, guid: b4b044a0958966547836055fd31f8285, type: 3}
-  - {fileID: 3126389786114031877, guid: b4b044a0958966547836055fd31f8285, type: 3}
+  - {fileID: 3126389786114031877, guid: da2f9916b1614c64ea3f1176fd3149ec, type: 3}
+  - {fileID: 3126389786114031877, guid: 27c82e53f2b877741923655e3fbac2f3, type: 3}
+  speedMultipliers:
+  - 1
+  - 1
+  - 0.9
+  - 0.75
