@@ -25,17 +25,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1950980938632837685}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7061708752994457912}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2920623115044790537
 CanvasRenderer:
@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: f2527e01e9609c34e8b8570a3adcdcd0, type: 2}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
@@ -101,7 +101,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4069160608057371707}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.000015258789}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -133,7 +133,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.627451}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.7529412}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
@@ -167,7 +167,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8675972966268358437
 RectTransform:
   m_ObjectHideFlags: 0
@@ -236,33 +236,24 @@ TrailRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Time: 0.125
+  m_SortingOrder: 1
+  m_Time: 0.1
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 50
+    widthMultiplier: 5
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
         value: 1
-        inSlope: -0.31697083
-        outSlope: -0.31697083
+        inSlope: -0.67561793
+        outSlope: -0.67561793
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.3059914
-      - serializedVersion: 3
-        time: 0.44910923
-        value: 0.4397111
-        inSlope: -1.3828853
-        outSlope: -1.3828853
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.36993608
+        inWeight: 0
+        outWeight: 0.16196078
       - serializedVersion: 3
         time: 0.99334717
         value: 0
@@ -305,14 +296,14 @@ TrailRenderer:
       m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    numCornerVertices: 0
-    numCapVertices: 0
+    numCornerVertices: 4
+    numCapVertices: 8
     alignment: 0
-    textureMode: 4
+    textureMode: 0
     textureScale: {x: 1, y: 1}
     shadowBias: 0.65
     generateLightingData: 0
-  m_MinVertexDistance: 1
+  m_MinVertexDistance: 0.5
   m_MaskInteraction: 0
   m_Autodestruct: 0
   m_Emitting: 1
@@ -383,15 +374,15 @@ MonoBehaviour:
   trail: {fileID: 8762898162408010503}
   glowImage: {fileID: 8404538013218620733}
   manaImage: {fileID: 2593518172433920845}
-  visualLevelThresholds: 000000002c010000e8030000d0070000
+  visualLevelThresholds: 00000000c8000000f4010000e8030000
   sizes:
-  - 75
-  - 100
-  - 125
-  - 150
+  - 50
+  - 70
+  - 90
+  - 110
   colors:
   - {r: 2, g: 2, b: 2, a: 0.6745098}
-  - {r: 2.3784142, g: 2.1396534, b: 0.5272899, a: 0.7058824}
+  - {r: 0.13522735, g: 1.3290187, b: 2.6061997, a: 0.7058824}
   - {r: 2.348128, g: 1.4369197, b: 0.14398906, a: 0.7372549}
   - {r: 2.1185474, g: 0.21946113, b: 0.07838613, a: 0.76862746}
   glowMaterials:
@@ -406,6 +397,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: c8e9cb5c03cfcbc40b3ca7366a31287c, type: 2}
   levelParticles:
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 3126389786114031877, guid: b4b044a0958966547836055fd31f8285, type: 3}
+  - {fileID: 3126389786114031877, guid: b4b044a0958966547836055fd31f8285, type: 3}
+  - {fileID: 3126389786114031877, guid: b4b044a0958966547836055fd31f8285, type: 3}

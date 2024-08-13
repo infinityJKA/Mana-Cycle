@@ -44,6 +44,8 @@ namespace Battle {
         [SerializeField] private Image glowImage;
         [SerializeField] private Image manaImage;
 
+        private Transform spawnedParticleSystem;
+
 
         [SerializeField] private int[] visualLevelThresholds;
 
@@ -63,6 +65,10 @@ namespace Battle {
             transform.position = Vector3.MoveTowards(transform.position, destination, speed * Screen.width * Time.smoothDeltaTime);
             speed += accel * Time.smoothDeltaTime;
 
+            if (spawnedParticleSystem) {
+                spawnedParticleSystem.transform.LookAt(destination);
+            }
+
             // If this damageShoot has reached its destination, counter/damage
             if (ReachedDestination()) {
                 EvaluateOnDestination();
@@ -78,21 +84,22 @@ namespace Battle {
                 if (visualLevel == visualLevelThresholds.Length-1) break;
             }
             
-            // Color color = colors[visualLevel];
-            // manaImage.color = color;
+            Color color = colors[visualLevel];
+            manaImage.color = color;
 
             glowImage.material = glowMaterials[visualLevel];
             trail.material = trailMaterials[visualLevel];
 
             float size = sizes[visualLevel];
             glowImage.rectTransform.sizeDelta = new Vector2(size, size);
-            // manaImage.rectTransform.sizeDelta = new Vector2(size * 0.75f, size * 0.75f);
-            trail.startWidth = size / 2f;
+            manaImage.rectTransform.sizeDelta = new Vector2(size * 0.75f, size * 0.75f);
+            manaImage.sprite = manaSprite;
+            trail.startWidth = size * 0.6f;
             trail.endWidth = 0;
             
             var particles = levelParticles[visualLevel];
             if (particles) {
-                Instantiate(particles, transform);
+                spawnedParticleSystem = Instantiate(particles, transform).transform;
             }
         }
 
