@@ -14,6 +14,7 @@ namespace Battle {
         private Mode mode;
         public enum Mode {
             Standby, // basically just the default mode when this is intantated
+            Dissipate, // while fading out after running out of damage
             AddScore, // sent towards hp bar, used in singleplayer score-based modes
             Healing, // sent towards hp number, same as add score but caps at max hp, used in versus modes
             Countering, // sent towards an incoming damage on the sender's own board
@@ -38,6 +39,14 @@ namespace Battle {
 
         private float speedMultiplier;
 
+
+        [SerializeField] private float fadeoutTime = 0.25f;
+
+        private float fadeout;
+        private Color baseColor;
+
+        [SerializeField] private float fadeoutGrowth = 0.75f;
+
         [SerializeField] private GameObject dmgShootSFX;
 
         // ==== VISUALS
@@ -45,8 +54,6 @@ namespace Battle {
 
         [SerializeField] private Image glowImage;
         [SerializeField] private Image manaImage;
-
-        private Transform spawnedParticleSystem;
 
 
         [SerializeField] private int[] visualLevelThresholds;
@@ -60,10 +67,30 @@ namespace Battle {
         [SerializeField] private Material[] trailMaterials;
 
         [SerializeField] private GameObject[] levelParticles;
+
+        private GameObject spawnedParticleSystem;
+
         [SerializeField] private float[] speedMultipliers;
+
 
         void Update() {
             if (mode == Mode.Standby) return;
+
+            if (mode == Mode.Dissipate) {
+                fadeout += Time.deltaTime;
+
+                if (fadeout >= fadeoutTime) {
+                    Destroy(gameObject);
+                    return;
+                }
+
+                float t = fadeout / fadeoutTime;
+
+                manaImage.transform.localScale = new Vector2(1 + t * fadeoutGrowth, 1 + t * fadeoutGrowth);
+                manaImage.color = new Color(baseColor.r, baseColor.g, baseColor.b, baseColor.a * (1-t));
+
+                return;
+            }
 
             transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.smoothDeltaTime);
 
@@ -86,8 +113,8 @@ namespace Battle {
                 if (visualLevel == visualLevelThresholds.Length-1) break;
             }
             
-            Color color = colors[visualLevel];
-            manaImage.color = color;
+            baseColor = colors[visualLevel];
+            manaImage.color = baseColor;
 
             glowImage.material = glowMaterials[visualLevel];
             trail.material = trailMaterials[visualLevel];
@@ -103,7 +130,7 @@ namespace Battle {
             
             var particles = levelParticles[visualLevel];
             if (particles) {
-                spawnedParticleSystem = Instantiate(particles, transform).transform;
+                spawnedParticleSystem = Instantiate(particles, transform);
             }
         }
 
@@ -134,7 +161,7 @@ namespace Battle {
 
                 // Stop here if no damage left
                 if (damage == 0) {
-                    Destroy(gameObject);
+                    Dissipate();
                     return;
                 }
 
@@ -181,24 +208,33 @@ namespace Battle {
                     // if leftover damage after attacking shield, send to their damage queue
                     Shoot(target, Mode.Attacking, target.hpBar.DamageQueue[0].transform.position);
                 } else {
-                    Destroy(gameObject);
+                    Dissipate();
                 }
             }
 
             else if (mode == Mode.Attacking) {
                 target.EnqueueDamage(damage);
-                Destroy(gameObject);
+                Dissipate();
             }
 
             else if (mode == Mode.AddScore) {
                 target.AddScore(damage);
-                Destroy(gameObject);
+                Dissipate();
             }
 
             else if (mode == Mode.Healing) {
                 target.Heal(damage);
-                Destroy(gameObject);
+                Dissipate();
             }
+        }
+
+        public void Dissipate() {
+            mode = Mode.Dissipate;
+
+            if (spawnedParticleSystem) {
+                spawnedParticleSystem.GetComponent<ParticleSystem>().Stop();
+            }
+            Destroy(trail);
         }
 
         public void Shield(GameBoard target) {

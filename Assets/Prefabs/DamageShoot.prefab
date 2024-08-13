@@ -370,21 +370,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   travelTime: 0.8
   additionalSpeed: 0.125
+  fadeoutTime: 0.175
+  fadeoutGrowth: 0.95
   dmgShootSFX: {fileID: 7978053776321691471, guid: 59a75a4271ab25b48ad06a582fa8fd3a, type: 3}
   trail: {fileID: 8762898162408010503}
   glowImage: {fileID: 8404538013218620733}
   manaImage: {fileID: 2593518172433920845}
-  visualLevelThresholds: 00000000c8000000f4010000e8030000
+  visualLevelThresholds: 00000000fa000000ee020000d0070000
   sizes:
-  - 50
-  - 70
-  - 90
-  - 110
+  - 45
+  - 60
+  - 75
+  - 100
   colors:
   - {r: 2, g: 2, b: 2, a: 0.6745098}
   - {r: 0.13522735, g: 1.3290187, b: 2.6061997, a: 0.7058824}
-  - {r: 2.348128, g: 1.4369197, b: 0.14398906, a: 0.7372549}
-  - {r: 2.1185474, g: 0.21946113, b: 0.07838613, a: 0.76862746}
+  - {r: 1.7449168, g: 1.047373, b: 0.057615213, a: 0.7294118}
+  - {r: 1.0406476, g: 0.10034703, b: 0.034361027, a: 0.70980394}
   glowMaterials:
   - {fileID: 2100000, guid: f2527e01e9609c34e8b8570a3adcdcd0, type: 2}
   - {fileID: 2100000, guid: b414d81fe0e955543bafcbb4ef329462, type: 2}
@@ -404,4 +406,4 @@ MonoBehaviour:
   - 1
   - 1
   - 0.9
-  - 0.75
+  - 0.6
