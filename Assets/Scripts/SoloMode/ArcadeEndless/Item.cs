@@ -196,11 +196,16 @@ public class Item : ScriptableObject
             // check for stat achivements
             if(ArcadeStats.playerStats[ArcadeStats.Stat.DamageMult] >= 1.1 && ArcadeStats.playerStats[ArcadeStats.Stat.SpecialGainMult] >= 1.1){
                 Debug.Log("Wombo Combo");
-                FindObjectOfType<AchievementHandler>().UnlockAchievement("WomboCombo");
+                AchievementHandler ah = FindObjectOfType<AchievementHandler>();
+                ah.UnlockAchievement("WomboCombo");
+                ah.UpdateSteamAchievements();
+                
             }
             if(ArcadeStats.maxHp >= 3000){
                 Debug.Log("Tank Build");
-                FindObjectOfType<AchievementHandler>().UnlockAchievement("TankBuild");
+                AchievementHandler ah = FindObjectOfType<AchievementHandler>();
+                ah.UnlockAchievement("TankBuild");
+                ah.UpdateSteamAchievements();
             }
 
 

@@ -97,11 +97,15 @@ namespace MainMenu {
             // Check for achievements
             if(PlayerHand[PlayerHand.Count-1].cardSprite.name=="romra"){
                 Debug.Log("romra");
-                FindObjectOfType<AchievementHandler>().UnlockAchievement("Romra");
+                AchievementHandler ah = FindObjectOfType<AchievementHandler>();
+                ah.UnlockAchievement("Romra");
+                ah.UpdateSteamAchievements();
             }
             else if(PlayerHand[PlayerHand.Count-1].cardSprite.name=="999billion"){
                 Debug.Log("999billion");
-                FindObjectOfType<AchievementHandler>().UnlockAchievement("999billion");
+                AchievementHandler ah = FindObjectOfType<AchievementHandler>();
+                ah.UnlockAchievement("999billion");
+                ah.UpdateSteamAchievements();
             }
 
             // Updates Graphics and Num

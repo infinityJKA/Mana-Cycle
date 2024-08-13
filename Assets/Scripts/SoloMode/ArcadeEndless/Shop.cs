@@ -142,7 +142,9 @@ public class Shop : MonoBehaviour
             Instantiate(puchaseSFX);
 
             // activate achivement
-            FindObjectOfType<AchievementHandler>().UnlockAchievement("BuyGauntletItem");
+            AchievementHandler ah = FindObjectOfType<AchievementHandler>();
+            ah.UnlockAchievement("BuyGauntletItem");
+            ah.UpdateSteamAchievements();
         }
         else
         {

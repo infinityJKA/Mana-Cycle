@@ -40,6 +40,8 @@ namespace SoloMode
                     AchievementHandler.Instance.UnlockAchievement("ArcadeWinNoDamage");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");
                 }
 
+                AchievementHandler.Instance.UpdateSteamAchievements();
+
             }
         }
 
