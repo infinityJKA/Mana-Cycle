@@ -76,6 +76,7 @@ namespace Battle.Board {
                 if (incoming.dmg >= damage)
                 {
                     incoming.SubtractDamage(damage);
+                    incoming.PartiallyCounteredAnim();
                     board.matchStats.totalDamageCountered += damage;
                     Refresh();
                     return 0;

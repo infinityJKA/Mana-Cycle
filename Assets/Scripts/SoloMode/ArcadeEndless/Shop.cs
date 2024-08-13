@@ -149,7 +149,7 @@ public class Shop : MonoBehaviour
             // cant buy item
             Debug.Log("purchase fail");
             if (ArcadeStats.moneyAmount < item.cost) moneyDisplays[0].GetComponent<Animation.Shake>().StartShake();
-            if (equipOwnedCheck) ownedText.GetComponent<Animation.ColorFlash>().Flash(0.75f);
+            if (equipOwnedCheck) ownedText.GetComponent<Animation.ColorFlash>().Flash();
             Instantiate(failPuchaseSFX);
         }
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,20 +15,33 @@ namespace Animation {
         /** Color currently being flashed. **/
         public Color flashColor;
         /** Length of this flash */
-        private float duration = 0.7f;
+        public float duration = 0.7f;
         /** Amount of flash time remaining **/
         private float time = 0f;
 
-        // If true, animate the "Flash" property on the material instead of the color, from 1 to 0
-        [SerializeField] private bool animateFlashProperty;
-        
-        // Current intensity
-        private float intensity;
+        // If set to FlashProperty, animate the "Flash" property on the material instead of the color, from 1 to 0
+        [SerializeField] private AnimMode animMode;
+
+        // may be different to produce less intense flashes on same component
+        private float intensity = 1f;
+
+        enum AnimMode {
+            Graphic,
+            FlashProperty,
+            TextVertexColor
+        }
+
+        // text if in TextVertexColor mode
+        private TMP_Text text;
 
 
         void Start() {
             graphic = GetComponent<Graphic>();
             baseColor = graphic.color;
+
+            if (animMode == AnimMode.TextVertexColor) {
+                text = GetComponent<TMP_Text>();
+            }
         }
 
         // Update is called once per frame
@@ -35,37 +49,44 @@ namespace Animation {
         {
             time -= Time.smoothDeltaTime;
 
-            if (animateFlashProperty) {
+            if (animMode == AnimMode.Graphic) {
                 if (time > 0) {
                     graphic.color = Color.Lerp(baseColor, flashColor, time / duration);
                 } else {
                     graphic.color = baseColor;
+                    enabled = false;
                 }
-            } else {
+            } else if (animMode == AnimMode.FlashProperty) {
                 if (time > 0) {
                     graphic.material.SetFloat("_Flash", Mathf.Lerp(1, 0, time / duration));
                 } else {
                     graphic.material.SetFloat("_Flash", 0);
+                    enabled = false;
+                }
+            } else if (animMode == AnimMode.TextVertexColor) {
+                if (time > 0) {
+                    text.color = Color.Lerp(baseColor, flashColor, time / duration);
+                } else {
+                    text.color = baseColor;
+                    enabled = false;
                 }
             }
-
-            
         }
 
         public void Flash(Color color, float duration, float intensity) {
-            this.intensity = intensity;
             this.flashColor = color;
-            this.duration = duration*intensity;
+            this.duration = duration;
+            this.intensity = intensity;
             this.time = duration;
+            enabled = true;
         }
 
         public void Flash(float intensity) {
-            this.intensity = intensity;
-            this.time = duration*intensity;
+            Flash(flashColor, duration*intensity, intensity);
         }
 
         public void Flash() {
-            Flash(1f);
+            Flash(flashColor, duration, 1f);
         }
 
         public void SetBaseColor(Color b)

@@ -658,7 +658,7 @@ namespace Battle.Board {
                     }
 
                     if(abilityManager.thunderRushActive){
-                        finalFallTime /= 2.8f;
+                        finalFallTime /= 2.25f;
                     }
 
                     if (Time.time - previousFallTime > finalFallTime) {
@@ -670,8 +670,12 @@ namespace Battle.Board {
                             // If it can't be moved down,
                             // also check for sliding buffer, and place if beyond that
                             // don't use slide time if quick falling
-                            if (!quickFall && Storage.level) {
-                                finalFallTime += slideTime*Storage.level.slideTimeMult;
+                            if (!quickFall) {
+                                if (Storage.level) {
+                                    finalFallTime += slideTime*Storage.level.slideTimeMult;
+                                } else {
+                                    finalFallTime += slideTime;
+                                }
                             }
 
                             // true if time is up for the extra slide buffer

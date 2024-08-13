@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Animation;
 using UnityEngine;
 
 namespace Battle.Board {
@@ -8,8 +9,14 @@ namespace Battle.Board {
         public int dmg { get; private set; }
         public TMPro.TextMeshProUGUI textComponent;
 
+        private ColorFlash colorFlash;
+
         // Movement speed towards home position of zero vector - screen-widths per second
         public float speed = 0.2f;
+
+        private void Awake() {
+            colorFlash = textComponent.GetComponent<ColorFlash>();
+        }
 
         // update - update animation
         void Update() {
@@ -37,6 +44,10 @@ namespace Battle.Board {
         public void SubtractDamage(int damage)
         {
             AddDamage(-damage);
+        }
+
+        public void PartiallyCounteredAnim() {
+            colorFlash.Flash();
         }
     }
 }
