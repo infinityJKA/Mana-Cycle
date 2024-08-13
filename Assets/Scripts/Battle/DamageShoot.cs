@@ -3,6 +3,7 @@ using UnityEngine;
 using Sound;
 using UnityEditor.Localization.Plugins.XLIFF.V12;
 using Battle.Board;
+using UnityEngine.UI;
 
 namespace Battle {
     public class DamageShoot : MonoBehaviour {
@@ -37,6 +38,25 @@ namespace Battle {
 
         [SerializeField] private GameObject dmgShootSFX;
 
+        // ==== VISUALS
+        [SerializeField] private TrailRenderer trail;
+
+        [SerializeField] private Image glowImage;
+        [SerializeField] private Image manaImage;
+
+
+        [SerializeField] private int[] visualLevelThresholds;
+
+        [SerializeField] private float[] sizes;
+
+        [ColorUsage(true, true)]
+        [SerializeField] private Color[] colors;
+
+        [SerializeField] private Material[] glowMaterials;
+        [SerializeField] private Material[] trailMaterials;
+
+        [SerializeField] private GameObject[] levelParticles;
+
         void Update() {
             if (mode == Mode.Standby) return;
 
@@ -49,6 +69,33 @@ namespace Battle {
             }
         }
 
+        public void SetDamageAndVisuals(int damage, Sprite manaSprite) {
+            this.damage = damage;
+
+            int visualLevel = 0;
+            while (damage >= visualLevelThresholds[visualLevel+1]) {
+                visualLevel++;
+                if (visualLevel == visualLevelThresholds.Length-1) break;
+            }
+            
+            // Color color = colors[visualLevel];
+            // manaImage.color = color;
+
+            glowImage.material = glowMaterials[visualLevel];
+            trail.material = trailMaterials[visualLevel];
+
+            float size = sizes[visualLevel];
+            glowImage.rectTransform.sizeDelta = new Vector2(size, size);
+            // manaImage.rectTransform.sizeDelta = new Vector2(size * 0.75f, size * 0.75f);
+            trail.startWidth = size / 2f;
+            trail.endWidth = 0;
+            
+            var particles = levelParticles[visualLevel];
+            if (particles) {
+                Instantiate(particles, transform);
+            }
+        }
+
         public void SetDamage(int damage) {
             this.damage = damage;
         }
@@ -56,7 +103,10 @@ namespace Battle {
         public void Shoot(GameBoard target, Mode mode, Vector3 destination) {
             this.target = target;
             this.mode = mode;
-            this.destination = destination;
+            this.destination = destination; 
+            
+            // maintain current z plane to not get sent behind pieces
+            this.destination.z = EffectCanvas.instance.transform.position.z;
 
             // in case this has already been shot and is now travelling towards its new target, reset to base unacellerated speed, 
             // will somewhat signify a momentum (damage) transfer

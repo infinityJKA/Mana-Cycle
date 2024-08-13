@@ -445,7 +445,7 @@ namespace Battle.Board {
             // only locally evaluate damage if either not online or player owns this client and not the opponent
             int damage = (int)(board.damagePerMana*2.5);
             if (!Storage.online || board.netPlayer.isOwned) {
-                board.DealDamageLocal(damage, center.transform.position);
+                board.DealDamageLocal(damage, -1, center.transform.position);
             } else {
                 accumulatedDamage += damage;
             }

@@ -1396,7 +1396,7 @@ namespace Battle.Board {
         /// <param name="damage">damage to deal</param>
         /// <param name="shootSpawnPos">spawn point of the damage shoot particle if using damage shoots</param>
         /// <param name="partOfChain">determines what type of packet is sent to the opponent in online mode</param>
-        public void DealDamage(int damage, Vector3 shootSpawnPos, bool partOfChain) {
+        public void DealDamage(int damage, Vector3 shootSpawnPos, bool partOfChain, int manaColor = -1) {
             if (damage <= 0) {
                 Debug.LogWarning("trying to do 0 damage");
                 return;
@@ -1406,7 +1406,7 @@ namespace Battle.Board {
                 // when online, only evaluate damage if the client owns this board
                 if (netPlayer.isOwned) {
                     // evaluate local damage first and then send damage to opponent for them to evaluate on their client
-                    int residualDamage = DealDamageLocal(damage, shootSpawnPos);
+                    int residualDamage = DealDamageLocal(damage, manaColor, shootSpawnPos);
                     if (partOfChain) {
                         netPlayer.CmdAdvanceChain(startup: false, damageSent: residualDamage);
                     }
@@ -1416,7 +1416,7 @@ namespace Battle.Board {
                 }
             // if not online, deal damage as normal
             } else {
-                DealDamageLocal(damage, shootSpawnPos);
+                DealDamageLocal(damage, manaColor, shootSpawnPos);
             }
         }
 
@@ -1426,7 +1426,7 @@ namespace Battle.Board {
         /// <param name="damage">amount of damage to counter with / points to gain</param>
         /// <param name="shootSpawnPos">spawn position of the damage shoot (ignored if not using shoots)</param>
         /// <returns>the amount of residual damage after countering/adding shield</returns>
-        public int DealDamageLocal(int damage, Vector3 shootSpawnPos)
+        public int DealDamageLocal(int damage, int manaColor, Vector3 shootSpawnPos)
         {
             if (damage <= 0) {
                 Debug.LogWarning("trying to do "+damage+" damage locally");
@@ -1458,7 +1458,7 @@ namespace Battle.Board {
             }
 
             if (useDamageShootParticles) {
-                SendDamageShoot(damage, shootSpawnPos);
+                SendDamageShoot(damage, manaColor, shootSpawnPos);
                 return 0;
             } else {
                 // if damage shoots are disabled, all damage is evaluated instantly
@@ -1469,10 +1469,18 @@ namespace Battle.Board {
         // Shoot the given damage towards the appropriate target.
         // Will first try to counter incoming damage, then add shields if possible, then damage the opponent.
         // Or, if in singleplayer, will send towards HP number and add to score.
-        public void SendDamageShoot(int damage, Vector3 shootSpawnPos) {
-            GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos, Quaternion.identity, transform);
+        public void SendDamageShoot(int damage, int manaColor, Vector3 shootSpawnPos) {
+            // send position far backward (towards camera) so it's in front of the pieces
+            GameObject shootObj = Instantiate(damageShootPrefab, shootSpawnPos + Vector3.back*200, Quaternion.identity, EffectCanvas.instance.transform);
             DamageShoot shoot = shootObj.GetComponent<DamageShoot>();
-            shoot.SetDamage(damage);
+
+            Sprite manaSprite;
+            if (manaColor >= 0) {
+                manaSprite = cosmetics.manaIcons[manaColor].bgSprite;
+            } else {
+                manaSprite = cosmetics.multicolorIcon.bgSprite;
+            }
+            shoot.SetDamageAndVisuals(damage, manaSprite);
 
             // add score if singleplayer; shoot towards score (hp) number
             if (singlePlayer && !Storage.level.aiBattle) {
@@ -1950,7 +1958,7 @@ namespace Battle.Board {
             // and they will then send back an rpc with their damage queue state
             // do not deal damage here if online;
             // instead the damageSent part of the AdvanceChain rpc will be used to call damage after this was called to update the board and clear the mana
-            DealDamage(damage, averagePos, partOfChain: true);
+            DealDamage(damage, averagePos, true, currentCycleManaColor);
 
             // Do gravity everywhere
             AllTileGravity();
@@ -2003,6 +2011,8 @@ namespace Battle.Board {
                 cycleColoredObject.FadeToColor(brightenedColor);
             }
         }
+
+        public int currentCycleManaColor {get{return cycle.GetCycle()[cyclePosition];}}
 
         public int damagePerMana {get {return 10 + (int)((cycleLevel + boardStats[StartingCycleModifier]) * boostPerCycleClear);}}
 
