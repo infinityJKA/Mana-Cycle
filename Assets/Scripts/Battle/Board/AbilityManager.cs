@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Sound; 
 using Animation;
 using TMPro;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 
 namespace Battle.Board {
     /// <summary>
@@ -45,10 +46,11 @@ namespace Battle.Board {
 
         [SerializeField] private TMP_Text recoveryGaugeText;
 
-        [SerializeField] private Image StatusCondition;
-        [SerializeField] private TMP_Text statusCountdown;
-
         public int recoveryGaugeAmount {get; private set;}
+
+        public StatusConditionManager scm;
+        public float statusTime, statusDamageTime;
+        public StatusConditions statusCondition;
 
 
         void Awake()
@@ -67,6 +69,31 @@ namespace Battle.Board {
                     Destroy(symbolList.GetChild(0).gameObject);
                     thunderRushActive = false;
                 }
+            }
+            if(statusCondition != StatusConditions.NoCondition){
+                if(statusTime + 10 - Time.time <= 0){
+                    if(board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.StatusCondition){
+                        StatusConditions temp = statusCondition;
+                        while(temp == statusCondition){
+                            temp = scm.RandomStatusCondition();
+                        }
+                        statusCondition = temp;
+                        statusTime = Time.time;
+                    }
+                    else{
+                        statusCondition = StatusConditions.NoCondition;
+                    }
+                    scm.UpdateStatusIcon(statusCondition);
+                }
+                else{
+                    scm.countdown.text = ""+Math.Ceiling(statusTime + 10 - Time.time);
+                }
+            }
+            // Gives Better You a condition if he loses it from swapping
+            else if(board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.StatusCondition){
+                statusCondition = scm.RandomStatusCondition();
+                statusTime = Time.time;
+                scm.UpdateStatusIcon(statusCondition);
             }
         }
 
@@ -90,6 +117,14 @@ namespace Battle.Board {
             else{
                 recoveryGaugeText.transform.parent.gameObject.SetActive(false);
             }
+
+            if(board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.StatusCondition){
+                statusCondition = scm.RandomStatusCondition();
+            }
+            else{
+                statusCondition = StatusConditions.NoCondition;
+            }
+            scm.UpdateStatusIcon(statusCondition);
 
             // don't show mana bar if battler does not use mana.
             if(board.Battler.activeAbilityMana == 0) {
@@ -156,6 +191,7 @@ namespace Battle.Board {
                     case Battler.ActiveAbilityEffect.ThunderRush: ThunderRush(); break;
                     case Battler.ActiveAbilityEffect.HeroicShield: HeroicShield(); break;
                     case Battler.ActiveAbilityEffect.Alchemy: Alchemy(); break;
+                    case Battler.ActiveAbilityEffect.Swap: Swap(); break;
                     default: break;
                 }
 
@@ -348,6 +384,29 @@ namespace Battle.Board {
             board.SetHp(board.hp + recoveryGaugeAmount); // this is basically an uncapped heal but could be fun. if this is too op, change to normal Heal()
             recoveryGaugeAmount = 0;
             UpdateHealingGauge();
+        }
+
+        // This is for Better You's ability
+        public void Swap(){
+            // Swapping cycle position
+            int temp = board.cyclePosition;
+            board.cyclePosition = board.enemyBoard.cyclePosition;
+            board.enemyBoard.cyclePosition = temp;
+            Instantiate(heroicShieldSFX);
+            board.PointerReposition();
+            board.enemyBoard.PointerReposition();
+
+            //Swapping status conditions
+            StatusConditions temp2 = statusCondition;
+            if(temp2 == StatusConditions.Fire){temp2 = StatusConditions.FireSwapped;}
+            else if(temp2 == StatusConditions.Poison){temp2 = StatusConditions.PoisonSwapped;}
+            statusCondition = board.enemyBoard.abilityManager.statusCondition;
+            board.enemyBoard.abilityManager.statusCondition = temp2;
+            statusTime = Time.time;
+            board.enemyBoard.abilityManager.statusTime = Time.time;
+            board.enemyBoard.abilityManager.scm.gameObject.SetActive(true);
+
+            Debug.Log("SWAP!!!");
         }
 
         public void ClearAbilityData() {

@@ -161,7 +161,7 @@ namespace Battle.Board {
         public ManaCycle cycle { get; private set; }
 
         /** This board's current position in the cycle. starts at 0 */
-        public int cyclePosition { get; private set; }
+        public int cyclePosition { get; set; }
 
         /** Dimensions of the board */
         public const int width = 8;
@@ -1137,7 +1137,7 @@ namespace Battle.Board {
         }
 
         // Update the pointer's cycle position.
-        private void PointerReposition()
+        public void PointerReposition()
         {
             // Get the position of the ManColor the pointer is supposed to be on
             // Debug.Log(cycle);

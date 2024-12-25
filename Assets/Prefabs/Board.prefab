@@ -227,6 +227,10 @@ MonoBehaviour:
   thunderActivateSFX: {fileID: 0}
   heroicShieldSFX: {fileID: 0}
   recoveryGaugeText: {fileID: 4402709781714417139}
+  scm: {fileID: 8956648563494614938}
+  statusTime: 0
+  statusDamageTime: 0
+  statusCondition: 0
 --- !u!114 &4174570119449310702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1869,6 +1873,7 @@ GameObject:
   - component: {fileID: 3974708754678062295}
   - component: {fileID: 5090006307314061725}
   - component: {fileID: 4945377930576093537}
+  - component: {fileID: 8956648563494614938}
   m_Layer: 5
   m_Name: Status Condition
   m_TagString: Untagged
@@ -1935,6 +1940,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8956648563494614938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3636800352866550188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ee31eb952bf4684e92f40cd24818c02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StatusIcon: {fileID: 6143437951124779291}
+  countdown: {fileID: 7096677057147502355}
+  Counter: {fileID: 21300000, guid: a85075d4ba39e57438c804772d0322d2, type: 3}
+  Pure: {fileID: 21300000, guid: cba3532a6cb7c7e43a9af0766f1f26e9, type: 3}
+  Block: {fileID: 21300000, guid: 84d3e04ebbe10e94ab9fcc5137436c8b, type: 3}
+  Fire: {fileID: 21300000, guid: c3a7bf3643c274c4fa2d376609d0babd, type: 3}
+  Poison: {fileID: 21300000, guid: 6980a209e5ed0644fa7ff3c2c9884677, type: 3}
 --- !u!1 &4212695444644685669
 GameObject:
   m_ObjectHideFlags: 0

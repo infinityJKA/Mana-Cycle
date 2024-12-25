@@ -83,14 +83,6 @@ namespace Battle {
         [SerializeField] public Color textBoxColor;
         [SerializeField] public Sprite gameLogo;
 
-        public enum StatusConditions{ // caused by Better You's passive, all last for 30 seconds
-            Counter, // Counter up to 300 damage when something enters your queue and then end condition
-            Fire,    // Take 5 damage per second, 15 damage per second if swapped. Instantly ends if you pass the end of the mana cycle.
-            Pure,    // Heal 5 HP per second
-            Block,   // Incoming damage is reduced by 0.8x before put in queue
-            Poison   // 10 damage is sent to your queue per second, 20 damage per second if swapped. Instantly ends if you pass the end of the mana cycle.
-        }
-
         private void OnEnable() {
             // i wish there was an easier way to do this
             // there probably is but whatever
