@@ -326,6 +326,8 @@ namespace Battle.Board {
 
         private float particleOpacity = 1f;
 
+        public 
+
         // Start is called before the first frame update
         void Start()
         {

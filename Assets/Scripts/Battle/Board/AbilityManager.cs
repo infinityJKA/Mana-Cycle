@@ -45,6 +45,9 @@ namespace Battle.Board {
 
         [SerializeField] private TMP_Text recoveryGaugeText;
 
+        [SerializeField] private Image StatusCondition;
+        [SerializeField] private TMP_Text statusCountdown;
+
         public int recoveryGaugeAmount {get; private set;}
 
 
