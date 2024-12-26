@@ -68,6 +68,11 @@ namespace Battle.Board {
                 damage = (int)(damage * 1.3f);
             }
 
+            // Better You +20% counter damage status effect
+            if(board.abilityManager.statusCondition == StatusConditions.Counter){
+                damage = (int)(damage * 1.2f);
+            }
+
             // Iterate in reverse order; target closer daamges first
             for (int i=5; i>=0; i--)
             {

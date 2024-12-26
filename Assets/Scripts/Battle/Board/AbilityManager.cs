@@ -6,6 +6,7 @@ using Sound;
 using Animation;
 using TMPro;
 using UnityEditor.Localization.Plugins.XLIFF.V12;
+using UnityEditor.Localization.Plugins.XLIFF.V20;
 
 namespace Battle.Board {
     /// <summary>
@@ -71,6 +72,27 @@ namespace Battle.Board {
                 }
             }
             if(statusCondition != StatusConditions.NoCondition){
+                // For taking damage from condition
+                if(statusDamageTime + 1 - Time.time <= 0){
+                    if(statusCondition == StatusConditions.Poison){
+                        board.hpBar.DamageQueue[0].AddDamage(10);
+                    }
+                    else if(statusCondition == StatusConditions.PoisonSwapped){
+                        board.hpBar.DamageQueue[0].AddDamage(50);
+                    }
+                    else if(statusCondition == StatusConditions.Fire){
+                        board.SetHp(board.hp - 5);
+                    }
+                    else if(statusCondition == StatusConditions.FireSwapped){
+                        board.SetHp(board.hp - 50);
+                    }
+                    else if(statusCondition == StatusConditions.Pure){
+                        board.Heal(7);
+                        board.hpBar.Refresh();
+                    }
+                    statusDamageTime = Time.time;
+                }
+                // For status effect timing
                 if(statusTime + 10 - Time.time <= 0){
                     if(board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.StatusCondition){
                         StatusConditions temp = statusCondition;
@@ -118,6 +140,7 @@ namespace Battle.Board {
                 recoveryGaugeText.transform.parent.gameObject.SetActive(false);
             }
 
+            // initialize status condition
             if(board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.StatusCondition){
                 statusCondition = scm.RandomStatusCondition();
             }
@@ -125,6 +148,8 @@ namespace Battle.Board {
                 statusCondition = StatusConditions.NoCondition;
             }
             scm.UpdateStatusIcon(statusCondition);
+            statusTime = Time.time;
+            statusDamageTime = Time.time;
 
             // don't show mana bar if battler does not use mana.
             if(board.Battler.activeAbilityMana == 0) {
@@ -405,6 +430,8 @@ namespace Battle.Board {
             statusTime = Time.time;
             board.enemyBoard.abilityManager.statusTime = Time.time;
             board.enemyBoard.abilityManager.scm.gameObject.SetActive(true);
+            scm.UpdateStatusIcon(statusCondition);
+            board.enemyBoard.abilityManager.scm.UpdateStatusIcon(board.enemyBoard.abilityManager.statusCondition);
 
             Debug.Log("SWAP!!!");
         }

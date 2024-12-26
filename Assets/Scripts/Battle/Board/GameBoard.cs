@@ -1403,6 +1403,12 @@ namespace Battle.Board {
         /// <param name="shootSpawnPos">spawn point of the damage shoot particle if using damage shoots</param>
         /// <param name="partOfChain">determines what type of packet is sent to the opponent in online mode</param>
         public void DealDamage(int damage, Vector3 shootSpawnPos, bool partOfChain, int manaColor = -1) {
+            
+            // Better You block status effect
+            if(enemyBoard.abilityManager.statusCondition == StatusConditions.Block){
+                damage = (int)(damage * 0.8f);
+            }
+
             if (damage <= 0) {
                 Debug.LogWarning("trying to do 0 damage");
                 return;
