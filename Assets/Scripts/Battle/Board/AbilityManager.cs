@@ -80,10 +80,10 @@ namespace Battle.Board {
                     else if(statusCondition == StatusConditions.PoisonSwapped){
                         board.hpBar.DamageQueue[0].AddDamage(50);
                     }
-                    else if(statusCondition == StatusConditions.Fire){
+                    else if(statusCondition == StatusConditions.Fire && !board.recoveryMode){
                         board.SetHp(board.hp - 5);
                     }
-                    else if(statusCondition == StatusConditions.FireSwapped){
+                    else if(statusCondition == StatusConditions.FireSwapped && !board.recoveryMode){
                         board.SetHp(board.hp - 50);
                     }
                     else if(statusCondition == StatusConditions.Pure){
