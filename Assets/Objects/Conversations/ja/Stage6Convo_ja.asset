@@ -1,0 +1,148 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 670696f7b5b01e4438299a5538f61cba, type: 3}
+  m_Name: Stage6Convo_ja
+  m_EditorClassIdentifier: 
+  dialogueList:
+  - text: "\u306D\u3048\u3001\u541B\u306E\u4E00\u756A\u697D\u3057\u3044\u30C8\u30EC\u30FC\u30CB\u30F3\u30B0\u30A8\u30AF\u30B5\u30B5\u30A4\u30BA\u306F\u4F55\u3060\u3068\u601D\u3046\uFF1F"
+    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 0
+    leftAnim: 2
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u3046\u30FC\u3093\u2026"
+    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 1
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u3055\u3066\u3001\u79C1\u304C\u6301\u3063\u3066\u3044\u308B\u975E\u5E38\u306B\u4EBA\u6C17\u306E\u3042\u308B\u591A\u4EBA\u6570\u306E\u904B\u52D5\u304C\u3042\u308A\u307E\u3059\u3002"
+    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 1
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u4F55\u305D\u308C\uFF1F"
+    leftSpeaker: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 0
+    leftAnim: 2
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u305D\u308C\u306F\u3001\u30ED\u30FC\u30EB\u30D7\u30EC\u30A4\u3055\u308C\u305F\u7269\u8A9E\u306E\u4E2D\u306B\u96C6\u3081\u3089\u308C\u305F\u4E00\u9023\u306E\u30C8\u30EC\u30FC\u30CB\u30F3\u30B0\u8AB2\u984C\u3067\u3059\u3002"
+    leftSpeaker: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 1
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u30C6\u30FC\u30D6\u30EB\u30C8\u30FC\u30AF\u30B2\u30FC\u30E0\u307F\u305F\u3044\u306A\u611F\u3058\uFF1F"
+    leftSpeaker: {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 0
+    leftAnim: 1
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u306F\u3044\u3001\u3057\u304B\u3057\u7121\u9650\u30D0\u30C8\u30EB\u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u306E\u529B\u306B\u3088\u3063\u3066\u3001\u305D\u308C\u3092\u4E57\u308A\u8D8A\u3048\u308B\u3053\u3068\u304C\u3067\u304D\u307E\u3059\u3002"
+    leftSpeaker: {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 1
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u9762\u767D\u305D\u3046\u3060\u306D\u3001\u3084\u3063\u3066\u307F\u3088\u3046\u3088\uFF01"
+    leftSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 0
+    leftAnim: 1
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u3067\u306F\u3001\u4E0E\u3048\u3089\u308C\u305F\u5F79\u5272\u3092\u304A\u8AAD\u307F\u304F\u3060\u3055\u3044\u3002\u307E\u3082\u306A\u304F\u59CB\u3081\u307E\u3059\u2026"
+    leftSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightFocused: 1
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "<\u7167\u660E\u304C\u6697\u304F\u306A\u308A\u307E\u3059\u2026>"
+    leftSpeaker: {fileID: 0}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u53E4\u3044\u53E4\u3044\u6642\u4EE3\u306B\u2026"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 1
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u6697\u3044\u8986\u3044\u304C\u738B\u56FD\u3092\u8986\u3044\u59CB\u3081\u308B\u3002"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u738B\u306F\u3053\u306E\u60AA\u3092\u5F81\u670D\u3057\u3001\u738B\u56FD\u3092\u89E3\u653E\u3059\u308B\u305F\u3081\u306B\u56DB\u4EBA\u306E\u52C7\u6562\u306A\u9B42\u3092\u96C6\u3081\u307E\u3057\u305F\u2026"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u5175\u58EB..."
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 1
+    background: {fileID: 0}
+  - text: "\u6B66\u9053\u5BB6\u2026"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 1
+    background: {fileID: 0}
+  - text: "\u9A0E\u58EB\u2026"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 1
+    background: {fileID: 0}
+  - text: "\u9B54\u6CD5\u4F7F..."
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 1
+    background: {fileID: 0}
+  - text: "\u56DB\u4EBA\u306E\u82F1\u96C4\u306F\u5171\u306B\u60AA\u3092\u6B62\u3081\u308B\u305F\u3081\u306B\u51FA\u767A\u3057\u307E\u3057\u305F\u3002"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u524D\u65B9\u306E\u9053\u306F\u9577\u304F\u56F0\u96E3\u3067\u3059\u304C\u3001\u5F7C\u3089\u306F\u305D\u308C\u3092\u4E57\u308A\u8D8A\u3048\u308B\u3053\u3068\u304C\u3067\u304D\u308B\u306E\u3067\u3057\u3087\u3046\u304B\uFF1F"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}

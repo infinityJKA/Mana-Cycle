@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 670696f7b5b01e4438299a5538f61cba, type: 3}
+  m_Name: Stage4Convo_ja
+  m_EditorClassIdentifier: 
+  dialogueList:
+  - text: "\u306D\u3048\u3001\u3053\u306E\u30D0\u30FC\u30C1\u30E3\u30EB\u4E16\u754C\u306F\u30EA\u30A2\u30EB\u306A\u751F\u6D3B\u307F\u305F\u3044\u306B\u3059\u3079\u3066\u3092\u30B7\u30DF\u30E5\u30EC\u30FC\u30C8\u3067\u304D\u308B\u307F\u305F\u3044\u3060\u3051\u3069\u3001\u4F11\u61A9\u5BA4\u3092\u547C\u3073\u51FA\u305B\u308B\u3068\u601D\u3046\uFF1F"
+    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 1
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u5C11\u306A\u304F\u3068\u3082\u3001\u5468\u308A\u306B\u7ACB\u3063\u3066\u3044\u308B\u30EF\u30A4\u30E4\u30FC\u30D5\u30EC\u30FC\u30E0\u306E\u7A7A\u865A\u4EE5\u5916\u306E\u4F55\u304B\u304C\u6B32\u3057\u3044\u3002"
+    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u305D\u308C\u306F\u3044\u3044\u30A2\u30A4\u30C7\u30A2\u3060\u306D\u3002"
+    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+    rightFocused: 1
+    leftAnim: 0
+    rightAnim: 3
+    background: {fileID: 0}
+  - text: "\u3053\u306E\u5834\u6240\u306F\u9B54\u6CD5\u3092\u304B\u3051\u308B\u611F\u899A\u3084\u4F53\u306E\u3059\u3079\u3066\u306E\u611F\u899A\u3092\u30B7\u30DF\u30E5\u30EC\u30FC\u30C8\u3067\u304D\u308B\u3057\u3001\u9055\u3046\u898B\u305F\u76EE\u306E\u90E8\u5C4B\u3082\u30B7\u30DF\u30E5\u30EC\u30FC\u30C8\u3067\u304D\u308B\u3068\u601D\u3046\u3088\u3002"
+    leftSpeaker: {fileID: 11400000, guid: 808f26159863848d2be4d566709a387a, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+    rightFocused: 1
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u306F\u3044\u3001\u79C1\u306F\u3042\u306A\u305F\u304C\u671B\u3080\u98A8\u666F\u306B\u5408\u308F\u305B\u3066\u666F\u89B3\u3092\u8ABF\u6574\u3059\u308B\u3053\u3068\u304C\u3067\u304D\u307E\u3059\u3002"
+    leftSpeaker: {fileID: 11400000, guid: 9ddcbfb1deb804e1996ac4f8143987a8, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 9538cdbc499e24b88ad25e76a5b5877d, type: 2}
+    rightFocused: 0
+    leftAnim: 4
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "<\u307F\u3093\u306A\u7A81\u7136\u3001\u5BB6\u5177\u4ED8\u304D\u306E\u4F11\u61A9\u5BA4\u306B\u3044\u308B\u3002>"
+    leftSpeaker: {fileID: 0}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 21300000, guid: 2dfc79345297e2a478b6bd85bfb70da2, type: 3}
+  - text: "\u308F\u3042\u3001\u3053\u3053\u306F\u3059\u3054\u304F\u304D\u308C\u3044\u306A\u90E8\u5C4B\u3060\u306D\u3002"
+    leftSpeaker: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 1
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u3053\u3053\u3092\u305F\u307E\u308A\u5834\u3068\u3057\u3066\u4F7F\u3046\u3053\u3068\u3082\u3067\u304D\u308B\u306D..."
+    leftSpeaker: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+    rightSpeaker: {fileID: 0}
+    rightFocused: 0
+    leftAnim: 0
+    rightAnim: 0
+    background: {fileID: 0}
+  - text: "\u4ED6\u306E\u4EBA\u3005\u304C\u90E8\u5C4B\u3092\u63A2\u7D22\u3057\u3066\u3044\u308B\u9593\u3001\u79C1\u306F\u5225\u306E\u8AB2\u984C\u306B\u6311\u6226\u3057\u3001\u4ECA\u56DE\u306F\u5C11\u3057\u96E3\u3057\u304F\u3057\u307E\u3059\u3002"
+    leftSpeaker: {fileID: 11400000, guid: a14066f152f1c4d2aac9d17f7def78d6, type: 2}
+    rightSpeaker: {fileID: 11400000, guid: 8368327aab1454621befdb45b572f742, type: 2}
+    rightFocused: 1
+    leftAnim: 8
+    rightAnim: 1
+    background: {fileID: 0}
