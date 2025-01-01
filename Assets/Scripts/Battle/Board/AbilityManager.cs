@@ -73,8 +73,8 @@ namespace Battle.Board {
             }
             if(statusCondition != StatusConditions.NoCondition){
                 // For taking damage from condition
-                if(statusDamageTime + 1 - Time.time <= 0){
-                    if(statusCondition == StatusConditions.Poison){
+                if(statusDamageTime + 1 - Time.time <= 0 && !board.singlePlayer){
+                    if(statusCondition == StatusConditions.Poison ){
                         board.hpBar.DamageQueue[0].AddDamage(10);
                     }
                     else if(statusCondition == StatusConditions.PoisonSwapped){
