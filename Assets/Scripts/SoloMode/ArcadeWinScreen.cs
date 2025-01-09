@@ -35,6 +35,11 @@ namespace SoloMode
                 else if (battlerID == "Trainbot"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinTrainbot");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
                 else if (battlerID == "zman"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinzman");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
                 else if (battlerID == "Electro"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinElectro");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+                else if (battlerID == "Romra"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinRomra");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+                else if (battlerID == "Bithecary"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinBithecary");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+                else if (battlerID == "BetterYou"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinBetterYou");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+
+
 
                 if (Storage.lives == 3 && Storage.hp == 2000) {
                     AchievementHandler.Instance.UnlockAchievement("ArcadeWinNoDamage");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");

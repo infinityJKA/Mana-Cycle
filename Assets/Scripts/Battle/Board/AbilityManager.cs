@@ -8,6 +8,8 @@ using TMPro;
 using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEditor.Localization.Plugins.XLIFF.V20;
 
+using Achievements;
+
 namespace Battle.Board {
     /// <summary>
     /// Handles the mana bar and abilities for the GameBoard. Party/solo mode only
@@ -423,7 +425,12 @@ namespace Battle.Board {
 
             //Swapping status conditions
             StatusConditions temp2 = statusCondition;
-            if(temp2 == StatusConditions.Fire){temp2 = StatusConditions.FireSwapped;}
+            if(temp2 == StatusConditions.Fire){
+                temp2 = StatusConditions.FireSwapped;
+                AchievementHandler ah = FindObjectOfType<AchievementHandler>();
+                ah.UnlockAchievement("SwapFire");
+                ah.UpdateSteamAchievements();
+                }
             else if(temp2 == StatusConditions.Poison){temp2 = StatusConditions.PoisonSwapped;}
             statusCondition = board.enemyBoard.abilityManager.statusCondition;
             board.enemyBoard.abilityManager.statusCondition = temp2;
