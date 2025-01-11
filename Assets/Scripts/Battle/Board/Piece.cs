@@ -15,7 +15,7 @@ namespace Battle.Board {
 
         // Think of each piece as an L on your left hand. Top is pointer finger and right is thumb.
         // Tile in center
-        [SerializeField] protected Tile[] tiles; 
+        [SerializeField] public Tile[] tiles; 
 
         /// <summary>
         /// Rotation center - holds all the tile objects. Centered on tile for correct visual rotation.
@@ -292,6 +292,10 @@ namespace Battle.Board {
         {
             Vector2Int boardPos = PieceToBoardPos(tile);
             tileGrid[boardPos.y, boardPos.x] = tile;
+
+            tile.row = boardPos.y;
+            tile.col = boardPos.x;
+            
 
             tile.transform.SetParent(pieceBoard, true);
             tile.transform.localScale = Vector3.one;
@@ -629,12 +633,16 @@ namespace Battle.Board {
         {
             effect = Battler.ActiveAbilityEffect.Inferno;
             slowFall = true;
-            center.DontDoGravity();
+            //center.DontDoGravity();
             center.visual.SetVisual(board.cosmetics, ManaColor.Colorless);
             center.SetManaColor(ManaColor.Colorless, board, setVisual: false);
             center.visual.SetColor(Color.white);
+            center.specialProperty = "Inferno";
             
             center.visual.SetDarkColorSprite(board.cosmetics.infernoSprite);
+
+            center.gameObject.transform.Find("MainDarkRawImage").gameObject.AddComponent<Animator>();
+            center.gameObject.transform.Find("MainDarkRawImage").gameObject.GetComponent<Animator>().runtimeAnimatorController = board.cosmetics.infernoAnim;
 
             accumulatedDamage = 0;
             center.visual.onFallAnimComplete = () => InfernoDestroyTileBelow(board);
@@ -646,10 +654,10 @@ namespace Battle.Board {
             
             if (row >= GameBoard.height) {
                 Debug.Log("row >= gameboard.height");
-                center.row = row;
-                center.col = col;
+                // center.row = row;
+                // center.col = col;
                 center.board = board;
-                center.SetLifespan(5);
+                center.SetLifespan(30);
                 
             }
             else{

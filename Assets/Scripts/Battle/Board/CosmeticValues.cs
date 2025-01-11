@@ -85,6 +85,9 @@ namespace Battle.Board {
         // sprites
         [SerializeField] public Sprite ironSwordSprite, pyroBombSprite, miniZmanSprite, explosivePotionSprite, healingPotionSprite, infernoSprite;
 
+        // animation
+        [SerializeField] public RuntimeAnimatorController infernoAnim;
+
         // 3D meshes
         [SerializeField] public GameObject goldMineObject;
 

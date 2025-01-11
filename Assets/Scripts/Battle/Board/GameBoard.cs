@@ -1230,8 +1230,10 @@ namespace Battle.Board {
                 tileFell = false;
                 
                 // Affect all placed tiles with gravity.
-                foreach (Vector2Int tile in piece)
+                foreach (Tile pieceTile in piece.tiles)
                 {
+                    Vector2Int tile = new Vector2Int(pieceTile.col, pieceTile.row);
+
                     // Only do gravity if this tile is still here and hasn't fallen to gravity yet
                     if (!(tile.y >= height) && tiles[tile.y, tile.x] != null)
                     {
@@ -1469,6 +1471,11 @@ namespace Battle.Board {
                 damage = (int)(damage * 1.3f);
             }
 
+            // erif -20% damage boost defensively
+            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.FlareBlade) {
+                damage = (int)(damage * 0.8f);
+            }
+
             if (useDamageShootParticles) {
                 SendDamageShoot(damage, manaColor, shootSpawnPos);
                 return 0;
@@ -1532,6 +1539,11 @@ namespace Battle.Board {
             // romra - remove 30% damage boost and apply -30% offensive damage
             if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender) {
                 shoot.SetDamage((int)(shoot.damage / 1.3f * 0.7f));
+            }
+
+            // erif - remove 20% damage reduction and apply +20% offensive damage
+            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.FlareBlade) {
+                shoot.SetDamage((int)(shoot.damage * 1.2f * 1.2f));
             }
 
             matchStats.totalScore += shoot.damage;
@@ -2130,6 +2142,9 @@ namespace Battle.Board {
                         // I am subtracting half of width and height again here, because it only works tht way,
                         // i don't know enough about transforms to know why. bandaid solution moment.
                         tiles[fr, c].transform.localPosition = BoardToLocalSpace(fr, c);
+
+                        tiles[fr, c].col = c;
+                        tiles[fr, c].row = fr;
 
                         // Animate falling from offset from previous row down to current row.
                         tiles[fr, c].AnimateMovement(
