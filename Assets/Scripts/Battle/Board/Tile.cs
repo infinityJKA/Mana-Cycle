@@ -36,6 +36,7 @@ namespace Battle.Board {
 
         // Duration left before this tile destroys itself - ticks down if set to above 0
         public float lifespan {get; private set;}
+        private float lifeStart;
 
         // If gravity should pull this tile down.
         public bool doGravity { get; private set; } = true;
@@ -46,7 +47,18 @@ namespace Battle.Board {
         // -- Serialized
         [SerializeField] private TileVisual _visual;
         public TileVisual visual => _visual;
+
+        public GameBoard board;
         
+        void Update(){
+            if(lifespan != 0){
+                if(Time.time-lifespan >= lifeStart){
+                    Debug.Log("SELF DESTRUCT MANA at COL "+col+"  ROW "+row);
+                    board.ClearTile(col, row);
+                }
+            }
+        }
+
 
         public void SetManaColor(int manaColor, GameBoard board, bool setVisual = true, bool ghost = false)
         {
@@ -94,6 +106,11 @@ namespace Battle.Board {
 
         public void MakeFragile() {
             fragile = true;
+        }
+
+        public void SetLifespan(int n){
+            lifeStart = Time.time;
+            lifespan = n;
         }
 
         public void Obscure(GameBoard board) {

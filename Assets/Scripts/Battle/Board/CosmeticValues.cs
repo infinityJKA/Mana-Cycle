@@ -83,7 +83,7 @@ namespace Battle.Board {
         [SerializeField] public GameObject ironSwordSFX, pyroBombSFX;
 
         // sprites
-        [SerializeField] public Sprite ironSwordSprite, pyroBombSprite, miniZmanSprite, explosivePotionSprite, healingPotionSprite;
+        [SerializeField] public Sprite ironSwordSprite, pyroBombSprite, miniZmanSprite, explosivePotionSprite, healingPotionSprite, infernoSprite;
 
         // 3D meshes
         [SerializeField] public GameObject goldMineObject;

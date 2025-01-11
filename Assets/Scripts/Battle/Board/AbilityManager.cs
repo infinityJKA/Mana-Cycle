@@ -219,6 +219,7 @@ namespace Battle.Board {
                     case Battler.ActiveAbilityEffect.HeroicShield: HeroicShield(); break;
                     case Battler.ActiveAbilityEffect.Alchemy: Alchemy(); break;
                     case Battler.ActiveAbilityEffect.Swap: Swap(); break;
+                    case Battler.ActiveAbilityEffect.Inferno: Inferno(); break;
                     default: break;
                 }
 
@@ -442,6 +443,23 @@ namespace Battle.Board {
 
             Debug.Log("SWAP!!!");
         }
+
+
+        /// <summary>
+        /// Basically Infinity's ability except it has a lower damage mult, leaves a burning fire
+        /// for 30 seconds that destroys all pieces that fall on it, and costs more
+        /// </summary>
+        private void Inferno() {
+            ClearAbilityData();
+            Piece infernoPiece = CreateSinglePiece(false);
+            infernoPiece.MakeInferno(board);
+            board.ReplacePiece(infernoPiece);
+        }
+
+
+
+
+
 
         public void ClearAbilityData() {
             if (abilityData.Length > 0) abilityData = new int[0];

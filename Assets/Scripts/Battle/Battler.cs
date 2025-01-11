@@ -29,7 +29,9 @@ namespace Battle {
             UnstableMana, // Electro's blob bonus
             Defender, // Romra's ability
             HealingGauge, // Bithecary's ability
-            StatusCondition // Better You's ability
+            StatusCondition, // Better You's ability
+            FlareBlade, // Erif's ability
+            Economics // Xuirbo's ability
         }
 
         [SerializeField] private LocalizedString passiveAbilityDescEntry;
@@ -50,7 +52,9 @@ namespace Battle {
             ThunderRush,
             HeroicShield,
             Alchemy,
-            Swap
+            Swap,
+            Inferno,
+            FreeMarket
         }
 
         /// <summary>If true, this battler will start at full mana</summary>

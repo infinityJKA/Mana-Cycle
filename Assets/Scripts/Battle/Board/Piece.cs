@@ -60,6 +60,8 @@ namespace Battle.Board {
         /// </summary>
         public bool slowFall { get; private set; }
 
+        public bool selfDestruct = false;
+
         private Vector3 OrientedDirection()
         {
             switch(orientation)
@@ -402,6 +404,12 @@ namespace Battle.Board {
                         BithecaryHeal(board);
                     }
                     break;
+                case Battler.ActiveAbilityEffect.Inferno:
+                    // Debug.Log("Iron Sword effect");
+                    Instantiate(board.cosmetics.ironSwordSFX);
+                    InfernoDestroyTileBelow(board);
+                    break;
+
 
                 default:
                     // Debug.Log("default single piece fall");
@@ -616,6 +624,57 @@ namespace Battle.Board {
             // recoil damage
             board.TakeDamage(300, preventDeath: true);
         }
+
+        public void MakeInferno(GameBoard board)
+        {
+            effect = Battler.ActiveAbilityEffect.Inferno;
+            slowFall = true;
+            center.DontDoGravity();
+            center.visual.SetVisual(board.cosmetics, ManaColor.Colorless);
+            center.SetManaColor(ManaColor.Colorless, board, setVisual: false);
+            center.visual.SetColor(Color.white);
+            
+            center.visual.SetDarkColorSprite(board.cosmetics.infernoSprite);
+
+            accumulatedDamage = 0;
+            center.visual.onFallAnimComplete = () => InfernoDestroyTileBelow(board);
+        }
+
+        private void InfernoDestroyTileBelow(GameBoard board)
+        {
+            row++;
+            
+            if (row >= GameBoard.height) {
+                Debug.Log("row >= gameboard.height");
+                center.row = row;
+                center.col = col;
+                center.board = board;
+                center.SetLifespan(5);
+                
+            }
+            else{
+                Debug.Log("row IS NOT >= gameboard.height");
+
+                // only locally evaluate damage if either not online or player owns this client and not the opponent
+                int damage = (int)(board.damagePerMana*1.25);
+                if (!Storage.online || board.netPlayer.isOwned) {
+                    board.DealDamageLocal(damage, -1, center.transform.position);
+                } else {
+                    accumulatedDamage += damage;
+                }
+
+                // When iron sword falls, clear tile below, or destroy when at bottom
+                board.ClearTile(col, row);
+                board.TileGravity(col, row-1, force: true); // makes this piece's tile fall
+
+                // may cause ta tile to not be in a valid clearing blob - check to unglow them
+                board.UnglowNotInBlobs();
+            }
+        }
+
+
+
+
 
     }
 }
