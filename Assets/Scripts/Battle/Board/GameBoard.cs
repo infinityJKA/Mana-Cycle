@@ -326,6 +326,8 @@ namespace Battle.Board {
 
         private float particleOpacity = 1f;
 
+        public XuirboStuff xuirboStuff;
+
         public 
 
         // Start is called before the first frame update
@@ -513,6 +515,21 @@ namespace Battle.Board {
             // z?man starts with increased cycle
             if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Osmose){
                 cycleLevel++;
+            }
+
+            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Economics){
+                xuirboStuff.gameObject.SetActive(true);
+                xuirboStuff.circlePrice = xuirboStuff.triangleUpPrice = xuirboStuff.triangleDownPrice = xuirboStuff.squarePrice = xuirboStuff.diamondPrice = 100;
+                xuirboStuff.circleStock = xuirboStuff.triangleUpStock = xuirboStuff.triangleDownStock = xuirboStuff.squareStock = xuirboStuff.diamondStock = 0;
+                xuirboStuff.inflation = 1f;
+                xuirboStuff.crimes = 0;
+                xuirboStuff.bait = 0;
+                xuirboStuff.money = 500;
+                xuirboStuff.menuGameObject.SetActive(false);
+                xuirboStuff.UpdateXuirboText();
+            }
+            else{
+                xuirboStuff.gameObject.SetActive(false);
             }
 
             cycleLevelDisplay.Set(cycleLevel);
@@ -1982,7 +1999,10 @@ namespace Battle.Board {
             // and they will then send back an rpc with their damage queue state
             // do not deal damage here if online;
             // instead the damageSent part of the AdvanceChain rpc will be used to call damage after this was called to update the board and clear the mana
-            DealDamage(damage, averagePos, true, currentCycleManaColor);
+            
+            if(battler.passiveAbilityEffect != Battler.PassiveAbilityEffect.Economics){
+                DealDamage(damage, averagePos, true, currentCycleManaColor);
+            }
 
             // Do gravity everywhere
             AllTileGravity();
