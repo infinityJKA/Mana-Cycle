@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -15,6 +16,62 @@ public class XuirboStuff : MonoBehaviour
     public GameObject menuGameObject;
     public TMP_Text menuText;
 
+
+    public float inflationTimer,stockTimer1,stockTimer2,stockTimer3,stockTimer4,stockTimer5;
+
+    public void XuirboUpdate(){
+        if(inflationTimer + 0.5 <= Time.time){
+            inflation = inflation*0.999f;
+            
+            inflationTimer = Time.time;
+            UpdateXuirboText();
+        }
+
+        if(stockTimer1 + 5 <= Time.time){
+            circleStock = (int)(circleStock*0.99f);
+            circlePrice = (int)(circlePrice*0.99f);
+            
+            stockTimer1 = Time.time + UnityEngine.Random.Range(-1f, 1f);
+            UpdateXuirboText();
+        }
+
+        if(stockTimer2 + 5 <= Time.time){
+            triangleUpStock = (int)(triangleUpStock*0.99f);
+            triangleUpPrice = (int)(triangleUpPrice*0.99f);
+            
+            stockTimer2 = Time.time + UnityEngine.Random.Range(-1f, 1f);
+            UpdateXuirboText();
+        }
+
+        if(stockTimer3 + 5 <= Time.time){
+            triangleDownStock = (int)(triangleDownStock*0.99f);
+            triangleDownPrice = (int)(triangleDownPrice*0.99f);
+            
+            stockTimer3 = Time.time + UnityEngine.Random.Range(-1f, 1f);
+            UpdateXuirboText();
+        }
+
+        if(stockTimer4 + 5 <= Time.time){
+            squareStock = (int)(squareStock*0.99f);
+            squarePrice = (int)(squarePrice*0.99f);
+            
+            stockTimer4 = Time.time + UnityEngine.Random.Range(-1f, 1f);
+            UpdateXuirboText();
+        }
+
+        if(stockTimer5 + 5 <= Time.time){
+            diamondStock = (int)(diamondStock*0.99f);
+            diamondPrice = (int)(diamondPrice*0.99f);
+            
+            stockTimer5 = Time.time + UnityEngine.Random.Range(-1f, 1f);
+            UpdateXuirboText();
+        }
+
+
+    }
+
+    
+
     public void UpdateXuirboText(){
         // gaming
         cStockText.text = ""+circleStock;
@@ -31,6 +88,8 @@ public class XuirboStuff : MonoBehaviour
         moneyText.text = "$"+money;
         baitText.text = "Bait: "+bait;
         crimesText.text = "Crimes: "+crimes;
+
+        inflation = MathF.Round(inflation,4);
         inflationText.text = "Inflation: "+inflation;
     
     

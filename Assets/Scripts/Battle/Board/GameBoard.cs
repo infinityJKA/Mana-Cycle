@@ -601,6 +601,10 @@ namespace Battle.Board {
                 }
             }
 
+            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Economics){
+                xuirboStuff.XuirboUpdate();
+            }
+
             // TRASH DAMAGE TIMER
             // if above 0, tick down
             // If not in a level or level is against an AI, take trash damage
@@ -1928,11 +1932,15 @@ namespace Battle.Board {
             matchStats.highestCombo = Math.Max(matchStats.highestCombo, chain);
             matchStats.highestCascade = Math.Max(matchStats.highestCascade, cascade);
 
+            int totalBlobSize = 0;
+
             // Total accumulated point multiplier. multiplied by damagePerMana to get base damage (before chain/cascade/gauntlet stats)
             float totalPointMult = 0;
             // Clear all blob-contained tiles from the board.
             foreach (Blob blob in blobs) {
                 float blobPointMult = 0f; // point mult total for just this blob
+
+                totalBlobSize += blob.tiles.Count;
 
                 float blobDamageMultiplier = 1f; // damage modifier that can be influenced by abilities (ex. Electro's unstable mana)
                 if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.UnstableMana && blob.tiles.Count >= 9) {
@@ -1962,6 +1970,68 @@ namespace Battle.Board {
                 totalPointMult += blobPointMult;
             }
             if (cascade <= 1) PlaySFX(castSFX, 1f + chain * 0.1f);
+
+            if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Economics){
+                if(cycle.GetColor(cyclePosition) == 0){
+                    xuirboStuff.circlePrice = (int)(xuirboStuff.circlePrice*(1f+totalBlobSize*(totalBlobSize/3f)/33f));
+                    xuirboStuff.circleStock = (int)(xuirboStuff.circleStock*(1f+totalBlobSize*(totalBlobSize/3f)/33f));
+                }
+                else if(cycle.GetColor(cyclePosition) == 1){
+                    xuirboStuff.squarePrice = (int)(xuirboStuff.squarePrice*(1f+totalBlobSize*(totalBlobSize/3f)/33f));
+                    xuirboStuff.squareStock = (int)(xuirboStuff.squareStock*(1f+totalBlobSize*(totalBlobSize/3f)/33f));
+                }
+                else if(cycle.GetColor(cyclePosition) == 2){
+                    xuirboStuff.diamondPrice = (int)(xuirboStuff.diamondPrice*(1f+totalBlobSize*(totalBlobSize/3f)/33f));
+                    xuirboStuff.diamondStock = (int)(xuirboStuff.diamondStock*(1f+totalBlobSize*(totalBlobSize/3f)/33f));
+                }
+                else if(cycle.GetColor(cyclePosition) == 3){
+                    xuirboStuff.triangleUpPrice = (int)(xuirboStuff.triangleUpPrice*(1f+totalBlobSize*(totalBlobSize/3f)/33f));
+                    xuirboStuff.triangleUpStock = (int)(xuirboStuff.triangleUpStock*(1f+totalBlobSize*(totalBlobSize/3f)/33f));
+                }
+                else if(cycle.GetColor(cyclePosition) == 4){
+                    xuirboStuff.triangleDownPrice = (int)(xuirboStuff.triangleDownPrice*(1f+totalBlobSize*(totalBlobSize/3f)/33f));
+                    xuirboStuff.triangleDownStock = (int)(xuirboStuff.triangleDownStock*(1f+totalBlobSize*(totalBlobSize/3f)/33f));
+                }
+                else{
+
+                }
+
+                xuirboStuff.inflation = xuirboStuff.inflation*(1f+totalBlobSize/150f);
+
+                // Debug.Log(totalBlobSize);
+                // xuirboStuff.circlePrice += totalBlobSize;
+                xuirboStuff.UpdateXuirboText();
+            }
+
+            if(enemyBoard.battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Economics){
+                if(cycle.GetColor(cyclePosition) == 0){
+                    enemyBoard.xuirboStuff.circlePrice = (int)(enemyBoard.xuirboStuff.circlePrice*(1f+totalBlobSize/75f));
+                    enemyBoard.xuirboStuff.circleStock = (int)(enemyBoard.xuirboStuff.circleStock*(1f+totalBlobSize/75f));
+                }
+                else if(cycle.GetColor(cyclePosition) == 1){
+                    enemyBoard.xuirboStuff.squarePrice = (int)(enemyBoard.xuirboStuff.squarePrice*(1f+totalBlobSize/75f));
+                    enemyBoard.xuirboStuff.squareStock = (int)(enemyBoard.xuirboStuff.squareStock*(1f+totalBlobSize/75f));
+                }
+                else if(cycle.GetColor(cyclePosition) == 2){
+                    enemyBoard.xuirboStuff.diamondPrice = (int)(enemyBoard.xuirboStuff.diamondPrice*(1f+totalBlobSize/75f));
+                    enemyBoard.xuirboStuff.diamondStock = (int)(enemyBoard.xuirboStuff.diamondStock*(1f+totalBlobSize/75f));
+                }
+                else if(cycle.GetColor(cyclePosition) == 3){
+                    enemyBoard.xuirboStuff.triangleUpPrice = (int)(enemyBoard.xuirboStuff.triangleUpPrice*(1f+totalBlobSize/75f));
+                    enemyBoard.xuirboStuff.triangleUpStock = (int)(enemyBoard.xuirboStuff.triangleUpStock*(1f+totalBlobSize/75f));
+                }
+                else if(cycle.GetColor(cyclePosition) == 4){
+                    enemyBoard.xuirboStuff.triangleDownPrice = (int)(enemyBoard.xuirboStuff.triangleDownPrice*(1f+totalBlobSize/75f));
+                    enemyBoard.xuirboStuff.triangleDownStock = (int)(enemyBoard.xuirboStuff.triangleDownStock*(1f+totalBlobSize/75f));
+                }
+                else{
+
+                }
+
+                enemyBoard.xuirboStuff.inflation = enemyBoard.xuirboStuff.inflation*(1f+totalBlobSize/300f);
+
+                enemyBoard.xuirboStuff.UpdateXuirboText();
+            }
 
             // Multiplier to total damage, used in some abilities (ex. geo's last stand)
             float totalDamageMultiplier = 1f;
