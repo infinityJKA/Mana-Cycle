@@ -220,6 +220,7 @@ namespace Battle.Board {
                     case Battler.ActiveAbilityEffect.Alchemy: Alchemy(); break;
                     case Battler.ActiveAbilityEffect.Swap: Swap(); break;
                     case Battler.ActiveAbilityEffect.Inferno: Inferno(); break;
+                    case Battler.ActiveAbilityEffect.FreeMarket: FreeMarket();break;
                     default: break;
                 }
 
@@ -457,6 +458,37 @@ namespace Battle.Board {
         }
 
 
+        // <summary>
+        // Xuirbo doesn't play Mana Cycle
+
+        private void FreeMarket() {
+            ClearAbilityData();
+            board.xuirboStuff.menuGameObject.SetActive(true);
+            board.xuirboStuff.menuText.text =
+            "Invest Assets\n"+
+            "Sell Assets\n"+
+            "Shopping\n"+
+            "File Paperwork\n"+
+            "Hire Mercenary\n"+
+            "Bribery\n"+
+            "Go Fishing\n"+
+            "Flesh Crystal\n"+
+            "Exit";
+            board.ReplacePiece(MarketMainMenuSelect());
+            //board.piecePreview.ReplaceNextPiece(board.abilityManager.InvestmentSelect());
+        }
+
+        public Piece MarketMainMenuSelect() {
+            Piece m = CreateSinglePiece(true);
+            m.MarketMainMenuSelectInvest(board);
+            return m;
+        }
+
+        public Piece InvestmentSelect() {
+            Piece m = CreateSinglePiece(true);
+            m.InvestSelect1(board);
+            return m;
+        }
 
 
 

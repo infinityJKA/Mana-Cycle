@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Battle.Cycle;
 using System;
+using TMPro;
 
 namespace Battle.Board {
     public class Piece : MonoBehaviour
@@ -413,6 +414,16 @@ namespace Battle.Board {
                     Instantiate(board.cosmetics.ironSwordSFX);
                     InfernoDestroyTileBelow(board);
                     break;
+                
+                case Battler.ActiveAbilityEffect.FreeMarket:
+                    if(center.name == "MainMenu-Invest"){
+                        fm_OpenInvestementMenu(board);
+                    }
+                    else{
+
+                    }
+                    break;
+
 
 
                 default:
@@ -681,7 +692,50 @@ namespace Battle.Board {
         }
 
 
+        public void MarketMainMenuSelectInvest(GameBoard board) // INITIAL MENU PIECE
+        {
+            savedBoard = board;
+            effect = Battler.ActiveAbilityEffect.FreeMarket;
+            center.SetManaColor(ManaColor.Colorless, board, setVisual: false);
+            center.visual.SetSprite(board.cosmetics.xuriboOptionBoxSprite);
+            center.visual.SetColor(Color.white);
+            center.name = "MainMenu-Invest";
+            center.visual.SetSizeDelta(new Vector2(3, 1));
 
+            GameObject t = Instantiate(board.cosmetics.xuirboTextPrefab,center.gameObject.transform.position,Quaternion.identity);
+            t.transform.parent = center.gameObject.transform;
+            t.GetComponent<TMP_Text>().text = "INVEST";
+        }
+
+        public void fm_OpenInvestementMenu(GameBoard board){
+            //center.board.abilityManager.fm_InvestmentMenu();
+            board.xuirboStuff.menuGameObject.SetActive(true);
+            board.xuirboStuff.menuText.text =
+            "Select Stock:\n"+
+            "  1\n"+
+            "  2\n"+
+            "  3\n"+
+            "  4\n"+
+            "  5\n"+
+            "EXIT";
+            board.ReplacePiece(board.abilityManager.InvestmentSelect());
+            //board.ClearTile(col, row);
+        }
+
+        public void InvestSelect1(GameBoard board)
+        {
+            savedBoard = board;
+            effect = Battler.ActiveAbilityEffect.FreeMarket;
+            center.SetManaColor(ManaColor.Colorless, board, setVisual: false);
+            center.visual.SetSprite(board.cosmetics.xuriboOptionBoxSprite);
+            center.visual.SetColor(Color.white);
+            center.name = "Invest - 1";
+            center.visual.SetSizeDelta(new Vector2(3, 1));
+
+            GameObject t = Instantiate(board.cosmetics.xuirboTextPrefab,center.gameObject.transform.position,Quaternion.identity);
+            t.transform.parent = center.gameObject.transform;
+            t.GetComponent<TMP_Text>().text = "[1]";
+        }
 
 
     }

@@ -7,6 +7,7 @@ using Sound;
 using Cosmetics;
 using SaveData;
 using UnityEngine.Localization;
+using TMPro;
 
 namespace Battle.Board {
     /// <summary>
@@ -83,7 +84,9 @@ namespace Battle.Board {
         [SerializeField] public GameObject ironSwordSFX, pyroBombSFX;
 
         // sprites
-        [SerializeField] public Sprite ironSwordSprite, pyroBombSprite, miniZmanSprite, explosivePotionSprite, healingPotionSprite, infernoSprite;
+        [SerializeField] public Sprite ironSwordSprite, pyroBombSprite, miniZmanSprite, explosivePotionSprite, healingPotionSprite, infernoSprite, xuriboOptionBoxSprite;
+
+        [SerializeField] public GameObject xuirboTextPrefab;
 
         // animation
         [SerializeField] public RuntimeAnimatorController infernoAnim;
@@ -93,6 +96,8 @@ namespace Battle.Board {
 
         // particle fx
         [SerializeField] public GameObject pyroBombParticleEffect;
+
+
         
         public static readonly Color lightenColor = new Color(1f, 1f, 0.9f);
         public static readonly Color darkenColor = new Color(0, 0, 0.025f);

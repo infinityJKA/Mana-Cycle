@@ -3018,7 +3018,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3180345470604558254}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -6115,7 +6115,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6846780065555315479}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -7032,6 +7032,12 @@ MonoBehaviour:
   dPriceText: {fileID: 3265530501363568704}
   menuGameObject: {fileID: 3180345470604558254}
   menuText: {fileID: 8218908305353344543}
+  inflationTimer: 0
+  stockTimer1: 0
+  stockTimer2: 0
+  stockTimer3: 0
+  stockTimer4: 0
+  stockTimer5: 0
 --- !u!1 &7697407259655237379
 GameObject:
   m_ObjectHideFlags: 0
@@ -7239,8 +7245,10 @@ MonoBehaviour:
 
     File Paperwork
 
-    Bribe
-    Police
+    Hire
+    Mercenary
+
+    Bribery
 
     Go Fishing
 
@@ -8449,8 +8457,10 @@ MonoBehaviour:
   miniZmanSprite: {fileID: 21300000, guid: e47d53c8c57e4422f8c285c78faa6038, type: 3}
   explosivePotionSprite: {fileID: 21300000, guid: 0e17b80c99b7b414589869e76cb10816, type: 3}
   healingPotionSprite: {fileID: 21300000, guid: 5868da1b5c150364ca0bbff9861254f6, type: 3}
-  infernoSprite: {fileID: 0}
-  infernoAnim: {fileID: 0}
+  infernoSprite: {fileID: 1339271240, guid: 04014a2c3e21d1c4b9ad7e3441700d95, type: 3}
+  xuriboOptionBoxSprite: {fileID: 21300000, guid: 0ec75a37e0e25fa4089130a479c2d4dd, type: 3}
+  xuirboTextPrefab: {fileID: 7091734931480921800, guid: 69a5b73c3c7600049a1c52c9819b2c7e, type: 3}
+  infernoAnim: {fileID: 9100000, guid: c873af9729807294e9f64d116fd47a64, type: 2}
   goldMineObject: {fileID: 304507001450775626, guid: cdf0240e00ea19d40ac4d0151fe35812, type: 3}
   pyroBombParticleEffect: {fileID: 5484401357604061577, guid: 304d4da4a446ae64abecc5f69036bac6, type: 3}
   multicolorMaterial: {fileID: 0}
