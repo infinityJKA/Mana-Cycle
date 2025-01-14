@@ -494,6 +494,7 @@ namespace Battle.Board {
                         if(x.money >= x.circlePrice){
                             x.money -= x.circlePrice;
                             x.circleStock += x.circlePrice;
+                            Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
                             ShowBadPopup(c);
@@ -503,6 +504,7 @@ namespace Battle.Board {
                         if(x.money >= x.triangleUpPrice){
                             x.money -= x.triangleUpPrice;
                             x.triangleUpStock += x.triangleUpPrice;
+                            Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
                             ShowBadPopup(c);
@@ -512,6 +514,7 @@ namespace Battle.Board {
                         if(x.money >= x.triangleDownPrice){
                             x.money -= x.triangleDownPrice;
                             x.triangleDownStock += x.triangleDownPrice;
+                            Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
                             ShowBadPopup(c);
@@ -521,6 +524,7 @@ namespace Battle.Board {
                         if(x.money >= x.squarePrice){
                             x.money -= x.squarePrice;
                             x.squareStock += x.squarePrice;
+                            Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
                             ShowBadPopup(c);
@@ -530,6 +534,7 @@ namespace Battle.Board {
                         if(x.money >= x.diamondPrice){
                             x.money -= x.diamondPrice;
                             x.diamondStock += x.diamondPrice;
+                            Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
                             ShowBadPopup(c);
@@ -541,10 +546,105 @@ namespace Battle.Board {
                         if(x.money >= x.circlePrice*5){
                             x.money -= x.circlePrice*5;
                             x.circleStock += x.circlePrice*5;
+                            Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
                             ShowBadPopup(c);
                         }
+                    }
+                    else if(selectedStock == 2){
+                        if(x.money >= x.triangleUpPrice*5){
+                            x.money -= x.triangleUpPrice*5;
+                            x.triangleUpStock += x.triangleUpPrice*5;
+                            Instantiate(board.cosmetics.moneySFX);
+                        }
+                        else{
+                            ShowBadPopup(c);
+                        }
+                    }
+                    else if(selectedStock == 3){
+                        if(x.money >= x.triangleDownPrice*5){
+                            x.money -= x.triangleDownPrice*5;
+                            x.triangleDownStock += x.triangleDownPrice*5;
+                            Instantiate(board.cosmetics.moneySFX);
+                        }
+                        else{
+                            ShowBadPopup(c);
+                        }
+                    }
+                    else if(selectedStock == 4){
+                        if(x.money >= x.squarePrice*5){
+                            x.money -= x.squarePrice*5;
+                            x.squareStock += x.squarePrice*5;
+                            Instantiate(board.cosmetics.moneySFX);
+                        }
+                        else{
+                            ShowBadPopup(c);
+                        }
+                    }
+                    else if(selectedStock == 5){
+                        if(x.money >= x.diamondPrice*5){
+                            x.money -= x.diamondPrice*5;
+                            x.diamondStock += x.diamondPrice*5;
+                            Instantiate(board.cosmetics.moneySFX);
+                        }
+                        else{
+                            ShowBadPopup(c);
+                        }
+                    }
+                }
+                else if(board.PieceName()=="BuyStock-50"){
+                    if(selectedStock == 1){
+                        x.circleStock += (x.money/2);
+                        x.money -= (x.money/2);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 2){
+                        x.triangleUpStock += (x.money/2);
+                        x.money -= (x.money/2);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 3){
+                        x.triangleDownStock += (x.money/2);
+                        x.money -= (x.money/2);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 4){
+                        x.squareStock += (x.money/2);
+                        x.money -= (x.money/2);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 5){
+                        x.diamondStock += (x.money/2);
+                        x.money -= (x.money/2);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                }
+                else if(board.PieceName()=="BuyStock-100"){
+                    if(selectedStock == 1){
+                        x.circleStock += x.money;
+                        x.money -= x.money;
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 2){
+                        x.triangleUpStock += x.money;
+                        x.money -= x.money;
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 3){
+                        x.triangleDownStock += x.money;
+                        x.money -= x.money;
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 4){
+                        x.squareStock += x.money;
+                        x.money -= x.money;
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 5){
+                        x.diamondStock += x.money;
+                        x.money -= x.money;
+                        Instantiate(board.cosmetics.moneySFX);
                     }
                 }
 
@@ -576,6 +676,7 @@ namespace Battle.Board {
             x.badText.text = s;
             x.badPopupTimer = Time.time;
             x.badPopupGameObject.SetActive(true);
+            Instantiate(board.cosmetics.declinedSFX);
         }
 
         public Piece MarketMainMenuSelect() {

@@ -209,6 +209,20 @@ namespace Battle.Board {
                 else if(board.PieceName()=="Invest-5"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-1","[1]"));
                 }
+
+                else if(board.PieceName()=="BuyStock-1"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-5","5 Stocks"));
+                }
+                else if(board.PieceName()=="BuyStock-5"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-50","Invest 50%"));
+                }
+                else if(board.PieceName()=="BuyStock-50"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-100","Invest 100%"));
+                }
+                else if(board.PieceName()=="BuyStock-100"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1 Stock"));
+                }
+
             }
 
             if (!isRotatable) {
@@ -259,6 +273,20 @@ namespace Battle.Board {
                 else if(board.PieceName()=="Invest-5"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-4","[4]"));
                 }
+
+                else if(board.PieceName()=="BuyStock-1"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-100","Invest 100%"));
+                }
+                else if(board.PieceName()=="BuyStock-5"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1 Stock"));
+                }
+                else if(board.PieceName()=="BuyStock-50"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-5","5 Stocks"));
+                }
+                else if(board.PieceName()=="BuyStock-100"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-50","Invest 50%"));
+                }
+
             }
 
             if (!isRotatable) {
