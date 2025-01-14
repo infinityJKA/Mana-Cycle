@@ -17,6 +17,7 @@ using Battle.AI;
 using static ArcadeStats.Stat;
 using TMPro;
 using UnityEngine.InputSystem.Controls;
+using Mono.CSharp;
 
 namespace Battle.Board {
     public class GameBoard : MonoBehaviour
@@ -2677,6 +2678,15 @@ namespace Battle.Board {
                     }
                 }
             });
+        }
+
+        public String PieceName(){
+            return piece.ReturnCenterName();
+        }
+
+        public void DestroyCurrentPiece(){
+            Destroy(piece.gameObject);
+            SpawnPiece();
         }
 
         // username / local name

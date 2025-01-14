@@ -54,6 +54,7 @@ namespace Battle.Board {
         public StatusConditionManager scm;
         public float statusTime, statusDamageTime;
         public StatusConditions statusCondition;
+        public int selectedStock;
 
 
         void Awake()
@@ -461,21 +462,72 @@ namespace Battle.Board {
         // <summary>
         // Xuirbo doesn't play Mana Cycle
 
-        private void FreeMarket() {
-            ClearAbilityData();
-            board.xuirboStuff.menuGameObject.SetActive(true);
-            board.xuirboStuff.menuText.text =
-            "Invest Assets\n"+
-            "Sell Assets\n"+
-            "Shopping\n"+
-            "File Paperwork\n"+
-            "Hire Mercenary\n"+
-            "Bribery\n"+
-            "Go Fishing\n"+
-            "Flesh Crystal\n"+
-            "Exit";
-            board.ReplacePiece(MarketMainMenuSelect());
-            //board.piecePreview.ReplaceNextPiece(board.abilityManager.InvestmentSelect());
+        private void FreeMarket() {  // fuckass menu system i rewrote like 5 times to not crash the game, probably not optimally coded but fuck it imma make Xuirbo functional somehow
+            if(board.PieceName()=="MainMenu-Invest"){
+                selectedStock = 0;
+                board.xuirboStuff.menuText.text =
+                "Select Stock:\n"+
+                "   1\n"+
+                "   2\n"+
+                "   3\n"+
+                "   4\n"+
+                "   5\n";
+                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-1","[1]"));
+            }
+            else if(board.PieceName().StartsWith("Invest-")){
+                selectedStock = Int32.Parse(board.PieceName().Substring(board.PieceName().Length - 1));
+                
+                board.xuirboStuff.menuText.text =
+                "Invest How Much?\n"+
+                "1 stock\n"+
+                "5 stocks\n"+
+                "50% of funds\n"+
+                "100% of funds";
+                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1 Stock"));
+            }
+            else if(board.PieceName().StartsWith("BuyStock-")){
+                XuirboStuff x = board.xuirboStuff;
+                string c = "CREDIT CARD REJECTED\n\nINSUFFICIENT FUNDS BUDDY";
+
+                if(board.PieceName()=="BuyStock-1"){
+                    if(selectedStock == 1){
+                        if(x.money >= x.circlePrice){
+                            x.money -= x.circlePrice;
+                            x.circleStock += x.circlePrice;
+                        }
+                        else{
+                            ShowBadPopup(c);
+                        }
+                    }
+                }
+                x.UpdateXuirboText();
+                x.menuGameObject.SetActive(false);
+                board.DestroyCurrentPiece(); //SpawnPiece();
+            }
+
+            else{
+                ClearAbilityData();
+                board.xuirboStuff.menuGameObject.SetActive(true);
+                board.xuirboStuff.menuText.text =
+                "Invest Assets\n"+
+                "Sell Assets\n"+
+                "Shopping\n"+
+                "File Paperwork\n"+
+                "Hire Mercenary\n"+
+                "Bribery\n"+
+                "Go Fishing\n"+
+                "Flesh Crystal\n"+
+                "Exit";
+                board.ReplacePiece(MarketMainMenuSelect());
+            }
+        }
+        
+        public void ShowBadPopup(String s)
+        {
+            XuirboStuff x = board.xuirboStuff;
+            x.badText.text = s;
+            x.badPopupTimer = Time.time;
+            x.badPopupGameObject.SetActive(true);
         }
 
         public Piece MarketMainMenuSelect() {
@@ -484,9 +536,9 @@ namespace Battle.Board {
             return m;
         }
 
-        public Piece InvestmentSelect() {
+        public Piece GenerateXuirboMenuPiece(String centerName, String displayText) {
             Piece m = CreateSinglePiece(true);
-            m.InvestSelect1(board);
+            m.CreateXuirboMenuOption(board,centerName,displayText);
             return m;
         }
 

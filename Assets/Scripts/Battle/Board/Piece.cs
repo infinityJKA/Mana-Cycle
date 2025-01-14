@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Battle.Cycle;
 using System;
 using TMPro;
+using LootLocker.Extension.DataTypes;
 
 namespace Battle.Board {
     public class Piece : MonoBehaviour
@@ -173,6 +174,10 @@ namespace Battle.Board {
                 return;
             }
             transform.localPosition = new Vector3(this.col - GameBoard.width/2f, -this.row + GameBoard.physicalHeight/2f + GameBoard.height - GameBoard.physicalHeight, 0);
+        }
+
+        public String ReturnCenterName(){
+            return center.name;
         }
             
         // Rotate this piece to the right about the center.
@@ -416,12 +421,8 @@ namespace Battle.Board {
                     break;
                 
                 case Battler.ActiveAbilityEffect.FreeMarket:
-                    if(center.name == "MainMenu-Invest"){
-                        fm_OpenInvestementMenu(board);
-                    }
-                    else{
-
-                    }
+                    ExitXuirboMenu();
+                    savedBoard.ClearTile(col,row);
                     break;
 
 
@@ -707,35 +708,57 @@ namespace Battle.Board {
             t.GetComponent<TMP_Text>().text = "INVEST";
         }
 
-        public void fm_OpenInvestementMenu(GameBoard board){
+        // public void fm_OpenInvestementMenu(GameBoard board){
             //center.board.abilityManager.fm_InvestmentMenu();
-            board.xuirboStuff.menuGameObject.SetActive(true);
-            board.xuirboStuff.menuText.text =
-            "Select Stock:\n"+
-            "  1\n"+
-            "  2\n"+
-            "  3\n"+
-            "  4\n"+
-            "  5\n"+
-            "EXIT";
-            board.ReplacePiece(board.abilityManager.InvestmentSelect());
+            // board.xuirboStuff.menuGameObject.SetActive(true);
+            // board.xuirboStuff.menuText.text =
+            // "Select Stock:\n"+
+            // "  1\n"+
+            // "  2\n"+
+            // "  3\n"+
+            // "  4\n"+
+            // "  5\n"+
+            // "EXIT";
+            // board.ReplacePiece(board.abilityManager.InvestmentSelect());
             //board.ClearTile(col, row);
-        }
+        // }
 
-        public void InvestSelect1(GameBoard board)
-        {
+        // public void MenuEndReached(){ 
+            // savedBoard.ClearTile(col,row);
+        // }
+
+        public void CreateXuirboMenuOption(GameBoard board, String centerName, String displayText){
             savedBoard = board;
             effect = Battler.ActiveAbilityEffect.FreeMarket;
             center.SetManaColor(ManaColor.Colorless, board, setVisual: false);
             center.visual.SetSprite(board.cosmetics.xuriboOptionBoxSprite);
             center.visual.SetColor(Color.white);
-            center.name = "Invest - 1";
+            center.name = centerName;
             center.visual.SetSizeDelta(new Vector2(3, 1));
 
             GameObject t = Instantiate(board.cosmetics.xuirboTextPrefab,center.gameObject.transform.position,Quaternion.identity);
             t.transform.parent = center.gameObject.transform;
-            t.GetComponent<TMP_Text>().text = "[1]";
+            t.GetComponent<TMP_Text>().text = displayText;
         }
+
+        public void ExitXuirboMenu(){
+            savedBoard.xuirboStuff.menuGameObject.SetActive(false);
+        }
+
+        // public void InvestSelect1(GameBoard board)
+        // {
+        //     savedBoard = board;
+        //     effect = Battler.ActiveAbilityEffect.FreeMarket;
+        //     center.SetManaColor(ManaColor.Colorless, board, setVisual: false);
+        //     center.visual.SetSprite(board.cosmetics.xuriboOptionBoxSprite);
+        //     center.visual.SetColor(Color.white);
+        //     center.name = "Invest - 1";
+        //     center.visual.SetSizeDelta(new Vector2(3, 1));
+
+        //     GameObject t = Instantiate(board.cosmetics.xuirboTextPrefab,center.gameObject.transform.position,Quaternion.identity);
+        //     t.transform.parent = center.gameObject.transform;
+        //     t.GetComponent<TMP_Text>().text = "[1]";
+        // }
 
 
     }

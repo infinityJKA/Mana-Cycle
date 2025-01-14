@@ -13,13 +13,19 @@ public class XuirboStuff : MonoBehaviour
     [SerializeField] TMP_Text moneyText,baitText,crimesText,inflationText,
     cStockText,cPriceText,tuStockText,tuPriceText,tdStockText,tdPriceText,sStockText,sPriceText,dStockText,dPriceText;
 
-    public GameObject menuGameObject;
-    public TMP_Text menuText;
+    public GameObject menuGameObject,badPopupGameObject,fishingPopupGameObject,mailPopupGameObject;
+    public TMP_Text menuText,badText,fishingText,mailText;
 
 
-    public float inflationTimer,stockTimer1,stockTimer2,stockTimer3,stockTimer4,stockTimer5;
+    public float inflationTimer,stockTimer1,stockTimer2,stockTimer3,stockTimer4,stockTimer5,badPopupTimer;
 
     public void XuirboUpdate(){
+        if(badPopupGameObject.activeSelf){
+            if(badPopupTimer + 3 <= Time.time){
+                badPopupGameObject.SetActive(false);
+            }
+        }
+
         if(inflationTimer + 0.5 <= Time.time){
             inflation = inflation*0.999f;
             
