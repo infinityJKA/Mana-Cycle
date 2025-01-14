@@ -499,7 +499,55 @@ namespace Battle.Board {
                             ShowBadPopup(c);
                         }
                     }
+                    else if(selectedStock == 2){
+                        if(x.money >= x.triangleUpPrice){
+                            x.money -= x.triangleUpPrice;
+                            x.triangleUpStock += x.triangleUpPrice;
+                        }
+                        else{
+                            ShowBadPopup(c);
+                        }
+                    }
+                    else if(selectedStock == 3){
+                        if(x.money >= x.triangleDownPrice){
+                            x.money -= x.triangleDownPrice;
+                            x.triangleDownStock += x.triangleDownPrice;
+                        }
+                        else{
+                            ShowBadPopup(c);
+                        }
+                    }
+                    else if(selectedStock == 4){
+                        if(x.money >= x.squarePrice){
+                            x.money -= x.squarePrice;
+                            x.squareStock += x.squarePrice;
+                        }
+                        else{
+                            ShowBadPopup(c);
+                        }
+                    }
+                    else if(selectedStock == 5){
+                        if(x.money >= x.diamondPrice){
+                            x.money -= x.diamondPrice;
+                            x.diamondStock += x.diamondPrice;
+                        }
+                        else{
+                            ShowBadPopup(c);
+                        }
+                    }
                 }
+                else if(board.PieceName()=="BuyStock-5"){
+                    if(selectedStock == 1){
+                        if(x.money >= x.circlePrice*5){
+                            x.money -= x.circlePrice*5;
+                            x.circleStock += x.circlePrice*5;
+                        }
+                        else{
+                            ShowBadPopup(c);
+                        }
+                    }
+                }
+
                 x.UpdateXuirboText();
                 x.menuGameObject.SetActive(false);
                 board.DestroyCurrentPiece(); //SpawnPiece();

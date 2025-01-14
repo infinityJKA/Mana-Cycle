@@ -192,6 +192,24 @@ namespace Battle.Board {
                 }
                 return;
             }
+            else if(effect == Battler.ActiveAbilityEffect.FreeMarket){
+                GameBoard board = savedBoard;
+                if(board.PieceName()=="Invest-1"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-2","[2]"));
+                }
+                else if(board.PieceName()=="Invest-2"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-3","[3]"));
+                }
+                else if(board.PieceName()=="Invest-3"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-4","[4]"));
+                }
+                else if(board.PieceName()=="Invest-4"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-5","[5]"));
+                }
+                else if(board.PieceName()=="Invest-5"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-1","[1]"));
+                }
+            }
 
             if (!isRotatable) {
                 Debug.LogWarning("Trying to rotate an unrotatable piece");
@@ -223,6 +241,24 @@ namespace Battle.Board {
                     SetBithecaryBomb();
                 }
                 return;
+            }
+            else if(effect == Battler.ActiveAbilityEffect.FreeMarket){
+                GameBoard board = savedBoard;
+                if(board.PieceName()=="Invest-1"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-5","[5]"));
+                }
+                else if(board.PieceName()=="Invest-2"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-1","[1]"));
+                }
+                else if(board.PieceName()=="Invest-3"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-2","[2]"));
+                }
+                else if(board.PieceName()=="Invest-4"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-3","[3]"));
+                }
+                else if(board.PieceName()=="Invest-5"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-4","[4]"));
+                }
             }
 
             if (!isRotatable) {
