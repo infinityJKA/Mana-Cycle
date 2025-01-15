@@ -194,7 +194,35 @@ namespace Battle.Board {
             }
             else if(effect == Battler.ActiveAbilityEffect.FreeMarket){
                 GameBoard board = savedBoard;
-                if(board.PieceName()=="Invest-1"){
+
+                if(board.PieceName()=="MainMenu-Invest"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Sell","Sell"));
+                }
+                else if(board.PieceName()=="MainMenu-Sell"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Shop","Shop"));
+                }
+                else if(board.PieceName()=="MainMenu-Shop"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-File","File"));
+                }
+                else if(board.PieceName()=="MainMenu-File"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Hire","Hire"));
+                }
+                else if(board.PieceName()=="MainMenu-Hire"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Bribe","Bribe"));
+                }
+                else if(board.PieceName()=="MainMenu-Bribe"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Fish","Fish"));
+                }
+                else if(board.PieceName()=="MainMenu-Fish"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Flesh","Flesh"));
+                }
+                else if(board.PieceName()=="MainMenu-Flesh"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Invest","Invest"));
+                }
+
+
+
+                else if(board.PieceName()=="Invest-1"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-2","[2]"));
                 }
                 else if(board.PieceName()=="Invest-2"){
@@ -221,6 +249,33 @@ namespace Battle.Board {
                 }
                 else if(board.PieceName()=="BuyStock-100"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1 Stock"));
+                }
+
+
+                else if(board.PieceName()=="Sell-1"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Sell-2","[2]"));
+                }
+                else if(board.PieceName()=="Sell-2"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Sell-3","[3]"));
+                }
+                else if(board.PieceName()=="Sell-3"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Sell-4","[4]"));
+                }
+                else if(board.PieceName()=="Sell-4"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Sell-5","[5]"));
+                }
+                else if(board.PieceName()=="Sell-5"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Sell-1","[1]"));
+                }
+
+                else if(board.PieceName()=="SellStock-25"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("SellStock-50","50%"));
+                }
+                else if(board.PieceName()=="SellStock-50"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("SellStock-100","100%"));
+                }
+                else if(board.PieceName()=="SellStock-100"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("SellStock-25","25%"));
                 }
 
             }
@@ -258,7 +313,33 @@ namespace Battle.Board {
             }
             else if(effect == Battler.ActiveAbilityEffect.FreeMarket){
                 GameBoard board = savedBoard;
-                if(board.PieceName()=="Invest-1"){
+
+                if(board.PieceName()=="MainMenu-Invest"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Flesh","Flesh"));
+                }
+                else if(board.PieceName()=="MainMenu-Sell"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Invest","Invest"));
+                }
+                else if(board.PieceName()=="MainMenu-Shop"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Sell","Sell"));
+                }
+                else if(board.PieceName()=="MainMenu-File"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Shop","Shop"));
+                }
+                else if(board.PieceName()=="MainMenu-Hire"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-File","File"));
+                }
+                else if(board.PieceName()=="MainMenu-Bribe"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Hire","Hire"));
+                }
+                else if(board.PieceName()=="MainMenu-Fish"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Bribe","Bribe"));
+                }
+                else if(board.PieceName()=="MainMenu-Flesh"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Fish","Fish"));
+                }
+
+                else if(board.PieceName()=="Invest-1"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-5","[5]"));
                 }
                 else if(board.PieceName()=="Invest-2"){
@@ -285,6 +366,32 @@ namespace Battle.Board {
                 }
                 else if(board.PieceName()=="BuyStock-100"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-50","Invest 50%"));
+                }
+
+                else if(board.PieceName()=="Sell-1"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Sell-5","[5]"));
+                }
+                else if(board.PieceName()=="Sell-2"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Sell-1","[1]"));
+                }
+                else if(board.PieceName()=="Sell-3"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Sell-2","[2]"));
+                }
+                else if(board.PieceName()=="Sell-4"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Sell-3","[3]"));
+                }
+                else if(board.PieceName()=="Sell-5"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Sell-4","[4]"));
+                }
+
+                else if(board.PieceName()=="SellStock-25"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("SellStock-100","100%"));
+                }
+                else if(board.PieceName()=="SellStock-50"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("SellStock-25","25%"));
+                }
+                else if(board.PieceName()=="SellStock-100"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("SellStock-50","50%"));
                 }
 
             }

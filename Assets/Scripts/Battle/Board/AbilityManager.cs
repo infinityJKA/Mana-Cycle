@@ -466,7 +466,7 @@ namespace Battle.Board {
             if(board.PieceName()=="MainMenu-Invest"){
                 selectedStock = 0;
                 board.xuirboStuff.menuText.text =
-                "Select Stock:\n"+
+                "Select investment:\n"+
                 "   1\n"+
                 "   2\n"+
                 "   3\n"+
@@ -651,6 +651,115 @@ namespace Battle.Board {
                 x.UpdateXuirboText();
                 x.menuGameObject.SetActive(false);
                 board.DestroyCurrentPiece(); //SpawnPiece();
+            }
+
+            else if(board.PieceName()=="MainMenu-Sell"){
+                selectedStock = 0;
+                board.xuirboStuff.menuText.text =
+                "Select stock to sell:\n"+
+                "   1\n"+
+                "   2\n"+
+                "   3\n"+
+                "   4\n"+
+                "   5\n";
+                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Sell-1","[1]"));
+                }
+            else if(board.PieceName().StartsWith("Sell-")){
+                selectedStock = Int32.Parse(board.PieceName().Substring(board.PieceName().Length - 1));
+                
+                board.xuirboStuff.menuText.text =
+                "Sell How Much?\n"+
+                "25% of stock\n"+
+                "50% of stock\n"+
+                "100% of stock";
+                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("SellStock-25","25%"));
+            }
+            else if(board.PieceName().StartsWith("SellStock-")){
+                XuirboStuff x = board.xuirboStuff;
+                if(board.PieceName()=="SellStock-25"){
+                    if(selectedStock == 1){
+                        x.money += (x.circleStock/4);
+                        x.circleStock -= (x.circleStock/4);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 2){
+                        x.money += (x.triangleUpStock/4);
+                        x.triangleUpStock -= (x.triangleUpStock/4);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 3){
+                        x.money += (x.triangleDownStock/4);
+                        x.triangleDownStock -= (x.triangleDownStock/4);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 4){
+                        x.money += (x.squareStock/4);
+                        x.squareStock -= (x.squareStock/4);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 5){
+                        x.money += (x.diamondStock/4);
+                        x.diamondStock -= (x.diamondStock/4);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                }
+                else if(board.PieceName()=="SellStock-50"){
+                    if(selectedStock == 1){
+                        x.money += (x.circleStock/2);
+                        x.circleStock -= (x.circleStock/2);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 2){
+                        x.money += (x.triangleUpStock/2);
+                        x.triangleUpStock -= (x.triangleUpStock/2);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 3){
+                        x.money += (x.triangleDownStock/2);
+                        x.triangleDownStock -= (x.triangleDownStock/2);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 4){
+                        x.money += (x.squareStock/2);
+                        x.squareStock -= (x.squareStock/2);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 5){
+                        x.money += (x.diamondStock/2);
+                        x.diamondStock -= (x.diamondStock/2);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                }
+                if(board.PieceName()=="SellStock-100"){
+                    if(selectedStock == 1){
+                        x.money += (x.circleStock);
+                        x.circleStock -= (x.circleStock);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 2){
+                        x.money += (x.triangleUpStock);
+                        x.triangleUpStock -= (x.triangleUpStock);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 3){
+                        x.money += (x.triangleDownStock);
+                        x.triangleDownStock -= (x.triangleDownStock);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 4){
+                        x.money += (x.squareStock);
+                        x.squareStock -= (x.squareStock);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else if(selectedStock == 5){
+                        x.money += (x.diamondStock);
+                        x.diamondStock -= (x.diamondStock);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                }
+                x.UpdateXuirboText();
+                x.menuGameObject.SetActive(false);
+                board.DestroyCurrentPiece();
             }
 
             else{
