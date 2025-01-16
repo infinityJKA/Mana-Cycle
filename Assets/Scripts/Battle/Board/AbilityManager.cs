@@ -761,6 +761,18 @@ namespace Battle.Board {
                 x.menuGameObject.SetActive(false);
                 board.DestroyCurrentPiece();
             }
+            else if(board.PieceName()=="MainMenu-Shop"){
+                selectedStock = 0;
+                board.xuirboStuff.menuText.text =
+                "100 shield: $"+(int)(200*board.xuirboStuff.inflation)+"\n"+
+                "Healing: $"+(int)(300*board.xuirboStuff.inflation)+"\n"+
+                "Bombs: $"+(int)(230*board.xuirboStuff.inflation)+"\n"+
+                "Fire: $"+(int)(100*board.xuirboStuff.inflation)+"\n"+
+                "Mini z?man: $"+(int)(450*board.xuirboStuff.inflation)+"\n"+
+                "Bait: $"+(int)(150*board.xuirboStuff.inflation)+"\n"
+                ;
+                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-1","[1]"));
+            }
 
             else{
                 ClearAbilityData();
