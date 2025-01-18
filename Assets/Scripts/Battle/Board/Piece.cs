@@ -278,6 +278,22 @@ namespace Battle.Board {
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("SellStock-25","25%"));
                 }
 
+                else if(board.PieceName()=="Shop-Shield"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bait","Bait"));
+                }
+                else if(board.PieceName()=="Shop-Bait"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Healing","Heal"));
+                }
+                else if(board.PieceName()=="Shop-Healing"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Fire","Fire"));
+                }
+                else if(board.PieceName()=="Shop-Fire"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bomb","Bombs"));
+                }
+                else if(board.PieceName()=="Shop-Bomb"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","Shield"));
+                }
+
             }
 
             if (!isRotatable) {
@@ -393,6 +409,24 @@ namespace Battle.Board {
                 else if(board.PieceName()=="SellStock-100"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("SellStock-50","50%"));
                 }
+
+                else if(board.PieceName()=="Shop-Shield"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bomb","Bombs"));
+                }
+                else if(board.PieceName()=="Shop-Bait"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","Shield"));
+                }
+                else if(board.PieceName()=="Shop-Healing"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bait","Bait"));
+                }
+                else if(board.PieceName()=="Shop-Fire"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Healing","Heal"));
+                }
+                else if(board.PieceName()=="Shop-Bomb"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Fire","Fire"));
+                }
+
+                
 
             }
 

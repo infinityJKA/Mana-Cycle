@@ -9,6 +9,7 @@ using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEditor.Localization.Plugins.XLIFF.V20;
 
 using Achievements;
+using Mono.CSharp;
 
 namespace Battle.Board {
     /// <summary>
@@ -55,6 +56,7 @@ namespace Battle.Board {
         public float statusTime, statusDamageTime;
         public StatusConditions statusCondition;
         public int selectedStock;
+        private string rejctedCard = "CREDIT CARD REJECTED\n\nINSUFFICIENT FUNDS BUDDY";
 
 
         void Awake()
@@ -487,7 +489,6 @@ namespace Battle.Board {
             }
             else if(board.PieceName().StartsWith("BuyStock-")){
                 XuirboStuff x = board.xuirboStuff;
-                string c = "CREDIT CARD REJECTED\n\nINSUFFICIENT FUNDS BUDDY";
 
                 if(board.PieceName()=="BuyStock-1"){
                     if(selectedStock == 1){
@@ -497,7 +498,7 @@ namespace Battle.Board {
                             Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
-                            ShowBadPopup(c);
+                            ShowBadPopup(rejctedCard);
                         }
                     }
                     else if(selectedStock == 2){
@@ -507,7 +508,7 @@ namespace Battle.Board {
                             Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
-                            ShowBadPopup(c);
+                            ShowBadPopup(rejctedCard);
                         }
                     }
                     else if(selectedStock == 3){
@@ -517,7 +518,7 @@ namespace Battle.Board {
                             Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
-                            ShowBadPopup(c);
+                            ShowBadPopup(rejctedCard);
                         }
                     }
                     else if(selectedStock == 4){
@@ -527,7 +528,7 @@ namespace Battle.Board {
                             Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
-                            ShowBadPopup(c);
+                            ShowBadPopup(rejctedCard);
                         }
                     }
                     else if(selectedStock == 5){
@@ -537,7 +538,7 @@ namespace Battle.Board {
                             Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
-                            ShowBadPopup(c);
+                            ShowBadPopup(rejctedCard);
                         }
                     }
                 }
@@ -549,7 +550,7 @@ namespace Battle.Board {
                             Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
-                            ShowBadPopup(c);
+                            ShowBadPopup(rejctedCard);
                         }
                     }
                     else if(selectedStock == 2){
@@ -559,7 +560,7 @@ namespace Battle.Board {
                             Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
-                            ShowBadPopup(c);
+                            ShowBadPopup(rejctedCard);
                         }
                     }
                     else if(selectedStock == 3){
@@ -569,7 +570,7 @@ namespace Battle.Board {
                             Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
-                            ShowBadPopup(c);
+                            ShowBadPopup(rejctedCard);
                         }
                     }
                     else if(selectedStock == 4){
@@ -579,7 +580,7 @@ namespace Battle.Board {
                             Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
-                            ShowBadPopup(c);
+                            ShowBadPopup(rejctedCard);
                         }
                     }
                     else if(selectedStock == 5){
@@ -589,7 +590,7 @@ namespace Battle.Board {
                             Instantiate(board.cosmetics.moneySFX);
                         }
                         else{
-                            ShowBadPopup(c);
+                            ShowBadPopup(rejctedCard);
                         }
                     }
                 }
@@ -764,14 +765,80 @@ namespace Battle.Board {
             else if(board.PieceName()=="MainMenu-Shop"){
                 selectedStock = 0;
                 board.xuirboStuff.menuText.text =
-                "100 shield: $"+(int)(200*board.xuirboStuff.inflation)+"\n"+
+                "150 shield: $"+(int)(100*board.xuirboStuff.inflation)+"\n"+
+                "Bait: $"+(int)(125*board.xuirboStuff.inflation)+"\n" +
                 "Healing: $"+(int)(300*board.xuirboStuff.inflation)+"\n"+
-                "Bombs: $"+(int)(230*board.xuirboStuff.inflation)+"\n"+
-                "Fire: $"+(int)(100*board.xuirboStuff.inflation)+"\n"+
-                "Mini z?man: $"+(int)(450*board.xuirboStuff.inflation)+"\n"+
-                "Bait: $"+(int)(150*board.xuirboStuff.inflation)+"\n"
+                "Fire: $"+(int)(75*board.xuirboStuff.inflation)+"\n"+
+                "Bombs: $"+(int)(230*board.xuirboStuff.inflation)+"\n"
                 ;
-                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-1","[1]"));
+                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","Shield"));
+            }
+            else if(board.PieceName().StartsWith("Shop-")){
+                bool dontDestroy = false;
+                if(board.PieceName() == "Shop-Shield"){
+                    if(board.xuirboStuff.money >= (int)(100*board.xuirboStuff.inflation)){
+                        board.xuirboStuff.money -= (int)(100*board.xuirboStuff.inflation);
+                        board.AddShield(150);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else{
+                        ShowBadPopup(rejctedCard);
+                    }
+                }
+                else if(board.PieceName() == "Shop-Bait"){
+                    if(board.xuirboStuff.money >= (int)(125*board.xuirboStuff.inflation)){
+                        board.xuirboStuff.money -= (int)(125*board.xuirboStuff.inflation);
+                        board.xuirboStuff.bait += 1;
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else{
+                        ShowBadPopup(rejctedCard);
+                    }
+                }
+                else if(board.PieceName() == "Shop-Healing"){
+                    if(board.xuirboStuff.money >= (int)(125*board.xuirboStuff.inflation)){
+                        board.xuirboStuff.money -= (int)(125*board.xuirboStuff.inflation);
+                        statusTime = Time.time;
+                        statusCondition = StatusConditions.Pure;
+                        scm.gameObject.SetActive(true);
+                        scm.UpdateStatusIcon(StatusConditions.Pure);
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else{
+                        ShowBadPopup(rejctedCard);
+                    }
+                }
+                else if(board.PieceName() == "Shop-Fire"){
+                    if(board.xuirboStuff.money >= (int)(75*board.xuirboStuff.inflation)){
+                        board.xuirboStuff.money -= (int)(75*board.xuirboStuff.inflation);
+                        Piece infernoPiece = CreateSinglePiece(false);
+                        infernoPiece.MakeInferno(board);
+                        board.ReplacePiece(infernoPiece);
+                        dontDestroy = true;
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else{
+                        ShowBadPopup(rejctedCard);
+                    }
+                }
+                else if(board.PieceName() == "Shop-Bomb"){
+                    if(board.xuirboStuff.money >= (int)(230*board.xuirboStuff.inflation)){
+                        board.xuirboStuff.money -= (int)(230*board.xuirboStuff.inflation);
+                        board.ReplacePiece(MakePyroBomb());
+                        board.piecePreview.ReplaceNextPiece(MakePyroBomb());
+                        board.piecePreview.ReplaceUpcomingPiece(MakePyroBomb(), PiecePreview.previewLength-1);
+                        dontDestroy = true;
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else{
+                        ShowBadPopup(rejctedCard);
+                    }
+                }
+                board.xuirboStuff.UpdateXuirboText();
+                board.xuirboStuff.menuGameObject.SetActive(false);
+                if(!dontDestroy){
+                    board.DestroyCurrentPiece();
+                }
             }
 
             else{

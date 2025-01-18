@@ -56,8 +56,10 @@ namespace Battle.Board {
             if(lifespan != 0){
                 if(specialProperty == "Inferno" && board.tiles[row-1,col] != null){
                     board.ClearTile(col,row-1);
-                    board.DealDamageLocal(Convert.ToInt32(10+(1.8*InfernoCleared)), -1, transform.position);
-                    InfernoCleared++;
+                    if(board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Inferno){
+                        board.DealDamageLocal(Convert.ToInt32(10+(1.8*InfernoCleared)), -1, transform.position);
+                        InfernoCleared++;
+                    }
                     board.AllTileGravity();
                 }
                 if(Time.time-lifespan >= lifeStart){
