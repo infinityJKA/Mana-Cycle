@@ -1,23 +1,28 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Battle.Board;
 using TMPro;
 using UnityEngine;
 
 public class XuirboStuff : MonoBehaviour
 {
-    public int money,bait,crimes;
+    public int money,bait,crimes, mercenaries, miners;
     public float inflation;
     public int circleStock,circlePrice,triangleUpStock,triangleUpPrice,triangleDownStock,triangleDownPrice,squareStock,squarePrice,diamondStock,diamondPrice;
 
+    public bool policeActive;
+    
     [SerializeField] TMP_Text moneyText,baitText,crimesText,inflationText,
-    cStockText,cPriceText,tuStockText,tuPriceText,tdStockText,tdPriceText,sStockText,sPriceText,dStockText,dPriceText;
+    cStockText,cPriceText,tuStockText,tuPriceText,tdStockText,tdPriceText,sStockText,sPriceText,dStockText,dPriceText,
+    fleshText,mercenariesText,minersText,actionCountdownText,policeText;
 
-    public GameObject menuGameObject,badPopupGameObject,fishingPopupGameObject,mailPopupGameObject;
+    public GameObject menuGameObject,badPopupGameObject,fishingPopupGameObject,mailPopupGameObject, policePopup;
     public TMP_Text menuText,badText,fishingText,mailText;
+    [SerializeField] GameBoard board; 
 
 
-    public float inflationTimer,stockTimer1,stockTimer2,stockTimer3,stockTimer4,stockTimer5,badPopupTimer;
+    public float inflationTimer,stockTimer1,stockTimer2,stockTimer3,stockTimer4,stockTimer5,badPopupTimer,actionTimer,policeTimer;
 
     public void XuirboUpdate(){
         if(badPopupGameObject.activeSelf){
@@ -30,7 +35,6 @@ public class XuirboStuff : MonoBehaviour
             inflation = inflation*0.999f;
             
             inflationTimer = Time.time;
-            UpdateXuirboText();
         }
 
         if(stockTimer1 + 5 <= Time.time){
@@ -38,7 +42,6 @@ public class XuirboStuff : MonoBehaviour
             circlePrice = (int)(circlePrice*0.99f);
             
             stockTimer1 = Time.time + UnityEngine.Random.Range(-1f, 1f);
-            UpdateXuirboText();
         }
 
         if(stockTimer2 + 5 <= Time.time){
@@ -46,7 +49,6 @@ public class XuirboStuff : MonoBehaviour
             triangleUpPrice = (int)(triangleUpPrice*0.99f);
             
             stockTimer2 = Time.time + UnityEngine.Random.Range(-1f, 1f);
-            UpdateXuirboText();
         }
 
         if(stockTimer3 + 5 <= Time.time){
@@ -54,7 +56,6 @@ public class XuirboStuff : MonoBehaviour
             triangleDownPrice = (int)(triangleDownPrice*0.99f);
             
             stockTimer3 = Time.time + UnityEngine.Random.Range(-1f, 1f);
-            UpdateXuirboText();
         }
 
         if(stockTimer4 + 5 <= Time.time){
@@ -62,7 +63,6 @@ public class XuirboStuff : MonoBehaviour
             squarePrice = (int)(squarePrice*0.99f);
             
             stockTimer4 = Time.time + UnityEngine.Random.Range(-1f, 1f);
-            UpdateXuirboText();
         }
 
         if(stockTimer5 + 5 <= Time.time){
@@ -70,13 +70,46 @@ public class XuirboStuff : MonoBehaviour
             diamondPrice = (int)(diamondPrice*0.99f);
             
             stockTimer5 = Time.time + UnityEngine.Random.Range(-1f, 1f);
-            UpdateXuirboText();
         }
 
+        if(actionTimer + 7 <= Time.time){
+            board.EvaluateInstantOutgoingDamage(mercenaries*33);
+            money += miners*((int)(40*inflation));
+            board.hpBar.AdvanceDamageQueue();
+            actionTimer = Time.time;
+        }
+        else{
+            actionCountdownText.text = ""+(int)(actionTimer+7-Time.time+1);
+        }
+
+        if(policeActive){
+            if(policeTimer + 30 <= Time.time){
+                board.EvaluateInstantIncomingDamage(crimes*450);
+                crimes = 0;
+                Instantiate(board.cosmetics.policeSFX);
+                policePopup.SetActive(false);
+                policeActive = false;
+            }
+            else{
+                policeText.text = "POLICE COMING IN "+(int)(policeTimer+30-Time.time+1)+" SECONDS";
+            }
+        }
+
+        UpdateXuirboText();
 
     }
 
-    
+    public void CrimeChance(){
+        crimes += 1;
+        if(crimes > 1){
+            if(!policeActive && UnityEngine.Random.Range(0,100) <= 33){
+                policeTimer = Time.time;
+                Instantiate(board.cosmetics.policeSFX);
+                policeActive = true;
+                policePopup.SetActive(true);
+            }
+        }
+    }
 
     public void UpdateXuirboText(){
         // gaming
@@ -94,9 +127,12 @@ public class XuirboStuff : MonoBehaviour
         moneyText.text = "$"+money;
         baitText.text = "Bait: "+bait;
         crimesText.text = "Crimes: "+crimes;
+        mercenariesText.text = "Mercenaries: "+mercenaries;
+        minersText.text = "Miners: "+miners;
 
         inflation = MathF.Round(inflation,4);
         inflationText.text = "Inflation: "+inflation;
+        
     
     
     }

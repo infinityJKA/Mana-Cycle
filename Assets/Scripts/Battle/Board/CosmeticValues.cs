@@ -81,7 +81,7 @@ namespace Battle.Board {
 
         // ==== ability
         // sfx
-        [SerializeField] public GameObject ironSwordSFX, pyroBombSFX, moneySFX, declinedSFX;
+        [SerializeField] public GameObject ironSwordSFX, pyroBombSFX, moneySFX, declinedSFX, policeSFX;
 
         // sprites
         [SerializeField] public Sprite ironSwordSprite, pyroBombSprite, miniZmanSprite, explosivePotionSprite, healingPotionSprite, infernoSprite, xuriboOptionBoxSprite;

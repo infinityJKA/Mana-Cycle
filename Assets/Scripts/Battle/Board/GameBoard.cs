@@ -525,8 +525,9 @@ namespace Battle.Board {
                 xuirboStuff.inflation = 1f;
                 xuirboStuff.crimes = 0;
                 xuirboStuff.bait = 0;
-                xuirboStuff.money = 500;
+                xuirboStuff.money = 22500;
                 xuirboStuff.menuGameObject.SetActive(false);
+                xuirboStuff.policePopup.SetActive(false);
                 xuirboStuff.UpdateXuirboText();
             }
             else{
@@ -1679,7 +1680,9 @@ namespace Battle.Board {
             }
 
             // advance queue
-            hpBar.AdvanceDamageQueue();
+            if(battler.passiveAbilityEffect != Battler.PassiveAbilityEffect.Economics){
+                hpBar.AdvanceDamageQueue();
+            }
         }
 
         /// <summary>

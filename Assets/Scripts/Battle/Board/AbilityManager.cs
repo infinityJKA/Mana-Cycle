@@ -840,6 +840,79 @@ namespace Battle.Board {
                     board.DestroyCurrentPiece();
                 }
             }
+            else if(board.PieceName()=="MainMenu-Hire"){
+                selectedStock = 0;
+                board.xuirboStuff.menuText.text =
+                "Miner: $"+(int)(125*board.xuirboStuff.inflation)+"\n"+
+                "Mercenary: $"+(int)(200*board.xuirboStuff.inflation)+"\n" +
+                "Send 300dmg: $"+(int)(200*board.xuirboStuff.inflation)+"\n" +
+                "Send 750dmg: $"+(int)(500*board.xuirboStuff.inflation)+"\n"+
+                "Arson: $"+(int)(1000*board.xuirboStuff.inflation)+"\n"
+                ;
+                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Miner","Miner"));
+            }
+            else if(board.PieceName().StartsWith("Hire-")){
+                if(board.PieceName() == "Hire-Miner"){
+                    if(board.xuirboStuff.money >= (int)(125*board.xuirboStuff.inflation)){
+                        board.xuirboStuff.money -= (int)(125*board.xuirboStuff.inflation);
+                        board.xuirboStuff.miners += 1;
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else{
+                        ShowBadPopup(rejctedCard);
+                    }
+                }
+                else if(board.PieceName() == "Hire-Mercenary"){
+                    if(board.xuirboStuff.money >= (int)(200*board.xuirboStuff.inflation)){
+                        board.xuirboStuff.money -= (int)(200*board.xuirboStuff.inflation);
+                        board.xuirboStuff.mercenaries += 1;
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else{
+                        ShowBadPopup(rejctedCard);
+                    }
+                }
+                else if(board.PieceName() == "Hire-Snipe300"){
+                    if(board.xuirboStuff.money >= (int)(200*board.xuirboStuff.inflation)){
+                        board.xuirboStuff.money -= (int)(200*board.xuirboStuff.inflation);
+                        board.EvaluateInstantOutgoingDamage(300);
+                        board.xuirboStuff.CrimeChance();
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else{
+                        ShowBadPopup(rejctedCard);
+                    }
+                }
+                else if(board.PieceName() == "Hire-Snipe750"){
+                    if(board.xuirboStuff.money >= (int)(500*board.xuirboStuff.inflation)){
+                        board.xuirboStuff.money -= (int)(500*board.xuirboStuff.inflation);
+                        board.EvaluateInstantOutgoingDamage(750);
+                        board.xuirboStuff.CrimeChance();
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else{
+                        ShowBadPopup(rejctedCard);
+                    }
+                }
+                else if(board.PieceName() == "Hire-Poison"){
+                    if(board.xuirboStuff.money >= (int)(1000*board.xuirboStuff.inflation)){
+                        board.xuirboStuff.money -= (int)(1000*board.xuirboStuff.inflation);
+                        AbilityManager e = board.enemyBoard.abilityManager;
+                        e.statusTime = Time.time;
+                        e.statusCondition = StatusConditions.FireSwapped;
+                        e.scm.gameObject.SetActive(true);
+                        e.scm.UpdateStatusIcon(StatusConditions.FireSwapped);
+                        board.xuirboStuff.CrimeChance();
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else{
+                        ShowBadPopup(rejctedCard);
+                    }
+                }
+                board.xuirboStuff.UpdateXuirboText();
+                board.xuirboStuff.menuGameObject.SetActive(false);
+                board.DestroyCurrentPiece();
+            }
 
             else{
                 ClearAbilityData();
@@ -848,8 +921,7 @@ namespace Battle.Board {
                 "Invest Assets\n"+
                 "Sell Assets\n"+
                 "Shopping\n"+
-                "File Paperwork\n"+
-                "Hire Mercenary\n"+
+                "Hire Talent\n"+
                 "Bribery\n"+
                 "Go Fishing\n"+
                 "Flesh Crystal\n"+

@@ -202,9 +202,6 @@ namespace Battle.Board {
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Shop","Shop"));
                 }
                 else if(board.PieceName()=="MainMenu-Shop"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-File","File"));
-                }
-                else if(board.PieceName()=="MainMenu-File"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Hire","Hire"));
                 }
                 else if(board.PieceName()=="MainMenu-Hire"){
@@ -292,6 +289,22 @@ namespace Battle.Board {
                 }
                 else if(board.PieceName()=="Shop-Bomb"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","Shield"));
+                }
+
+                else if(board.PieceName()=="Hire-Miner"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Mercenary","Merc"));
+                }
+                else if(board.PieceName()=="Hire-Mercenary"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Snipe300","300"));
+                }
+                else if(board.PieceName()=="Hire-Snipe300"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Snipe750","750"));
+                }
+                else if(board.PieceName()=="Hire-Snipe750"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Poison","Arsons"));
+                }
+                else if(board.PieceName()=="Hire-Poison"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Miner","Miner"));
                 }
 
             }
@@ -339,11 +352,8 @@ namespace Battle.Board {
                 else if(board.PieceName()=="MainMenu-Shop"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Sell","Sell"));
                 }
-                else if(board.PieceName()=="MainMenu-File"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Shop","Shop"));
-                }
                 else if(board.PieceName()=="MainMenu-Hire"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-File","File"));
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Shop","Shop"));
                 }
                 else if(board.PieceName()=="MainMenu-Bribe"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Hire","Hire"));
@@ -424,6 +434,22 @@ namespace Battle.Board {
                 }
                 else if(board.PieceName()=="Shop-Bomb"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Fire","Fire"));
+                }
+
+                else if(board.PieceName()=="Hire-Miner"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Poison","Arson"));
+                }
+                else if(board.PieceName()=="Hire-Mercenary"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Miner","Miner"));
+                }
+                else if(board.PieceName()=="Hire-Snipe300"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Mercenary","Merc"));
+                }
+                else if(board.PieceName()=="Hire-Snipe750"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Snipe300","300"));
+                }
+                else if(board.PieceName()=="Hire-Poison"){
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Snipe750","750"));
                 }
 
                 
