@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class XuirboStuff : MonoBehaviour
 {
-    public int money,bait,crimes, mercenaries, miners;
+    public int money,bait,crimes, mercenaries, miners, flesh;
     public float inflation;
     public int circleStock,circlePrice,triangleUpStock,triangleUpPrice,triangleDownStock,triangleDownPrice,squareStock,squarePrice,diamondStock,diamondPrice;
 
@@ -17,17 +17,30 @@ public class XuirboStuff : MonoBehaviour
     cStockText,cPriceText,tuStockText,tuPriceText,tdStockText,tdPriceText,sStockText,sPriceText,dStockText,dPriceText,
     fleshText,mercenariesText,minersText,actionCountdownText,policeText;
 
-    public GameObject menuGameObject,badPopupGameObject,fishingPopupGameObject,mailPopupGameObject, policePopup;
+    public GameObject menuGameObject,badPopupGameObject,fishingPopupGameObject,mailPopupGameObject, policePopup, fleshPopup;
     public TMP_Text menuText,badText,fishingText,mailText;
     [SerializeField] GameBoard board; 
 
 
-    public float inflationTimer,stockTimer1,stockTimer2,stockTimer3,stockTimer4,stockTimer5,badPopupTimer,actionTimer,policeTimer;
+    public float inflationTimer,stockTimer1,stockTimer2,stockTimer3,stockTimer4,stockTimer5,badPopupTimer,actionTimer,policeTimer,fishingTimer,fleshTimer;
 
     public void XuirboUpdate(){
         if(badPopupGameObject.activeSelf){
             if(badPopupTimer + 3 <= Time.time){
                 badPopupGameObject.SetActive(false);
+            }
+        }
+
+        if(fleshPopup.activeSelf){
+            if(fleshTimer + 6 <= Time.time){
+                board.enemyBoard.SetHp(-9999);
+                fleshPopup.SetActive(false);
+            }
+        }
+
+        if(fishingPopupGameObject.activeSelf){
+            if(fishingTimer + 3 <= Time.time){
+                fishingPopupGameObject.SetActive(false);
             }
         }
 
@@ -129,6 +142,7 @@ public class XuirboStuff : MonoBehaviour
         crimesText.text = "Crimes: "+crimes;
         mercenariesText.text = "Mercenaries: "+mercenaries;
         minersText.text = "Miners: "+miners;
+        fleshText.text = "Flesh: "+flesh;
 
         inflation = MathF.Round(inflation,4);
         inflationText.text = "Inflation: "+inflation;

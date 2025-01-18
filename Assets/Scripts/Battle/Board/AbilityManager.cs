@@ -323,7 +323,7 @@ namespace Battle.Board {
 
         // If this is Psychic and there is a foresight icon available, consume it and return true
         public bool ForesightCheck() {
-            return board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Foresight && symbolList.childCount > 0;
+            return board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.Foresight && symbolList.childCount > 0 || board.Battler.activeAbilityEffect == Battler.ActiveAbilityEffect.FreeMarket && symbolList.childCount > 0;
         }
 
         public void ActivateForesightSkip() {
@@ -913,6 +913,117 @@ namespace Battle.Board {
                 board.xuirboStuff.menuGameObject.SetActive(false);
                 board.DestroyCurrentPiece();
             }
+            else if(board.PieceName()=="MainMenu-Bribe"){
+                if(board.xuirboStuff.policeActive == true){
+                    board.xuirboStuff.menuText.text =
+                    "Bribe police:\n"+
+                    "$"+(500*board.xuirboStuff.crimes)+"\n";
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Bribe-Pay","Pay"));
+                }
+                else{
+                    ShowBadPopup("You have no one to bribe right now.");
+                    board.xuirboStuff.UpdateXuirboText();
+                    board.xuirboStuff.menuGameObject.SetActive(false);
+                    board.DestroyCurrentPiece();
+                }
+            }
+            else if(board.PieceName()=="Bribe-Pay"){
+                if(board.xuirboStuff.policeActive == true){
+                    if(board.xuirboStuff.money >= 500*board.xuirboStuff.crimes){
+                        board.xuirboStuff.money -= 500*board.xuirboStuff.crimes;
+                        board.xuirboStuff.crimes = 0;
+                        board.xuirboStuff.policePopup.SetActive(false);
+                        board.xuirboStuff.policeActive = false;
+                        Instantiate(board.cosmetics.moneySFX);
+                    }
+                    else{
+                        ShowBadPopup(rejctedCard);
+                    }
+                }
+                board.xuirboStuff.UpdateXuirboText();
+                board.xuirboStuff.menuGameObject.SetActive(false);
+                board.DestroyCurrentPiece();
+            }
+            else if(board.PieceName()=="MainMenu-Fish"){
+                board.xuirboStuff.menuText.text =
+                "It's fishing time...:\n\n"+
+                "Use 1 bait to fish something random and epic."+(500*board.xuirboStuff.crimes)+"\n";
+                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Fish-Fish","Fish"));
+            }
+            else if(board.PieceName()=="Fish-Fish"){
+                XuirboStuff x = board.xuirboStuff;
+                bool dontDelete = false;
+                if(x.bait > 0){
+                    x.bait -= 1;
+                    int f = UnityEngine.Random.Range(0,7);
+                    if(f == 0){
+                        x.money += 1;
+                        ShowFishingPopup("You found a crisp $1! Yummers!");
+                    }
+                    else if(f == 1){
+                        statusTime = Time.time;
+                        statusCondition = StatusConditions.Poison;
+                        scm.gameObject.SetActive(true);
+                        scm.UpdateStatusIcon(StatusConditions.Poison);
+                        ShowFishingPopup("You drank lake water and poisoned yourself!");
+                    }
+                    else if(f == 2){
+                        ShowFishingPopup("You didn't catch anything, but saw a cool flounder.");
+                    }
+                    else if(f == 3){
+                        x.miners += 1;
+                        ShowFishingPopup("You found a lost miner digging in a puddle!");
+                    }
+                    else if(f == 4){
+                        ShowFishingPopup("You found a bomb!");
+                        board.ReplacePiece(MakePyroBomb());
+                        dontDelete = true;
+                    }
+                    else if(f == 5){
+                        x.flesh += 1;
+                        ShowFishingPopup("You found a FLESH CRYSTAL!");
+                    }
+                    else if(f == 6){
+                        Instantiate(foresightIconPrefab, symbolList);
+                        ShowFishingPopup("You gazed into the waves and learned the secrets of the universe.");
+                    }
+                    else if(f == 7){
+                        Piece goldMinePiece = CreateSinglePiece(false);
+                        goldMinePiece.MakeGoldMine(board);
+                        board.ReplacePiece(goldMinePiece);
+                        dontDelete = true;
+                        ShowFishingPopup("You found a gem!");
+                    }
+                }
+                else{
+                    ShowBadPopup("Not enough bait!");
+                }
+                if(!dontDelete){
+                    board.DestroyCurrentPiece();
+                }
+                board.xuirboStuff.UpdateXuirboText();
+                board.xuirboStuff.menuGameObject.SetActive(false);
+            }
+            else if(board.PieceName()=="MainMenu-Flesh"){
+                board.xuirboStuff.menuText.text =
+                "Use 5 Flesh Crystals to begin the cataclysm:\n";
+                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Flesh-Begin","Commence"));
+            }
+            else if(board.PieceName()=="Flesh-Begin"){
+                if(board.xuirboStuff.flesh >= 5){
+                    board.xuirboStuff.flesh -= 5;
+                    board.xuirboStuff.fleshTimer = Time.time;
+                    Instantiate(board.cosmetics.alarmSFX);
+                    board.xuirboStuff.fleshPopup.SetActive(true);
+                    
+                }
+                else{
+                    ShowBadPopup("you lack flesh");
+                }
+                board.DestroyCurrentPiece();
+                board.xuirboStuff.UpdateXuirboText();
+                board.xuirboStuff.menuGameObject.SetActive(false);
+            }
 
             else{
                 ClearAbilityData();
@@ -930,6 +1041,16 @@ namespace Battle.Board {
             }
         }
         
+        public void ShowFishingPopup(String s)
+        {
+            XuirboStuff x = board.xuirboStuff;
+            x.fishingText.text = s;
+            x.fishingTimer = Time.time;
+            x.fishingPopupGameObject.SetActive(true);
+            Instantiate(board.cosmetics.fishSFX);
+        }
+
+
         public void ShowBadPopup(String s)
         {
             XuirboStuff x = board.xuirboStuff;
