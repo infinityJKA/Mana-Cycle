@@ -467,6 +467,7 @@ namespace Battle.Board {
         private void FreeMarket() {  // fuckass menu system i rewrote like 5 times to not crash the game, probably not optimally coded but fuck it imma make Xuirbo functional somehow
             if(board.PieceName()=="MainMenu-Invest"){
                 selectedStock = 0;
+                board.xuirboStuff.investmentIcons.SetActive(true);
                 board.xuirboStuff.menuText.text =
                 "Select investment:\n"+
                 "   1\n"+
@@ -478,6 +479,7 @@ namespace Battle.Board {
             }
             else if(board.PieceName().StartsWith("Invest-")){
                 selectedStock = Int32.Parse(board.PieceName().Substring(board.PieceName().Length - 1));
+                board.xuirboStuff.investmentIcons.SetActive(false);
                 
                 board.xuirboStuff.menuText.text =
                 "Invest How Much?\n"+
@@ -656,6 +658,7 @@ namespace Battle.Board {
 
             else if(board.PieceName()=="MainMenu-Sell"){
                 selectedStock = 0;
+                board.xuirboStuff.investmentIcons.SetActive(true);
                 board.xuirboStuff.menuText.text =
                 "Select stock to sell:\n"+
                 "   1\n"+
@@ -667,7 +670,7 @@ namespace Battle.Board {
                 }
             else if(board.PieceName().StartsWith("Sell-")){
                 selectedStock = Int32.Parse(board.PieceName().Substring(board.PieceName().Length - 1));
-                
+                board.xuirboStuff.investmentIcons.SetActive(false);
                 board.xuirboStuff.menuText.text =
                 "Sell How Much?\n"+
                 "25% of stock\n"+
@@ -1028,6 +1031,7 @@ namespace Battle.Board {
             else{
                 ClearAbilityData();
                 board.xuirboStuff.menuGameObject.SetActive(true);
+                board.xuirboStuff.investmentIcons.SetActive(false);
                 board.xuirboStuff.menuText.text =
                 "Invest Assets\n"+
                 "Sell Assets\n"+

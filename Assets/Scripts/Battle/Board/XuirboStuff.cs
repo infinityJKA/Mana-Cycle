@@ -17,7 +17,7 @@ public class XuirboStuff : MonoBehaviour
     cStockText,cPriceText,tuStockText,tuPriceText,tdStockText,tdPriceText,sStockText,sPriceText,dStockText,dPriceText,
     fleshText,mercenariesText,minersText,actionCountdownText,policeText;
 
-    public GameObject menuGameObject,badPopupGameObject,fishingPopupGameObject,mailPopupGameObject, policePopup, fleshPopup;
+    public GameObject menuGameObject,badPopupGameObject,fishingPopupGameObject,mailPopupGameObject, policePopup, fleshPopup, investmentIcons;
     public TMP_Text menuText,badText,fishingText,mailText;
     [SerializeField] GameBoard board; 
 
