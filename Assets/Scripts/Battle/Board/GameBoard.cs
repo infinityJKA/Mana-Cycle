@@ -990,8 +990,24 @@ namespace Battle.Board {
             newPiece.OnPlace(this);
 
             // previousFallTime = Time.time;  
-            foreach (Vector2Int pos in newPiece) {
-                TileGravity(pos.x, pos.y);
+            
+            bool tileFell = true;
+            while (tileFell) {
+                tileFell = false;
+                foreach (Tile pieceTile in piece.tiles)
+                {
+                    Vector2Int tile = new Vector2Int(pieceTile.col, pieceTile.row);
+
+                    // Only do gravity if this tile is still here and hasn't fallen to gravity yet
+                    if (!(tile.y >= height) && tiles[tile.y, tile.x] != null)
+                    {
+                        // If a tile fell, set tileFell to true and the loop will go again after this
+                        if (TileGravity(tile.x, tile.y))
+                        {
+                            tileFell = true;
+                        }
+                    }
+                }
             }
             RefreshBlobs();
             RefreshGhostPiece();
