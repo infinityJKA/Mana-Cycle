@@ -985,7 +985,9 @@ namespace Battle.Board {
             // Send it to the passed column and drop it
             // newPiece.transform.SetParent(pieceBoard, false);
             newPiece.MoveTo(column, 1);
+            Debug.Log("row: "+newPiece.center.row+"  col: "+newPiece.center.col);
             newPiece.PlaceTilesOnBoard(ref tiles, this);
+            Debug.Log("row: "+newPiece.center.row+"  col: "+newPiece.center.col);
             Destroy(newPiece.gameObject);
             newPiece.OnPlace(this);
 
