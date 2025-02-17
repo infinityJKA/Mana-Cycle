@@ -10,6 +10,7 @@ using UnityEditor.Localization.Plugins.XLIFF.V20;
 
 using Achievements;
 using Mono.CSharp;
+using UnityEngine.Localization.Settings;
 
 namespace Battle.Board {
     /// <summary>
@@ -468,26 +469,48 @@ namespace Battle.Board {
             if(board.PieceName()=="MainMenu-Invest"){
                 selectedStock = 0;
                 board.xuirboStuff.investmentIcons.SetActive(true);
-                board.xuirboStuff.menuText.text =
-                "Select investment:\n"+
-                "   1\n"+
-                "   2\n"+
-                "   3\n"+
-                "   4\n"+
-                "   5\n";
+                if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    board.xuirboStuff.menuText.text =
+                    "株を選んで:\n"+
+                    "   1\n"+
+                    "   2\n"+
+                    "   3\n"+
+                    "   4\n"+
+                    "   5\n";
+                }
+                else{
+                    board.xuirboStuff.menuText.text =
+                    "Select investment:\n"+
+                    "   1\n"+
+                    "   2\n"+
+                    "   3\n"+
+                    "   4\n"+
+                    "   5\n";
+                }
                 board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Invest-1","[1]"));
             }
             else if(board.PieceName().StartsWith("Invest-")){
                 selectedStock = Int32.Parse(board.PieceName().Substring(board.PieceName().Length - 1));
                 board.xuirboStuff.investmentIcons.SetActive(false);
                 
-                board.xuirboStuff.menuText.text =
-                "Invest How Much?\n"+
-                "1 stock\n"+
-                "5 stocks\n"+
-                "50% of funds\n"+
-                "100% of funds";
-                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1 Stock"));
+                if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    board.xuirboStuff.menuText.text =
+                    "いくつ買う？\n"+
+                    "1株\n"+
+                    "5株\n"+
+                    "お金の50%\n"+
+                    "お金の100%";
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1 Stock"));
+                }
+                else{
+                    board.xuirboStuff.menuText.text =
+                    "Invest How Much?\n"+
+                    "1 stock\n"+
+                    "5 stocks\n"+
+                    "50% of funds\n"+
+                    "100% of funds";
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1 Stock"));
+                }
             }
             else if(board.PieceName().StartsWith("BuyStock-")){
                 XuirboStuff x = board.xuirboStuff;
@@ -659,23 +682,43 @@ namespace Battle.Board {
             else if(board.PieceName()=="MainMenu-Sell"){
                 selectedStock = 0;
                 board.xuirboStuff.investmentIcons.SetActive(true);
-                board.xuirboStuff.menuText.text =
-                "Select stock to sell:\n"+
-                "   1\n"+
-                "   2\n"+
-                "   3\n"+
-                "   4\n"+
-                "   5\n";
+                if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    board.xuirboStuff.menuText.text =
+                    "売る株を選んで:\n"+
+                    "   1\n"+
+                    "   2\n"+
+                    "   3\n"+
+                    "   4\n"+
+                    "   5\n";
+                }
+                else{
+                    board.xuirboStuff.menuText.text =
+                    "Select stock to sell:\n"+
+                    "   1\n"+
+                    "   2\n"+
+                    "   3\n"+
+                    "   4\n"+
+                    "   5\n";
+                }
                 board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Sell-1","[1]"));
                 }
             else if(board.PieceName().StartsWith("Sell-")){
                 selectedStock = Int32.Parse(board.PieceName().Substring(board.PieceName().Length - 1));
                 board.xuirboStuff.investmentIcons.SetActive(false);
-                board.xuirboStuff.menuText.text =
-                "Sell How Much?\n"+
-                "25% of stock\n"+
-                "50% of stock\n"+
-                "100% of stock";
+                if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    board.xuirboStuff.menuText.text =
+                    "いくつ売る？\n"+
+                    "株の25%\n"+
+                    "株の50%\n"+
+                    "株の100%";
+                }
+                else{
+                    board.xuirboStuff.menuText.text =
+                    "Sell How Much?\n"+
+                    "25% of stock\n"+
+                    "50% of stock\n"+
+                    "100% of stock";
+                }
                 board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("SellStock-25","25%"));
             }
             else if(board.PieceName().StartsWith("SellStock-")){
@@ -767,14 +810,26 @@ namespace Battle.Board {
             }
             else if(board.PieceName()=="MainMenu-Shop"){
                 selectedStock = 0;
-                board.xuirboStuff.menuText.text =
-                "150 shield: $"+(int)(100*board.xuirboStuff.inflation)+"\n"+
-                "Bait: $"+(int)(125*board.xuirboStuff.inflation)+"\n" +
-                "Healing: $"+(int)(300*board.xuirboStuff.inflation)+"\n"+
-                "Fire: $"+(int)(75*board.xuirboStuff.inflation)+"\n"+
-                "Bombs: $"+(int)(230*board.xuirboStuff.inflation)+"\n"
-                ;
-                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","Shield"));
+                if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    board.xuirboStuff.menuText.text =
+                    "150シールド: $"+(int)(100*board.xuirboStuff.inflation)+"\n"+
+                    "餌: $"+(int)(125*board.xuirboStuff.inflation)+"\n" +
+                    "ヒーリング: $"+(int)(300*board.xuirboStuff.inflation)+"\n"+
+                    "火: $"+(int)(75*board.xuirboStuff.inflation)+"\n"+
+                    "爆弾: $"+(int)(230*board.xuirboStuff.inflation)+"\n"
+                    ;
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","シールド"));
+                }
+                else{
+                    board.xuirboStuff.menuText.text =
+                    "150 shield: $"+(int)(100*board.xuirboStuff.inflation)+"\n"+
+                    "Bait: $"+(int)(125*board.xuirboStuff.inflation)+"\n" +
+                    "Healing: $"+(int)(300*board.xuirboStuff.inflation)+"\n"+
+                    "Fire: $"+(int)(75*board.xuirboStuff.inflation)+"\n"+
+                    "Bombs: $"+(int)(230*board.xuirboStuff.inflation)+"\n"
+                    ;
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","Shield"));
+                }
             }
             else if(board.PieceName().StartsWith("Shop-")){
                 bool dontDestroy = false;
@@ -845,14 +900,26 @@ namespace Battle.Board {
             }
             else if(board.PieceName()=="MainMenu-Hire"){
                 selectedStock = 0;
-                board.xuirboStuff.menuText.text =
-                "Miner: $"+(int)(125*board.xuirboStuff.inflation)+"\n"+
-                "Mercenary: $"+(int)(200*board.xuirboStuff.inflation)+"\n" +
-                "Send 300dmg: $"+(int)(200*board.xuirboStuff.inflation)+"\n" +
-                "Send 750dmg: $"+(int)(500*board.xuirboStuff.inflation)+"\n"+
-                "Arson: $"+(int)(1000*board.xuirboStuff.inflation)+"\n"
-                ;
-                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Miner","Miner"));
+                if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    board.xuirboStuff.menuText.text =
+                    "鉱夫: $"+(int)(125*board.xuirboStuff.inflation)+"\n"+
+                    "傭兵: $"+(int)(200*board.xuirboStuff.inflation)+"\n" +
+                    "300ダメージ: $"+(int)(200*board.xuirboStuff.inflation)+"\n" +
+                    "750ダメージ: $"+(int)(500*board.xuirboStuff.inflation)+"\n"+
+                    "放火: $"+(int)(1000*board.xuirboStuff.inflation)+"\n"
+                    ;
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Miner","鉱夫"));
+                }
+                else{
+                    board.xuirboStuff.menuText.text =
+                    "Miner: $"+(int)(125*board.xuirboStuff.inflation)+"\n"+
+                    "Mercenary: $"+(int)(200*board.xuirboStuff.inflation)+"\n" +
+                    "Send 300dmg: $"+(int)(200*board.xuirboStuff.inflation)+"\n" +
+                    "Send 750dmg: $"+(int)(500*board.xuirboStuff.inflation)+"\n"+
+                    "Arson: $"+(int)(1000*board.xuirboStuff.inflation)+"\n"
+                    ;
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Miner","Miner"));
+                }
             }
             else if(board.PieceName().StartsWith("Hire-")){
                 if(board.PieceName() == "Hire-Miner"){
@@ -918,13 +985,26 @@ namespace Battle.Board {
             }
             else if(board.PieceName()=="MainMenu-Bribe"){
                 if(board.xuirboStuff.policeActive == true){
-                    board.xuirboStuff.menuText.text =
-                    "Bribe police:\n"+
-                    "$"+(500*board.xuirboStuff.crimes)+"\n";
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Bribe-Pay","Pay"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.xuirboStuff.menuText.text =
+                        "警察に賄賂を贈る：\n"+
+                        "$"+(500*board.xuirboStuff.crimes)+"\n";
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Bribe-Pay","払う"));
+                    }
+                    else{
+                        board.xuirboStuff.menuText.text =
+                        "Bribe police:\n"+
+                        "$"+(500*board.xuirboStuff.crimes)+"\n";
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Bribe-Pay","Pay"));
+                    }
                 }
                 else{
-                    ShowBadPopup("You have no one to bribe right now.");
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        ShowBadPopup("今は賄賂を渡す相手がいないよ");
+                    }
+                    else{
+                        ShowBadPopup("You have no one to bribe right now.");
+                    }
                     board.xuirboStuff.UpdateXuirboText();
                     board.xuirboStuff.menuGameObject.SetActive(false);
                     board.DestroyCurrentPiece();
@@ -948,10 +1028,18 @@ namespace Battle.Board {
                 board.DestroyCurrentPiece();
             }
             else if(board.PieceName()=="MainMenu-Fish"){
-                board.xuirboStuff.menuText.text =
-                "It's fishing time...:\n\n"+
-                "Use 1 bait to fish something random and epic."+(500*board.xuirboStuff.crimes)+"\n";
-                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Fish-Fish","Fish"));
+                if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    board.xuirboStuff.menuText.text =
+                    "釣りの時間です...\n\n"+
+                    "1つの餌を使って、何かランダムで壮大なものを釣る。"+(500*board.xuirboStuff.crimes)+"\n";
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Fish-Fish","釣り"));
+                }
+                else{
+                    board.xuirboStuff.menuText.text =
+                    "It's fishing time...:\n\n"+
+                    "Use 1 bait to fish something random and epic."+(500*board.xuirboStuff.crimes)+"\n";
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Fish-Fish","Fish"));
+                }
             }
             else if(board.PieceName()=="Fish-Fish"){
                 XuirboStuff x = board.xuirboStuff;
@@ -961,45 +1049,90 @@ namespace Battle.Board {
                     int f = UnityEngine.Random.Range(0,7);
                     if(f == 0){
                         x.money += 1;
-                        ShowFishingPopup("You found a crisp $1! Yummers!");
+                        if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                            ShowFishingPopup("あなたはパリッとした1ドルを見つけました!おいしそう!");
+                        }
+                        else{
+                            ShowFishingPopup("You found a crisp $1! Yummers!");
+                        }
                     }
                     else if(f == 1){
                         statusTime = Time.time;
                         statusCondition = StatusConditions.Poison;
                         scm.gameObject.SetActive(true);
                         scm.UpdateStatusIcon(StatusConditions.Poison);
-                        ShowFishingPopup("You drank lake water and poisoned yourself!");
+                        if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                            ShowFishingPopup("湖の水を飲んで毒を盛ったんだ!");
+                        }
+                        else{
+                            ShowFishingPopup("You drank lake water and poisoned yourself!");
+                        }
                     }
                     else if(f == 2){
-                        ShowFishingPopup("You didn't catch anything, but saw a cool flounder.");
+                        if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                            ShowFishingPopup("何も捕まえられなかったが、かっこいいヒラメを見た。");
+                        }
+                        else{
+                            ShowFishingPopup("You didn't catch anything, but saw a cool flounder.");
+                        }
                     }
                     else if(f == 3){
                         x.miners += 1;
-                        ShowFishingPopup("You found a lost miner digging in a puddle!");
+                        if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                            ShowFishingPopup("水たまりで掘っている失われた鉱夫を見つけました！");
+                        }
+                        else{
+                            ShowFishingPopup("You found a lost miner digging in a puddle!");
+                        }
                     }
                     else if(f == 4){
-                        ShowFishingPopup("You found a bomb!");
+                        if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                            ShowFishingPopup("爆弾を見つけた！");
+                        }
+                        else{
+                            ShowFishingPopup("You found a bomb!");
+                        }
                         board.ReplacePiece(MakePyroBomb());
                         dontDelete = true;
                     }
                     else if(f == 5){
                         x.flesh += 1;
-                        ShowFishingPopup("You found a FLESH CRYSTAL!");
+                        if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                            ShowFishingPopup("肉の結晶を見つけました！");
+                        }
+                        else{
+                            ShowFishingPopup("You found a FLESH CRYSTAL!");
+                        }
                     }
                     else if(f == 6){
                         Instantiate(foresightIconPrefab, symbolList);
-                        ShowFishingPopup("You gazed into the waves and learned the secrets of the universe.");
+                        if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                            ShowFishingPopup("あなたは波を見つめ、宇宙の秘密を学びました。");
+                        }
+                        else{
+                            ShowFishingPopup("You gazed into the waves and learned the secrets of the universe.");
+                        }
                     }
                     else if(f == 7){
                         Piece goldMinePiece = CreateSinglePiece(false);
                         goldMinePiece.MakeGoldMine(board);
                         board.ReplacePiece(goldMinePiece);
                         dontDelete = true;
-                        ShowFishingPopup("You found a gem!");
+                        if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                            ShowFishingPopup("宝石を見つけました！");
+                        }
+                        else{
+                            ShowFishingPopup("You found a gem!");
+                        }
                     }
                 }
                 else{
-                    ShowBadPopup("Not enough bait!");
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        ShowBadPopup("餌が足りない！");
+                    }
+                    else{
+                        ShowBadPopup("Not enough bait!");
+                    }
                 }
                 if(!dontDelete){
                     board.DestroyCurrentPiece();
@@ -1008,9 +1141,16 @@ namespace Battle.Board {
                 board.xuirboStuff.menuGameObject.SetActive(false);
             }
             else if(board.PieceName()=="MainMenu-Flesh"){
-                board.xuirboStuff.menuText.text =
-                "Use 5 Flesh Crystals to begin the cataclysm:\n";
-                board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Flesh-Begin","Commence"));
+                if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    board.xuirboStuff.menuText.text =
+                    "カタクリズムを始めるには、5つのフレッシュクリスタルを使用してください:\n";
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Flesh-Begin","始める"));
+                }
+                else{
+                    board.xuirboStuff.menuText.text =
+                    "Use 5 Flesh Crystals to begin the cataclysm:\n";
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Flesh-Begin","Commence"));
+                }
             }
             else if(board.PieceName()=="Flesh-Begin"){
                 if(board.xuirboStuff.flesh >= 5){
@@ -1021,7 +1161,12 @@ namespace Battle.Board {
                     
                 }
                 else{
-                    ShowBadPopup("you lack flesh");
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        ShowBadPopup("肉が足りない");
+                    }
+                    else{
+                        ShowBadPopup("you lack flesh");
+                    }
                 }
                 board.DestroyCurrentPiece();
                 board.xuirboStuff.UpdateXuirboText();
@@ -1032,15 +1177,26 @@ namespace Battle.Board {
                 ClearAbilityData();
                 board.xuirboStuff.menuGameObject.SetActive(true);
                 board.xuirboStuff.investmentIcons.SetActive(false);
-                board.xuirboStuff.menuText.text =
-                "Invest Assets\n"+
-                "Sell Assets\n"+
-                "Shopping\n"+
-                "Hire Talent\n"+
-                "Bribery\n"+
-                "Go Fishing\n"+
-                "Flesh Crystal\n"+
-                "Exit";
+                if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    board.xuirboStuff.menuText.text =
+                    "株に投資する\n"+
+                    "株を売る\n"+
+                    "買い物に行く\n"+
+                    "従業員を雇う\n"+
+                    "賄賂を贈る\n"+
+                    "釣りに行く\n"+
+                    "肉体の結晶\n";
+                }
+                else{
+                    board.xuirboStuff.menuText.text =
+                    "Invest Assets\n"+
+                    "Sell Assets\n"+
+                    "Shopping\n"+
+                    "Hire Talent\n"+
+                    "Bribery\n"+
+                    "Go Fishing\n"+
+                    "Flesh Crystal\n";
+                }
                 board.ReplacePiece(MarketMainMenuSelect());
             }
         }

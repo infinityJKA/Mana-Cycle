@@ -6,6 +6,8 @@ using System;
 using TMPro;
 using LootLocker.Extension.DataTypes;
 
+using UnityEngine.Localization.Settings;
+
 namespace Battle.Board {
     public class Piece : MonoBehaviour
     {
@@ -196,25 +198,60 @@ namespace Battle.Board {
                 GameBoard board = savedBoard;
 
                 if(board.PieceName()=="MainMenu-Invest"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Sell","Sell"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Sell","売る"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Sell","Sell"));
+                    }
                 }
                 else if(board.PieceName()=="MainMenu-Sell"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Shop","Shop"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Shop","買い物"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Shop","Shop"));
+                    }
                 }
                 else if(board.PieceName()=="MainMenu-Shop"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Hire","Hire"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Hire","雇う"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Hire","Hire"));
+                    }
                 }
                 else if(board.PieceName()=="MainMenu-Hire"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Bribe","Bribe"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Bribe","賄賂"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Bribe","Bribe"));
+                    }
                 }
                 else if(board.PieceName()=="MainMenu-Bribe"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Fish","Fish"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Fish","釣り"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Fish","Fish"));
+                    }
                 }
                 else if(board.PieceName()=="MainMenu-Fish"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Flesh","Flesh"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Flesh","肉"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Flesh","Flesh"));
+                    }
                 }
                 else if(board.PieceName()=="MainMenu-Flesh"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Invest","Invest"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Invest","買う"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Invest","Invest"));
+                    }
                 }
 
 
@@ -236,16 +273,16 @@ namespace Battle.Board {
                 }
 
                 else if(board.PieceName()=="BuyStock-1"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-5","5 Stocks"));
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-5","5"));
                 }
                 else if(board.PieceName()=="BuyStock-5"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-50","Invest 50%"));
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-50","50%"));
                 }
                 else if(board.PieceName()=="BuyStock-50"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-100","Invest 100%"));
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-100","100%"));
                 }
                 else if(board.PieceName()=="BuyStock-100"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1 Stock"));
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1"));
                 }
 
 
@@ -276,35 +313,76 @@ namespace Battle.Board {
                 }
 
                 else if(board.PieceName()=="Shop-Shield"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bait","Bait"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bait","餌"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bait","Bait"));
+                    }
                 }
                 else if(board.PieceName()=="Shop-Bait"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Healing","Heal"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Healing","ヒール"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Healing","Heal"));
+                    }
                 }
                 else if(board.PieceName()=="Shop-Healing"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Fire","Fire"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Fire","火"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Fire","Fire"));
+                    }
                 }
                 else if(board.PieceName()=="Shop-Fire"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bomb","Bombs"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bomb","爆弾"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bomb","Bombs"));
+                    }
                 }
                 else if(board.PieceName()=="Shop-Bomb"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","Shield"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","シールド"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","Shield"));
+                    }
                 }
 
                 else if(board.PieceName()=="Hire-Miner"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Mercenary","Merc"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Mercenary","傭兵"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Mercenary","Merc"));
+                    }
                 }
                 else if(board.PieceName()=="Hire-Mercenary"){
+                    
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Snipe300","300"));
                 }
                 else if(board.PieceName()=="Hire-Snipe300"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Snipe750","750"));
                 }
                 else if(board.PieceName()=="Hire-Snipe750"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Poison","Arsons"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Poison","放火"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Poison","Arson"));
+                    }
                 }
                 else if(board.PieceName()=="Hire-Poison"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Miner","Miner"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Miner","鉱夫"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Miner","Miner"));
+                    }
                 }
 
             }
@@ -344,25 +422,60 @@ namespace Battle.Board {
                 GameBoard board = savedBoard;
 
                 if(board.PieceName()=="MainMenu-Invest"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Flesh","Flesh"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Flesh","肉"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Flesh","Flesh"));
+                    }
                 }
                 else if(board.PieceName()=="MainMenu-Sell"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Invest","Invest"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Invest","買う"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Invest","Invest"));
+                    }
                 }
                 else if(board.PieceName()=="MainMenu-Shop"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Sell","Sell"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Sell","売る"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Sell","Sell"));
+                    }
                 }
                 else if(board.PieceName()=="MainMenu-Hire"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Shop","Shop"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Shop","買い物"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Shop","Shop"));
+                    }
                 }
                 else if(board.PieceName()=="MainMenu-Bribe"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Hire","Hire"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Hire","雇う"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Hire","Hire"));
+                    }
                 }
                 else if(board.PieceName()=="MainMenu-Fish"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Bribe","Bribe"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Bribe","賄賂"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Bribe","Bribe"));
+                    }
                 }
                 else if(board.PieceName()=="MainMenu-Flesh"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Fish","Fish"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Fish","釣り"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("MainMenu-Fish","Fish"));
+                    }
                 }
 
                 else if(board.PieceName()=="Invest-1"){
@@ -382,16 +495,16 @@ namespace Battle.Board {
                 }
 
                 else if(board.PieceName()=="BuyStock-1"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-100","Invest 100%"));
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-100","100%"));
                 }
                 else if(board.PieceName()=="BuyStock-5"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1 Stock"));
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1"));
                 }
                 else if(board.PieceName()=="BuyStock-50"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-5","5 Stocks"));
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-5","5"));
                 }
                 else if(board.PieceName()=="BuyStock-100"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-50","Invest 50%"));
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-50","50%"));
                 }
 
                 else if(board.PieceName()=="Sell-1"){
@@ -421,29 +534,69 @@ namespace Battle.Board {
                 }
 
                 else if(board.PieceName()=="Shop-Shield"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bomb","Bombs"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bomb","爆弾"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bomb","Bombs"));
+                    }
                 }
                 else if(board.PieceName()=="Shop-Bait"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","Shield"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","爆弾"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","シールド"));
+                    }
                 }
                 else if(board.PieceName()=="Shop-Healing"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bait","Bait"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","餌"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bait","餌"));
+                    }
                 }
                 else if(board.PieceName()=="Shop-Fire"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Healing","Heal"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Healing","ヒール"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Healing","Heal"));
+                    }
                 }
                 else if(board.PieceName()=="Shop-Bomb"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Fire","Fire"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Fire","火"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Fire","Fire"));
+                    }
                 }
 
                 else if(board.PieceName()=="Hire-Miner"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Poison","Arson"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Poison","放火"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Poison","Arson"));
+                    }
                 }
                 else if(board.PieceName()=="Hire-Mercenary"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Miner","Miner"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Miner","鉱夫"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Miner","Miner"));
+                    }
                 }
                 else if(board.PieceName()=="Hire-Snipe300"){
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Mercenary","Merc"));
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Mercenary","傭兵"));
+                    }
+                    else{
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Mercenary","Merc"));
+                    }
                 }
                 else if(board.PieceName()=="Hire-Snipe750"){
                     board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Hire-Snipe300","300"));
