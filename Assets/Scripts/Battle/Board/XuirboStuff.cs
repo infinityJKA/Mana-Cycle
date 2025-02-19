@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Battle.Board;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 
 public class XuirboStuff : MonoBehaviour
 {
@@ -17,9 +18,10 @@ public class XuirboStuff : MonoBehaviour
     cStockText,cPriceText,tuStockText,tuPriceText,tdStockText,tdPriceText,sStockText,sPriceText,dStockText,dPriceText,
     fleshText,mercenariesText,minersText,actionCountdownText,policeText;
 
-    public GameObject menuGameObject,badPopupGameObject,fishingPopupGameObject,mailPopupGameObject, policePopup, fleshPopup, investmentIcons;
-    public TMP_Text menuText,badText,fishingText,mailText;
+    public GameObject menuGameObject,badPopupGameObject,fishingPopupGameObject,mailPopupGameObject, policePopup, fleshPopup, investmentIconsEN, investmentIconsJP;
+    public TMP_Text menuText,badText,fishingText,mailText,fleshPopupText;
     [SerializeField] GameBoard board; 
+    public TMP_FontAsset enFontPixel, enFontNorm, jpFont;
 
 
     public float inflationTimer,stockTimer1,stockTimer2,stockTimer3,stockTimer4,stockTimer5,badPopupTimer,actionTimer,policeTimer,fishingTimer,fleshTimer;
@@ -104,7 +106,14 @@ public class XuirboStuff : MonoBehaviour
                 policeActive = false;
             }
             else{
-                policeText.text = "POLICE COMING IN "+(int)(policeTimer+30-Time.time+1)+" SECONDS";
+                if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    policeText.text = "警察が"+(int)(policeTimer+30-Time.time+1)+"秒後に到着します";
+                    policeText.font = jpFont;
+                }
+                else{
+                    policeText.text = "POLICE COMING IN "+(int)(policeTimer+30-Time.time+1)+" SECONDS";
+                    policeText.font = enFontNorm;
+                }
             }
         }
 
@@ -138,15 +147,31 @@ public class XuirboStuff : MonoBehaviour
         dPriceText.text = ""+diamondPrice;
 
         moneyText.text = "$"+money;
-        baitText.text = "Bait: "+bait;
-        crimesText.text = "Crimes: "+crimes;
-        mercenariesText.text = "Mercenaries: "+mercenaries;
-        minersText.text = "Miners: "+miners;
-        fleshText.text = "Flesh: "+flesh;
 
-        inflation = MathF.Round(inflation,4);
-        inflationText.text = "Inflation: "+inflation;
-        
+        if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+            baitText.text = "餌: "+bait;
+            crimesText.text = "犯罪: "+crimes;
+            mercenariesText.text = "傭兵: "+mercenaries;
+            minersText.text = "鉱夫: "+miners;
+            fleshText.text = "肉体: "+flesh;
+
+            inflation = MathF.Round(inflation,4);
+            inflationText.text = "経済のインフレ: "+inflation;
+
+            baitText.font =  crimesText.font = mercenariesText.font = minersText.font = fleshText.font = inflationText.font = jpFont;
+        }
+        else{
+            baitText.text = "Bait: "+bait;
+            crimesText.text = "Crimes: "+crimes;
+            mercenariesText.text = "Mercenaries: "+mercenaries;
+            minersText.text = "Miners: "+miners;
+            fleshText.text = "Flesh: "+flesh;
+
+            inflation = MathF.Round(inflation,4);
+            inflationText.text = "Inflation: "+inflation;
+
+            baitText.font =  crimesText.font = mercenariesText.font = minersText.font = fleshText.font = inflationText.font = enFontNorm;
+        }
     
     
     }

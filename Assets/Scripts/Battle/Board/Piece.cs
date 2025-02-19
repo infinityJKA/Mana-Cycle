@@ -543,18 +543,18 @@ namespace Battle.Board {
                 }
                 else if(board.PieceName()=="Shop-Bait"){
                     if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
-                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","爆弾"));
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","シールド"));
                     }
                     else{
-                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","シールド"));
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","Shield"));
                     }
                 }
                 else if(board.PieceName()=="Shop-Healing"){
                     if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
-                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Shield","餌"));
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bait","餌"));
                     }
                     else{
-                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bait","餌"));
+                        board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("Shop-Bait","Bait"));
                     }
                 }
                 else if(board.PieceName()=="Shop-Fire"){
@@ -1089,7 +1089,14 @@ namespace Battle.Board {
 
             GameObject t = Instantiate(board.cosmetics.xuirboTextPrefab,center.gameObject.transform.position,Quaternion.identity);
             t.transform.parent = center.gameObject.transform;
-            t.GetComponent<TMP_Text>().text = "INVEST";
+            if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                t.GetComponent<TMP_Text>().text = "買う";
+                t.GetComponent<TMP_Text>().font = board.xuirboStuff.jpFont;
+            }
+            else{
+                t.GetComponent<TMP_Text>().text = "INVEST";
+                t.GetComponent<TMP_Text>().font = board.xuirboStuff.enFontPixel;
+            }
         }
 
         // public void fm_OpenInvestementMenu(GameBoard board){
@@ -1123,6 +1130,13 @@ namespace Battle.Board {
             GameObject t = Instantiate(board.cosmetics.xuirboTextPrefab,center.gameObject.transform.position,Quaternion.identity);
             t.transform.parent = center.gameObject.transform;
             t.GetComponent<TMP_Text>().text = displayText;
+
+            if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                t.GetComponent<TMP_Text>().font = board.xuirboStuff.jpFont;
+            }
+            else{
+                t.GetComponent<TMP_Text>().font = board.xuirboStuff.enFontPixel;
+            }
         }
 
         public void ExitXuirboMenu(){

@@ -58,6 +58,7 @@ namespace Battle.Board {
         public StatusConditions statusCondition;
         public int selectedStock;
         private string rejctedCard = "CREDIT CARD REJECTED\n\nINSUFFICIENT FUNDS BUDDY";
+        private string rejctedCardjp = "あなたのクレジットカードは拒否されました。貧しくないときに戻ってきてください。";
 
 
         void Awake()
@@ -468,8 +469,8 @@ namespace Battle.Board {
         private void FreeMarket() {  // fuckass menu system i rewrote like 5 times to not crash the game, probably not optimally coded but fuck it imma make Xuirbo functional somehow
             if(board.PieceName()=="MainMenu-Invest"){
                 selectedStock = 0;
-                board.xuirboStuff.investmentIcons.SetActive(true);
                 if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    board.xuirboStuff.investmentIconsJP.SetActive(true);
                     board.xuirboStuff.menuText.text =
                     "株を選んで:\n"+
                     "   1\n"+
@@ -479,6 +480,7 @@ namespace Battle.Board {
                     "   5\n";
                 }
                 else{
+                    board.xuirboStuff.investmentIconsEN.SetActive(true);
                     board.xuirboStuff.menuText.text =
                     "Select investment:\n"+
                     "   1\n"+
@@ -491,7 +493,8 @@ namespace Battle.Board {
             }
             else if(board.PieceName().StartsWith("Invest-")){
                 selectedStock = Int32.Parse(board.PieceName().Substring(board.PieceName().Length - 1));
-                board.xuirboStuff.investmentIcons.SetActive(false);
+                board.xuirboStuff.investmentIconsEN.SetActive(false);
+                board.xuirboStuff.investmentIconsJP.SetActive(false);
                 
                 if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
                     board.xuirboStuff.menuText.text =
@@ -500,7 +503,7 @@ namespace Battle.Board {
                     "5株\n"+
                     "お金の50%\n"+
                     "お金の100%";
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1 Stock"));
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1"));
                 }
                 else{
                     board.xuirboStuff.menuText.text =
@@ -509,7 +512,7 @@ namespace Battle.Board {
                     "5 stocks\n"+
                     "50% of funds\n"+
                     "100% of funds";
-                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1 Stock"));
+                    board.ReplacePiece(board.abilityManager.GenerateXuirboMenuPiece("BuyStock-1","1"));
                 }
             }
             else if(board.PieceName().StartsWith("BuyStock-")){
@@ -681,8 +684,8 @@ namespace Battle.Board {
 
             else if(board.PieceName()=="MainMenu-Sell"){
                 selectedStock = 0;
-                board.xuirboStuff.investmentIcons.SetActive(true);
                 if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    board.xuirboStuff.investmentIconsJP.SetActive(true);
                     board.xuirboStuff.menuText.text =
                     "売る株を選んで:\n"+
                     "   1\n"+
@@ -692,6 +695,7 @@ namespace Battle.Board {
                     "   5\n";
                 }
                 else{
+                    board.xuirboStuff.investmentIconsEN.SetActive(true);
                     board.xuirboStuff.menuText.text =
                     "Select stock to sell:\n"+
                     "   1\n"+
@@ -704,7 +708,8 @@ namespace Battle.Board {
                 }
             else if(board.PieceName().StartsWith("Sell-")){
                 selectedStock = Int32.Parse(board.PieceName().Substring(board.PieceName().Length - 1));
-                board.xuirboStuff.investmentIcons.SetActive(false);
+                board.xuirboStuff.investmentIconsJP.SetActive(false);
+                board.xuirboStuff.investmentIconsEN.SetActive(false);
                 if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
                     board.xuirboStuff.menuText.text =
                     "いくつ売る？\n"+
@@ -1046,7 +1051,7 @@ namespace Battle.Board {
                 bool dontDelete = false;
                 if(x.bait > 0){
                     x.bait -= 1;
-                    int f = UnityEngine.Random.Range(0,7);
+                    int f = UnityEngine.Random.Range(0,9);
                     if(f == 0){
                         x.money += 1;
                         if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
@@ -1095,7 +1100,7 @@ namespace Battle.Board {
                         board.ReplacePiece(MakePyroBomb());
                         dontDelete = true;
                     }
-                    else if(f == 5){
+                    else if(f == 5 || f == 8){
                         x.flesh += 1;
                         if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
                             ShowFishingPopup("肉の結晶を見つけました！");
@@ -1157,6 +1162,14 @@ namespace Battle.Board {
                     board.xuirboStuff.flesh -= 5;
                     board.xuirboStuff.fleshTimer = Time.time;
                     Instantiate(board.cosmetics.alarmSFX);
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        board.xuirboStuff.fleshPopupText.text = "それは目覚めました";
+                        board.xuirboStuff.fleshPopupText.font = board.xuirboStuff.jpFont;
+                    }
+                    else{
+                        board.xuirboStuff.fleshPopupText.text = "it has awakened";
+                        board.xuirboStuff.fleshPopupText.font = board.xuirboStuff.enFontPixel;
+                    }
                     board.xuirboStuff.fleshPopup.SetActive(true);
                     
                 }
@@ -1176,8 +1189,10 @@ namespace Battle.Board {
             else{
                 ClearAbilityData();
                 board.xuirboStuff.menuGameObject.SetActive(true);
-                board.xuirboStuff.investmentIcons.SetActive(false);
+                board.xuirboStuff.investmentIconsJP.SetActive(false);
+                board.xuirboStuff.investmentIconsEN.SetActive(false);
                 if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                    board.xuirboStuff.menuText.font = board.xuirboStuff.jpFont;
                     board.xuirboStuff.menuText.text =
                     "株に投資する\n"+
                     "株を売る\n"+
@@ -1188,6 +1203,7 @@ namespace Battle.Board {
                     "肉体の結晶\n";
                 }
                 else{
+                    board.xuirboStuff.menuText.font = board.xuirboStuff.enFontPixel;
                     board.xuirboStuff.menuText.text =
                     "Invest Assets\n"+
                     "Sell Assets\n"+
@@ -1205,6 +1221,12 @@ namespace Battle.Board {
         {
             XuirboStuff x = board.xuirboStuff;
             x.fishingText.text = s;
+            if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                x.fishingText.font = board.xuirboStuff.jpFont;
+            }
+            else{
+                x.fishingText.font = board.xuirboStuff.enFontPixel;
+            }
             x.fishingTimer = Time.time;
             x.fishingPopupGameObject.SetActive(true);
             Instantiate(board.cosmetics.fishSFX);
@@ -1215,6 +1237,15 @@ namespace Battle.Board {
         {
             XuirboStuff x = board.xuirboStuff;
             x.badText.text = s;
+            if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                x.badText.font = board.xuirboStuff.jpFont;
+                if(s == rejctedCard){
+                    s = rejctedCardjp;
+                }
+            }
+            else{
+                x.badText.font = board.xuirboStuff.enFontPixel;
+            }
             x.badPopupTimer = Time.time;
             x.badPopupGameObject.SetActive(true);
             Instantiate(board.cosmetics.declinedSFX);
