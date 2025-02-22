@@ -996,7 +996,7 @@ namespace Battle.Board {
             bool tileFell = true;
             while (tileFell) {
                 tileFell = false;
-                foreach (Tile pieceTile in piece.tiles)
+                foreach (Tile pieceTile in newPiece.tiles)
                 {
                     Vector2Int tile = new Vector2Int(pieceTile.col, pieceTile.row);
 
