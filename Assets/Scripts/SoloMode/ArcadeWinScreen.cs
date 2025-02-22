@@ -38,7 +38,8 @@ namespace SoloMode
                 else if (battlerID == "Romra"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinRomra");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
                 else if (battlerID == "Bithecary"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinBithecary");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
                 else if (battlerID == "BetterYou"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinBetterYou");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
-
+                else if (battlerID == "Erif"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinErif");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+                else if (battlerID == "Xuirbo"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinXuirbo");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
 
 
                 if (Storage.lives == 3 && Storage.hp == 2000) {
