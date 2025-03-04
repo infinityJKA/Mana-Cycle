@@ -4,6 +4,7 @@ using System;
 using UnityEngine.UI;
 using Random=UnityEngine.Random;
 using TMPro;
+using UnityEngine.Localization.Settings;
 
 using Sound;
 
@@ -44,15 +45,26 @@ namespace SoloMode
 
         public void SetCardInfo()
         {
-            timeText.text = "Time: " + Utils.FormatTime(level.time);
-            nameText.text = level.levelName;
-            descriptionText.text = level.description;
-            moneyRewardText.text = "+" + level.rewardAmount;
-
-            enemyStatText.text = String.Format("Damage: {0}x \nFall Speed: {1}x \nSpecial Gain: {2}x \n", 
+            if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                timeText.text = "時間制限: " + Utils.FormatTime(level.time);
+                enemyStatText.text = String.Format("ダメージ: {0}x \n重力: {1}x \nスペシャル: {2}x \n", 
                 level.enemyStats[ArcadeStats.Stat.DamageMult],
                 level.enemyStats[ArcadeStats.Stat.QuickDropSpeed],
                 level.enemyStats[ArcadeStats.Stat.SpecialGainMult]);
+            }
+            else{
+                timeText.text = "Time: " + Utils.FormatTime(level.time);
+                enemyStatText.text = String.Format("Damage: {0}x \nFall Speed: {1}x \nSpecial Gain: {2}x \n", 
+                level.enemyStats[ArcadeStats.Stat.DamageMult],
+                level.enemyStats[ArcadeStats.Stat.QuickDropSpeed],
+                level.enemyStats[ArcadeStats.Stat.SpecialGainMult]);
+            }
+
+
+            
+            nameText.text = level.levelName;
+            descriptionText.text = level.description;
+            moneyRewardText.text = "+" + level.rewardAmount;
 
             enemyHpText.text = level.enemyHp + " HP";
 

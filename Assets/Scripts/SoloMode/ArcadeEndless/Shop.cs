@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 using Sound;
 using Achievements;
+using UnityEngine.Localization.Settings;
 
 public class Shop : MonoBehaviour
 {
@@ -111,9 +112,15 @@ public class Shop : MonoBehaviour
 
         descriptionText.text = item.description;
         typeText.text = item.UseTypeToString();
-        if (ArcadeStats.inventory.ContainsKey(item)) ownedText.text = "" + (item.useType != Item.UseType.Equip ? ArcadeStats.inventory[item] : "Already") + " owned";
-        else ownedText.text = item.useType == Item.UseType.UseOnObtain ? "" : "Unowned";
-
+        if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+            if (ArcadeStats.inventory.ContainsKey(item)) ownedText.text = "" + (item.useType != Item.UseType.Equip ? ArcadeStats.inventory[item] : "もう") + "持ってる";
+            else ownedText.text = item.useType == Item.UseType.UseOnObtain ? "" : "持ってない";
+        }
+        else{
+            if (ArcadeStats.inventory.ContainsKey(item)) ownedText.text = "" + (item.useType != Item.UseType.Equip ? ArcadeStats.inventory[item] : "Already") + " owned";
+            else ownedText.text = item.useType == Item.UseType.UseOnObtain ? "" : "Unowned";
+        }
+        
     }
 
     public void BuyItem(BaseEventData ev)
