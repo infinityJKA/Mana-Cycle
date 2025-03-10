@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 using Sound;
 using Achievements;
+using UnityEngine.Localization.Settings;
 
 public class Inventory : MonoBehaviour
 {
@@ -140,9 +141,14 @@ public class Inventory : MonoBehaviour
             descriptionText.text = item.description.GetLocalizedString();
             typeText.text = item.UseTypeToString();
         }
-
-        equipText.text = string.Format("Equiped: {0} / {1}", ArcadeStats.usedEquipSlots, ArcadeStats.maxEquipSlots);
         
+        if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+            equipText.text = string.Format("Equiped: {0} / {1}", ArcadeStats.usedEquipSlots, ArcadeStats.maxEquipSlots);
+        }
+        else{
+            equipText.text = string.Format("装備品: {0} / {1}", ArcadeStats.usedEquipSlots, ArcadeStats.maxEquipSlots);
+        }
+
     }
 
     public void SelectCurrentItem(BaseEventData ev)

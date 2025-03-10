@@ -4,6 +4,7 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.Localization.Settings;
 
 using Sound;
 
@@ -104,7 +105,9 @@ namespace SoloMode
             // currencyText.text = "" + Storage.arcadeMoneyAmount;
 
             // update title text
+            
             if (Storage.level != null) matchText.text = "-= Match " + (Storage.level.behindCount + 1) + " =-";
+
             if (Storage.level != null && Storage.level.behindCount + 1 == 42) bg.bgSprite = altBgSprite;
         }
 
