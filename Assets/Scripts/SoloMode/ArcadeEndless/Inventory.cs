@@ -137,7 +137,7 @@ public class Inventory : MonoBehaviour
 
         if (disp != null)
         {
-            descriptionText.text = item.description;
+            descriptionText.text = item.description.GetLocalizedString();
             typeText.text = item.UseTypeToString();
         }
 
@@ -155,7 +155,7 @@ public class Inventory : MonoBehaviour
         {
             case Item.UseType.Consume:
                 
-                if(item.itemName == "J-Fuel"){
+                if(item.itemName.GetLocalizedString() == "J-Fuel"){
                     // activate achivement
                     // Debug.Log("DRANK");
                     FindObjectOfType<AchievementHandler>().UnlockAchievement("ConsumeJFuel");

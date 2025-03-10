@@ -109,7 +109,7 @@ public class Shop : MonoBehaviour
 
         Item item = selection.GetComponent<ItemDisplay>().item;
 
-        descriptionText.text = item.description;
+        descriptionText.text = item.description.GetLocalizedString();
         typeText.text = item.UseTypeToString();
         if (ArcadeStats.inventory.ContainsKey(item)) ownedText.text = "" + (item.useType != Item.UseType.Equip ? ArcadeStats.inventory[item] : "Already") + " owned";
         else ownedText.text = item.useType == Item.UseType.UseOnObtain ? "" : "Unowned";

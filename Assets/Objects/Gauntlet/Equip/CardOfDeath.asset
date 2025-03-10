@@ -12,9 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034c5d9ed6c933747b0235628e1a5862, type: 3}
   m_Name: CardOfDeath
   m_EditorClassIdentifier: 
-  itemName: Card of Death
-  description: Increase mana charge by 30%, but take 50 damage each time you use
-    your ability.
+  itemName:
+    m_TableReference:
+      m_TableCollectionName: GUID:3fface553a983d949ab3917b8ad38665
+    m_TableEntryReference:
+      m_KeyId: 34735559806976
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: GUID:3fface553a983d949ab3917b8ad38665
+    m_TableEntryReference:
+      m_KeyId: 35098358714368
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   icon: {fileID: 21300000, guid: da4a8f5c650621046b8cf6fe9fb671cf, type: 3}
   useType: 1
   effects:
@@ -28,5 +43,7 @@ MonoBehaviour:
     deferType: 0
   baseCost: 600
   useSFX: {fileID: 0}
-  soundPitch: 1
   costIncreaseMult: 1
+  references:
+    version: 2
+    RefIds: []

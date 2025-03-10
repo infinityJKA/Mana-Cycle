@@ -12,8 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034c5d9ed6c933747b0235628e1a5862, type: 3}
   m_Name: Healing1
   m_EditorClassIdentifier: 
-  itemName: Healing Leaves
-  description: Restores 150 health points.
+  itemName:
+    m_TableReference:
+      m_TableCollectionName: GUID:3fface553a983d949ab3917b8ad38665
+    m_TableEntryReference:
+      m_KeyId: 57930944512
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: GUID:3fface553a983d949ab3917b8ad38665
+    m_TableEntryReference:
+      m_KeyId: 515990884352
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   icon: {fileID: 21300000, guid: 1a12b95188581654db8898504ef84fc1, type: 3}
   useType: 0
   effects:
@@ -24,3 +40,6 @@ MonoBehaviour:
   baseCost: 150
   useSFX: {fileID: 7978053776321691471, guid: b11324cff8da76b459bae0e4817496f3, type: 3}
   costIncreaseMult: 1
+  references:
+    version: 2
+    RefIds: []

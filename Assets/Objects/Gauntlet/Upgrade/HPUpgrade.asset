@@ -12,9 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034c5d9ed6c933747b0235628e1a5862, type: 3}
   m_Name: HPUpgrade
   m_EditorClassIdentifier: 
-  itemName: HP UP
-  description: Permanently increases your max HP by 250. Gets more expensive when
-    bought.
+  itemName:
+    m_TableReference:
+      m_TableCollectionName: GUID:3fface553a983d949ab3917b8ad38665
+    m_TableEntryReference:
+      m_KeyId: 45203254939648
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: GUID:3fface553a983d949ab3917b8ad38665
+    m_TableEntryReference:
+      m_KeyId: 45199970799616
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   icon: {fileID: 21300000, guid: 92ad1248bf8f63c488074657924dcb1a, type: 3}
   useType: 2
   effects:
@@ -25,3 +40,6 @@ MonoBehaviour:
   baseCost: 750
   useSFX: {fileID: 7978053776321691471, guid: 868f57c7cbd0c0f4cb172cbaf1528167, type: 3}
   costIncreaseMult: 1.5
+  references:
+    version: 2
+    RefIds: []

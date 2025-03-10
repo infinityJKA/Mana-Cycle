@@ -12,8 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034c5d9ed6c933747b0235628e1a5862, type: 3}
   m_Name: Healing2
   m_EditorClassIdentifier: 
-  itemName: J-Fuel
-  description: Restores 400 health points.
+  itemName:
+    m_TableReference:
+      m_TableCollectionName: GUID:3fface553a983d949ab3917b8ad38665
+    m_TableEntryReference:
+      m_KeyId: 27893538492416
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: GUID:3fface553a983d949ab3917b8ad38665
+    m_TableEntryReference:
+      m_KeyId: 28617194344448
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   icon: {fileID: 21300000, guid: 05dce950af893844d93100118ee5ab0c, type: 3}
   useType: 0
   effects:
@@ -24,3 +40,6 @@ MonoBehaviour:
   baseCost: 400
   useSFX: {fileID: 7978053776321691471, guid: 3b9a8293aa02b7f4aabe4ad92cd0e614, type: 3}
   costIncreaseMult: 1
+  references:
+    version: 2
+    RefIds: []

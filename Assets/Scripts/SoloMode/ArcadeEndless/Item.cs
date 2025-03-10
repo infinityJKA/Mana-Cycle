@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Localization;
 
 using Sound;
 using Battle.Board;
@@ -17,12 +18,12 @@ public class Item : ScriptableObject
     /// <summary>
     /// name of item shown in shop and player inventory
     /// </summary>
-    public string itemName = "Unnamed Item";
+    public LocalizedString itemName;// = "Unnamed Item";
 
     /// <summary>
     /// description of what the item does
     /// </summary>
-    public string description = "This item does cool stuff!!!";
+    public LocalizedString description;// = "This item does cool stuff!!!";
 
     /// <summary>
     /// small image shown in shop and inventory

@@ -41,7 +41,7 @@ public class ItemDisplay : MonoBehaviour
     public void Refresh()
     {
         displayImage.sprite = item.icon;
-        nameText.text = item.itemName;
+        nameText.text = item.itemName.GetLocalizedString();
         costText.text = "" + item.cost;
         if (ArcadeStats.inventory.ContainsKey(item)) amountText.text = "x" + ArcadeStats.inventory[item];
 
