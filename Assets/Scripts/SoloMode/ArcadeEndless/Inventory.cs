@@ -143,10 +143,10 @@ public class Inventory : MonoBehaviour
         }
         
         if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
-            equipText.text = string.Format("Equiped: {0} / {1}", ArcadeStats.usedEquipSlots, ArcadeStats.maxEquipSlots);
+            equipText.text = string.Format("装備品: {0} / {1}", ArcadeStats.usedEquipSlots, ArcadeStats.maxEquipSlots);
         }
         else{
-            equipText.text = string.Format("装備品: {0} / {1}", ArcadeStats.usedEquipSlots, ArcadeStats.maxEquipSlots);
+            equipText.text = string.Format("Equipped: {0} / {1}", ArcadeStats.usedEquipSlots, ArcadeStats.maxEquipSlots);
         }
 
     }

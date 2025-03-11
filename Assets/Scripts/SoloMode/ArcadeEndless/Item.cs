@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 
 using Sound;
 using Battle.Board;
@@ -124,12 +125,23 @@ public class Item : ScriptableObject
 
     public string UseTypeToString()
     {
-        switch (useType)
-        {
-            case UseType.Consume: return "Consumable";
-            case UseType.Equip: return "Equipable"; 
-            case UseType.UseOnObtain: return "Upgrade"; 
-            default: return "-"; 
+        if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+            switch (useType)
+            {
+                case UseType.Consume: return "消耗品";
+                case UseType.Equip: return "装備可能"; 
+                case UseType.UseOnObtain: return "アップグレード"; 
+                default: return "-"; 
+            }
+        }
+        else{
+            switch (useType)
+            {
+                case UseType.Consume: return "Consumable";
+                case UseType.Equip: return "Equipable"; 
+                case UseType.UseOnObtain: return "Upgrade"; 
+                default: return "-"; 
+            }
         }
     }
 
