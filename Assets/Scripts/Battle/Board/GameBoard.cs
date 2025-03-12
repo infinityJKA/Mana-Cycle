@@ -1115,20 +1115,21 @@ namespace Battle.Board {
 
             PlaceTilesOnBoard();
 
-            matchStats.totalPiecesPlaced += 1;
-
             if (advanceDamage) {
                 // Romras active will auto-activate if about to take fatal damage, saving the player
                 if (
                     battler.activeAbilityEffect == Battler.ActiveAbilityEffect.HeroicShield
                     && hpBar.DamageQueue[5].dmg >= hp
                     && abilityManager.canUseAbility
+                    && Storage.isTwoPlayer
                 ) {
                     UseAbility();
                 }
                 
                 DamageCycle();
             }
+
+            matchStats.totalPiecesPlaced += 1;
 
             // send placement and hp data to opponent in online mode
             if (Storage.online && netPlayer.isOwned) {
