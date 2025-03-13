@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Linq;
+using UnityEngine.Localization.Settings;
 #if (UNITY_EDITOR)
 using UnityEditor;
 #endif
@@ -47,25 +48,47 @@ namespace SoloMode {
                 case ObjectiveCondition.Lives: return board.lives >= value;
                 default: return false;
             }
+            
         }
 
         public string Status(GameBoard board) {
             if (statusOverride.Length > 0) return statusOverride;
-            if (!inverted) {
-                switch (condition) {
-                    case ObjectiveCondition.PointTotal: return board.hp+"/"+value+" Points";
-                    case ObjectiveCondition.ManaClearedTotal: return board.matchStats.totalManaCleared+"/"+value+" Mana Cleared";
-                    case ObjectiveCondition.SpellcastTotal: return board.matchStats.totalSpellcasts+"/"+value+" Spellcasts";
-                    case ObjectiveCondition.Survive: return "Survive!";
-                    case ObjectiveCondition.TopCombo: return "Best Combo: " + board.matchStats.highestCombo+"/"+value;
-                    case ObjectiveCondition.HighestCascade: return "Best Cascade: " + board.matchStats.highestCascade+"/"+value;
-                    default: return "This is an objective";
+            if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                if (!inverted) {
+                    switch (condition) {
+                        case ObjectiveCondition.PointTotal: return board.hp+"/"+value+" 点";
+                        case ObjectiveCondition.ManaClearedTotal: return board.matchStats.totalManaCleared+"/"+value+"マナ消した";
+                        case ObjectiveCondition.SpellcastTotal: return board.matchStats.totalSpellcasts+"/"+value+" 呪文";
+                        case ObjectiveCondition.Survive: return "生き残れ!";
+                        case ObjectiveCondition.TopCombo: return "コンボ: " + board.matchStats.highestCombo+"/"+value;
+                        case ObjectiveCondition.HighestCascade: return "カスケード: " + board.matchStats.highestCascade+"/"+value;
+                        default: return "ERROR";
+                    }
+                }
+                else {
+                    switch (condition) {
+                        case ObjectiveCondition.ManualSpellcastTotal: return "呪文の制限: " + board.matchStats.totalManualSpellcasts+"/"+value + "回";
+                        default: return "evil ERROR";
+                    }
                 }
             }
-            else {
-                switch (condition) {
-                    case ObjectiveCondition.ManualSpellcastTotal: return "Spellcast only " + board.matchStats.totalManualSpellcasts+"/"+value + (value == 1 ? " time" : "times");
-                    default: return "evil objective gang";
+            else{
+                if (!inverted) {
+                    switch (condition) {
+                        case ObjectiveCondition.PointTotal: return board.hp+"/"+value+" Points";
+                        case ObjectiveCondition.ManaClearedTotal: return board.matchStats.totalManaCleared+"/"+value+" Mana Cleared";
+                        case ObjectiveCondition.SpellcastTotal: return board.matchStats.totalSpellcasts+"/"+value+" Spellcasts";
+                        case ObjectiveCondition.Survive: return "Survive!";
+                        case ObjectiveCondition.TopCombo: return "Best Combo: " + board.matchStats.highestCombo+"/"+value;
+                        case ObjectiveCondition.HighestCascade: return "Best Cascade: " + board.matchStats.highestCascade+"/"+value;
+                        default: return "This is an objective";
+                    }
+                }
+                else {
+                    switch (condition) {
+                        case ObjectiveCondition.ManualSpellcastTotal: return "Spellcast only " + board.matchStats.totalManualSpellcasts+"/"+value + (value == 1 ? " time" : "times");
+                        default: return "evil objective gang";
+                    }
                 }
             }
         }
