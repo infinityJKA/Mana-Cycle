@@ -236,7 +236,10 @@ namespace Battle.Board {
                     board.enemyBoard.abilityManager.GainMana(board.enemyBoard.Battler.activeAbilityMana / 10);
                 }
 
-                board.RefreshGhostPiece();
+                // (BANDAID FIX) romra activates their ability in between placing piece and spawning new piece. so dont refresh the ghost tile during the heroic shield ability use
+                if (board.Battler.activeAbilityEffect != Battler.ActiveAbilityEffect.HeroicShield) {
+                    board.RefreshGhostPiece();
+                }
                 if (Storage.online && board.netPlayer.isOwned) {
                     board.netPlayer.CmdUseAbility(abilityData);
                 }
