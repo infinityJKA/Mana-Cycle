@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Localization.Settings;
 
 namespace MainMenu {
     /** Controls the HowToPlay menu and updates its pages/content. */
     public class HowToPlay : MonoBehaviour
     {
         [SerializeField] private string[] HTPTexts;
+        [SerializeField] private string[] HTPTexts_jp;
+
         [SerializeField] private Sprite[] HTPImgs;
         private int HTPPage = 0;
         [SerializeField] private TMPro.TextMeshProUGUI currentText;
@@ -38,7 +41,12 @@ namespace MainMenu {
 
         public void UpdatePage()
         {
-            currentText.text = HTPTexts[HTPPage];
+            if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                currentText.text = HTPTexts_jp[HTPPage];
+            }
+            else{
+                currentText.text = HTPTexts[HTPPage];
+            }
             currentImg.sprite = HTPImgs[HTPPage];
             pageText.text = "(" + (HTPPage+1) + " / " + HTPTexts.Length + ")";
         }
