@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using Sound; 
 using Animation;
 using TMPro;
-using UnityEditor.Localization.Plugins.XLIFF.V12;
 using Mono.CSharp;
 using System.Collections.Generic;
 

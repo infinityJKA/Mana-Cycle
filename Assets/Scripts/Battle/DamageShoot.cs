@@ -1,7 +1,6 @@
 using UnityEngine;
 
 using Sound;
-using UnityEditor.Localization.Plugins.XLIFF.V12;
 using Battle.Board;
 using UnityEngine.UI;
 

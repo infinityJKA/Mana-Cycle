@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Battle.Cycle;
 using System;
 using TMPro;
-using LootLocker.Extension.DataTypes;
 
 using UnityEngine.Localization.Settings;
 
