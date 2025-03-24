@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Localization.Settings;
 using UnityEngine;
 
 using Battle.Board;
@@ -36,7 +37,14 @@ namespace SoloMode {
                     condition = ObjectiveCondition.Survive
                 };
                 // rename survive objective if in endless arcade
-                if (Storage.level.generateNextLevel) surviveObjective.statusOverride = "Get as many points as possible!";
+                if (Storage.level.generateNextLevel){
+                    if(LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.GetLocale("ja")){
+                        surviveObjective.statusOverride = "できるだけ多くのポイントを取って！";
+                    }
+                    else{
+                        surviveObjective.statusOverride = "Get as many points as possible!";
+                    }
+                }
 
                 var survivalItem = Instantiate(objectiveListItemPrefab, objectiveListLayout.transform);
                 survivalItem.objective = surviveObjective;
