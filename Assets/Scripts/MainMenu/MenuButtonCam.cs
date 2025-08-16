@@ -21,14 +21,14 @@ namespace MainMenu {
         // Components to only be enabled when this item is selected
         public MonoBehaviour[] enableWhenSelected;
 
-        public GameObject selectSFX, clickSFX;
+        // public GameObject selectSFX, clickSFX;
         public int buttonIndex;
 
         public void OnSelect(BaseEventData eventData){
             Storage.lastMainMenuItem = buttonIndex;
 
             // if(eventData.selectedObject == this.gameObject){
-                Instantiate(selectSFX);
+                // Instantiate(selectSFX);
                 if (brain && brain.ActiveVirtualCamera != null) brain.ActiveVirtualCamera.Priority = 1;
                 if (thisCam) thisCam.Priority = 30;
                 // textBox.text = text;
@@ -45,8 +45,8 @@ namespace MainMenu {
             }
         }
 
-        public void PlayClickSFX(){
-            Instantiate(clickSFX);
-        }
+        // public void PlayClickSFX(){
+        //     Instantiate(clickSFX);
+        // }
     }
 }

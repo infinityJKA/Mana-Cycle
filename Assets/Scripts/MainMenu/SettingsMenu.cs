@@ -1,108 +1,54 @@
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
-using TMPro;
-using System.Collections.Generic;
-using UnityEngine.EventSystems;
-using UnityEngine.Localization.Settings;
-using System.Collections;
-using System;
 
-namespace MainMenu {
-    /// <summary>
-    /// Controls the settings menu, currently only the close button. (Slider volumes are handled solely by SoundManager)
-    /// </summary>
+namespace Menus
+{
     public class SettingsMenu : MonoBehaviour
     {
-        [SerializeField] private InputScript inputScript;
-        [SerializeField] private Toggle ghostPieceToggle;
-        [SerializeField] private Button closeButton;
-        
-        [SerializeField] private InputActionReference closeAction, pauseAction;
+        [SerializeField] private HalfRadialButtons settingsMenu;
+        [SerializeField] private GameObject[] subMenus;
 
-        [SerializeField] private TMP_Dropdown windowModeDropdown;
-
-        // todo move more settings to use PlayerPrefSetter script for modularity
-        [SerializeField] private PlayerPrefSetter[] prefSetters;
-
-        [SerializeField] private Menu3d menu3D;
-
-        private void OnEnable() {
-            closeAction.action.Enable();
-            closeAction.action.performed += OnMenuClose;
-            pauseAction.action.Enable();
-            pauseAction.action.performed += OnMenuClose;
-
-            Array.ForEach(prefSetters, pref => pref.Sync());
-        }
-
-        private void OnDisable() {
-            closeAction.action.performed -= OnMenuClose;
-            pauseAction.action.performed -= OnMenuClose;
-        }
-
-        private void OnMenuClose(InputAction.CallbackContext ctx) {
-            if (gameObject == null) return;
-            if (!gameObject) return;
-            if (!gameObject.activeSelf) return;
-
-            if (menu3D) menu3D.CloseSettings();
-            else closeButton.onClick.Invoke();
-        }
-
-        void Start() {
-            if (ghostPieceToggle) {
-                ghostPieceToggle.isOn = Settings.current.drawGhostPiece;
-            }
-
-            // keep this in player prefs since it is platform specific
-            windowModeDropdown.value = PlayerPrefs.GetInt("windowModeSelection");
-        }
-
-        void Update()
+        [SerializeField] private AudioClip sliderSFX;
+        [SerializeField] private AudioClip returnSFX;
+        [SerializeField] private AudioClip selectionSFX;
+        [SerializeField] private AudioClip specialSFX;
+        // first item to select in each submenu
+        private int lastIndex = -1;
+        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        void Start()
         {
-            // if (Input.GetKeyDown(inputScript.Pause)) {
-            //     closeButton.onClick.Invoke();
-            // }
+            settingsMenu.ButtonSelected += OnButtonSelected;
+            foreach (GameObject o in subMenus) o.SetActive(false);
         }
 
-        public void OnGhostPieceToggleChange() {
-            Settings.current.drawGhostPiece = ghostPieceToggle.isOn;
-        }
-
-        public void OnWindowModeChange()
+        void OnButtonSelected(int index, bool direction = true)
         {
-            int selection = windowModeDropdown.value;
-            switch (windowModeDropdown.options[selection].text)
+            if (lastIndex >= 0) subMenus[lastIndex].SetActive(false);
+            if (index < subMenus.Length) 
             {
-                case "Borderless Fullscreen": 
-                    Screen.SetResolution(1920, 1080, FullScreenMode.FullScreenWindow);
-                    break;
-                case "Exclusive Fullscreen": 
-                    Screen.SetResolution(Screen.width, Screen.height, FullScreenMode.ExclusiveFullScreen);
-                    break;
-                case "Resizable Window":
-                    Screen.SetResolution(Screen.width, Screen.height, FullScreenMode.Windowed);
-                    break;
+                subMenus[index].gameObject.SetActive(true);
+                lastIndex = index;
             }
-
-            // This does not use the file-based player prefs, just normal playerpref so it doesn't get sent over steam cloud or anything 
-            // and be used on different devices which may have different screen setup.
-            PlayerPrefs.SetInt("windowModeSelection", selection);
-            EventSystem.current.SetSelectedGameObject(windowModeDropdown.gameObject);
         }
 
-        private Coroutine changeLanguageCoroutine;
-        private string[] localeList = {"en", "ja"};
-        public void ChangeLocale(int localeIndex) {
-            if (changeLanguageCoroutine != null) StopCoroutine(changeLanguageCoroutine);
-            changeLanguageCoroutine = StartCoroutine(SetLocale(localeList[localeIndex]));
+        public void PlaySliderSound(bool special)
+        {
+            // AudioManager.Instance.PlaySound(special ? specialSFX : sliderSFX);
         }
 
-        IEnumerator SetLocale(string localeCode) {
-            yield return LocalizationSettings.InitializationOperation;
-            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.GetLocale(localeCode);
+        public void PlaySelectionSound()
+        {
+            // AudioManager.Instance.PlaySound(selectionSFX);   
         }
-    }
+
+        public void PlayReturnSound()
+        {
+            // AudioManager.Instance.PlaySound(returnSFX);
+        }
+
+        public void VolumeSliderChanged()
+        {
+            // AudioManager.Instance.UpdateVolumes();
+        }
+    }   
 }
+
