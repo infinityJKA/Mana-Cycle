@@ -1929,7 +1929,7 @@ namespace Battle.Board {
             cascade += 1;
             if (cascade > 1)
             {
-                PlaySFX(cascadeSFX, 1f + cascade * 0.1f);
+                PlaySFX(cascadeSFX, Math.Min(cascade * 2 - 2, 12));
                 cascadePopup.Flash(cascade.ToString());
                 Array.ForEach(bounce, b => b.StartBounce());
             }
@@ -2000,7 +2000,7 @@ namespace Battle.Board {
             }
             if (cascade <= 1)
             {
-                PlaySFX(castSFX, 1f + chain * 0.1f);
+                PlaySFX(castSFX,  Math.Min(chain * 2 - 2, 12));
                 Array.ForEach(bounce, b => b.StartBounce());
             }
 
@@ -2683,6 +2683,13 @@ namespace Battle.Board {
             SFXObject sfx = Instantiate(sfxObject).GetComponent<SFXObject>();
             if(!singlePlayer) sfx.pan = 0.3f * (playerSide * 2 - 1);
             sfx.pitch = pitch;
+        }
+
+        public void PlaySFX(GameObject sfxObject, int pitchIndex)
+        {
+            SFXObject sfx = Instantiate(sfxObject).GetComponent<SFXObject>();
+            if(!singlePlayer) sfx.pan = 0.3f * (playerSide * 2 - 1);
+            sfx.pitch = Mathf.Pow(1.059463f, pitchIndex);
         }
 
         const int obscureRadius = 3;
