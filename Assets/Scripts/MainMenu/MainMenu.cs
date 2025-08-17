@@ -34,10 +34,12 @@ namespace MainMenu
                 settingsMenu.MenuOpened += SettingsMenuOpened;
 
                 rootMenu.ButtonSelected += PlaySelectSFX;
-                // settingsMenu.ButtonSelected += PlaySelectSFX;
+                versusMenu.ButtonSelected += PlaySelectSFX;
                 settingsMenu.MenuOpened += PlaySubmitSFX;
                 settingsMenu.MenuClosed += PlayBackSFX;
-
+                versusMenu.MenuOpened += PlaySubmitSFX;
+                versusMenu.MenuClosed += PlayBackSFX;
+                
                 settingsMenu.gameObject.SetActive(false);
                 versusMenu.gameObject.SetActive(false);
 
