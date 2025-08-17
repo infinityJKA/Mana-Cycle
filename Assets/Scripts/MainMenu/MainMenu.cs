@@ -83,8 +83,8 @@ namespace MainMenu
                 Storage.level = null;
                 switch(versusType)
                 {
-                    case 0: Storage.online = false; Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = false; break;
-                    case 1: Storage.online = false; Storage.isPlayerControlled1 = false; Storage.isPlayerControlled2 = false; break;
+                    case 0: Storage.online = false; Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = true; break;
+                    case 1: Storage.online = false; Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = false; break;
                     case 2: Storage.online = false; Storage.isPlayerControlled1 = false; Storage.isPlayerControlled2 = false; break;
                     default: Storage.online = false; Storage.isPlayerControlled1 = true; Storage.isPlayerControlled2 = true; break;
                 }

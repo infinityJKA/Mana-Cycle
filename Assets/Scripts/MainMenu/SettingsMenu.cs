@@ -18,6 +18,9 @@ namespace Menus
         {
             settingsMenu.ButtonSelected += OnButtonSelected;
             foreach (GameObject o in subMenus) o.SetActive(false);
+
+            PlayerPrefSetter[] prefSetters = Resources.FindObjectsOfTypeAll<PlayerPrefSetter>();
+            foreach (PlayerPrefSetter p in prefSetters) p.Sync();
         }
 
         void OnButtonSelected(int index, bool direction = true)
