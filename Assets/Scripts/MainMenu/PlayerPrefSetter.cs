@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,7 @@ public class PlayerPrefSetter : MonoBehaviour
     // optional selectables to sync to settings
     [SerializeField] private Slider slider;
     [SerializeField] private Toggle toggle;
+    [SerializeField] private TMP_Dropdown dropdown;
 
     public void SetPrefFloat(float value)
     {
@@ -32,6 +34,7 @@ public class PlayerPrefSetter : MonoBehaviour
     {
         if (slider != null) slider.value = PlayerPrefs.GetFloat(key, defaultValue);
         if (toggle != null) toggle.isOn = PlayerPrefs.GetInt(key, (int) defaultValue) == 1;
+        if (dropdown != null) dropdown.value = PlayerPrefs.GetInt(key, dropdown.value);
     }
 
 }

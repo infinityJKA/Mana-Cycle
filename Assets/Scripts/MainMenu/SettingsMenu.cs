@@ -33,6 +33,18 @@ namespace Menus
             }
         }
 
+        public void SetScreenMode(int mode)
+        {
+            var fsm = mode switch
+            {
+                0 => FullScreenMode.FullScreenWindow,
+                1 => FullScreenMode.ExclusiveFullScreen,
+                2 => FullScreenMode.Windowed,
+                _ => FullScreenMode.FullScreenWindow,
+            };
+            Screen.fullScreenMode = fsm;
+        }
+
         public void PlaySliderSound(bool special)
         {
             // AudioManager.Instance.PlaySound(special ? specialSFX : sliderSFX);
