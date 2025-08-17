@@ -9,6 +9,7 @@ public class PlayerPrefSetter : MonoBehaviour
 {
     [SerializeField] private string key = "defaultKey";
     [SerializeField] private float defaultValue = 0f;
+    [SerializeField] private float scalingFactor = 1f;
 
     // optional selectables to sync to settings
     [SerializeField] private Slider slider;
@@ -17,7 +18,7 @@ public class PlayerPrefSetter : MonoBehaviour
 
     public void SetPrefFloat(float value)
     {
-        PlayerPrefs.SetFloat(key, value);
+        PlayerPrefs.SetFloat(key, value * scalingFactor);
     }
 
     public void SetPrefInt(int value)
@@ -32,7 +33,7 @@ public class PlayerPrefSetter : MonoBehaviour
 
     public void Sync()
     {
-        if (slider != null) slider.value = PlayerPrefs.GetFloat(key, defaultValue);
+        if (slider != null) slider.value = PlayerPrefs.GetFloat(key, defaultValue) / scalingFactor;
         if (toggle != null) toggle.isOn = PlayerPrefs.GetInt(key, (int) defaultValue) == 1;
         if (dropdown != null) dropdown.value = PlayerPrefs.GetInt(key, dropdown.value);
     }

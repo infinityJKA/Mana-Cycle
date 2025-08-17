@@ -1,3 +1,4 @@
+using Sound;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,10 +9,13 @@ namespace Menus
         [SerializeField] private HalfRadialButtons settingsMenu;
         [SerializeField] private GameObject[] subMenus;
 
-        [SerializeField] private AudioClip sliderSFX;
-        [SerializeField] private AudioClip returnSFX;
-        [SerializeField] private AudioClip selectionSFX;
-        [SerializeField] private AudioClip specialSFX;
+        [SerializeField] private GameObject sliderSFX;
+        [SerializeField] private GameObject returnSFX;
+        [SerializeField] private GameObject selectionSFX;
+        [SerializeField] private GameObject specialSFX;
+        [SerializeField] private GameObject navigationSFX;
+
+        private bool syncing;
         // first item to select in each submenu
         private int lastIndex = -1;
         // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -21,7 +25,10 @@ namespace Menus
             foreach (GameObject o in subMenus) o.SetActive(false);
 
             PlayerPrefSetter[] prefSetters = Resources.FindObjectsOfTypeAll<PlayerPrefSetter>();
+
+            syncing = true;
             foreach (PlayerPrefSetter p in prefSetters) p.Sync();
+            syncing = false;
         }
 
         void OnButtonSelected(int index, bool direction = true)
@@ -29,9 +36,10 @@ namespace Menus
             if (lastIndex >= 0) subMenus[lastIndex].SetActive(false);
             if (index < subMenus.Length) 
             {
-                subMenus[index].gameObject.SetActive(true);
+                subMenus[index].SetActive(true);
                 lastIndex = index;
             }
+            Instantiate(navigationSFX).GetComponent<SFXObject>().pitch = direction ? 1.1f : 1f;
         }
 
         public void SetScreenMode(int mode)
@@ -54,22 +62,31 @@ namespace Menus
 
         public void PlaySliderSound(bool special)
         {
-            // AudioManager.Instance.PlaySound(special ? specialSFX : sliderSFX);
+            if (!syncing)
+                Instantiate(special ? specialSFX : sliderSFX);
         }
 
         public void PlaySelectionSound()
         {
-            // AudioManager.Instance.PlaySound(selectionSFX);   
+            if (!syncing)
+                Instantiate(selectionSFX);   
         }
 
         public void PlayReturnSound()
         {
-            // AudioManager.Instance.PlaySound(returnSFX);
+            if (!syncing)
+                Instantiate(returnSFX);
+        }
+
+        public void PlaySound(GameObject sound)
+        {
+            if (!syncing)
+                Instantiate(sound);
         }
 
         public void VolumeSliderChanged()
         {
-            // AudioManager.Instance.UpdateVolumes();
+            SoundManager.Instance.UpdateMusicVolume();
         }
     }   
 }

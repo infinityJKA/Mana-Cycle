@@ -21,8 +21,6 @@ namespace Sound {
             else{
                 Destroy(gameObject);
             }
-
-            Load();
         }
 
         /** Set the background music. If the passed song is already playing, do not replay */
@@ -41,6 +39,7 @@ namespace Sound {
         }
 
         public void PlayBGM() {
+            UpdateMusicVolume();
             Instance.musicSource.Play();
         }
 
@@ -61,55 +60,9 @@ namespace Sound {
             Instance.musicSource.clip = null;
         }
 
-        public void SliderSound(AudioClip clip)
+        public void UpdateMusicVolume()
         {
-
-        }
-
-        public void ChangeMusicVolume(float value)
-        {
-            PlayerPrefs.SetFloat("musVolumeKey", value);
-            musicSource.volume = value;
-        }
-
-        public void ChangeSFXVolume(float value)
-        {
-            PlayerPrefs.SetFloat("sfxVolumeKey", value);
-        }
-
-        public void Load()
-        {
-            // music
-            if (!PlayerPrefs.HasKey("musVolumeKey"))
-            {
-                PlayerPrefs.SetFloat("musVolumeKey", 0.5f);
-            }
-            else
-            {
-                Instance.musicSource.volume = PlayerPrefs.GetFloat("musVolumeKey");
-            }
-
-            // sfx
-            if (!PlayerPrefs.HasKey("sfxVolumeKey"))
-            {
-                PlayerPrefs.SetFloat("sfxVolumeKey", 0.5f);
-            }
-            else
-            {
-                Instance.effectSource.volume = PlayerPrefs.GetFloat("sfxVolumeKey");
-            }
-
-            // master
-            if (!PlayerPrefs.HasKey("masterVolumeKey"))
-            {
-                PlayerPrefs.SetFloat("masterVolumeKey", 1.0f);
-            }
-            else
-            {
-                Instance.effectSource.volume = PlayerPrefs.GetFloat("masterVolumeKey");
-            }
-            
-            PlayerPrefs.Save();
+            musicSource.volume = PlayerPrefs.GetFloat("musVolumeKey") * PlayerPrefs.GetFloat("masterVolumeKey");
         }
 
     }

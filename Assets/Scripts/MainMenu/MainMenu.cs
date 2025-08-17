@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Menus;
+using LootLocker.Extension.DataTypes;
+using Sound;
 
 // ties multiple parts of the main menu together
 namespace MainMenu
@@ -18,9 +20,12 @@ namespace MainMenu
 
             [SerializeField] private TransitionScript TransitionHandler;
 
+            [SerializeField] private GameObject selectSFX, submitSFX, backSFX;
+
             // Start is called before the first frame update
             void Start()
             {
+                SoundManager.Instance.UpdateMusicVolume();
                 // AudioManager.Instance.PlayMusic(menuMusic);
 
                 rootMenu.ButtonSelected += OnRootButtonSelected;
@@ -29,7 +34,7 @@ namespace MainMenu
                 settingsMenu.MenuOpened += SettingsMenuOpened;
 
                 rootMenu.ButtonSelected += PlaySelectSFX;
-                settingsMenu.ButtonSelected += PlaySelectSFX;
+                // settingsMenu.ButtonSelected += PlaySelectSFX;
                 settingsMenu.MenuOpened += PlaySubmitSFX;
                 settingsMenu.MenuClosed += PlayBackSFX;
 
@@ -59,14 +64,17 @@ namespace MainMenu
 
             private void PlaySelectSFX(int index, bool direction = true)
             {
+                Instantiate(selectSFX).GetComponent<SFXObject>().pitch = direction ? 1.1f : 1f;
             }
 
             private void PlaySubmitSFX()
             {
+                Instantiate(submitSFX);
             }
 
             private void PlayBackSFX()
             {
+                Instantiate(backSFX);
             }
 
             public void SingleplayerPressed() 
