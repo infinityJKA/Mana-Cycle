@@ -69,12 +69,12 @@ namespace MainMenu
                 Instantiate(selectSFX).GetComponent<SFXObject>().pitch = direction ? 1.1f : 1f;
             }
 
-            private void PlaySubmitSFX()
+            public void PlaySubmitSFX()
             {
                 Instantiate(submitSFX);
             }
 
-            private void PlayBackSFX()
+            public void PlayBackSFX()
             {
                 Instantiate(backSFX);
             }

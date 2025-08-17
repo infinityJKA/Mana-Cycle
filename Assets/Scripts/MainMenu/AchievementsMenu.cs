@@ -13,7 +13,6 @@ namespace MainMenu {
     public class AchievementsMenu : MonoBehaviour
     {
         [SerializeField] private List<InputScript> inputScripts;
-        [SerializeField] private GameObject settingsWindow;
 
         [SerializeField] public AchievementNotification achievementPrefab;
 
@@ -30,7 +29,7 @@ namespace MainMenu {
         [SerializeField] private InputActionReference scrollAction;
 
         [SerializeField] private InputActionReference closeAction, pauseAction;
-
+        [SerializeField] private EventTrigger eventTrigger;
 
         private Vector2 scrollInput;
 
@@ -85,8 +84,9 @@ namespace MainMenu {
 
         public void ShowMenu()
         {
-            settingsWindow.SetActive(false);
+            // settingsWindow.SetActive(false);
             gameObject.SetActive(true);
+            scrollInput = Vector2.zero;
             LoadAchievementsTable();
         }
 
@@ -94,7 +94,9 @@ namespace MainMenu {
         {
             if (!gameObject.activeSelf) return;
             gameObject.SetActive(false);
-            settingsWindow.SetActive(true);
+            BaseEventData bed = new(EventSystem.current);
+            eventTrigger.OnCancel(bed);
+            // settingsWindow.SetActive(true);
         }
 
         public void LoadAchievementsTable()
