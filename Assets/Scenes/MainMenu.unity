@@ -964,6 +964,7 @@ MonoBehaviour:
   openRadius: 200
   closeRadius: 400
   savePosition: 0
+  hideOnAwake: 0
 --- !u!114 &42175643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12880,6 +12881,7 @@ MonoBehaviour:
   openRadius: 200
   closeRadius: 400
   savePosition: 0
+  hideOnAwake: 0
 --- !u!1 &613673795
 GameObject:
   m_ObjectHideFlags: 0
@@ -19157,7 +19159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56f519d01222ee747b266758262fb2da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: sfxVolume
+  key: sfxVolumeKey
   defaultValue: 0
   slider: {fileID: 1022911216}
   toggle: {fileID: 0}
@@ -24897,7 +24899,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56f519d01222ee747b266758262fb2da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: musicVolume
+  key: musicVolumeKey
   defaultValue: 0
   slider: {fileID: 1223014820}
   toggle: {fileID: 0}
@@ -31536,7 +31538,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56f519d01222ee747b266758262fb2da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: mainVolume
+  key: masterVolumeKey
   defaultValue: 0
   slider: {fileID: 1712933866}
   toggle: {fileID: 0}
@@ -32082,6 +32084,7 @@ MonoBehaviour:
   openRadius: 200
   closeRadius: 400
   savePosition: 1
+  hideOnAwake: 0
 --- !u!1001 &1761385001
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34322,7 +34325,7 @@ PrefabInstance:
     - target: {fileID: 4858021537212837643, guid: 119eb685380a78d4b8f691aca46c36a8, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: e2454ee2eb1a7bf449ace22d038aaa32, type: 2}
+      objectReference: {fileID: 2100000, guid: 363eaa74ea8fafa4fabbd4a0956357f0, type: 2}
     - target: {fileID: 5413561748834433989, guid: 119eb685380a78d4b8f691aca46c36a8, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -37783,6 +37786,7 @@ MonoBehaviour:
   openRadius: 200
   closeRadius: 400
   savePosition: 0
+  hideOnAwake: 0
 --- !u!114 &2116764692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38037,7 +38041,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2131892787
 Transform:
   m_ObjectHideFlags: 0
