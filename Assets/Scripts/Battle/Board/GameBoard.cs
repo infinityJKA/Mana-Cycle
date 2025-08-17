@@ -223,6 +223,9 @@ namespace Battle.Board {
         // for newly seperated piece container on seperate canvas
         [SerializeField] private Shake pieceShake;
 
+        // for cast bounce effect
+        [SerializeField] private ScaleBounce[] bounce;
+
         /** If in singleplayer, the objective list in this scene */
         [SerializeField] private ObjectiveList objectiveList;
         /** Timer, to stop when this player wins **/
@@ -1928,6 +1931,7 @@ namespace Battle.Board {
             {
                 PlaySFX(cascadeSFX, 1f + cascade * 0.1f);
                 cascadePopup.Flash(cascade.ToString());
+                Array.ForEach(bounce, b => b.StartBounce());
             }
 
             // Remove tiles from blobs
@@ -1994,7 +1998,11 @@ namespace Battle.Board {
                 blobPointMult *= blobDamageMultiplier;
                 totalPointMult += blobPointMult;
             }
-            if (cascade <= 1) PlaySFX(castSFX, 1f + chain * 0.1f);
+            if (cascade <= 1)
+            {
+                PlaySFX(castSFX, 1f + chain * 0.1f);
+                Array.ForEach(bounce, b => b.StartBounce());
+            }
 
             if(battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Economics){
                 if(cycle.GetColor(cyclePosition) == 0){
