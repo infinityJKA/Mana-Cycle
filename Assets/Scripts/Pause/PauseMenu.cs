@@ -29,7 +29,7 @@ namespace Pause {
 
             // Change button text based on gamemode - will become "rematch" in versus mode
             if (Storage.gamemode == Storage.GameMode.Versus) {
-                buttonsTransform.Find("RetryButton").GetChild(0).GetComponent<TextMeshProUGUI>()
+                buttonsTransform.Find("RetryButton").transform.GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>()
                     .text = rematchLocalizedString.GetLocalizedString();
             }
             

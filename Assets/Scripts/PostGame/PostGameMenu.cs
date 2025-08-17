@@ -150,7 +150,7 @@ namespace PostGame {
                     }
 
                     // If solo mode win: retry -> replay
-                    retryButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>()
+                    retryButton.transform.GetComponentInChildren<TextMeshProUGUI>().GetComponent<TextMeshProUGUI>()
                         .text = replayLocalizedString.GetLocalizedString();
                 }
 
