@@ -291,7 +291,20 @@ namespace Battle.Board {
 
         [SerializeField] private List<ColorFader> cycleColoredObjects;
 
-        [SerializeField] private GameObject moveSFX, rotateSFX, castSFX, fullCycleSFX, loseSFX, PauseSFX, winSFX, failedCastSFX, placeSFX, damageTakenSFX, startupCastSFX, cascadeSFX, dmgShootSFX;
+        [SerializeField] private GameObject 
+            moveSFX, 
+            rotateSFX, 
+            castSFX, 
+            fullCycleSFX, 
+            loseSFX, 
+            PauseSFX, 
+            winSFX, 
+            failedCastSFX, 
+            placeSFX, 
+            damageTakenSFX, 
+            startupCastSFX, 
+            cascadeSFX, 
+            dmgShootSFX;
 
         [SerializeField] private TMP_Text usernameLabel;
 

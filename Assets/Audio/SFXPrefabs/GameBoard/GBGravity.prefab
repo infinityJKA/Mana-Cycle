@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1967408853012983870}
   - component: {fileID: -3161311697422192482}
   m_Layer: 0
-  m_Name: GBMove
+  m_Name: GBGravity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,9 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClips:
-  - {fileID: 8300000, guid: c8560f0958fd7b140a2aebd97f95efbb, type: 3}
+  - {fileID: 8300000, guid: 2e4246d816ff4c04881cfc3361fd6021, type: 3}
   pitchRange: {x: 0.9, y: 1.1}
-  volumeScale: 0.75
+  volumeScale: 1
 --- !u!82 &-3161311697422192482
 AudioSource:
   m_ObjectHideFlags: 0
