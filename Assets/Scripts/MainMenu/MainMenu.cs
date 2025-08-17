@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Menus;
-using LootLocker.Extension.DataTypes;
 using Sound;
 
 // ties multiple parts of the main menu together
@@ -55,13 +54,13 @@ namespace MainMenu
             private void RootMenuOpened()
             {
                 backgroundFader.SetAlphaTarget(0f);
-                logoImage.SetTargets(new Vector2(-10, 10));
+                logoImage.SetTargets(new Vector2(0, 0));
             }
 
             private void SettingsMenuOpened()
             {
                 backgroundFader.SetAlphaTarget(0.85f);
-                logoImage.SetTargets(new Vector2(750, 10));
+                logoImage.SetTargets(new Vector2(750, 0));
             }
 
             private void PlaySelectSFX(int index, bool direction = true)
