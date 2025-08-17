@@ -41,6 +41,8 @@ namespace Menus
         public event MenuChangedHandler MenuOpened;
         public event MenuChangedHandler MenuClosed;
 
+        [SerializeField] private bool hideOnAwake = false;
+
         // Start is called before the first frame update
         void Awake()
         {
@@ -82,6 +84,7 @@ namespace Menus
             ShowVisibleButtons();
 
             EventSystem.current.SetSelectedGameObject(items[currentSelectionIndex].gameObject);
+            gameObject.SetActive(!hideOnAwake);
         }
 
         void ShowVisibleButtons(float smoothTime = 0f, int selectionDelta = 0)
@@ -169,7 +172,7 @@ namespace Menus
             MenuClosed?.Invoke();
             // wait for transition time before deactivating
             // TODO CLEANUP don't hardcode 0.1f, maybe use callback on transition complete
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSecondsRealtime(0.1f);
             gameObject.SetActive(false);
 
         }
@@ -181,7 +184,7 @@ namespace Menus
             TransitionRadius(closeRadius, 0f);
             gameObject.SetActive(true);
             TransitionRadius(openRadius);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSecondsRealtime(0.1f);
 
             MenuOpened?.Invoke();
             EventSystem.current.SetSelectedGameObject(items[currentSelectionIndex].gameObject);

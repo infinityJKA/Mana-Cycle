@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Menus
 {
@@ -43,6 +44,12 @@ namespace Menus
                 _ => FullScreenMode.FullScreenWindow,
             };
             Screen.fullScreenMode = fsm;
+        }
+
+        // Used to serialize in prefab where eventsystem does not exist
+        public void SetSelectedGameObject(GameObject s)
+        {
+            EventSystem.current.SetSelectedGameObject(s);
         }
 
         public void PlaySliderSound(bool special)

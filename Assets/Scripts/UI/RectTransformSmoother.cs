@@ -23,7 +23,7 @@ namespace Menus
         // private float refTime;
 
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             _rt = GetComponent<RectTransform>();
 
@@ -35,9 +35,9 @@ namespace Menus
         // Update is called once per frame
         void Update()
         {
-            rt.anchoredPosition = Vector3.SmoothDamp(rt.anchoredPosition, targetAnchoredPosition, ref posVel, smoothTime);
-            rt.eulerAngles = Vector3.SmoothDamp(rt.eulerAngles, targetEulerAngles, ref eaVel, smoothTime);
-            rt.localScale = Vector3.SmoothDamp(rt.localScale, targetScale, ref sVel, smoothTime);
+            rt.anchoredPosition = Vector3.SmoothDamp(rt.anchoredPosition, targetAnchoredPosition, ref posVel, smoothTime, Mathf.Infinity, Time.unscaledDeltaTime);
+            rt.eulerAngles = Vector3.SmoothDamp(rt.eulerAngles, targetEulerAngles, ref eaVel, smoothTime, Mathf.Infinity, Time.unscaledDeltaTime);
+            rt.localScale = Vector3.SmoothDamp(rt.localScale, targetScale, ref sVel, smoothTime, Mathf.Infinity, Time.unscaledDeltaTime);
         }
 
         // set target pos and rotation to smoothly transition to
