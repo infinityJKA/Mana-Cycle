@@ -13,8 +13,6 @@ namespace MainMenu {
         [SerializeField] BlackjackGame BlackjackPlayScript;
         [SerializeField] GameObject MainWindow;
 
-        [SerializeField] GameObject MainFirstSelected;
-
         [SerializeField] public GameObject BJfirstSelected;
 
         [SerializeField] private TransitionScript TransitionHandler;
@@ -26,9 +24,8 @@ namespace MainMenu {
 
         [SerializeField] private CinemachineVirtualCamera thisCam;
         [SerializeField] private CinemachineBrain brain;
-
-        [SerializeField] private Menu3d Menu3dMainMenu;
-
+        
+        public event Action BlackjackCloseListener;
 
         public static bool blackjackOpened {get; private set;} = false;
 
@@ -44,7 +41,6 @@ namespace MainMenu {
         {
             blackjackOpened = true;
             gameObject.SetActive(true);
-            Menu3dMainMenu.MainWindow.SetActive(false);
 
             StartCoroutine(SelectFirstButtonNextFrame());
 
@@ -61,8 +57,7 @@ namespace MainMenu {
         {
             blackjackOpened = false;
             gameObject.SetActive(false);
-            Menu3dMainMenu.MainWindow.SetActive(true);
-            Menu3dMainMenu.SelectLastSelected();
+            BlackjackCloseListener?.Invoke();
         }
 
         // Update is called once per frame

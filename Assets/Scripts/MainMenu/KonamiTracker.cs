@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,9 +11,6 @@ namespace MainMenu {
     {
         public static KonamiTracker instance {get; private set;}
 
-
-        [SerializeField] private BlackjackMenu blackjackMenu;
-
         string[] konamiCode = {"up", "up", "down", "down", "left", "right", "left", "right", "b", "a"};
         public int konamiIndex = 0;
 
@@ -24,6 +21,9 @@ namespace MainMenu {
         private bool joystickPressed;
 
         [SerializeField] private InputActionReference navigate_action, b_action, a_action;
+
+        public delegate void OnCodeEntered();
+        public event OnCodeEntered CodeEnteredListener;
 
         private void Awake() {
             instance = this;
@@ -77,7 +77,7 @@ namespace MainMenu {
                 if (konamiIndex >= konamiCode.Length)
                 {
                     konamiIndex = 0;
-                    blackjackMenu.OpenBlackjack();
+                    CodeEnteredListener?.Invoke();
                 }
             }
             else

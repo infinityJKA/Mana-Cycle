@@ -16,6 +16,8 @@ namespace MainMenu
             [SerializeField] private Image backgroundImage;
             [SerializeField] private ImageColorSmoother backgroundFader;
             [SerializeField] private RectTransformSmoother logoImage;
+            [SerializeField] private BlackjackMenu blackjackMenu;
+            [SerializeField] private RawImage maskImage;
 
             [SerializeField] private TransitionScript TransitionHandler;
 
@@ -42,7 +44,25 @@ namespace MainMenu
                 settingsMenu.gameObject.SetActive(false);
                 versusMenu.gameObject.SetActive(false);
 
+                KonamiTracker.instance.CodeEnteredListener += OpenBlackjack;
+                blackjackMenu.BlackjackCloseListener += CloseBlackjack;
+
                 rootMenu.CoroutineOpen();
+            }
+
+            private void OpenBlackjack()
+            {
+                maskImage.enabled = false;
+                rootMenu.CoroutineClose();
+                blackjackMenu.OpenBlackjack();
+                logoImage.SetTargets(new Vector2(750, 0));
+            }
+
+            private void CloseBlackjack()
+            {
+                maskImage.enabled = true;
+                rootMenu.CoroutineOpen();
+                logoImage.SetTargets(new Vector2(0, 0));
             }
 
             // called when a new button in the radial menu is selected. Update visuals accordingly

@@ -1,10 +1,7 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using Achievements;
-
 
 namespace MainMenu {
     public class BlackjackGame : MonoBehaviour
@@ -193,10 +190,18 @@ namespace MainMenu {
         }
         
         private void Lose(string subtext){
-            ActionButtons.SetActive(false);
-            cond = bj_cond.LOSE;
             WinText.text = "GAME OVER";
             WinSubtext.text = subtext;
+            StartCoroutine(LoseHelper());
+
+        }
+
+        // Spawn busting/win cause event system to freak out from selecting multiple things at once
+        private System.Collections.IEnumerator LoseHelper()
+        {
+            yield return new WaitForEndOfFrame();
+            ActionButtons.SetActive(false);
+            cond = bj_cond.LOSE;
             FinishButtons.SetActive(true);
             if (!mobile) EventSystem.current.SetSelectedGameObject(FinishSelected);
         }
