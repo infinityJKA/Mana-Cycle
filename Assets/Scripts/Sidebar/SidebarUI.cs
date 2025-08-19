@@ -88,9 +88,7 @@ public class SidebarUI : MonoBehaviour {
     }
 
     public static void ReselectAfterClose() {
-        if (Menu3d.instance) {
-            Menu3d.instance.SelectLastSelected();
-        } else if (Storage.storedSelection) {
+        if (Storage.storedSelection) {
             EventSystem.current.SetSelectedGameObject(Storage.storedSelection);
         } else {
             EventSystem.current.SetSelectedGameObject(null);

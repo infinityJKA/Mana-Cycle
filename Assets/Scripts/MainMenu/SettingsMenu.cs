@@ -29,6 +29,7 @@ namespace Menus
             syncing = true;
             foreach (PlayerPrefSetter p in prefSetters) p.Sync();
             syncing = false;
+            SoundManager.Instance.UpdateMusicVolume();
         }
 
         void OnButtonSelected(int index, bool direction = true)
