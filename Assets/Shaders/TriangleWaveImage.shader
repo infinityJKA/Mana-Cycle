@@ -1,4 +1,4 @@
-Shader "Hidden/TriangleWaveImage"
+Shader "Unlit/TriangleWaveImage"
 {
     Properties
     {

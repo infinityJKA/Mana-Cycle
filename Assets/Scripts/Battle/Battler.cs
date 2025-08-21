@@ -12,6 +12,7 @@ namespace Battle {
         public string displayName {get; private set;}
 
         [SerializeField] public Sprite sprite;
+        [field: SerializeField] public Material material {get; private set;}
 
         /// <summary>Offset of the portrait in the battle view</summary>
         [SerializeField] public Vector2 portraitOffset;

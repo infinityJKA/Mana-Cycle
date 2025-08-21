@@ -809,6 +809,8 @@ namespace Battle.Board {
             tiles = new Tile[height, width];
             if (drawGhostPiece || lightConnectedMana) simulatedTiles = new Tile[height, width];
 
+            portrait.material = battler.material;
+
             // setup battler variables for the mirrored, take opponent sprite / abilities
             // taken out of start because it relies on enemy board to be properly set up
             if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shapeshifter)
@@ -828,7 +830,6 @@ namespace Battle.Board {
             if (Storage.gamemode == Storage.GameMode.Solo && Storage.level.trashSendRate > 0) Invoke("AddTrashTile", Storage.level.trashSendRate);
 
             portrait.GetComponent<ColorFlash>().SetBaseColor(portrait.color);
-            portrait.sprite = battler.sprite;
 
             attackPopup.SetBattler(battler);
 

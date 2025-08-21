@@ -29,7 +29,7 @@ Shader "ManaCycle/GridUI"
         Cull Back
         Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha
         ZTest LEqual
-        ZWrite Off
+        ZWrite On
         ColorMask RGB
         
         // Debug

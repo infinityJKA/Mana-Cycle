@@ -9,7 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8026496023998112998}
-  - component: {fileID: 7558628161305653670}
+  - component: {fileID: 1704248504126504867}
+  - component: {fileID: 2172211624250746201}
+  - component: {fileID: 7032334974659464554}
   m_Layer: 5
   m_Name: PortraitMask
   m_TagString: Untagged
@@ -37,7 +39,7 @@ RectTransform:
   m_AnchoredPosition: {x: -0.000030517578, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &7558628161305653670
+--- !u!114 &1704248504126504867
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,11 +48,48 @@ MonoBehaviour:
   m_GameObject: {fileID: 104875724452895099}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
+  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Padding: {x: 0, y: 0, z: 0, w: 0}
-  m_Softness: {x: 0, y: 0}
+  m_ShowMaskGraphic: 0
+--- !u!222 &2172211624250746201
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104875724452895099}
+  m_CullTransparentMesh: 1
+--- !u!114 &7032334974659464554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104875724452895099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &109460369072555597
 GameObject:
   m_ObjectHideFlags: 0
@@ -202,7 +241,6 @@ MonoBehaviour:
   startupCastSFX: {fileID: 7978053776321691471, guid: 59dd3c5389e71d741bdf2cb20e6e879e, type: 3}
   cascadeSFX: {fileID: 7978053776321691471, guid: dab65cf42c5086941bc34db71cbc8e3e, type: 3}
   dmgShootSFX: {fileID: 7978053776321691471, guid: 59a75a4271ab25b48ad06a582fa8fd3a, type: 3}
-  gravitySFX: {fileID: 7978053776321691471, guid: 6318ec4223f3f4f45a63fc1d8e7aea06, type: 3}
   usernameLabel: {fileID: 4187717598879313423}
   manualCastContinue: 0
   boardSync: {fileID: 0}
