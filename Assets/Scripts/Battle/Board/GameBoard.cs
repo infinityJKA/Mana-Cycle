@@ -463,7 +463,8 @@ namespace Battle.Board {
                 }
             }
 
-            InitBattler();
+            // if (battler.passiveAbilityEffect != Battler.PassiveAbilityEffect.Shapeshifter)
+            //     InitBattler();
 
             // in versus mode player vs ai or ai vs ai, set difficulty levels
             if (Storage.gamemode == Storage.GameMode.Versus) {
@@ -497,7 +498,7 @@ namespace Battle.Board {
             } else if (Storage.gamemode == Storage.GameMode.Versus) {
                 abilityManager.enabled = Settings.current.enableAbilities;
             }
-            abilityManager.InitManaBar();
+            // abilityManager.InitManaBar();
 
             recoveryText.enabled = false;
 
@@ -813,14 +814,15 @@ namespace Battle.Board {
             if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shapeshifter)
             {
                 battler = enemyBoard.battler;
-                InitBattler();
+                // InitBattler();
                 portrait.color = new Color(0.9f,0.2f,0.1f,0.57f);
             }
             else
             {
-                portrait.color = new Color(1f,1f,1f,0.47f);
+                portrait.color = new Color(1f,1f,1f,0.47f);    
             }
-
+            InitBattler();
+            abilityManager.InitManaBar();
 
             // setup level trash timer if applicable
             if (Storage.gamemode == Storage.GameMode.Solo && Storage.level.trashSendRate > 0) Invoke("AddTrashTile", Storage.level.trashSendRate);
