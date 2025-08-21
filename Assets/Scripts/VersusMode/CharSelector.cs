@@ -8,6 +8,8 @@ using Mirror;
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine.Localization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace VersusMode {
     /// <summary>
@@ -106,6 +108,10 @@ namespace VersusMode {
 
         public Image gameLogo;
 
+        private List<Battle.Battler> selectionHistory = new();
+        [SerializeField] private List<Battle.Battler> secretCode;
+        [SerializeField] private Battle.Battler secretChar;
+
         public bool Active {
             get { return active; }
             set {
@@ -171,13 +177,19 @@ namespace VersusMode {
         }
 
         // properties
+        private Battle.Battler _selectedBattler;
+
         public Battle.Battler selectedBattler { 
             get { 
-                if (isRandomSelected && randomBattler) {
+                if (isRandomSelected && randomBattler && _selectedBattler.battlerId != secretChar.battlerId) {
                     return randomBattler;
                 } else {
-                    return selectedIcon.battler;
+                    return _selectedBattler;
                 }
+            }
+            set 
+            {
+                _selectedBattler = value;
             }
         }
 
@@ -287,6 +299,7 @@ namespace VersusMode {
                     }
 
                     portrait.sprite = selectedBattler.sprite;
+                    portrait.sprite = selectedBattler.sprite;
                     gameLogo.sprite = selectedBattler.gameLogo;
                     SetAccentMaterialColor(new Color(selectedBattler.textBoxColor.r, selectedBattler.textBoxColor.g, selectedBattler.textBoxColor.b, 0.25f));
                     
@@ -295,7 +308,7 @@ namespace VersusMode {
                     if (selectedBattler.passiveAbilityEffect == Battle.Battler.PassiveAbilityEffect.None && selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
                         abilityText.text = "No special abilities";
                     } else {
-                        if (selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
+                        if (_selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
                             abilityText.text = selectedBattler.passiveAbilityDesc;
                         } else {
                             abilityText.text = selectedBattler.passiveAbilityDesc 
@@ -442,9 +455,25 @@ namespace VersusMode {
             else {
                 if (menu.IsBothPlayersReady()) {
                     if (canStartGame) menu.StartIfReady();
-                } else {
+                } else 
+                {
+                    selectionHistory.Add(_selectedBattler);
+                    CheckCodes();
                     ToggleLock();
                 }
+            }
+        }
+
+        private void CheckCodes()
+        {
+            // Debug.Log(selectionHistory.Skip(Math.Max(0, selectionHistory.Count - secretCode.Count)).Count());
+            if (selectionHistory.Skip(Math.Max(0, selectionHistory.Count - secretCode.Count)).SequenceEqual(secretCode))
+            {
+                selectedBattler = secretChar;
+                portrait.sprite = secretChar.sprite;
+                portrait.material = secretChar.material;
+                gameLogo.sprite = secretChar.gameLogo;
+                selectionHistory = new();
             }
         }
 
@@ -684,15 +713,15 @@ namespace VersusMode {
             if (!connected || !selectedIcon) return;
             if (lockedIn){
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, (selectingCpuLevel && !menu.Mobile) ? 0.65f : 1f);
-                nameText.text = selectedBattler.displayName;
+                nameText.text = _selectedBattler.displayName;
                 nameText.fontStyle = TMPro.FontStyles.Bold;
-                SetAccentMaterialColor(new Color(selectedBattler.textBoxColor.r, selectedBattler.textBoxColor.g, selectedBattler.textBoxColor.b, 0.5f));
+                SetAccentMaterialColor(new Color(_selectedBattler.textBoxColor.r, _selectedBattler.textBoxColor.g, _selectedBattler.textBoxColor.b, 0.5f));
             }
             else {
                 portrait.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
-                SetAccentMaterialColor(new Color(selectedBattler.textBoxColor.r, selectedBattler.textBoxColor.g, selectedBattler.textBoxColor.b, 0.25f));
+                SetAccentMaterialColor(new Color(_selectedBattler.textBoxColor.r, _selectedBattler.textBoxColor.g, _selectedBattler.textBoxColor.b, 0.25f));
                 nameText.fontStyle = TMPro.FontStyles.Normal;
-                nameText.text = isRandomSelected ? selectedIcon.battler.displayName : selectedBattler.displayName;
+                nameText.text = isRandomSelected ? selectedIcon.battler.displayName : _selectedBattler.displayName;
             }
         }
 
@@ -781,6 +810,7 @@ namespace VersusMode {
             }
 
             CharacterIcon newSelectedIcon = newSelection.GetComponent<CharacterIcon>();
+            selectedBattler = newSelectedIcon.battler;
             if (!newSelectedIcon) {
                 // Debug.LogError("CharacterIcon component not found on new cursor selectable");
                 return;
@@ -820,22 +850,23 @@ namespace VersusMode {
         }
 
         public void SelectBattler() {
-            portrait.sprite = selectedBattler.sprite;
-            gameLogo.sprite = selectedBattler.gameLogo;
+            portrait.sprite = _selectedBattler.sprite;
+            portrait.material = _selectedBattler.material;
+            gameLogo.sprite = _selectedBattler.gameLogo;
 
-            nameText.text = isRandomSelected ? selectedIcon.battler.displayName : selectedBattler.displayName;
-            SetAccentMaterialColor(new Color(selectedBattler.textBoxColor.r, selectedBattler.textBoxColor.g, selectedBattler.textBoxColor.b, 0.25f));
+            nameText.text = isRandomSelected ? selectedIcon.battler.displayName : _selectedBattler.displayName;
+            SetAccentMaterialColor(new Color(_selectedBattler.textBoxColor.r, _selectedBattler.textBoxColor.g, _selectedBattler.textBoxColor.b, 0.25f));
 
-            if (selectedBattler.passiveAbilityEffect == Battle.Battler.PassiveAbilityEffect.None && selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
+            if (_selectedBattler.passiveAbilityEffect == Battle.Battler.PassiveAbilityEffect.None && _selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
                 abilityText.text = "No special abilities";
             } else {
-                if (selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
-                    abilityText.text = selectedBattler.passiveAbilityDesc;
+                if (_selectedBattler.activeAbilityEffect == Battle.Battler.ActiveAbilityEffect.None) {
+                    abilityText.text = _selectedBattler.passiveAbilityDesc;
                 } else {
-                    abilityText.text = selectedBattler.passiveAbilityDesc 
+                    abilityText.text = _selectedBattler.passiveAbilityDesc 
                     + "\n\n" 
-                    + "<b>"+selectedBattler.activeAbilityName+"</b>: "
-                    + selectedBattler.activeAbilityDesc;
+                    + "<b>"+_selectedBattler.activeAbilityName+"</b>: "
+                    + _selectedBattler.activeAbilityDesc;
                 }
             }
 

@@ -815,7 +815,17 @@ namespace Battle.Board {
             // taken out of start because it relies on enemy board to be properly set up
             if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shapeshifter)
             {
-                battler = enemyBoard.battler;
+                // Both players are mirrored, set this player to a random char
+                if (enemyBoard.battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Shapeshifter)
+                {
+                    battler = DataManager.instance.GetRandomBattler();
+                }
+                // otherwise copy enemy
+                else
+                {
+                    battler = enemyBoard.battler;
+                }
+
                 // InitBattler();
                 portrait.color = new Color(0.9f,0.2f,0.1f,0.57f);
             }

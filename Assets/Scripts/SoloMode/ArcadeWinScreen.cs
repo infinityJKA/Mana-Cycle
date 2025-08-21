@@ -21,6 +21,7 @@ namespace SoloMode
             if (Storage.level != null)
             {
                 portrait.sprite = Storage.level.battler.sprite;
+                portrait.material = Storage.level.battler.material;
 
                 //Check for achievements
                 // AchievementHandler AH = FindObjectOfType<AchievementHandler>();
@@ -40,6 +41,7 @@ namespace SoloMode
                 else if (battlerID == "BetterYou"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinBetterYou");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
                 else if (battlerID == "Erif"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinErif");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
                 else if (battlerID == "Xuirbo"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinXuirbo");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
+                else if (battlerID == "Mirrored"){AchievementHandler.Instance.UnlockAchievement("ArcadeWinMirrored");Debug.Log("ACHIVEMENT SHOULD BE WON HERE");}
 
 
                 if (Storage.lives == 3 && Storage.hp == 2000) {

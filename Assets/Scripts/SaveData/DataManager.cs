@@ -8,6 +8,8 @@ using UnityEngine;
 public class DataManager : MonoBehaviour {
     public static DataManager instance {get; private set;}
 
+    [field: SerializeField] public Battle.Battler[] PlayableBattlers {get; private set;}
+
     // All of these items will be added to player's inventory upon creating a new CosmeticAssets object.
     public CosmeticDatabase defaultAssets;
 
@@ -24,5 +26,10 @@ public class DataManager : MonoBehaviour {
 
     private void OnDestroy() {
         CosmeticAssets.Save();
+    }
+
+    public Battle.Battler GetRandomBattler()
+    {
+        return PlayableBattlers[Random.Range(0, PlayableBattlers.Length)];
     }
 }
