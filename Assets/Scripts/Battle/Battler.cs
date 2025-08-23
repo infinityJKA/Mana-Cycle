@@ -32,7 +32,8 @@ namespace Battle {
             HealingGauge, // Bithecary's ability
             StatusCondition, // Better You's ability
             FlareBlade, // Erif's ability
-            Economics // Xuirbo's ability
+            Economics, // Xuirbo's ability
+            LightCrystal // Minor's ability
         }
 
         [SerializeField] private LocalizedString passiveAbilityDescEntry;
@@ -55,7 +56,8 @@ namespace Battle {
             Alchemy,
             Swap,
             Inferno,
-            FreeMarket
+            FreeMarket,
+            EnergyAbsorption
         }
 
         /// <summary>If true, this battler will start at full mana</summary>

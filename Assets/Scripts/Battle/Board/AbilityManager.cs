@@ -48,8 +48,10 @@ namespace Battle.Board {
         [SerializeField] private GameObject thunderActivateSFX,heroicShieldSFX;
 
         [SerializeField] private TMP_Text recoveryGaugeText;
+        [SerializeField] private TMP_Text energyGaugeText;
 
-        public int recoveryGaugeAmount {get; private set;}
+        public int recoveryGaugeAmount { get; private set; }
+        public int healingGaugeAmount { get; private set; }
 
         public StatusConditionManager scm;
         public float statusTime, statusDamageTime;

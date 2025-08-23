@@ -278,6 +278,8 @@ namespace Battle.Board {
         // the number in the center of the board when in recovery mode
         [SerializeField] private TMPro.TextMeshProUGUI recoveryText;
 
+        [SerializeField] private TMPro.TextMeshProUGUI energyText;
+
         private static readonly float recoveryDelay = 3f;
 
         // MANAGERS
