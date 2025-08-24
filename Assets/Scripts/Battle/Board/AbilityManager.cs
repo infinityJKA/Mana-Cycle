@@ -51,7 +51,7 @@ namespace Battle.Board {
         [SerializeField] private TMP_Text energyGaugeText;
 
         public int recoveryGaugeAmount { get; private set; }
-        public int healingGaugeAmount { get; private set; }
+        public int energyAmount { get; private set; }
 
         public StatusConditionManager scm;
         public float statusTime, statusDamageTime;
@@ -146,12 +146,23 @@ namespace Battle.Board {
             else{
                 recoveryGaugeText.transform.parent.gameObject.SetActive(false);
             }
-
-            // initialize status condition
-            if(board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.StatusCondition){
-                statusCondition = scm.RandomStatusCondition();
+            
+            if(board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.LightCrystal){
+                energyGaugeText.transform.parent.gameObject.SetActive(true);
+                energyAmount = 0;
+                energyGaugeText.text = ""+recoveryGaugeAmount;
             }
             else{
+                energyGaugeText.transform.parent.gameObject.SetActive(false);
+            }
+
+            // initialize status condition
+            if (board.Battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.StatusCondition)
+            {
+                statusCondition = scm.RandomStatusCondition();
+            }
+            else
+            {
                 statusCondition = StatusConditions.NoCondition;
             }
             scm.UpdateStatusIcon(statusCondition);
@@ -226,6 +237,7 @@ namespace Battle.Board {
                     case Battler.ActiveAbilityEffect.Swap: Swap(); break;
                     case Battler.ActiveAbilityEffect.Inferno: Inferno(); break;
                     case Battler.ActiveAbilityEffect.FreeMarket: FreeMarket();break;
+                    case Battler.ActiveAbilityEffect.EnergyAbsorption: EnergyAbsorption();break;
                     default: break;
                 }
 
@@ -416,6 +428,7 @@ namespace Battle.Board {
             recoveryGaugeAmount += amount;
             UpdateHealingGauge();
         }
+        
 
         public void BithecaryHealActivate() {
             board.SetHp(board.hp + recoveryGaugeAmount); // this is basically an uncapped heal but could be fun. if this is too op, change to normal Heal()
@@ -453,12 +466,31 @@ namespace Battle.Board {
             Debug.Log("SWAP!!!");
         }
 
+        // Minor's ability, spends built up energy to send damage
+        public void EnergyAbsorption()
+        {
+            board.DealDamage(energyAmount, energyGaugeText.transform.position, false);
+            energyAmount = 0;
+            UpdateEnergyGauge();
+        }
+
+        // Fills healing gauge based on damage passed (actual amount added is damage/7 as of writing; code in gameobard.cs)
+        public void AddEnergy(int amount) {
+            energyAmount += amount;
+            UpdateEnergyGauge();
+        }
+
+        public void UpdateEnergyGauge()
+        {
+            energyGaugeText.text = energyAmount+"";
+        }
 
         /// <summary>
         /// Basically Infinity's ability except it has a lower damage mult, leaves a burning fire
         /// for 30 seconds that destroys all pieces that fall on it, and costs more
         /// </summary>
-        private void Inferno() {
+        private void Inferno()
+        {
             ClearAbilityData();
             Piece infernoPiece = CreateSinglePiece(false);
             infernoPiece.MakeInferno(board);

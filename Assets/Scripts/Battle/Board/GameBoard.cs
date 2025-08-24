@@ -1541,8 +1541,20 @@ namespace Battle.Board {
                 abilityManager.FillHealingGauge(damage/7);
             }
 
+
+            // Minor gains energy both when attacking and being attacked
+            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.LightCrystal)
+            {
+                abilityManager.AddEnergy(damage / 5);
+            }
+            if (enemyBoard.battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.LightCrystal)
+            {
+                enemyBoard.abilityManager.AddEnergy(damage / 3);
+            }
+
             // romra +30% damage boost defensively
-            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender) {
+            if (battler.passiveAbilityEffect == Battler.PassiveAbilityEffect.Defender)
+            {
                 damage = (int)(damage * 1.3f);
             }
 
