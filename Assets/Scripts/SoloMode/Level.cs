@@ -291,12 +291,12 @@ namespace SoloMode {
             Storage.lives = lives;
 
             // if multiple chars can be chosen from, go to char select
-            if (availableBattlers.Count > 1)
+            if (availableBattlers.Count != 1)
             {
                 GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("CharSelect");
             }
             // if only one available char, set battler and go to manacycle
-            else 
+            else
             {
                 battler = Storage.level.availableBattlers[0];
                 GameObject.Find("TransitionHandler").GetComponent<TransitionScript>().WipeToScene("ManaCycle");

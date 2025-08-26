@@ -537,15 +537,20 @@ namespace VersusMode {
                     return;
                 }
 
-                // loop through battlers and hide battler portraits based on level available battlers
-                for (int i = 0; i < battlerGrid.transform.childCount; i++)
+                // loop through battlers and hide battler portraits based on level available battlers, only if we specify battlers
+                // An empty list means we allow all battlers
+                if (Storage.level.availableBattlers.Count > 0)
                 {
-                    GameObject portrait = battlerGrid.transform.GetChild(i).gameObject;
-                    // Debug.Log(portrait.name);
-                    if (!Storage.level.availableBattlers.Contains(portrait.GetComponent<CharacterIcon>().battler)){
-                        portrait.SetActive(false);
+                    for (int i = 0; i < battlerGrid.transform.childCount; i++)
+                    {
+                        GameObject portrait = battlerGrid.transform.GetChild(i).gameObject;
+                        // Debug.Log(portrait.name);
+                        if (!Storage.level.availableBattlers.Contains(portrait.GetComponent<CharacterIcon>().battler)){
+                            portrait.SetActive(false);
+                        }
                     }
                 }
+
 
                 RefreshLockVisuals();
             }
