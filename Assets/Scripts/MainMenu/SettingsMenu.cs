@@ -1,6 +1,7 @@
 using Sound;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Localization.Settings;
 
 namespace Menus
 {
@@ -53,6 +54,11 @@ namespace Menus
                 _ => FullScreenMode.FullScreenWindow,
             };
             Screen.fullScreenMode = fsm;
+        }
+
+        public void SetLocale(int l)
+        {
+            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[l];
         }
 
         // Used to serialize in prefab where eventsystem does not exist
